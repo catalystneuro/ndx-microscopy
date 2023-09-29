@@ -1,0 +1,14 @@
+namespaces:
+- author:
+  - Cody Baker and Alessandra Trapani
+  contact:
+  - cody.baker@catalystneuro.com
+  doc: An example extension to demonstrate the TAB proposal for enhancements to optical
+    physiology neurodata types.
+  name: ndx-microscopy
+  schema:
+  - namespace: core
+    neurodata_types:
+    - ElectricalSeries
+  - source: ndx-microscopy.extensions.yaml
+  version: 0.1.0
