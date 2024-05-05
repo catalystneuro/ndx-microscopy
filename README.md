@@ -63,7 +63,7 @@ classDiagram
         --------------------------------------
         data : numeric, frame x height x width
         --> unit : text
-        depth_per_frame : (frame,) numeric
+        depth_per_frame : numeric, length of frames
         -- > unit : text, default="micrometers"
         
         --------------------------------------
