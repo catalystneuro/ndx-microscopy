@@ -81,7 +81,7 @@ groups:
         - - x, y, z
       shape:
         - - 3
-      doc: Physical location in stereotaxic coordinates for the first element of the grid.
+      doc: Physical location in stereotactic coordinates for the first element of the grid.
         See reference_frame to determine what the coordinates are relative to (e.g., bregma).
       quantity: '?'
       attributes:
@@ -223,7 +223,7 @@ groups:
     doc: Volumetric imaging data acquired over an irregular number and amount of depths; for instance, when using an 
       electrically tunable lens.
     datasets:
-    - name: depth_per_frame
+    - name: depth_per_frame_in_mm
       doc: Depth of each frame in the data array.
         These values offset the 'z' value of the origin_coordinates of the linked imaging_space object.
       dtype: numeric
