@@ -27,7 +27,7 @@ pip install ndx-microscopy
 
 
 classDiagram
-    direction LR
+    direction BT
 
     class MicroscopySeries {
         <<TimeSeries>>
@@ -46,7 +46,7 @@ classDiagram
         --------------------------------------
         datasets
         --------------------------------------
-        data : (frame x height x width) numeric
+        data : numeric, frame x height x width
         --> unit : text
         
         --------------------------------------
@@ -61,7 +61,7 @@ classDiagram
         --------------------------------------
         datasets
         --------------------------------------
-        data : (frame x height x width) numeric
+        data : numeric, frame x height x width
         --> unit : text
         depth_per_frame : (frame,) numeric
         -- > unit : text, default="micrometers"
@@ -78,7 +78,7 @@ classDiagram
         --------------------------------------
         datasets
         --------------------------------------
-        data : (frame x height x width x depth) numeric
+        data : numeric, frame x height x width x depth
         --> unit : text
         
         --------------------------------------
@@ -94,7 +94,7 @@ classDiagram
         datasets
         --------------------------------------
         description : text
-        origin_coordinates : (x, y, z) numeric, optional
+        origin_coordinates : numeric, length 3, optional
         --> unit : text, default="micrometers"
         
         --------------------------------------
@@ -109,7 +109,7 @@ classDiagram
         --------------------------------------
         datasets
         --------------------------------------
-        grid_spacing : (x, y) numeric, optional
+        grid_spacing : numeric, length 2, optional
         --> unit : text, default="micrometers"
         
         --------------------------------------
@@ -124,7 +124,7 @@ classDiagram
         --------------------------------------
         datasets
         --------------------------------------
-        grid_spacing : (x, y, z) numeric, optional
+        grid_spacing : numeric, length 2, optional
         --> unit : text, default="micrometers"
         
         --------------------------------------
