@@ -1,8 +1,257 @@
 groups:
-- neurodata_type_def: TetrodeSeries
-  neurodata_type_inc: ElectricalSeries
-  doc: An extension of ElectricalSeries to include the tetrode ID for each time series.
-  attributes:
-  - name: trode_id
-    dtype: int32
-    doc: The tetrode ID.
+
+  - neurodata_type_def: Microscope
+    neurodata_type_inc: Device
+    doc: A microscope used to acquire imaging data.
+    attributes:
+      - name: model
+        dtype: text
+        doc: Model identifier of the light source device.
+        required: false
+
+  - neurodata_type_def: LightSource
+    neurodata_type_inc: Device
+    doc: Light source used to illuminate an imaging space.
+    attributes:
+      - name: model
+        dtype: text
+        doc: Model identifier of the light source device.
+        required: false
+      - name: filter_description
+        dtype: text
+        doc: Filter used to obtain the excitation wavelength of light, e.g. 'Short pass at 1040 nm'.
+        required: false
+      - name: excitation_wavelength_in_nm
+        dtype: numeric
+        doc: Excitation wavelength of light, in nanometers.
+        required: false
+      - name: peak_power_in_W
+        dtype: numeric
+        doc: Incident power of stimulation device (in Watts).
+        required: false
+      - name: peak_pulse_energy_in_J
+        dtype: numeric
+        doc: If device is pulsed light source, pulse energy (in Joules).
+        required: false
+      - name: intensity_in_W_per_m2
+        dtype: numeric
+        doc: Intensity of the excitation in W/m^2, if known.
+        required: false
+      - name: exposure_time_in_s
+        dtype: numeric
+        doc: Exposure time of the sample (in sec).
+        required: false
+      - name: pulse_rate_in_Hz
+        dtype: numeric
+        doc: If device is pulsed light source, pulse rate (in Hz) used for stimulation.
+        required: false
+
+  # Microscopy is added on to this only to differentiate from the OpticalChannel in the core namespace
+  # It would be removed when this structure is merged to core
+  - neurodata_type_def: MicroscopyOpticalChannel
+    neurodata_type_inc: NWBContainer
+    doc: An optical channel used to filter light emission from an imaging space.
+    datasets:
+    - name: description
+      doc: Description or other notes about the channel.
+      dtype: text
+    attributes:
+    - name: indicator
+      doc: Identifier for the indicator pertaining to this optical channel.
+      dtype: text
+    - name: filter_description
+      doc: Metadata information about the filter used by this optical channel.
+      dtype: text
+      required: false
+    - name: emission_wavelength_in_nm
+      doc: Emission wavelength for this optical channel, in nanometers.
+      dtype: numeric
+      required: false
+
+  - neurodata_type_def: ImagingSpace
+    neurodata_type_inc: NWBContainer
+    doc: Metadata about the region of physical space that imaging data was recorded from.
+    datasets:
+    - name: description
+      dtype: text
+      doc: Description of the imaging space.
+    - name: origin_coordinates
+      dtype: float64
+      dims:
+        - - x, y, z
+      shape:
+        - - 3
+      doc: Physical location in stereotaxic coordinates for the first element of the grid.
+        See reference_frame to determine what the coordinates are relative to (e.g., bregma).
+      quantity: '?'
+      attributes:
+        - name: unit
+          dtype: text
+          default_value: micrometers
+          doc: Measurement units for origin coordinates. The default value is 'micrometers'.
+    attributes:
+    - name: location
+      dtype: text
+      doc: General estimate of location in the brain being subset by this space.
+        Specify the area, layer, etc.
+        Use standard atlas names for anatomical regions when possible.
+        Specify 'whole-brain' if the entire brain is strictly contained within the space.
+      required: false
+    links:
+    - name: microscope
+      target_type: Microscope
+      doc: Link to Microscope object which contains metadata about the device which imaged this space.
+
+  - neurodata_type_def: PlanarImagingSpace
+    neurodata_type_inc: ImagingSpace
+    doc: Metadata about the 2-dimensional slice of physical space that imaging data was recorded from.
+    datasets:
+    - name: grid_spacing
+      dtype: float64
+      dims:
+      - - x, y
+      shape:
+      - - 2
+      doc: Amount of space between pixels in the specified unit.
+        Specify 'z' only when imaging volume is a regular grid; otherwise only specify 'x' and 'y'.
+        See origin_coordinates to determine where the grid begins.
+      quantity: '?'
+      attributes:
+      - name: unit
+        dtype: text
+        default_value: micrometers
+        doc: Measurement units for grid spacing. The default value is 'micrometers'.
+    attributes:
+    - name: reference_frame
+      dtype: text
+      doc: Describes the reference frame of origin_coordinates and grid_spacing.
+        For example, this can be a text description of the anatomical location and orientation of the grid
+        defined by origin_coords and grid_spacing or the vectors needed to transform or rotate the grid to
+        a common anatomical axis (e.g., AP/DV/ML).
+        This field is necessary to interpret origin_coords and grid_spacing.
+        If origin_coords and grid_spacing are not present, then this field is not required.
+        For example, if the microscope returns 10 x 10 images, where the first value of the data matrix
+        (index (0, 0)) corresponds to (-1.2, -0.6, -2) mm relative to bregma, the spacing between pixels is 0.2 mm in
+        x, 0.2 mm in y and 0.5 mm in z, and larger numbers in x means more anterior, larger numbers in y means more
+        rightward, and larger numbers in z means more ventral, then enter the following --
+        origin_coords = (-1.2, -0.6, -2)
+        grid_spacing = (0.2, 0.2)
+        reference_frame = "Origin coordinates are relative to bregma. First dimension corresponds to anterior-posterior
+        axis (larger index = more anterior). Second dimension corresponds to medial-lateral axis (larger index = more
+        rightward). Third dimension corresponds to dorsal-ventral axis (larger index = more ventral)."
+      required: false
+
+  - neurodata_type_def: VolumetricImagingSpace
+    neurodata_type_inc: ImagingSpace
+    doc: Metadata about the 3-dimensional region of physical space that imaging data was recorded from.
+    datasets:
+    - name: grid_spacing
+      doc: Amount of space between pixels in (x, y) or voxels in (x, y, z), in the specified unit.
+        Specify 'z' only when imaging volume is a regular grid; otherwise only specify 'x' and 'y'.
+        See origin_coordinates to determine where the grid begins.
+      dtype: float64
+      dims:
+      - - x, y, z
+      shape:
+      - - 3
+      quantity: '?'
+      attributes:
+      - name: unit
+        doc: Measurement units for grid spacing. The default value is 'micrometers'.
+        dtype: text
+        default_value: micrometers
+    attributes:
+    - name: reference_frame
+      doc: Describes the reference frame of origin_coordinates and grid_spacing.
+        For example, this can be a text description of the anatomical location and orientation of the grid
+        defined by origin_coords and grid_spacing or the vectors needed to transform or rotate the grid to
+        a common anatomical axis (e.g., AP/DV/ML).
+        This field is necessary to interpret origin_coords and grid_spacing.
+        If origin_coords and grid_spacing are not present, then this field is not required.
+        For example, if the microscope returns 10 x 10 x 2 images, where the first value of the data matrix
+        (index (0, 0, 0)) corresponds to (-1.2, -0.6, -2) mm relative to bregma, the spacing between pixels is 0.2 mm in
+        x, 0.2 mm in y and 0.5 mm in z, and larger numbers in x means more anterior, larger numbers in y means more
+        rightward, and larger numbers in z means more ventral, then enter the following --
+        origin_coords = (-1.2, -0.6, -2)
+        grid_spacing = (0.2, 0.2, 0.5)
+        reference_frame = "Origin coordinates are relative to bregma. First dimension corresponds to anterior-posterior
+        axis (larger index = more anterior). Second dimension corresponds to medial-lateral axis (larger index = more
+        rightward). Third dimension corresponds to dorsal-ventral axis (larger index = more ventral)."
+      dtype: text
+      required: false
+
+  - neurodata_type_def: MicroscopySeries
+    neurodata_type_inc: TimeSeries
+    doc: Imaging data acquired over time from an optical channel in a microscope while a light source illuminates the 
+      imaging space.
+    links:
+    - name: microscope
+      doc: Link to a Microscope object containing metadata about the device used to acquire this imaging data.
+      target_type: Microscope
+    - name: light_source
+      doc: Link to a LightSource object containing metadata about the device used to illuminate the imaging space.
+      target_type: LightSource
+    - name: optical_channel
+      doc: Link to a MicroscopyOpticalChannel object containing metadata about the indicator and filters used to collect
+        this data.
+      target_type: MicroscopyOpticalChannel
+
+  - neurodata_type_def: PlanarMicroscopySeries
+    neurodata_type_inc: MicroscopySeries
+    doc: Imaging data acquired over time from an optical channel in a microscope while a light source illuminates a 
+      planar imaging space.
+    datasets:
+    - name: data
+      doc: Recorded imaging data, shaped by (number of frames, frame height, frame width).
+      dtype: numeric
+      dims:
+      - frames
+      - height
+      - width
+      shape:
+      - null
+      - null
+      - null
+    links:
+    - name: imaging_space
+      doc: Link to PlanarImagingSpace object containing metadata about the region of physical space this imaging data
+        was recorded from.
+      target_type: PlanarImagingSpace
+
+  - neurodata_type_def: VariableDepthMicroscopySeries
+    neurodata_type_inc: PlanarMicroscopySeries
+    doc: Volumetric imaging data acquired over an irregular number and amount of depths; for instance, when using an 
+      electrically tunable lens.
+    datasets:
+    - name: depth_per_frame
+      doc: Depth of each frame in the data array.
+        These values offset the 'z' value of the origin_coordinates of the linked imaging_space object.
+      dtype: numeric
+      dims:
+      - frames
+      shape:
+      - null
+
+  - neurodata_type_def: VolumetricMicroscopySeries
+    neurodata_type_inc: MicroscopySeries
+    doc: Volumetric imaging data acquired over time from an optical channel in a microscope while a light source 
+      illuminates a volumetric imaging space.
+      Assumes the number of depth scans used to construct the volume is regular.
+    datasets:
+    - name: data
+      doc: Recorded imaging data, shaped by (number of frames, frame height, frame width, number of depth planes).
+      dtype: numeric
+      dims:
+      - frames
+      - height
+      - width
+      - depth
+      shape:
+      - null
+      - null
+      - null
+      - null
+    - name: imaging_space
+      doc: Link to VolumetricImagingSpace object containing metadata about the region of physical space this imaging data
+        was recorded from.
+      target_type: VolumetricImagingSpace
