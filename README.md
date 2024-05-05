@@ -179,7 +179,9 @@ classDiagram
     VariableDepthMicroscopySeries *-- MicroscopySeries : extends
     VariableDepthMicroscopySeries -- PlanarImagingSpace : links
     VolumetricMicroscopySeries *-- MicroscopySeries : extends
-    VolumetricMicroscopySeries -- VolumetricImageSpace : links
+    VolumetricMicroscopySeries -- VolumetricImagingSpace : links
+    PlanarImagingSpace *-- ImagingSpace : extends
+    VolumetricImagingSpace *-- ImagingSpace : extends
     MicroscopySeries ..> Microscope : links
     MicroscopySeries ..> LightSource : links
     MicroscopySeries ..> MicroscopyOpticalChannel : links
