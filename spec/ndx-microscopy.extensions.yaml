@@ -182,7 +182,7 @@ groups:
 
   - neurodata_type_def: MicroscopySeries
     neurodata_type_inc: TimeSeries
-    doc: Imaging data acquired over time from an optical channel in a microscope while a light source illuminates the 
+    doc: Imaging data acquired over time from an optical channel in a microscope while a light source illuminates the
       imaging space.
     links:
     - name: microscope
@@ -198,7 +198,7 @@ groups:
 
   - neurodata_type_def: PlanarMicroscopySeries
     neurodata_type_inc: MicroscopySeries
-    doc: Imaging data acquired over time from an optical channel in a microscope while a light source illuminates a 
+    doc: Imaging data acquired over time from an optical channel in a microscope while a light source illuminates a
       planar imaging space.
     datasets:
     - name: data
@@ -220,7 +220,7 @@ groups:
 
   - neurodata_type_def: VariableDepthMicroscopySeries
     neurodata_type_inc: PlanarMicroscopySeries
-    doc: Volumetric imaging data acquired over an irregular number and amount of depths; for instance, when using an 
+    doc: Volumetric imaging data acquired over an irregular number and amount of depths; for instance, when using an
       electrically tunable lens.
     datasets:
     - name: depth_per_frame_in_mm
@@ -234,7 +234,7 @@ groups:
 
   - neurodata_type_def: VolumetricMicroscopySeries
     neurodata_type_inc: MicroscopySeries
-    doc: Volumetric imaging data acquired over time from an optical channel in a microscope while a light source 
+    doc: Volumetric imaging data acquired over time from an optical channel in a microscope while a light source
       illuminates a volumetric imaging space.
       Assumes the number of depth scans used to construct the volume is regular.
     datasets:
@@ -251,6 +251,7 @@ groups:
       - null
       - null
       - null
+    links:
     - name: imaging_space
       doc: Link to VolumetricImagingSpace object containing metadata about the region of physical space this imaging data
         was recorded from.

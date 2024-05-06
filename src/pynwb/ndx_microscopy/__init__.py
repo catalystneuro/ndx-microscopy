@@ -1,5 +1,6 @@
 import os
-from pynwb import load_namespaces, get_class
+
+from pynwb import get_class, load_namespaces
 
 try:
     from importlib.resources import files
@@ -21,7 +22,7 @@ load_namespaces(str(__spec_path))
 
 Microscope = get_class("Microscope", extension_name)
 LightSource = get_class("LightSource", extension_name)
-MicroscopyOpticalChannel = get_class("MicroscopyOpticalChannel", 'ndx-patterned-ogen')
+MicroscopyOpticalChannel = get_class("MicroscopyOpticalChannel", extension_name)
 ImagingSpace = get_class("ImagingSpace", extension_name)
 PlanarImagingSpace = get_class("PlanarImagingSpace", extension_name)
 VolumetricImagingSpace = get_class("VolumetricImagingSpace", extension_name)

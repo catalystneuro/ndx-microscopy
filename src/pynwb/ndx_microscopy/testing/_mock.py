@@ -31,8 +31,8 @@ def mock_LightSource(
     model: str = "A fake model of the mock light source.",
     filter_description: str = "A description about the fake filter used by the mock light source.",
     excitation_wavelength_in_nm: float = 500.0,
-    peak_power_in_W : float=0.7,
-    peak_pulse_energy_in_J : float = 0.7,
+    peak_power_in_W: float = 0.7,
+    peak_pulse_energy_in_J: float = 0.7,
     intensity_in_W_per_m2: float = 0.005,
     exposure_time_in_s: float = 2.51e-13,
     pulse_rate_in_Hz: float = 2.0e6,
@@ -51,6 +51,7 @@ def mock_LightSource(
         pulse_rate_in_Hz=pulse_rate_in_Hz,
     )
     return light_source
+
 
 def mock_MicroscopyOpticalChannel(
     *,
@@ -91,6 +92,7 @@ def mock_PlanarImagingSpace(
     )
     return planar_imaging_space
 
+
 def mock_VolumetricImagingSpace(
     *,
     microscope: ndx_microscopy.Microscope,
@@ -112,6 +114,7 @@ def mock_VolumetricImagingSpace(
     )
     return volumetric_imaging_space
 
+
 def mock_PlanarMicroscopySeries(
     *,
     microscope: ndx_microscopy.Microscope,
@@ -129,7 +132,7 @@ def mock_PlanarMicroscopySeries(
     timestamps: Optional[np.ndarray] = None,
 ) -> ndx_microscopy.PlanarMicroscopySeries:
     series_name = name or name_generator("PlanarMicroscopySeries")
-    series_data = data if data is None else np.ones(shape=(15, 5, 5))
+    series_data = data if data is not None else np.ones(shape=(15, 5, 5))
 
     if timestamps is None:
         series_starting_time = starting_time or 0.0
@@ -140,7 +143,7 @@ def mock_PlanarMicroscopySeries(
             warnings.warn(
                 message=(
                     "Timestamps were provided in addition to either rate or starting_time! "
-                    "Please specify only timestamps, or both starting_time and rate. Timestamps will take precedence.",
+                    "Please specify only timestamps, or both starting_time and rate. Timestamps will take precedence."
                 ),
                 stacklevel=2,
             )
@@ -166,6 +169,7 @@ def mock_PlanarMicroscopySeries(
     )
     return planar_microscopy_series
 
+
 def mock_VariableDepthMicroscopySeries(
     *,
     microscope: ndx_microscopy.Microscope,
@@ -184,11 +188,13 @@ def mock_VariableDepthMicroscopySeries(
     timestamps: Optional[np.ndarray] = None,
 ) -> ndx_microscopy.VariableDepthMicroscopySeries:
     series_name = name or name_generator("VariableDepthMicroscopySeries")
-    series_data = data if data is None else np.ones(shape=(15, 5, 5))
+    series_data = data if data is not None else np.ones(shape=(15, 5, 5))
 
-    series_depth_per_frame_in_mm = depth_per_frame_in_mm if depth_per_frame_in_mm is None else np.linspace(start=0.0,
-                                                                                                     stop=1.0,
-                                                                            num=series_data.shape[0])
+    series_depth_per_frame_in_mm = (
+        depth_per_frame_in_mm
+        if depth_per_frame_in_mm is not None
+        else np.linspace(start=0.0, stop=1.0, num=series_data.shape[0])
+    )
 
     if timestamps is None:
         series_starting_time = starting_time or 0.0
@@ -199,7 +205,7 @@ def mock_VariableDepthMicroscopySeries(
             warnings.warn(
                 message=(
                     "Timestamps were provided in addition to either rate or starting_time! "
-                    "Please specify only timestamps, or both starting_time and rate. Timestamps will take precedence.",
+                    "Please specify only timestamps, or both starting_time and rate. Timestamps will take precedence."
                 ),
                 stacklevel=2,
             )
@@ -226,6 +232,7 @@ def mock_VariableDepthMicroscopySeries(
     )
     return variable_depth_microscopy_series
 
+
 def mock_VolumetricMicroscopySeries(
     *,
     microscope: ndx_microscopy.Microscope,
@@ -243,7 +250,7 @@ def mock_VolumetricMicroscopySeries(
     timestamps: Optional[np.ndarray] = None,
 ) -> ndx_microscopy.VolumetricMicroscopySeries:
     series_name = name or name_generator("VolumetricMicroscopySeries")
-    series_data = data if data is None else np.ones(shape=(5, 5, 5, 3))
+    series_data = data if data is not None else np.ones(shape=(5, 5, 5, 3))
 
     if timestamps is None:
         series_starting_time = starting_time or 0.0
@@ -254,7 +261,7 @@ def mock_VolumetricMicroscopySeries(
             warnings.warn(
                 message=(
                     "Timestamps were provided in addition to either rate or starting_time! "
-                    "Please specify only timestamps, or both starting_time and rate. Timestamps will take precedence.",
+                    "Please specify only timestamps, or both starting_time and rate. Timestamps will take precedence."
                 ),
                 stacklevel=2,
             )
