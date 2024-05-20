@@ -48,7 +48,7 @@ classDiagram
         --------------------------------------
         data : numeric, frame x height x width
         --> unit : text
-        
+
         --------------------------------------
         links
         --------------------------------------
@@ -65,7 +65,7 @@ classDiagram
         --> unit : text
         depth_per_frame : numeric, length of frames
         -- > unit : text, default="micrometers"
-        
+
         --------------------------------------
         links
         --------------------------------------
@@ -80,7 +80,7 @@ classDiagram
         --------------------------------------
         data : numeric, frame x height x width x depth
         --> unit : text
-        
+
         --------------------------------------
         links
         --------------------------------------
@@ -96,7 +96,7 @@ classDiagram
         description : text
         origin_coordinates : numeric, length 3, optional
         --> unit : text, default="micrometers"
-        
+
         --------------------------------------
         attributes
         --------------------------------------
@@ -111,7 +111,7 @@ classDiagram
         --------------------------------------
         grid_spacing : numeric, length 2, optional
         --> unit : text, default="micrometers"
-        
+
         --------------------------------------
         attributes
         --------------------------------------
@@ -126,7 +126,7 @@ classDiagram
         --------------------------------------
         grid_spacing : numeric, length 2, optional
         --> unit : text, default="micrometers"
-        
+
         --------------------------------------
         attributes
         --------------------------------------
@@ -140,7 +140,7 @@ classDiagram
         datasets
         --------------------------------------
         description : text
-        
+
         --------------------------------------
         attributes
         --------------------------------------
@@ -164,10 +164,10 @@ classDiagram
         exposure_time_in_s : numeric, optional
         pulse_rate_in_Hz : numeric, optional
     }
-    
+
     class Microscope{
         <<Device>>
-        
+
         --------------------------------------
         attributes
         --------------------------------------

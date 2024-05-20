@@ -107,7 +107,7 @@ with information on where to find your NWB extension.
       src: https://github.com/CodyCBakerPhD/ndx-microscopy
       pip: https://pypi.org/project/ndx-microscopy/
       license: MIT
-      maintainers: 
+      maintainers:
         - CodyCBakerPhD
       ```
 
