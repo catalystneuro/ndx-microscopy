@@ -2,73 +2,57 @@
 
 import pytest
 
-from ndx_microscopy.testing import (
-    mock_LightSource,
+from ndx_ophys_devices.testing import (
+    mock_Indicator,
+    mock_Photodetector,
+    mock_DichroicMirror,
+    mock_BandOpticalFilter,
+    mock_EdgeOpticalFilter,
+    mock_ObjectiveLens,
+    mock_ExcitationSource,
     mock_Microscope,
-    mock_MicroscopyOpticalChannel,
+)
+
+from ndx_microscopy.testing import (
+    mock_Microscopy,
+    mock_MicroscopyTable,
     mock_PlanarImagingSpace,
     mock_PlanarMicroscopySeries,
     mock_VariableDepthMicroscopySeries,
     mock_VolumetricImagingSpace,
     mock_VolumetricMicroscopySeries,
 )
+def test_constructor_microscopy():
+    mock_Microscopy()
 
 
-def test_constructor_microscope():
-    mock_Microscope()
-
-
-def test_constructor_light_source():
-    mock_LightSource()
-
-
-def test_constructor_microscopy_optical_channel():
-    mock_MicroscopyOpticalChannel()
+def test_constructor_microscopy_table():
+    mock_MicroscopyTable()
 
 
 def test_constructor_planar_image_space():
-    microscope = mock_Microscope()
-
-    mock_PlanarImagingSpace(microscope=microscope)
+    mock_PlanarImagingSpace()
 
 
 def test_constructor_volumetric_image_space():
-    microscope = mock_Microscope()
-
-    mock_VolumetricImagingSpace(microscope=microscope)
+    mock_VolumetricImagingSpace()
 
 
 def test_constructor_planar_microscopy_series():
-    microscope = mock_Microscope()
-    light_source = mock_LightSource()
-    imaging_space = mock_PlanarImagingSpace(microscope=microscope)
-    optical_channel = mock_MicroscopyOpticalChannel()
-
-    mock_PlanarMicroscopySeries(
-        microscope=microscope, light_source=light_source, imaging_space=imaging_space, optical_channel=optical_channel
-    )
+    imaging_space = mock_PlanarImagingSpace()
+    mock_PlanarMicroscopySeries(imaging_space=imaging_space)
 
 
 def test_constructor_variable_depth_microscopy_series():
-    microscope = mock_Microscope()
-    light_source = mock_LightSource()
-    imaging_space = mock_PlanarImagingSpace(microscope=microscope)
-    optical_channel = mock_MicroscopyOpticalChannel()
+    imaging_space = mock_PlanarImagingSpace()
 
-    mock_VariableDepthMicroscopySeries(
-        microscope=microscope, light_source=light_source, imaging_space=imaging_space, optical_channel=optical_channel
-    )
+    mock_VariableDepthMicroscopySeries(imaging_space=imaging_space    )
 
 
 def test_constructor_volumetric_microscopy_series():
-    microscope = mock_Microscope()
-    light_source = mock_LightSource()
-    imaging_space = mock_VolumetricImagingSpace(microscope=microscope)
-    optical_channel = mock_MicroscopyOpticalChannel()
+    imaging_space = mock_VolumetricImagingSpace()
 
-    mock_VolumetricMicroscopySeries(
-        microscope=microscope, light_source=light_source, imaging_space=imaging_space, optical_channel=optical_channel
-    )
+    mock_VolumetricMicroscopySeries(imaging_space=imaging_space)
 
 
 if __name__ == "__main__":

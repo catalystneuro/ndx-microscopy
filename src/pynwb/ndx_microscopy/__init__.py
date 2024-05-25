@@ -20,9 +20,18 @@ if not os.path.exists(__spec_path):
 
 load_namespaces(str(__spec_path))
 
-Microscope = get_class("Microscope", extension_name)
-LightSource = get_class("LightSource", extension_name)
-MicroscopyOpticalChannel = get_class("MicroscopyOpticalChannel", extension_name)
+from ndx_ophys_devices import (
+    Indicator,
+    ExcitationSource,
+    Photodetector,
+    DichroicMirror,
+    BandOpticalFilter,
+    EdgeOpticalFilter,
+    ObjectiveLens,
+    Microscope,
+)
+Microscopy = get_class("Microscopy", extension_name)
+MicroscopyTable = get_class("MicroscopyTable", extension_name)
 ImagingSpace = get_class("ImagingSpace", extension_name)
 PlanarImagingSpace = get_class("PlanarImagingSpace", extension_name)
 VolumetricImagingSpace = get_class("VolumetricImagingSpace", extension_name)
@@ -32,9 +41,16 @@ VariableDepthMicroscopySeries = get_class("VariableDepthMicroscopySeries", exten
 VolumetricMicroscopySeries = get_class("VolumetricMicroscopySeries", extension_name)
 
 __all__ = [
+    "Indicator",
+    "ExcitationSource",
+    "Photodetector",
+    "DichroicMirror",
+    "BandOpticalFilter",
+    "EdgeOpticalFilter",
+    "ObjectiveLens",
     "Microscope",
-    "LightSource",
-    "MicroscopyOpticalChannel",
+    "MicroscopyTable",
+    "Microscopy",
     "ImagingSpace",
     "PlanarImagingSpace",
     "VolumetricImagingSpace",

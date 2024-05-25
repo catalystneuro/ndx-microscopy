@@ -8,9 +8,8 @@ from pynwb.testing.mock.file import mock_NWBFile
 
 import pynwb
 from ndx_microscopy.testing import (
-    mock_LightSource,
+    mock_ExcitationSource,
     mock_Microscope,
-    mock_MicroscopyOpticalChannel,
     mock_PlanarImagingSpace,
     mock_PlanarMicroscopySeries,
     mock_VariableDepthMicroscopySeries,
@@ -25,11 +24,7 @@ def test_constructor_microscope():
 
 
 def test_constructor_light_source():
-    mock_LightSource()
-
-
-def test_constructor_microscopy_optical_channel():
-    mock_MicroscopyOpticalChannel()
+    mock_ExcitationSource()
 
 
 def test_constructor_planar_image_space():
@@ -46,34 +41,31 @@ def test_constructor_volumetric_image_space():
 
 def test_constructor_planar_microscopy_series():
     microscope = mock_Microscope()
-    light_source = mock_LightSource()
+    light_source = mock_ExcitationSource()
     imaging_space = mock_PlanarImagingSpace(microscope=microscope)
-    optical_channel = mock_MicroscopyOpticalChannel()
 
     mock_PlanarMicroscopySeries(
-        microscope=microscope, light_source=light_source, imaging_space=imaging_space, optical_channel=optical_channel
+        microscope=microscope, light_source=light_source, imaging_space=imaging_space
     )
 
 
 def test_constructor_variable_depth_microscopy_series():
     microscope = mock_Microscope()
-    light_source = mock_LightSource()
+    light_source = mock_ExcitationSource()
     imaging_space = mock_PlanarImagingSpace(microscope=microscope)
-    optical_channel = mock_MicroscopyOpticalChannel()
 
     mock_VariableDepthMicroscopySeries(
-        microscope=microscope, light_source=light_source, imaging_space=imaging_space, optical_channel=optical_channel
+        microscope=microscope, light_source=light_source, imaging_space=imaging_space
     )
 
 
 def test_constructor_volumetric_microscopy_series():
     microscope = mock_Microscope()
-    light_source = mock_LightSource()
+    light_source = mock_ExcitationSource()
     imaging_space = mock_PlanarImagingSpace(microscope=microscope)
-    optical_channel = mock_MicroscopyOpticalChannel()
 
     mock_VolumetricMicroscopySeries(
-        microscope=microscope, light_source=light_source, imaging_space=imaging_space, optical_channel=optical_channel
+        microscope=microscope, light_source=light_source, imaging_space=imaging_space
     )
 
 
@@ -82,12 +74,11 @@ def nwbfile_with_microscopy():
     nwbfile = pynwb.testing.mock.mock_NWBFile()
 
     microscope = mock_Microscope()
-    light_source = mock_LightSource()
+    light_source = mock_ExcitationSource()
     imaging_space = mock_PlanarImagingSpace(microscope=microscope)
-    optical_channel = mock_MicroscopyOpticalChannel()
 
     mock_PlanarMicroscopySeries(
-        microscope=microscope, light_source=light_source, imaging_space=imaging_space, optical_channel=optical_channel
+        microscope=microscope, light_source=light_source, imaging_space=imaging_space
     )
 
     return nwbfile
