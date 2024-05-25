@@ -8,6 +8,8 @@ namespaces:
   - cody.baker@catalystneuro.com
   - alessandra.trapani@catalystneuro.com
   schema:
-  - namespace: core
+  - namespace:
+    - core
+    - ndx-ophys-devices
   - source: ndx-microscopy.extensions.yaml
   version: 0.1.0
