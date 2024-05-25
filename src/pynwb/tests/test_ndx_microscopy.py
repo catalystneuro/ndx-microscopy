@@ -44,9 +44,7 @@ def test_constructor_planar_microscopy_series():
     light_source = mock_ExcitationSource()
     imaging_space = mock_PlanarImagingSpace(microscope=microscope)
 
-    mock_PlanarMicroscopySeries(
-        microscope=microscope, light_source=light_source, imaging_space=imaging_space
-    )
+    mock_PlanarMicroscopySeries(microscope=microscope, light_source=light_source, imaging_space=imaging_space)
 
 
 def test_constructor_variable_depth_microscopy_series():
@@ -54,9 +52,7 @@ def test_constructor_variable_depth_microscopy_series():
     light_source = mock_ExcitationSource()
     imaging_space = mock_PlanarImagingSpace(microscope=microscope)
 
-    mock_VariableDepthMicroscopySeries(
-        microscope=microscope, light_source=light_source, imaging_space=imaging_space
-    )
+    mock_VariableDepthMicroscopySeries(microscope=microscope, light_source=light_source, imaging_space=imaging_space)
 
 
 def test_constructor_volumetric_microscopy_series():
@@ -64,9 +60,7 @@ def test_constructor_volumetric_microscopy_series():
     light_source = mock_ExcitationSource()
     imaging_space = mock_PlanarImagingSpace(microscope=microscope)
 
-    mock_VolumetricMicroscopySeries(
-        microscope=microscope, light_source=light_source, imaging_space=imaging_space
-    )
+    mock_VolumetricMicroscopySeries(microscope=microscope, light_source=light_source, imaging_space=imaging_space)
 
 
 @pytest.fixture(scope="module")
@@ -77,9 +71,7 @@ def nwbfile_with_microscopy():
     light_source = mock_ExcitationSource()
     imaging_space = mock_PlanarImagingSpace(microscope=microscope)
 
-    mock_PlanarMicroscopySeries(
-        microscope=microscope, light_source=light_source, imaging_space=imaging_space
-    )
+    mock_PlanarMicroscopySeries(microscope=microscope, light_source=light_source, imaging_space=imaging_space)
 
     return nwbfile
 

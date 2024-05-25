@@ -107,7 +107,7 @@ groups:
           - null
         doc: Link to the objective lens device.
         quantity: "?"
-  
+
   - neurodata_type_def: Microscopy
     neurodata_type_inc: LabMetaData
     doc: Extends LabMetaData to hold all Microscopy metadata.

@@ -21,15 +21,16 @@ if not os.path.exists(__spec_path):
 load_namespaces(str(__spec_path))
 
 from ndx_ophys_devices import (
-    Indicator,
-    ExcitationSource,
-    Photodetector,
-    DichroicMirror,
     BandOpticalFilter,
+    DichroicMirror,
     EdgeOpticalFilter,
-    ObjectiveLens,
+    ExcitationSource,
+    Indicator,
     Microscope,
+    ObjectiveLens,
+    Photodetector,
 )
+
 Microscopy = get_class("Microscopy", extension_name)
 MicroscopyTable = get_class("MicroscopyTable", extension_name)
 ImagingSpace = get_class("ImagingSpace", extension_name)

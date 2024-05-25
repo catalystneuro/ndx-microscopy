@@ -107,7 +107,7 @@ def mock_PlanarMicroscopySeries(
     planar_microscopy_series = ndx_microscopy.PlanarMicroscopySeries(
         name=series_name,
         description=description,
-        microscopy_table_region = microscopy_table_region,
+        microscopy_table_region=microscopy_table_region,
         data=series_data,
         unit=unit,
         conversion=conversion,
@@ -163,7 +163,7 @@ def mock_VariableDepthMicroscopySeries(
     variable_depth_microscopy_series = ndx_microscopy.VariableDepthMicroscopySeries(
         name=series_name,
         description=description,
-        microscopy_table_region = microscopy_table_region,
+        microscopy_table_region=microscopy_table_region,
         data=series_data,
         depth_per_frame_in_mm=series_depth_per_frame_in_mm,
         unit=unit,
@@ -213,7 +213,7 @@ def mock_VolumetricMicroscopySeries(
     volumetric_microscopy_series = ndx_microscopy.VolumetricMicroscopySeries(
         name=series_name,
         description=description,
-        microscopy_table_region = microscopy_table_region,
+        microscopy_table_region=microscopy_table_region,
         data=series_data,
         unit=unit,
         conversion=conversion,

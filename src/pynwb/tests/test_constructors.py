@@ -1,16 +1,15 @@
 """Test in-memory Python API constructors for ndx-microscopy extension."""
 
 import pytest
-
 from ndx_ophys_devices.testing import (
-    mock_Indicator,
-    mock_Photodetector,
-    mock_DichroicMirror,
     mock_BandOpticalFilter,
+    mock_DichroicMirror,
     mock_EdgeOpticalFilter,
-    mock_ObjectiveLens,
     mock_ExcitationSource,
+    mock_Indicator,
     mock_Microscope,
+    mock_ObjectiveLens,
+    mock_Photodetector,
 )
 
 from ndx_microscopy.testing import (
@@ -22,6 +21,8 @@ from ndx_microscopy.testing import (
     mock_VolumetricImagingSpace,
     mock_VolumetricMicroscopySeries,
 )
+
+
 def test_constructor_microscopy():
     mock_Microscopy()
 
@@ -46,7 +47,7 @@ def test_constructor_planar_microscopy_series():
 def test_constructor_variable_depth_microscopy_series():
     imaging_space = mock_PlanarImagingSpace()
 
-    mock_VariableDepthMicroscopySeries(imaging_space=imaging_space    )
+    mock_VariableDepthMicroscopySeries(imaging_space=imaging_space)
 
 
 def test_constructor_volumetric_microscopy_series():
