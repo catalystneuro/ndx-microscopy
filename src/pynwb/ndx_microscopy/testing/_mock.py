@@ -2,19 +2,19 @@ import warnings
 from typing import Optional, Tuple
 
 import numpy as np
+from ndx_ophys_devices.testing import (
+    mock_BandOpticalFilter,
+    mock_DichroicMirror,
+    mock_EdgeOpticalFilter,
+    mock_ExcitationSource,
+    mock_Indicator,
+    mock_Microscope,
+    mock_ObjectiveLens,
+    mock_Photodetector,
+)
 from pynwb.testing.mock.utils import name_generator
 
 import ndx_microscopy
-from ndx_ophys_devices.testing import (
-    mock_Indicator,
-    mock_ExcitationSource,
-    mock_Photodetector,
-    mock_DichroicMirror,
-    mock_BandOpticalFilter,
-    mock_EdgeOpticalFilter,
-    mock_Microscope,
-    mock_ObjectiveLens,
-)
 
 
 def mock_Microscopy(
