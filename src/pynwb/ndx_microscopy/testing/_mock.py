@@ -2,78 +2,63 @@ import warnings
 from typing import Optional, Tuple
 
 import numpy as np
+from ndx_ophys_devices.testing import (
+    mock_BandOpticalFilter,
+    mock_DichroicMirror,
+    mock_EdgeOpticalFilter,
+    mock_ExcitationSource,
+    mock_Indicator,
+    mock_Microscope,
+    mock_ObjectiveLens,
+    mock_Photodetector,
+)
 from pynwb.testing.mock.utils import name_generator
 
 import ndx_microscopy
 
 
-def mock_Microscope(
+def mock_Microscopy(
+    *,
+    microscopy_table: ndx_microscopy.MicroscopyTable,
+    name: Optional[str] = None,
+    description: str = "This is a mock instance of a Microscopy type to be used for rapid testing.",
+) -> ndx_microscopy.Microscopy:
+    microscopy = ndx_microscopy.Microscopy(
+        name=name or name_generator("Microscopy"),
+        description=description,
+        microscopy_table=microscopy_table,
+    )
+    return microscopy
+
+
+def mock_MicroscopyTable(
     *,
     name: Optional[str] = None,
-    description: str = "This is a mock instance of a Microscope type to be used for rapid testing.",
-    manufacturer: str = "A fake manufacturer of the mock microscope.",
-    model: str = "A fake model of the mock microscope.",
-) -> ndx_microscopy.Microscope:
-    microscope = ndx_microscopy.Microscope(
-        name=name or name_generator("Microscope"),
+    description: str = "This is a mock instance of a Microscopy Table type to be used for rapid testing.",
+    number_of_rows: int = 2,
+) -> ndx_microscopy.MicroscopyTable:
+    microscopy_table = ndx_microscopy.MicroscopyTable(
+        name=name or name_generator("MicroscopyTable"),
         description=description,
-        manufacturer=manufacturer,
-        model=model,
     )
-    return microscope
-
-
-def mock_LightSource(
-    *,
-    name: Optional[str] = None,
-    description: str = "This is a mock instance of a LightSource type to be used for rapid testing.",
-    manufacturer: str = "A fake manufacturer of the mock light source.",
-    model: str = "A fake model of the mock light source.",
-    filter_description: str = "A description about the fake filter used by the mock light source.",
-    excitation_wavelength_in_nm: float = 500.0,
-    peak_power_in_W: float = 0.7,
-    peak_pulse_energy_in_J: float = 0.7,
-    intensity_in_W_per_m2: float = 0.005,
-    exposure_time_in_s: float = 2.51e-13,
-    pulse_rate_in_Hz: float = 2.0e6,
-) -> ndx_microscopy.LightSource:
-    light_source = ndx_microscopy.LightSource(
-        name=name or name_generator("LightSource"),
-        description=description,
-        manufacturer=manufacturer,
-        model=model,
-        filter_description=filter_description,
-        excitation_wavelength_in_nm=excitation_wavelength_in_nm,
-        peak_power_in_W=peak_power_in_W,
-        peak_pulse_energy_in_J=peak_pulse_energy_in_J,
-        intensity_in_W_per_m2=intensity_in_W_per_m2,
-        exposure_time_in_s=exposure_time_in_s,
-        pulse_rate_in_Hz=pulse_rate_in_Hz,
-    )
-    return light_source
-
-
-def mock_MicroscopyOpticalChannel(
-    *,
-    name: Optional[str] = None,
-    description: str = "This is a mock instance of a MicroscopyOpticalChannel type to be used for rapid testing.",
-    indicator: str = "The indicator targeted by the mock optical channel.",
-    filter_description: str = "A description about the fake filter used by the mock optical channel.",
-    emission_wavelength_in_nm: float = 450.0,
-) -> ndx_microscopy.MicroscopyOpticalChannel:
-    optical_channel = ndx_microscopy.MicroscopyOpticalChannel(
-        name=name or name_generator("MicroscopyOpticalChannel"),
-        description=description,
-        indicator=indicator,
-        filter_description=filter_description,
-        emission_wavelength_in_nm=emission_wavelength_in_nm,
-    )
-    return optical_channel
+    for row in range(number_of_rows):
+        microscopy_table.add_row(
+            location=f"The location targeted of row number {row}",
+            notes=f"The notes for row number {row}",
+            indicator=mock_Indicator(name=f"indicator_{row}"),
+            excitation_source=mock_ExcitationSource(name=f"excitation_source_{row}"),
+            photodetector=mock_Photodetector(name=f"photodetector_{row}"),
+            dichroic_mirror=mock_DichroicMirror(name=f"dichroic_mirror_{row}"),
+            emission_filter=mock_BandOpticalFilter(name=f"emission_filter_{row}"),
+            excitation_filter=mock_EdgeOpticalFilter(name=f"excitation_filter_{row}"),
+            objective_lens=mock_ObjectiveLens(name=f"objective_lens_{row}"),
+            microscope=mock_Microscope(name=f"microscope_{row}"),
+        )
+    return microscopy_table
 
 
 def mock_PlanarImagingSpace(
     *,
-    microscope: ndx_microscopy.Microscope,
     name: Optional[str] = None,
     description: str = "This is a mock instance of a PlanarImagingSpace type to be used for rapid testing.",
     origin_coordinates: Tuple[float, float, float] = (-1.2, -0.6, -2),
@@ -84,7 +69,6 @@ def mock_PlanarImagingSpace(
     planar_imaging_space = ndx_microscopy.PlanarImagingSpace(
         name=name or name_generator("PlanarImagingSpace"),
         description=description,
-        microscope=microscope,
         origin_coordinates=origin_coordinates,
         grid_spacing=grid_spacing,
         location=location,
@@ -95,7 +79,6 @@ def mock_PlanarImagingSpace(
 
 def mock_VolumetricImagingSpace(
     *,
-    microscope: ndx_microscopy.Microscope,
     name: Optional[str] = None,
     description: str = "This is a mock instance of a VolumetricImagingSpace type to be used for rapid testing.",
     origin_coordinates: Tuple[float, float, float] = (-1.2, -0.6, -2),
@@ -106,7 +89,6 @@ def mock_VolumetricImagingSpace(
     volumetric_imaging_space = ndx_microscopy.VolumetricImagingSpace(
         name=name or name_generator("VolumetricImagingSpace"),
         description=description,
-        microscope=microscope,
         origin_coordinates=origin_coordinates,
         grid_spacing=grid_spacing,
         location=location,
@@ -117,12 +99,9 @@ def mock_VolumetricImagingSpace(
 
 def mock_PlanarMicroscopySeries(
     *,
-    microscope: ndx_microscopy.Microscope,
-    light_source: ndx_microscopy.LightSource,
-    imaging_space: ndx_microscopy.PlanarImagingSpace,
-    optical_channel: ndx_microscopy.MicroscopyOpticalChannel,
     name: Optional[str] = None,
     description: str = "This is a mock instance of a PlanarMicroscopySeries type to be used for rapid testing.",
+    microscopy_table_region: list = [0],
     data: Optional[np.ndarray] = None,
     unit: str = "a.u.",
     conversion: float = 1.0,
@@ -133,7 +112,6 @@ def mock_PlanarMicroscopySeries(
 ) -> ndx_microscopy.PlanarMicroscopySeries:
     series_name = name or name_generator("PlanarMicroscopySeries")
     series_data = data if data is not None else np.ones(shape=(15, 5, 5))
-
     if timestamps is None:
         series_starting_time = starting_time or 0.0
         series_rate = rate or 10.0
@@ -152,13 +130,13 @@ def mock_PlanarMicroscopySeries(
         series_rate = None
         series_timestamps = timestamps
 
+    microscopy_table = mock_MicroscopyTable()
+    microscopy_table_region = microscopy_table.create_microscopy_table_region(region=microscopy_table_region)
+
     planar_microscopy_series = ndx_microscopy.PlanarMicroscopySeries(
         name=series_name,
         description=description,
-        microscope=microscope,
-        light_source=light_source,
-        imaging_space=imaging_space,
-        optical_channel=optical_channel,
+        microscopy_table_region=microscopy_table_region,
         data=series_data,
         unit=unit,
         conversion=conversion,
@@ -172,12 +150,9 @@ def mock_PlanarMicroscopySeries(
 
 def mock_VariableDepthMicroscopySeries(
     *,
-    microscope: ndx_microscopy.Microscope,
-    light_source: ndx_microscopy.LightSource,
-    imaging_space: ndx_microscopy.PlanarImagingSpace,
-    optical_channel: ndx_microscopy.MicroscopyOpticalChannel,
     name: Optional[str] = None,
     description: str = "This is a mock instance of a PlanarMicroscopySeries type to be used for rapid testing.",
+    microscopy_table_region: list = [0],
     data: Optional[np.ndarray] = None,
     depth_per_frame_in_mm: Optional[np.ndarray] = None,
     unit: str = "a.u.",
@@ -214,13 +189,13 @@ def mock_VariableDepthMicroscopySeries(
         series_rate = None
         series_timestamps = timestamps
 
+    microscopy_table = mock_MicroscopyTable()
+    microscopy_table_region = microscopy_table.create_microscopy_table_region(region=microscopy_table_region)
+
     variable_depth_microscopy_series = ndx_microscopy.VariableDepthMicroscopySeries(
         name=series_name,
         description=description,
-        microscope=microscope,
-        light_source=light_source,
-        imaging_space=imaging_space,
-        optical_channel=optical_channel,
+        microscopy_table_region=microscopy_table_region,
         data=series_data,
         depth_per_frame_in_mm=series_depth_per_frame_in_mm,
         unit=unit,
@@ -235,12 +210,9 @@ def mock_VariableDepthMicroscopySeries(
 
 def mock_VolumetricMicroscopySeries(
     *,
-    microscope: ndx_microscopy.Microscope,
-    light_source: ndx_microscopy.LightSource,
-    imaging_space: ndx_microscopy.VolumetricImagingSpace,
-    optical_channel: ndx_microscopy.MicroscopyOpticalChannel,
     name: Optional[str] = None,
     description: str = "This is a mock instance of a VolumetricMicroscopySeries type to be used for rapid testing.",
+    microscopy_table_region: list = [0],
     data: Optional[np.ndarray] = None,
     unit: str = "a.u.",
     conversion: float = 1.0,
@@ -270,13 +242,13 @@ def mock_VolumetricMicroscopySeries(
         series_rate = None
         series_timestamps = timestamps
 
+    microscopy_table = mock_MicroscopyTable()
+    microscopy_table_region = microscopy_table.create_microscopy_table_region(region=microscopy_table_region)
+
     volumetric_microscopy_series = ndx_microscopy.VolumetricMicroscopySeries(
         name=series_name,
         description=description,
-        microscope=microscope,
-        light_source=light_source,
-        imaging_space=imaging_space,
-        optical_channel=optical_channel,
+        microscopy_table_region=microscopy_table_region,
         data=series_data,
         unit=unit,
         conversion=conversion,
