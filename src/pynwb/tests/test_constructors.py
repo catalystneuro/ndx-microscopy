@@ -1,16 +1,6 @@
 """Test in-memory Python API constructors for ndx-microscopy extension."""
 
 import pytest
-from ndx_ophys_devices.testing import (
-    mock_BandOpticalFilter,
-    mock_DichroicMirror,
-    mock_EdgeOpticalFilter,
-    mock_ExcitationSource,
-    mock_Indicator,
-    mock_Microscope,
-    mock_ObjectiveLens,
-    mock_Photodetector,
-)
 
 from ndx_microscopy.testing import (
     mock_Microscopy,

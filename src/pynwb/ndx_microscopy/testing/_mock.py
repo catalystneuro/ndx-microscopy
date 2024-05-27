@@ -5,16 +5,28 @@ import numpy as np
 from pynwb.testing.mock.utils import name_generator
 
 import ndx_microscopy
+from ndx_ophys_devices.testing import (
+    mock_Indicator,
+    mock_ExcitationSource,
+    mock_Photodetector,
+    mock_DichroicMirror,
+    mock_BandOpticalFilter,
+    mock_EdgeOpticalFilter,
+    mock_Microscope,
+    mock_ObjectiveLens,
+)
 
 
 def mock_Microscopy(
     *,
+    microscopy_table: ndx_microscopy.MicroscopyTable,
     name: Optional[str] = None,
     description: str = "This is a mock instance of a Microscopy type to be used for rapid testing.",
 ) -> ndx_microscopy.Microscopy:
     microscopy = ndx_microscopy.Microscopy(
         name=name or name_generator("Microscopy"),
         description=description,
+        microscopy_table=microscopy_table,
     )
     return microscopy
 
@@ -23,11 +35,25 @@ def mock_MicroscopyTable(
     *,
     name: Optional[str] = None,
     description: str = "This is a mock instance of a Microscopy Table type to be used for rapid testing.",
+    number_of_rows: int = 2,
 ) -> ndx_microscopy.MicroscopyTable:
     microscopy_table = ndx_microscopy.MicroscopyTable(
         name=name or name_generator("MicroscopyTable"),
         description=description,
     )
+    for row in range(number_of_rows):
+        microscopy_table.add_row(
+            location=f"The location targeted of row number {row}",
+            notes=f"The notes for row number {row}",
+            indicator=mock_Indicator(name=f"indicator_{row}"),
+            excitation_source=mock_ExcitationSource(name=f"excitation_source_{row}"),
+            photodetector=mock_Photodetector(name=f"photodetector_{row}"),
+            dichroic_mirror=mock_DichroicMirror(name=f"dichroic_mirror_{row}"),
+            emission_filter=mock_BandOpticalFilter(name=f"emission_filter_{row}"),
+            excitation_filter=mock_EdgeOpticalFilter(name=f"excitation_filter_{row}"),
+            objective_lens=mock_ObjectiveLens(name=f"objective_lens_{row}"),
+            microscope=mock_Microscope(name=f"microscope_{row}"),
+        )
     return microscopy_table
 
 
@@ -104,6 +130,9 @@ def mock_PlanarMicroscopySeries(
         series_rate = None
         series_timestamps = timestamps
 
+    microscopy_table = mock_MicroscopyTable()
+    microscopy_table_region = microscopy_table.create_microscopy_table_region(region=microscopy_table_region)
+
     planar_microscopy_series = ndx_microscopy.PlanarMicroscopySeries(
         name=series_name,
         description=description,
@@ -160,6 +189,9 @@ def mock_VariableDepthMicroscopySeries(
         series_rate = None
         series_timestamps = timestamps
 
+    microscopy_table = mock_MicroscopyTable()
+    microscopy_table_region = microscopy_table.create_microscopy_table_region(region=microscopy_table_region)
+
     variable_depth_microscopy_series = ndx_microscopy.VariableDepthMicroscopySeries(
         name=series_name,
         description=description,
@@ -209,6 +241,9 @@ def mock_VolumetricMicroscopySeries(
         series_starting_time = None
         series_rate = None
         series_timestamps = timestamps
+
+    microscopy_table = mock_MicroscopyTable()
+    microscopy_table_region = microscopy_table.create_microscopy_table_region(region=microscopy_table_region)
 
     volumetric_microscopy_series = ndx_microscopy.VolumetricMicroscopySeries(
         name=series_name,
