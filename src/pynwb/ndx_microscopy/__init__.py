@@ -32,7 +32,7 @@ from ndx_ophys_devices import (
 )
 
 Microscopy = get_class("Microscopy", extension_name)
-MicroscopyTable = get_class("MicroscopyTable", extension_name)
+from .microscopy import MicroscopyTable
 ImagingSpace = get_class("ImagingSpace", extension_name)
 PlanarImagingSpace = get_class("PlanarImagingSpace", extension_name)
 VolumetricImagingSpace = get_class("VolumetricImagingSpace", extension_name)

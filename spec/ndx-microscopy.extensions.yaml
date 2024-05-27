@@ -80,10 +80,11 @@ groups:
         shape:
           - null
         doc: Link to the dichroic mirror device.
+        quantity: "?"
       - name: emission_filter
         neurodata_type_inc: VectorData
         dtype:
-          target_type: Device
+          target_type: OpticalFilter
           reftype: object
         shape:
           - null
@@ -92,7 +93,7 @@ groups:
       - name: excitation_filter
         neurodata_type_inc: VectorData
         dtype:
-          target_type: Device
+          target_type: OpticalFilter
           reftype: object
         shape:
           - null
