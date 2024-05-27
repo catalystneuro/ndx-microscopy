@@ -33,11 +33,9 @@ classDiagram
         <<TimeSeries>>
 
         --------------------------------------
-        links
+        datasets
         --------------------------------------
-        microscope : Microscope
-        light_source : LightSource
-        optical_channel : MicroscopyOpticalChannel
+        microscopy_table_region : DynamicTableRegion
     }
 
     class PlanarMicroscopySeries {
@@ -133,45 +131,34 @@ classDiagram
         reference_frame : text, optional
     }
 
-    class MicroscopyOpticalChannel{
-        <<NWBContainer>>
+    class MicroscopyTable{
+        <<DynamicTable>>
 
         --------------------------------------
         datasets
         --------------------------------------
-        description : text
-
-        --------------------------------------
-        attributes
-        --------------------------------------
-        indicator : text
-        filter_description : text, optional
-        emission_wavelength_in_nm : numeric, optional
+        VectorData :
+        - location : text, optional
+        - coordinates : numeric, length 2, optional
+        --> unit : text, default="micrometers"
+        - indicator : Indicator
+        - notes : text, optional
+        - microscope : Microscope
+        - excitation_source : ExcitationSource
+        - photodetector : Photodetector
+        - dichroic_mirror : DichroicMirror
+        - emission_filter : OpticalFilter
+        - excitation_filter : OpticalFilter
+        - objective_lens : ObjectiveLens
     }
 
-    class LightSource{
-        <<Device>>
+    class Microscopy{
+        <<LabMetaData>>
 
         --------------------------------------
-        attributes
+        groups
         --------------------------------------
-        model : text, optional
-        filter_description : text, optional
-        excitation_wavelength_in_nm : numeric, optional
-        peak_power_in_W : numeric, optional
-        peak_pulse_energy_in_J : numeric, optional
-        intensity_in_W_per_m2 : numeric, optional
-        exposure_time_in_s : numeric, optional
-        pulse_rate_in_Hz : numeric, optional
-    }
-
-    class Microscope{
-        <<Device>>
-
-        --------------------------------------
-        attributes
-        --------------------------------------
-        model : text, optional
+        microscopy_table : MicroscopyTable
     }
 
     PlanarMicroscopySeries *-- MicroscopySeries : extends
@@ -182,9 +169,8 @@ classDiagram
     VolumetricMicroscopySeries -- VolumetricImagingSpace : links
     PlanarImagingSpace *-- ImagingSpace : extends
     VolumetricImagingSpace *-- ImagingSpace : extends
-    MicroscopySeries ..> Microscope : links
-    MicroscopySeries ..> LightSource : links
-    MicroscopySeries ..> MicroscopyOpticalChannel : links
+    MicroscopySeries ..> MicroscopyTable : reference rows
+    Microscopy ..> MicroscopyTable : links
 ```
 
 ---
