@@ -9,6 +9,7 @@ groups:
         shape:
           - null
         doc: Imaged location.
+        quantity: "?"
       - name: coordinates
         neurodata_type_inc: VectorData
         dtype: float
@@ -44,7 +45,7 @@ groups:
           reftype: object
         shape:
           - null
-        doc: Link to the optical fiber device.
+        doc: Link to the microscope device.
       - name: excitation_source
         neurodata_type_inc: VectorData
         dtype:
@@ -53,17 +54,6 @@ groups:
         shape:
           - null
         doc: Link to the excitation source device.
-      - name: commanded_voltage_series
-        neurodata_type_inc: VectorData
-        dtype:
-          target_type: TimeSeries
-          reftype: object
-        shape:
-          - - null
-          - - null
-            - null
-        doc: Link to the commanded voltage series.
-        quantity: "?"
       - name: photodetector
         neurodata_type_inc: VectorData
         dtype:
