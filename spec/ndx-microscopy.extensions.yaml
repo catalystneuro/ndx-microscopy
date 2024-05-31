@@ -49,7 +49,7 @@ groups:
   # Microscopy is added on to this only to differentiate from the OpticalChannel in the core namespace
   # It would be removed when this structure is merged to core
   - neurodata_type_def: MicroscopyOpticalChannel
-    neurodata_type_inc: NWBContainer
+    neurodata_type_inc: LabMetaData  # Would prefer basic NWBContainer
     doc: An optical channel used to filter light emission from an imaging space.
     datasets:
     - name: description
@@ -69,7 +69,7 @@ groups:
       required: false
 
   - neurodata_type_def: ImagingSpace
-    neurodata_type_inc: NWBContainer
+    neurodata_type_inc: LabMetaData  # Would prefer basic NWBContainer
     doc: Metadata about the region of physical space that imaging data was recorded from.
     datasets:
     - name: description
@@ -116,11 +116,12 @@ groups:
         Specify 'z' only when imaging volume is a regular grid; otherwise only specify 'x' and 'y'.
         See origin_coordinates to determine where the grid begins.
       quantity: '?'
-      attributes:
-      - name: unit
-        dtype: text
-        default_value: micrometers
-        doc: Measurement units for grid spacing. The default value is 'micrometers'.
+# TODO: deal with grid_spacing units
+#      attributes:
+#      - name: unit
+#        dtype: text
+#        default_value: micrometers
+#        doc: Measurement units for grid spacing. The default value is 'micrometers'.
     attributes:
     - name: reference_frame
       dtype: text
@@ -155,11 +156,12 @@ groups:
       shape:
       - - 3
       quantity: '?'
-      attributes:
-      - name: unit
-        doc: Measurement units for grid spacing. The default value is 'micrometers'.
-        dtype: text
-        default_value: micrometers
+# TODO: deal with grid_spacing units
+#      attributes:
+#      - name: unit
+#        dtype: text
+#        default_value: micrometers
+#        doc: Measurement units for grid spacing. The default value is 'micrometers'.
     attributes:
     - name: reference_frame
       doc: Describes the reference frame of origin_coordinates and grid_spacing.

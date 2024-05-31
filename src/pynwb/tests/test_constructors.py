@@ -1,4 +1,4 @@
-"""Test in-memory Python API constructors for ndx-microscopy extension."""
+"""Test in-memory Python API constructors for the ndx-microscopy extension."""
 
 import pytest
 
