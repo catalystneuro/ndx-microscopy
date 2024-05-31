@@ -118,10 +118,10 @@ groups:
       quantity: '?'
 # TODO: deal with grid_spacing units
 #      attributes:
-#      - name: unit
-#        dtype: text
-#        default_value: micrometers
-#        doc: Measurement units for grid spacing. The default value is 'micrometers'.
+#        - name: unit
+#          dtype: text
+#          default_value: micrometers
+#          doc: Measurement units for grid spacing. The default value is 'micrometers'.
     attributes:
     - name: reference_frame
       dtype: text
