@@ -1,26 +1,45 @@
 import os
-from pynwb import load_namespaces, get_class
 
-# Set path of the namespace.yaml file to the expected install location
-ndx_microscopy_specpath = os.path.join(
-    os.path.dirname(__file__),
-    'spec',
-    'ndx-microscopy.namespace.yaml'
-)
+from pynwb import get_class, load_namespaces
 
-# If the extension has not been installed yet but we are running directly from
-# the git repo
-if not os.path.exists(ndx_microscopy_specpath):
-    ndx_microscopy_specpath = os.path.abspath(os.path.join(
-        os.path.dirname(__file__),
-        '..', '..', '..',
-        'spec',
-        'ndx-microscopy.namespace.yaml'
-    ))
+try:
+    from importlib.resources import files
+except ImportError:
+    # TODO: Remove when python 3.9 becomes the new minimum
+    from importlib_resources import files
 
-# Load the namespace
-load_namespaces(ndx_microscopy_specpath)
+extension_name = "ndx-microscopy"
 
-# TODO: import your classes here or define your class using get_class to make
-# them accessible at the package level
-TetrodeSeries = get_class('TetrodeSeries', 'ndx-microscopy')
+# Get path to the namespace.yaml file with the expected location when installed not in editable mode
+__location_of_this_file = files(__name__)
+__spec_path = __location_of_this_file / "spec" / f"{extension_name}.namespace.yaml"
+
+# If that path does not exist, we are likely running in editable mode. Use the local path instead
+if not os.path.exists(__spec_path):
+    __spec_path = __location_of_this_file.parent.parent.parent / "spec" / f"{extension_name}.namespace.yaml"
+
+load_namespaces(str(__spec_path))
+
+Microscope = get_class("Microscope", extension_name)
+LightSource = get_class("LightSource", extension_name)
+MicroscopyOpticalChannel = get_class("MicroscopyOpticalChannel", extension_name)
+ImagingSpace = get_class("ImagingSpace", extension_name)
+PlanarImagingSpace = get_class("PlanarImagingSpace", extension_name)
+VolumetricImagingSpace = get_class("VolumetricImagingSpace", extension_name)
+MicroscopySeries = get_class("MicroscopySeries", extension_name)
+PlanarMicroscopySeries = get_class("PlanarMicroscopySeries", extension_name)
+VariableDepthMicroscopySeries = get_class("VariableDepthMicroscopySeries", extension_name)
+VolumetricMicroscopySeries = get_class("VolumetricMicroscopySeries", extension_name)
+
+__all__ = [
+    "Microscope",
+    "LightSource",
+    "MicroscopyOpticalChannel",
+    "ImagingSpace",
+    "PlanarImagingSpace",
+    "VolumetricImagingSpace",
+    "MicroscopySeries",
+    "PlanarMicroscopySeries",
+    "VariableDepthMicroscopySeries",
+    "VolumetricMicroscopySeries",
+]
