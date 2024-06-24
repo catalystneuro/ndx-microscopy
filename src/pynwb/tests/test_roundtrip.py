@@ -207,7 +207,7 @@ class TestMultiChannelMicroscopyVolumeSimpleRoundtrip(pynwb_TestCase):
             self.assertContainerEqual(microscope, read_nwbfile.devices["Microscope"])
             self.assertContainerEqual(light_source, read_nwbfile.devices["LightSource"])
 
-            self.assertContainerEqual(imaging_space, read_nwbfile.lab_meta_data["PlanarImagingSpace"])
+            self.assertContainerEqual(imaging_space, read_nwbfile.lab_meta_data["VolumetricImagingSpace"])
             self.assertContainerEqual(optical_channel, read_nwbfile.lab_meta_data["MicroscopyOpticalChannel"])
 
             self.assertContainerEqual(
