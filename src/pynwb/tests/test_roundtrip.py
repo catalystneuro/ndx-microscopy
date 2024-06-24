@@ -8,6 +8,7 @@ from ndx_microscopy.testing import (
     mock_LightSource,
     mock_Microscope,
     mock_MicroscopyOpticalChannel,
+    mock_MultiChannelMicroscopyVolume,
     mock_PlanarImagingSpace,
     mock_PlanarMicroscopySeries,
     mock_VariableDepthMicroscopySeries,
