@@ -3,8 +3,8 @@
 import pytest
 
 from ndx_microscopy.testing import (
-    mock_LightSource,
     mock_Microscope,
+    mock_MicroscopyLightSource,
     mock_MicroscopyOpticalChannel,
     mock_PlanarImagingSpace,
     mock_PlanarMicroscopySeries,
@@ -19,7 +19,7 @@ def test_constructor_microscope():
 
 
 def test_constructor_light_source():
-    mock_LightSource()
+    mock_MicroscopyLightSource()
 
 
 def test_constructor_microscopy_optical_channel():
@@ -40,7 +40,7 @@ def test_constructor_volumetric_image_space():
 
 def test_constructor_planar_microscopy_series():
     microscope = mock_Microscope()
-    light_source = mock_LightSource()
+    light_source = mock_MicroscopyLightSource()
     imaging_space = mock_PlanarImagingSpace(microscope=microscope)
     optical_channel = mock_MicroscopyOpticalChannel()
 
@@ -51,7 +51,7 @@ def test_constructor_planar_microscopy_series():
 
 def test_constructor_variable_depth_microscopy_series():
     microscope = mock_Microscope()
-    light_source = mock_LightSource()
+    light_source = mock_MicroscopyLightSource()
     imaging_space = mock_PlanarImagingSpace(microscope=microscope)
     optical_channel = mock_MicroscopyOpticalChannel()
 
@@ -62,7 +62,7 @@ def test_constructor_variable_depth_microscopy_series():
 
 def test_constructor_volumetric_microscopy_series():
     microscope = mock_Microscope()
-    light_source = mock_LightSource()
+    light_source = mock_MicroscopyLightSource()
     imaging_space = mock_VolumetricImagingSpace(microscope=microscope)
     optical_channel = mock_MicroscopyOpticalChannel()
 
