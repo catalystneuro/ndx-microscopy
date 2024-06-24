@@ -260,7 +260,7 @@ groups:
       target_type: VolumetricImagingSpace
 
   - neurodata_type_def: MultiChannelMicroscopyVolume
-    neurodata_type_inc: NWBData
+    neurodata_type_inc: NWBDataInterface
     doc: Static (not time-varying) volumetric imaging data acquired from multiple optical channels.
     attributes:
     - name: description
