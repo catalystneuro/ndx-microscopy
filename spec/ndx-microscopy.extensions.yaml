@@ -247,13 +247,79 @@ groups:
       - frames
       - height
       - width
-      - depth
+      - depths
       shape:
       - null
       - null
       - null
       - null
     links:
+    - name: imaging_space
+      doc: Link to VolumetricImagingSpace object containing metadata about the region of physical space this imaging data
+        was recorded from.
+      target_type: VolumetricImagingSpace
+
+  - neurodata_type_def: MultiChannelMicroscopyVolume
+    neurodata_type_inc: NWBData
+    doc: Static (not time-varying) volumetric imaging data acquired from multiple optical channels.
+    attributes:
+    - name: description
+      dtype: text
+      doc: Description of the MultiChannelVolume.
+      required: false
+    - name: unit
+      dtype: text
+      doc: Base unit of measurement for working with the data. Actual stored values are
+        not necessarily stored in these units. To access the data in these units,
+        multiply 'data' by 'conversion' and add 'offset'.
+    - name: conversion
+      dtype: float32
+      default_value: 1.0
+      doc: Scalar to multiply each element in data to convert it to the specified 'unit'.
+        If the data are stored in acquisition system units or other units
+        that require a conversion to be interpretable, multiply the data by 'conversion'
+        to convert the data to the specified 'unit'. e.g. if the data acquisition system
+        stores values in this object as signed 16-bit integers (int16 range
+        -32,768 to 32,767) that correspond to a 5V range (-2.5V to 2.5V), and the data
+        acquisition system gain is 8000X, then the 'conversion' multiplier to get from
+        raw data acquisition values to recorded volts is 2.5/32768/8000 = 9.5367e-9.
+      required: false
+    - name: offset
+      dtype: float32
+      default_value: 0.0
+      doc: Scalar to add to the data after scaling by 'conversion' to finalize its coercion
+        to the specified 'unit'. Two common examples of this include (a) data stored in an
+        unsigned type that requires a shift after scaling to re-center the data,
+        and (b) specialized recording devices that naturally cause a scalar offset with
+        respect to the true units.
+      required: false
+    datasets:
+    - name: data
+      doc: Recorded imaging data, shaped by (frame height, frame width, number of depth planes, number of optical
+        channels).
+      dtype: numeric
+      dims:
+      - height
+      - width
+      - depths
+      - channels
+      shape:
+      - null
+      - null
+      - null
+      - null
+    links:
+    - name: microscope
+      doc: Link to a Microscope object containing metadata about the device used to acquire this imaging data.
+      target_type: Microscope
+    - name: light_source
+      doc: Link to a LightSource object containing metadata about the device used to illuminate the imaging space.
+      target_type: LightSource
+    # TODO: figure out best way to link to list of optical channels
+    - name: optical_channels
+      doc: Link to an ordered list of MicroscopyOpticalChannel objects containing metadata about the indicator and
+        filters used to collect this data.
+      target_type: MicroscopyOpticalChannel
     - name: imaging_space
       doc: Link to VolumetricImagingSpace object containing metadata about the region of physical space this imaging data
         was recorded from.

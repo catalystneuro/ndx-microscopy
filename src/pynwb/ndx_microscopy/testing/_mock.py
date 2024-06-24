@@ -1,5 +1,5 @@
 import warnings
-from typing import Optional, Tuple
+from typing import List, Optional, Tuple
 
 import numpy as np
 from pynwb.testing.mock.utils import name_generator
@@ -284,5 +284,36 @@ def mock_VolumetricMicroscopySeries(
         starting_time=series_starting_time,
         rate=series_rate,
         timestamps=series_timestamps,
+    )
+    return volumetric_microscopy_series
+
+
+def mock_MultiChannelMicroscopyVolume(
+    *,
+    microscope: ndx_microscopy.Microscope,
+    light_source: ndx_microscopy.LightSource,
+    imaging_space: ndx_microscopy.VolumetricImagingSpace,
+    optical_channels: List[ndx_microscopy.MicroscopyOpticalChannel],
+    name: Optional[str] = None,
+    description: str = "This is a mock instance of a MultiChannelMicroscopyVolume type to be used for rapid testing.",
+    data: Optional[np.ndarray] = None,
+    unit: str = "n.a.",
+    conversion: float = 1.0,
+    offset: float = 0.0,
+) -> ndx_microscopy.MultiChannelMicroscopyVolume:
+    series_name = name or name_generator("MultiChannelMicroscopyVolume")
+    imaging_data = data if data is not None else np.ones(shape=(10, 20, 7, 3))
+
+    volumetric_microscopy_series = ndx_microscopy.MultiChannelMicroscopyVolume(
+        name=series_name,
+        description=description,
+        microscope=microscope,
+        light_source=light_source,
+        imaging_space=imaging_space,
+        optical_channels=optical_channels[0],  # TODO: figure out how to specify list
+        data=imaging_data,
+        unit=unit,
+        conversion=conversion,
+        offset=offset,
     )
     return volumetric_microscopy_series

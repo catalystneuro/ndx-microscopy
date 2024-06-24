@@ -133,7 +133,7 @@ class TestVariableDepthMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
         nwbfile.add_device(devices=light_source)
 
         imaging_space = mock_PlanarImagingSpace(name="PlanarImagingSpace", microscope=microscope)
-        nwbfile.add_lab_meta_data(lab_meta_data=imaging_space)  # Would prefer .add_imaging_spacec()
+        nwbfile.add_lab_meta_data(lab_meta_data=imaging_space)  # Would prefer .add_imaging_space()
 
         optical_channel = mock_MicroscopyOpticalChannel(name="MicroscopyOpticalChannel")
         nwbfile.add_lab_meta_data(lab_meta_data=optical_channel)
@@ -161,4 +161,54 @@ class TestVariableDepthMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
 
             self.assertContainerEqual(
                 variable_depth_microscopy_series, read_nwbfile.acquisition["VariableDepthMicroscopySeries"]
+            )
+
+
+class TestMultiChannelMicroscopyVolumeSimpleRoundtrip(pynwb_TestCase):
+    """Simple roundtrip test for MultiChannelMicroscopyVolume."""
+
+    def setUp(self):
+        self.nwbfile_path = "test.nwb"
+
+    def tearDown(self):
+        pynwb.testing.remove_test_file(self.nwbfile_path)
+
+    def test_roundtrip(self):
+        nwbfile = mock_NWBFile()
+
+        microscope = mock_Microscope(name="Microscope")
+        nwbfile.add_device(devices=microscope)
+
+        light_source = mock_LightSource(name="LightSource")
+        nwbfile.add_device(devices=light_source)
+
+        imaging_space = mock_VolumetricImagingSpace(name="VolumetricImagingSpace", microscope=microscope)
+        nwbfile.add_lab_meta_data(lab_meta_data=imaging_space)  # Would prefer .add_imaging_space()
+
+        optical_channel = mock_MicroscopyOpticalChannel(name="MicroscopyOpticalChannel")
+        nwbfile.add_lab_meta_data(lab_meta_data=optical_channel)
+
+        multi_channel_microscopy_volume = mock_MultiChannelMicroscopyVolume(
+            name="MultiChannelMicroscopyVolume",
+            microscope=microscope,
+            light_source=light_source,
+            imaging_space=imaging_space,
+            optical_channels=[optical_channel],
+        )
+        nwbfile.add_acquisition(nwbdata=multi_channel_microscopy_volume)
+
+        with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="w") as io:
+            io.write(nwbfile)
+
+        with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="r", load_namespaces=True) as io:
+            read_nwbfile = io.read()
+
+            self.assertContainerEqual(microscope, read_nwbfile.devices["Microscope"])
+            self.assertContainerEqual(light_source, read_nwbfile.devices["LightSource"])
+
+            self.assertContainerEqual(imaging_space, read_nwbfile.lab_meta_data["PlanarImagingSpace"])
+            self.assertContainerEqual(optical_channel, read_nwbfile.lab_meta_data["MicroscopyOpticalChannel"])
+
+            self.assertContainerEqual(
+                multi_channel_microscopy_volume, read_nwbfile.acquisition["MultiChannelMicroscopyVolume"]
             )

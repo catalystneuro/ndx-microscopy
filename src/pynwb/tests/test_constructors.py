@@ -6,6 +6,7 @@ from ndx_microscopy.testing import (
     mock_LightSource,
     mock_Microscope,
     mock_MicroscopyOpticalChannel,
+    mock_MultiChannelMicroscopyVolume,
     mock_PlanarImagingSpace,
     mock_PlanarMicroscopySeries,
     mock_VariableDepthMicroscopySeries,
@@ -68,6 +69,20 @@ def test_constructor_volumetric_microscopy_series():
 
     mock_VolumetricMicroscopySeries(
         microscope=microscope, light_source=light_source, imaging_space=imaging_space, optical_channel=optical_channel
+    )
+
+
+def test_constructor_multi_channel_microscopy_volume():
+    microscope = mock_Microscope()
+    light_source = mock_LightSource()
+    imaging_space = mock_VolumetricImagingSpace(microscope=microscope)
+    optical_channel = mock_MicroscopyOpticalChannel()
+
+    mock_MultiChannelMicroscopyVolume(
+        microscope=microscope,
+        light_source=light_source,
+        imaging_space=imaging_space,
+        optical_channels=[optical_channel],
     )
 
 
