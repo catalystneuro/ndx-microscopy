@@ -62,9 +62,9 @@ def test_constructor_microscopy_image_segmentation_with_plane_segmentation():
     plane_segmentation_2 = mock_MicroscopyPlaneSegmentation(
         imaging_space=imaging_space, name="MicroscopyPlaneSegmentation2"
     )
-    plane_segmentations = [plane_segmentation_1, plane_segmentation_2]
+    microscopy_plane_segmentations = [plane_segmentation_1, plane_segmentation_2]
 
-    mock_MicroscopyImageSegmentation(plane_segmentations=plane_segmentations)
+    mock_MicroscopyImageSegmentation(microscopy_plane_segmentations=microscopy_plane_segmentations)
 
 
 def test_constructor_planar_microscopy_series():
