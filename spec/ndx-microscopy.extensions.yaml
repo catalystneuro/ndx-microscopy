@@ -313,8 +313,8 @@ groups:
       doc: Link to a Microscope object containing metadata about the device used to acquire this imaging data.
       target_type: Microscope
     - name: light_source
-      doc: Link to a LightSource object containing metadata about the device used to illuminate the imaging space.
-      target_type: LightSource
+      doc: Link to a MicroscopyLightSource object containing metadata about the device used to illuminate the imaging space.
+      target_type: MicroscopyLightSource
     # TODO: figure out best way to link to list of optical channels
     - name: optical_channels
       doc: Link to an ordered list of MicroscopyOpticalChannel objects containing metadata about the indicator and
