@@ -366,7 +366,7 @@ def mock_VariableDepthMultiChannelMicroscopyVolume(
 ) -> ndx_microscopy.VariableDepthMultiChannelMicroscopyVolume:
     series_name = name or name_generator("MultiChannelMicroscopyVolume")
     imaging_data = data if data is not None else np.ones(shape=(10, 20, 7, 3))
-    volume_depth_per_frame_in_mm = (
+    volume_depth_per_frame_in_um = (
         depth_per_frame_in_mm
         if depth_per_frame_in_mm is not None
         else np.linspace(start=0.0, stop=1.0, num=series_data.shape[0])
@@ -380,7 +380,7 @@ def mock_VariableDepthMultiChannelMicroscopyVolume(
         imaging_space=imaging_space,
         optical_channels=optical_channels[0],  # TODO: figure out how to specify list
         data=imaging_data,
-        depth_per_frame_in_mm=volume_depth_per_frame_in_mm,
+        depth_per_frame_in_um=volume_depth_per_frame_in_um,
         unit=unit,
         conversion=conversion,
         offset=offset,
