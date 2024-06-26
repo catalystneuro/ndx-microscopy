@@ -23,10 +23,10 @@ def mock_Microscope(
     return microscope
 
 
-def mock_LightSource(
+def mock_MicroscopyLightSource(
     *,
     name: Optional[str] = None,
-    description: str = "This is a mock instance of a LightSource type to be used for rapid testing.",
+    description: str = "This is a mock instance of a MicroscopyLightSource type to be used for rapid testing.",
     manufacturer: str = "A fake manufacturer of the mock light source.",
     model: str = "A fake model of the mock light source.",
     filter_description: str = "A description about the fake filter used by the mock light source.",
@@ -36,9 +36,9 @@ def mock_LightSource(
     intensity_in_W_per_m2: float = 0.005,
     exposure_time_in_s: float = 2.51e-13,
     pulse_rate_in_Hz: float = 2.0e6,
-) -> ndx_microscopy.LightSource:
-    light_source = ndx_microscopy.LightSource(
-        name=name or name_generator("LightSource"),
+) -> ndx_microscopy.MicroscopyLightSource:
+    light_source = ndx_microscopy.MicroscopyLightSource(
+        name=name or name_generator("MicroscopyLightSource"),
         description=description,
         manufacturer=manufacturer,
         model=model,
@@ -118,7 +118,7 @@ def mock_VolumetricImagingSpace(
 def mock_PlanarMicroscopySeries(
     *,
     microscope: ndx_microscopy.Microscope,
-    light_source: ndx_microscopy.LightSource,
+    light_source: ndx_microscopy.MicroscopyLightSource,
     imaging_space: ndx_microscopy.PlanarImagingSpace,
     optical_channel: ndx_microscopy.MicroscopyOpticalChannel,
     name: Optional[str] = None,
@@ -173,7 +173,7 @@ def mock_PlanarMicroscopySeries(
 def mock_VariableDepthMicroscopySeries(
     *,
     microscope: ndx_microscopy.Microscope,
-    light_source: ndx_microscopy.LightSource,
+    light_source: ndx_microscopy.MicroscopyLightSource,
     imaging_space: ndx_microscopy.PlanarImagingSpace,
     optical_channel: ndx_microscopy.MicroscopyOpticalChannel,
     name: Optional[str] = None,
@@ -236,7 +236,7 @@ def mock_VariableDepthMicroscopySeries(
 def mock_VolumetricMicroscopySeries(
     *,
     microscope: ndx_microscopy.Microscope,
-    light_source: ndx_microscopy.LightSource,
+    light_source: ndx_microscopy.MicroscopyLightSource,
     imaging_space: ndx_microscopy.VolumetricImagingSpace,
     optical_channel: ndx_microscopy.MicroscopyOpticalChannel,
     name: Optional[str] = None,

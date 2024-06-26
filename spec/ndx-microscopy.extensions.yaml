@@ -9,7 +9,7 @@ groups:
         doc: Model identifier of the light source device.
         required: false
 
-  - neurodata_type_def: LightSource
+  - neurodata_type_def: MicroscopyLightSource
     neurodata_type_inc: Device
     doc: Light source used to illuminate an imaging space.
     attributes:
@@ -191,8 +191,8 @@ groups:
       doc: Link to a Microscope object containing metadata about the device used to acquire this imaging data.
       target_type: Microscope
     - name: light_source
-      doc: Link to a LightSource object containing metadata about the device used to illuminate the imaging space.
-      target_type: LightSource
+      doc: Link to a MicroscopyLightSource object containing metadata about the device used to illuminate the imaging space.
+      target_type: MicroscopyLightSource
     - name: optical_channel
       doc: Link to a MicroscopyOpticalChannel object containing metadata about the indicator and filters used to collect
         this data.
