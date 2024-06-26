@@ -213,3 +213,6 @@ class TestMultiChannelMicroscopyVolumeSimpleRoundtrip(pynwb_TestCase):
             self.assertContainerEqual(
                 multi_channel_microscopy_volume, read_nwbfile.acquisition["MultiChannelMicroscopyVolume"]
             )
+
+
+# TODO: add roundtrip for planesegmentation, imagesegmentation, etc.

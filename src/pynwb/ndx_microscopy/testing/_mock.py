@@ -1,5 +1,5 @@
 import warnings
-from typing import List, Optional, Tuple
+from typing import Iterable, List, Optional, Tuple
 
 import numpy as np
 from pynwb.testing.mock.utils import name_generator
@@ -113,6 +113,36 @@ def mock_VolumetricImagingSpace(
         reference_frame=reference_frame,
     )
     return volumetric_imaging_space
+
+
+def mock_MicroscopyImageSegmentation(
+    name: Optional[str] = None, plane_segmentations: Optional[Iterable[PlaneSegmentation]] = None
+) -> ndx_microscopy.MicroscopyImageSegmentation:
+    name = name or name_generator("MicroscopyImageSegmentation")
+    plane_segmentations = plane_segmentations or [mock_MicroscopyPlaneSegmentation()]
+
+    image_segmentation = ImageSegmentation(name=name, plane_segmentations=plane_segmentations)
+
+    return image_segmentation
+
+
+def mock_MicroscopyPlaneSegmentation(
+    imaging_space: ImagingSpace,
+    name: Optional[str] = None,
+    description: str = "This is a mock instance of a MicroscopyPlaneSegmentation type to be used for rapid testing.",
+    number_of_rois: int = 5,
+    image_shape: Tuple[int, int] = (10, 10),
+) -> ndx_microscopy.MicroscopyPlaneSegmentation:
+    name = name or name_generator("MicroscopyPlaneSegmentation")
+
+    plane_segmentation = ndx_microscopy.MicroscopyPlaneSegmentation(
+        name=name, description=description, imaging_space=imaging_space
+    )
+
+    for _ in range(number_of_rois):
+        plane_segmentation.add_roi(image_mask=np.zeros(image_shape, dtype=bool))
+
+    return plane_segmentation
 
 
 def mock_PlanarMicroscopySeries(

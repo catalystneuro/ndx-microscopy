@@ -4,8 +4,10 @@ import pytest
 
 from ndx_microscopy.testing import (
     mock_Microscope,
+    mock_MicroscopyImageSegmentation,
     mock_MicroscopyLightSource,
     mock_MicroscopyOpticalChannel,
+    mock_MicroscopyPlaneSegmentation,
     mock_MultiChannelMicroscopyVolume,
     mock_PlanarImagingSpace,
     mock_PlanarMicroscopySeries,
@@ -37,6 +39,32 @@ def test_constructor_volumetric_image_space():
     microscope = mock_Microscope()
 
     mock_VolumetricImagingSpace(microscope=microscope)
+
+
+def test_constructor_microscopy_image_segmentation():
+    mock_MicroscopyImageSegmentation()
+
+
+def test_constructor_microscopy_plane_segmentation():
+    microscope = mock_Microscope()
+    imaging_space = mock_PlanarImagingSpace(microscope=microscope)
+
+    mock_MicroscopyPlaneSegmentation(imaging_space=imaging_space)
+
+
+def test_constructor_microscopy_image_segmentation_with_plane_segmentation():
+    microscope = mock_Microscope()
+    imaging_space = mock_PlanarImagingSpace(microscope=microscope)
+
+    plane_segmentation_1 = mock_MicroscopyPlaneSegmentation(
+        imaging_space=imaging_space, name="MicroscopyPlaneSegmentation1"
+    )
+    plane_segmentation_2 = mock_MicroscopyPlaneSegmentation(
+        imaging_space=imaging_space, name="MicroscopyPlaneSegmentation2"
+    )
+    plane_segmentations = [plane_segmentation_1, plane_segmentation_2]
+
+    mock_MicroscopyImageSegmentation(plane_segmentations=plane_segmentations)
 
 
 def test_constructor_planar_microscopy_series():
