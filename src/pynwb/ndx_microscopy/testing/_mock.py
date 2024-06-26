@@ -291,7 +291,7 @@ def mock_VolumetricMicroscopySeries(
 def mock_MultiChannelMicroscopyVolume(
     *,
     microscope: ndx_microscopy.Microscope,
-    light_sources: ndx_microscopy.MicroscopyLightSource,
+    light_sources: List[ndx_microscopy.MicroscopyLightSource],
     imaging_space: ndx_microscopy.VolumetricImagingSpace,
     optical_channels: List[ndx_microscopy.MicroscopyOpticalChannel],
     name: Optional[str] = None,
@@ -308,7 +308,7 @@ def mock_MultiChannelMicroscopyVolume(
         name=series_name,
         description=description,
         microscope=microscope,
-        light_sources=light_source[0],  # TODO: figure out how to specify list
+        light_sources=light_sources[0],  # TODO: figure out how to specify list
         imaging_space=imaging_space,
         optical_channels=optical_channels[0],  # TODO: figure out how to specify list
         data=imaging_data,
