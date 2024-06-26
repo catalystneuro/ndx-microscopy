@@ -312,8 +312,9 @@ groups:
     - name: microscope
       doc: Link to a Microscope object containing metadata about the device used to acquire this imaging data.
       target_type: Microscope
-    - name: light_source
-      doc: Link to a MicroscopyLightSource object containing metadata about the device used to illuminate the imaging space.
+      # TODO: figure out best way to link to list of light sources
+    - name: light_sources
+      doc: Link to an ordered list of MicroscopyLightSource objects containing metadata about the excitation method.
       target_type: MicroscopyLightSource
     # TODO: figure out best way to link to list of optical channels
     - name: optical_channels
