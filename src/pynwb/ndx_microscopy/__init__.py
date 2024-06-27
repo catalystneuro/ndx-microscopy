@@ -30,6 +30,7 @@ MicroscopySeries = get_class("MicroscopySeries", extension_name)
 PlanarMicroscopySeries = get_class("PlanarMicroscopySeries", extension_name)
 VariableDepthMicroscopySeries = get_class("VariableDepthMicroscopySeries", extension_name)
 VolumetricMicroscopySeries = get_class("VolumetricMicroscopySeries", extension_name)
+MultiChannelMicroscopyVolume = get_class("MultiChannelMicroscopyVolume", extension_name)
 
 __all__ = [
     "Microscope",
@@ -42,4 +43,5 @@ __all__ = [
     "PlanarMicroscopySeries",
     "VariableDepthMicroscopySeries",
     "VolumetricMicroscopySeries",
+    "MultiChannelMicroscopyVolume",
 ]
