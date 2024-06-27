@@ -386,3 +386,6 @@ def mock_VariableDepthMultiChannelMicroscopyVolume(
         offset=offset,
     )
     return variable_depth_multi_channel_microscopy_volume
+
+
+# TODO: add mock for MicroscopyResponseSeries
