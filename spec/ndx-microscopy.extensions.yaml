@@ -486,3 +486,21 @@ groups:
       doc: Link to VolumetricImagingSpace object containing metadata about the region of physical space this imaging data
         was recorded from.
       target_type: VolumetricImagingSpace
+
+  - neurodata_type_def: MicroscopyResponseSeries
+    neurodata_type_inc: TimeSeries
+    doc: ROI responses extracted from optical imaging.
+    datasets:
+    - name: data
+      dtype: numeric
+      dims:
+      - - number_of_frames
+        - number_of_rois
+      shape:
+      - - null
+        - null
+      doc: Signals from ROIs.
+    - name: rois
+      neurodata_type_inc: DynamicTableRegion
+      doc: DynamicTableRegion referencing plane segmentation containing more information about the ROIs
+        stored in this series.
