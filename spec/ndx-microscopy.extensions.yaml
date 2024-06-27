@@ -500,7 +500,16 @@ groups:
       - - null
         - null
       doc: Signals from ROIs.
-    - name: rois
+    - name: table_region
       neurodata_type_inc: DynamicTableRegion
       doc: DynamicTableRegion referencing plane segmentation containing more information about the ROIs
         stored in this series.
+
+  - neurodata_type_def: MicroscopyResponseSeriesContainer
+    neurodata_type_inc: NWBDataInterface
+    default_name: MicroscopyResponseSeriesContainer
+    doc: A container of many MicroscopyResponseSeries.
+    groups:
+    - neurodata_type_inc: MicroscopyResponseSeries
+      doc: MicroscopyResponseSeries object(s) containing fluorescence data for a ROI.
+      quantity: '+'
