@@ -21,7 +21,7 @@ if not os.path.exists(__spec_path):
 load_namespaces(str(__spec_path))
 
 Microscope = get_class("Microscope", extension_name)
-LightSource = get_class("LightSource", extension_name)
+MicroscopyLightSource = get_class("MicroscopyLightSource", extension_name)
 MicroscopyOpticalChannel = get_class("MicroscopyOpticalChannel", extension_name)
 ImagingSpace = get_class("ImagingSpace", extension_name)
 PlanarImagingSpace = get_class("PlanarImagingSpace", extension_name)
@@ -34,7 +34,7 @@ MultiChannelMicroscopyVolume = get_class("MultiChannelMicroscopyVolume", extensi
 
 __all__ = [
     "Microscope",
-    "LightSource",
+    "MicroscopyLightSource",
     "MicroscopyOpticalChannel",
     "ImagingSpace",
     "PlanarImagingSpace",

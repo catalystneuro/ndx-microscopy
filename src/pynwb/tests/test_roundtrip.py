@@ -5,8 +5,8 @@ from pynwb.testing.mock.file import mock_NWBFile
 
 import pynwb
 from ndx_microscopy.testing import (
-    mock_LightSource,
     mock_Microscope,
+    mock_MicroscopyLightSource,
     mock_MicroscopyOpticalChannel,
     mock_MultiChannelMicroscopyVolume,
     mock_PlanarImagingSpace,
@@ -32,7 +32,7 @@ class TestPlanarMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
         microscope = mock_Microscope(name="Microscope")
         nwbfile.add_device(devices=microscope)
 
-        light_source = mock_LightSource(name="LightSource")
+        light_source = mock_MicroscopyLightSource(name="MicroscopyLightSource")
         nwbfile.add_device(devices=light_source)
 
         imaging_space = mock_PlanarImagingSpace(name="PlanarImagingSpace", microscope=microscope)
@@ -57,7 +57,7 @@ class TestPlanarMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
             read_nwbfile = io.read()
 
             self.assertContainerEqual(microscope, read_nwbfile.devices["Microscope"])
-            self.assertContainerEqual(light_source, read_nwbfile.devices["LightSource"])
+            self.assertContainerEqual(light_source, read_nwbfile.devices["MicroscopyLightSource"])
 
             self.assertContainerEqual(imaging_space, read_nwbfile.lab_meta_data["PlanarImagingSpace"])
             self.assertContainerEqual(optical_channel, read_nwbfile.lab_meta_data["MicroscopyOpticalChannel"])
@@ -80,7 +80,7 @@ class TestVolumetricMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
         microscope = mock_Microscope(name="Microscope")
         nwbfile.add_device(devices=microscope)
 
-        light_source = mock_LightSource(name="LightSource")
+        light_source = mock_MicroscopyLightSource(name="MicroscopyLightSource")
         nwbfile.add_device(devices=light_source)
 
         imaging_space = mock_VolumetricImagingSpace(name="VolumetricImagingSpace", microscope=microscope)
@@ -105,7 +105,7 @@ class TestVolumetricMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
             read_nwbfile = io.read()
 
             self.assertContainerEqual(microscope, read_nwbfile.devices["Microscope"])
-            self.assertContainerEqual(light_source, read_nwbfile.devices["LightSource"])
+            self.assertContainerEqual(light_source, read_nwbfile.devices["MicroscopyLightSource"])
 
             self.assertContainerEqual(imaging_space, read_nwbfile.lab_meta_data["VolumetricImagingSpace"])
             self.assertContainerEqual(optical_channel, read_nwbfile.lab_meta_data["MicroscopyOpticalChannel"])
@@ -130,7 +130,7 @@ class TestVariableDepthMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
         microscope = mock_Microscope(name="Microscope")
         nwbfile.add_device(devices=microscope)
 
-        light_source = mock_LightSource(name="LightSource")
+        light_source = mock_MicroscopyLightSource(name="MicroscopyLightSource")
         nwbfile.add_device(devices=light_source)
 
         imaging_space = mock_PlanarImagingSpace(name="PlanarImagingSpace", microscope=microscope)
@@ -155,7 +155,7 @@ class TestVariableDepthMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
             read_nwbfile = io.read()
 
             self.assertContainerEqual(microscope, read_nwbfile.devices["Microscope"])
-            self.assertContainerEqual(light_source, read_nwbfile.devices["LightSource"])
+            self.assertContainerEqual(light_source, read_nwbfile.devices["MicroscopyLightSource"])
 
             self.assertContainerEqual(imaging_space, read_nwbfile.lab_meta_data["PlanarImagingSpace"])
             self.assertContainerEqual(optical_channel, read_nwbfile.lab_meta_data["MicroscopyOpticalChannel"])
