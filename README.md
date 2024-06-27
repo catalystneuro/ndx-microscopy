@@ -36,7 +36,7 @@ classDiagram
         links
         --------------------------------------
         microscope : Microscope
-        light_source : LightSource
+        light_source : MicroscopyLightSource
         optical_channel : MicroscopyOpticalChannel
     }
 
@@ -149,7 +149,7 @@ classDiagram
         emission_wavelength_in_nm : numeric, optional
     }
 
-    class LightSource{
+    class MicroscopyLightSource{
         <<Device>>
 
         --------------------------------------
@@ -183,7 +183,7 @@ classDiagram
     PlanarImagingSpace *-- ImagingSpace : extends
     VolumetricImagingSpace *-- ImagingSpace : extends
     MicroscopySeries ..> Microscope : links
-    MicroscopySeries ..> LightSource : links
+    MicroscopySeries ..> MicroscopyLightSource : links
     MicroscopySeries ..> MicroscopyOpticalChannel : links
 ```
 
