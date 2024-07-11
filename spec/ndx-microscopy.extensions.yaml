@@ -309,23 +309,17 @@ groups:
       - null
       - null
     - name: light_sources
-      doc: Reference to an ordered list of MicroscopyLightSource objects containing metadata about the excitation method.
+      doc: Reference to a list of MicroscopyLightSource objects containing metadata about the excitation methods.
+      neurodata_type_inc: VectorData
       dtype:
         reftype: object
         target_type: MicroscopyLightSource
-      dims:
-      - num_light_sources
-      shape:
-      - null
     - name: optical_channels
       doc: Reference to an ordered list of MicroscopyOpticalChannel objects containing metadata about the indicator and filters used to collect this data.
+      neurodata_type_inc: VectorData
       dtype:
         reftype: object
         target_type: MicroscopyOpticalChannel
-      dims:
-      - num_channels
-      shape:
-      - null
     links:
     - name: microscope
       doc: Link to a Microscope object containing metadata about the device used to acquire this imaging data.
