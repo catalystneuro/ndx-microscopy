@@ -200,7 +200,10 @@ class TestMultiChannelMicroscopyVolumeSimpleRoundtrip(pynwb_TestCase):
         )
         optical_channels_used_by_volume = pynwb.base.VectorData(
             name="optical_channels",
-            description="Optical channels ordered to correspond to the third axis (e.g., [0, 0, :, 0]) of the data for this MultiChannelVolume.",
+            description=(
+                "Optical channels ordered to correspond to the third axis (e.g., [0, 0, :, 0]) "
+                "of the data for this MultiChannelVolume."
+            ),
             data=optical_channels,
         )
         multi_channel_microscopy_volume = mock_MultiChannelMicroscopyVolume(
