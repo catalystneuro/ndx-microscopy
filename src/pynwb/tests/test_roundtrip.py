@@ -21,7 +21,7 @@ class TestPlanarMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
     """Simple roundtrip test for PlanarMicroscopySeries."""
 
     def setUp(self):
-        self.nwbfile_path = "test.nwb"
+        self.nwbfile_path = "test_planar_microscopy_series_roundtrip.nwb"
 
     def tearDown(self):
         pynwb.testing.remove_test_file(self.nwbfile_path)
@@ -69,7 +69,7 @@ class TestVolumetricMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
     """Simple roundtrip test for VolumetricMicroscopySeries."""
 
     def setUp(self):
-        self.nwbfile_path = "test.nwb"
+        self.nwbfile_path = "test_volumetric_microscopy_series_roundtrip.nwb"
 
     def tearDown(self):
         pynwb.testing.remove_test_file(self.nwbfile_path)
@@ -119,7 +119,7 @@ class TestVariableDepthMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
     """Simple roundtrip test for VariableDepthMicroscopySeries."""
 
     def setUp(self):
-        self.nwbfile_path = "test.nwb"
+        self.nwbfile_path = "test_variable_depth_microscopy_series_roundtrip.nwb"
 
     def tearDown(self):
         pynwb.testing.remove_test_file(self.nwbfile_path)
@@ -169,7 +169,7 @@ class TestMultiChannelMicroscopyVolumeSimpleRoundtrip(pynwb_TestCase):
     """Simple roundtrip test for MultiChannelMicroscopyVolume."""
 
     def setUp(self):
-        self.nwbfile_path = "test.nwb"
+        self.nwbfile_path = "test_multi_channel_microscopy_volume_roundtrip.nwb"
 
     def tearDown(self):
         pynwb.testing.remove_test_file(self.nwbfile_path)
@@ -180,21 +180,35 @@ class TestMultiChannelMicroscopyVolumeSimpleRoundtrip(pynwb_TestCase):
         microscope = mock_Microscope(name="Microscope")
         nwbfile.add_device(devices=microscope)
 
-        light_source = mock_LightSource(name="LightSource")
-        nwbfile.add_device(devices=light_source)
-
         imaging_space = mock_VolumetricImagingSpace(name="VolumetricImagingSpace", microscope=microscope)
         nwbfile.add_lab_meta_data(lab_meta_data=imaging_space)  # Would prefer .add_imaging_space()
 
-        optical_channel = mock_MicroscopyOpticalChannel(name="MicroscopyOpticalChannel")
-        nwbfile.add_lab_meta_data(lab_meta_data=optical_channel)
+        light_sources = list()
+        light_source_0 = mock_MicroscopyLightSource(name="LightSource")
+        nwbfile.add_device(devices=light_source_0)
+        light_sources.append(light_source_0)
 
+        optical_channels = list()
+        optical_channel_0 = mock_MicroscopyOpticalChannel(name="MicroscopyOpticalChannel")
+        nwbfile.add_lab_meta_data(lab_meta_data=optical_channel_0)
+        optical_channels.append(optical_channel_0)
+
+        # TODO: It might be more convenient in Python to have a custom constructor that takes in a list of
+        # light sources and optical channels and does the VectorData wrapping internally
+        light_sources_used_by_volume = pynwb.base.VectorData(
+            name="light_sources", description="Light sources used by this MultiChannelVolume.", data=light_sources
+        )
+        optical_channels_used_by_volume = pynwb.base.VectorData(
+            name="optical_channels",
+            description="Optical channels ordered to correspond to the third axis (e.g., [0, 0, :, 0]) of the data for this MultiChannelVolume.",
+            data=optical_channels,
+        )
         multi_channel_microscopy_volume = mock_MultiChannelMicroscopyVolume(
             name="MultiChannelMicroscopyVolume",
             microscope=microscope,
-            light_source=light_source,
             imaging_space=imaging_space,
-            optical_channels=[optical_channel],
+            light_sources=light_sources_used_by_volume,
+            optical_channels=optical_channels_used_by_volume,
         )
         nwbfile.add_acquisition(nwbdata=multi_channel_microscopy_volume)
 
@@ -205,11 +219,15 @@ class TestMultiChannelMicroscopyVolumeSimpleRoundtrip(pynwb_TestCase):
             read_nwbfile = io.read()
 
             self.assertContainerEqual(microscope, read_nwbfile.devices["Microscope"])
-            self.assertContainerEqual(light_source, read_nwbfile.devices["LightSource"])
+            self.assertContainerEqual(light_source_0, read_nwbfile.devices["LightSource"])
 
             self.assertContainerEqual(imaging_space, read_nwbfile.lab_meta_data["VolumetricImagingSpace"])
-            self.assertContainerEqual(optical_channel, read_nwbfile.lab_meta_data["MicroscopyOpticalChannel"])
+            self.assertContainerEqual(optical_channel_0, read_nwbfile.lab_meta_data["MicroscopyOpticalChannel"])
 
             self.assertContainerEqual(
                 multi_channel_microscopy_volume, read_nwbfile.acquisition["MultiChannelMicroscopyVolume"]
             )
+
+
+if __name__ == "__main__":
+    pytest.main()  # Required since not a typical package structure

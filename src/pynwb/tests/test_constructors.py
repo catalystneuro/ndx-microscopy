@@ -74,7 +74,7 @@ def test_constructor_volumetric_microscopy_series():
 
 def test_constructor_multi_channel_microscopy_volume():
     microscope = mock_Microscope()
-    light_source = mock_LightSource()
+    light_source = mock_MicroscopyLightSource()
     imaging_space = mock_VolumetricImagingSpace(microscope=microscope)
     optical_channel = mock_MicroscopyOpticalChannel()
 
