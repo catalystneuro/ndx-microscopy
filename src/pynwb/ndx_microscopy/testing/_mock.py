@@ -291,8 +291,8 @@ def mock_VolumetricMicroscopySeries(
 def mock_MultiChannelMicroscopyVolume(
     *,
     microscope: ndx_microscopy.Microscope,
-    light_sources: List[ndx_microscopy.MicroscopyLightSource],
     imaging_space: ndx_microscopy.VolumetricImagingSpace,
+    light_sources: List[ndx_microscopy.MicroscopyLightSource],
     optical_channels: List[ndx_microscopy.MicroscopyOpticalChannel],
     name: Optional[str] = None,
     description: str = "This is a mock instance of a MultiChannelMicroscopyVolume type to be used for rapid testing.",
