@@ -308,19 +308,28 @@ groups:
       - null
       - null
       - null
+    - name: light_sources
+      doc: Reference to an ordered list of MicroscopyLightSource objects containing metadata about the excitation method.
+      dtype:
+        reftype: object
+        target_type: MicroscopyLightSource
+      dims:
+      - num_light_sources
+      shape:
+      - null
+    - name: optical_channels
+      doc: Reference to an ordered list of MicroscopyOpticalChannel objects containing metadata about the indicator and filters used to collect this data.
+      dtype:
+        reftype: object
+        target_type: MicroscopyOpticalChannel
+      dims:
+      - num_channels
+      shape:
+      - null
     links:
     - name: microscope
       doc: Link to a Microscope object containing metadata about the device used to acquire this imaging data.
       target_type: Microscope
-      # TODO: figure out best way to link to list of light sources
-    - name: light_sources
-      doc: Link to an ordered list of MicroscopyLightSource objects containing metadata about the excitation method.
-      target_type: MicroscopyLightSource
-    # TODO: figure out best way to link to list of optical channels
-    - name: optical_channels
-      doc: Link to an ordered list of MicroscopyOpticalChannel objects containing metadata about the indicator and
-        filters used to collect this data.
-      target_type: MicroscopyOpticalChannel
     - name: imaging_space
       doc: Link to VolumetricImagingSpace object containing metadata about the region of physical space this imaging data
         was recorded from.
