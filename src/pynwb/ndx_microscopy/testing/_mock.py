@@ -308,9 +308,9 @@ def mock_MultiChannelMicroscopyVolume(
         name=series_name,
         description=description,
         microscope=microscope,
-        light_sources=light_sources[0],  # TODO: figure out how to specify list
+        light_sources=light_sources,
         imaging_space=imaging_space,
-        optical_channels=optical_channels[0],  # TODO: figure out how to specify list
+        optical_channels=optical_channels,
         data=imaging_data,
         unit=unit,
         conversion=conversion,
