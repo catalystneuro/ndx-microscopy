@@ -80,8 +80,8 @@ def test_constructor_multi_channel_microscopy_volume():
 
     mock_MultiChannelMicroscopyVolume(
         microscope=microscope,
-        light_source=light_source,
         imaging_space=imaging_space,
+        light_sources=[light_source],
         optical_channels=[optical_channel],
     )
 
