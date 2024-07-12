@@ -464,7 +464,7 @@ groups:
       - null
       - null
       - null
-    - name: depth_per_frame_in_mm
+    - name: depth_per_frame_in_um
       doc: Depth of each frame in the data array.
         These values offset the 'z' value of the `origin_coordinates` of the linked `imaging_space` object.
       dtype: numeric
