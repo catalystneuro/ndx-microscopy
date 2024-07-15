@@ -2,6 +2,7 @@
 
 import pytest
 
+import pynwb
 from ndx_microscopy.testing import (
     mock_Microscope,
     mock_MicroscopyImageSegmentation,
@@ -103,15 +104,26 @@ def test_constructor_volumetric_microscopy_series():
 
 def test_constructor_multi_channel_microscopy_volume():
     microscope = mock_Microscope()
-    light_source = mock_LightSource()
     imaging_space = mock_VolumetricImagingSpace(microscope=microscope)
-    optical_channel = mock_MicroscopyOpticalChannel()
+    light_sources = [mock_MicroscopyLightSource()]
+    optical_channels = [mock_MicroscopyOpticalChannel()]
 
+    light_sources_used_by_volume = pynwb.base.VectorData(
+        name="light_sources", description="Light sources used by this MultiChannelVolume.", data=light_sources
+    )
+    optical_channels_used_by_volume = pynwb.base.VectorData(
+        name="optical_channels",
+        description=(
+            "Optical channels ordered to correspond to the third axis (e.g., [0, 0, :, 0]) "
+            "of the data for this MultiChannelVolume."
+        ),
+        data=optical_channels,
+    )
     mock_MultiChannelMicroscopyVolume(
         microscope=microscope,
-        light_source=light_source,
         imaging_space=imaging_space,
-        optical_channels=[optical_channel],
+        light_sources=light_sources_used_by_volume,
+        optical_channels=optical_channels_used_by_volume,
     )
 
 

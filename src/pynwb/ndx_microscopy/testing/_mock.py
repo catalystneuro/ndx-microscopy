@@ -2,6 +2,7 @@ import warnings
 from typing import Iterable, List, Optional, Tuple
 
 import numpy as np
+import pynwb.base
 from pynwb.testing.mock.utils import name_generator
 
 import ndx_microscopy
@@ -322,9 +323,9 @@ def mock_VolumetricMicroscopySeries(
 def mock_MultiChannelMicroscopyVolume(
     *,
     microscope: ndx_microscopy.Microscope,
-    light_sources: List[ndx_microscopy.MicroscopyLightSource],
     imaging_space: ndx_microscopy.VolumetricImagingSpace,
-    optical_channels: List[ndx_microscopy.MicroscopyOpticalChannel],
+    light_sources: pynwb.base.VectorData,
+    optical_channels: pynwb.base.VectorData,
     name: Optional[str] = None,
     description: str = "This is a mock instance of a MultiChannelMicroscopyVolume type to be used for rapid testing.",
     data: Optional[np.ndarray] = None,
@@ -339,9 +340,9 @@ def mock_MultiChannelMicroscopyVolume(
         name=series_name,
         description=description,
         microscope=microscope,
-        light_sources=light_sources[0],  # TODO: figure out how to specify list
         imaging_space=imaging_space,
-        optical_channels=optical_channels[0],  # TODO: figure out how to specify list
+        light_sources=light_sources,
+        optical_channels=optical_channels,
         data=imaging_data,
         unit=unit,
         conversion=conversion,
