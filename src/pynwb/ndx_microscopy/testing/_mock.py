@@ -122,7 +122,12 @@ def mock_MicroscopySegmentations(
     microscopy_plane_segmentations: Optional[Iterable[ndx_microscopy.MicroscopyPlaneSegmentation]] = None,
 ) -> ndx_microscopy.MicroscopySegmentations:
     name = name or name_generator("MicroscopySegmentations")
-    microscopy_plane_segmentations = microscopy_plane_segmentations or [mock_MicroscopyPlaneSegmentation()]
+
+    microscope = mock_Microscope()
+    imaging_space = mock_PlanarImagingSpace(microscope=microscope)
+    microscopy_plane_segmentations = microscopy_plane_segmentations or [
+        mock_MicroscopyPlaneSegmentation(imaging_space=imaging_space)
+    ]
 
     segmentations = ndx_microscopy.MicroscopySegmentations(
         name=name, microscopy_plane_segmentations=microscopy_plane_segmentations
@@ -142,11 +147,15 @@ def mock_MicroscopyPlaneSegmentation(
     name = name or name_generator("MicroscopyPlaneSegmentation")
 
     plane_segmentation = ndx_microscopy.MicroscopyPlaneSegmentation(
-        name=name, description=description, imaging_space=imaging_space
+        name=name,
+        description=description,
+        imaging_space=imaging_space,
     )
 
+    image_masks = list()
     for _ in range(number_of_rois):
-        plane_segmentation.add_roi(image_mask=np.zeros(image_shape, dtype=bool))
+        image_masks.append(np.zeros(image_shape, dtype=bool))
+    plane_segmentation.add_column(name="image_mask", description="", data=image_masks)
 
     return plane_segmentation
 
