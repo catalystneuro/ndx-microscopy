@@ -151,6 +151,7 @@ def mock_MicroscopyPlaneSegmentation(
         description=description,
         imaging_space=imaging_space,
     )
+    plane_segmentation.add_column(name="id", description="", data=list(range(number_of_rois)))
 
     image_masks = list()
     for _ in range(number_of_rois):
