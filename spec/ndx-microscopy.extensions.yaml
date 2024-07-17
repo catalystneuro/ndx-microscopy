@@ -170,9 +170,9 @@ groups:
   # These are needed to allow linkage of processed data to the new objects, until this is merged to core
   # Technically the RoiResponseSeries shouldn't need to be modified since it just takes a DynamicTableRegion and
   # does not care about the target
-  - neurodata_type_def: MicroscopyImageSegmentation
+  - neurodata_type_def: MicroscopySegmentations
     neurodata_type_inc: NWBDataInterface
-    default_name: MicroscopyImageSegmentation
+    default_name: MicroscopySegmentations
     doc: Stores pixels in an image that represent different regions of interest (ROIs)
       or masks. All segmentation for a given imaging plane is stored together, with
       storage for multiple imaging planes (masks) supported. Each ROI is stored in its
@@ -253,12 +253,11 @@ groups:
         masks are concatenated and parsing of this dataset is maintained by the PlaneSegmentation'
       quantity: '?'
     groups:
-    - name: reference_images
-      doc: Image stacks that the segmentation masks apply to.
+    - name: summary_images
+      doc: Summary images that are related to the plane segmentation, e.g., mean, correlation, maximum projection.
       groups:
-      - neurodata_type_inc: ImageSeries
-        doc: One or more image stacks that the masks apply to (can be one-element
-          stack).
+      - neurodata_type_inc: Images
+        doc: An  container for the estimated summary images.
         quantity: '*'
     links:
     - name: imaging_space

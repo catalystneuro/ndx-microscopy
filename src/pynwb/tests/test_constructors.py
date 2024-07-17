@@ -5,7 +5,7 @@ import pytest
 import pynwb
 from ndx_microscopy.testing import (
     mock_Microscope,
-    mock_MicroscopyImageSegmentation,
+    mock_MicroscopySegmentations,
     mock_MicroscopyLightSource,
     mock_MicroscopyOpticalChannel,
     mock_MicroscopyPlaneSegmentation,
@@ -44,8 +44,8 @@ def test_constructor_volumetric_image_space():
     mock_VolumetricImagingSpace(microscope=microscope)
 
 
-def test_constructor_microscopy_image_segmentation():
-    mock_MicroscopyImageSegmentation()
+def test_constructor_microscopy_segmentations():
+    mock_MicroscopySegmentations()
 
 
 def test_constructor_microscopy_plane_segmentation():
@@ -67,7 +67,7 @@ def test_constructor_microscopy_image_segmentation_with_plane_segmentation():
     )
     microscopy_plane_segmentations = [plane_segmentation_1, plane_segmentation_2]
 
-    mock_MicroscopyImageSegmentation(microscopy_plane_segmentations=microscopy_plane_segmentations)
+    mock_MicroscopySegmentations(microscopy_plane_segmentations=microscopy_plane_segmentations)
 
 
 def test_constructor_planar_microscopy_series():

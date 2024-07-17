@@ -116,21 +116,22 @@ def mock_VolumetricImagingSpace(
     return volumetric_imaging_space
 
 
-def mock_MicroscopyImageSegmentation(
-    name: Optional[str] = None, microscopy_plane_segmentations: Optional[Iterable[PlaneSegmentation]] = None
+def mock_MicroscopySegmentations(
+    name: Optional[str] = None,
+    microscopy_plane_segmentations: Optional[Iterable[ndx_microscopy.PlaneSegmentation]] = None,
 ) -> ndx_microscopy.MicroscopyImageSegmentation:
-    name = name or name_generator("MicroscopyImageSegmentation")
+    name = name or name_generator("MicroscopySegmentations")
     microscopy_plane_segmentations = microscopy_plane_segmentations or [mock_MicroscopyPlaneSegmentation()]
 
-    image_segmentation = ndx_microscopy.ImageSegmentation(
+    segmentations = ndx_microscopy.MicroscopySegmentations(
         name=name, microscopy_plane_segmentations=microscopy_plane_segmentations
     )
 
-    return image_segmentation
+    return segmentations
 
 
 def mock_MicroscopyPlaneSegmentation(
-    imaging_space: ImagingSpace,
+    imaging_space: ndx_microscopy.ImagingSpace,
     name: Optional[str] = None,
     description: str = "This is a mock instance of a MicroscopyPlaneSegmentation type to be used for rapid testing.",
     number_of_rois: int = 5,
