@@ -118,7 +118,7 @@ def mock_VolumetricImagingSpace(
 
 def mock_MicroscopySegmentations(
     name: Optional[str] = None,
-    microscopy_plane_segmentations: Optional[Iterable[ndx_microscopy.PlaneSegmentation]] = None,
+    microscopy_plane_segmentations: Optional[Iterable[ndx_microscopy.MicroscopyPlaneSegmentation]] = None,
 ) -> ndx_microscopy.MicroscopyImageSegmentation:
     name = name or name_generator("MicroscopySegmentations")
     microscopy_plane_segmentations = microscopy_plane_segmentations or [mock_MicroscopyPlaneSegmentation()]
