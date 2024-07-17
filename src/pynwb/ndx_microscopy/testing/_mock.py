@@ -78,7 +78,7 @@ def mock_PlanarImagingSpace(
     name: Optional[str] = None,
     description: str = "This is a mock instance of a PlanarImagingSpace type to be used for rapid testing.",
     origin_coordinates: Tuple[float, float, float] = (-1.2, -0.6, -2),
-    grid_spacing: Tuple[float, float, float] = (0.2, 0.2),
+    grid_spacing_in_mm: Tuple[float, float, float] = (0.2, 0.2),
     location: str = "The location targeted by the mock imaging space.",
     reference_frame: str = "The reference frame of the mock planar imaging space.",
 ) -> ndx_microscopy.PlanarImagingSpace:
@@ -87,7 +87,7 @@ def mock_PlanarImagingSpace(
         description=description,
         microscope=microscope,
         origin_coordinates=origin_coordinates,
-        grid_spacing=grid_spacing,
+        grid_spacing_in_mm=grid_spacing_in_mm,
         location=location,
         reference_frame=reference_frame,
     )
@@ -100,7 +100,7 @@ def mock_VolumetricImagingSpace(
     name: Optional[str] = None,
     description: str = "This is a mock instance of a VolumetricImagingSpace type to be used for rapid testing.",
     origin_coordinates: Tuple[float, float, float] = (-1.2, -0.6, -2),
-    grid_spacing: Tuple[float, float, float] = (0.2, 0.2, 0.5),
+    grid_spacing_in_mm: Tuple[float, float, float] = (0.2, 0.2, 0.5),
     location: str = "The location targeted by the mock imaging space.",
     reference_frame: str = "The reference frame of the mock volumetric imaging space.",
 ) -> ndx_microscopy.VolumetricImagingSpace:
@@ -109,7 +109,7 @@ def mock_VolumetricImagingSpace(
         description=description,
         microscope=microscope,
         origin_coordinates=origin_coordinates,
-        grid_spacing=grid_spacing,
+        grid_spacing_in_mm=grid_spacing_in_mm,
         location=location,
         reference_frame=reference_frame,
     )
@@ -117,6 +117,7 @@ def mock_VolumetricImagingSpace(
 
 
 def mock_MicroscopySegmentations(
+    *,
     name: Optional[str] = None,
     microscopy_plane_segmentations: Optional[Iterable[ndx_microscopy.MicroscopyPlaneSegmentation]] = None,
 ) -> ndx_microscopy.MicroscopySegmentations:
@@ -131,6 +132,7 @@ def mock_MicroscopySegmentations(
 
 
 def mock_MicroscopyPlaneSegmentation(
+    *,
     imaging_space: ndx_microscopy.ImagingSpace,
     name: Optional[str] = None,
     description: str = "This is a mock instance of a MicroscopyPlaneSegmentation type to be used for rapid testing.",
