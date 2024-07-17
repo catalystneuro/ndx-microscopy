@@ -1,10 +1,10 @@
 """Test roundtrip (write and read back) of the Python API for the ndx-microscopy extension."""
 
-import pynwb
 import pytest
 from pynwb.testing import TestCase as pynwb_TestCase
 from pynwb.testing.mock.file import mock_NWBFile
 
+import pynwb
 from ndx_microscopy.testing import (
     mock_Microscope,
     mock_MicroscopyLightSource,
