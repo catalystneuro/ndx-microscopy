@@ -1,5 +1,6 @@
 """Test roundtrip (write and read back) of the Python API for the ndx-microscopy extension."""
 
+import pytest
 from pynwb.testing import TestCase as pynwb_TestCase
 from pynwb.testing.mock.file import mock_NWBFile
 
@@ -8,6 +9,8 @@ from ndx_microscopy.testing import (
     mock_Microscope,
     mock_MicroscopyLightSource,
     mock_MicroscopyOpticalChannel,
+    mock_MicroscopyPlaneSegmentation,
+    mock_MicroscopySegmentations,
     mock_MultiChannelMicroscopyVolume,
     mock_PlanarImagingSpace,
     mock_PlanarMicroscopySeries,
@@ -232,7 +235,48 @@ class TestMultiChannelMicroscopyVolumeSimpleRoundtrip(pynwb_TestCase):
             )
 
 
-# TODO: add roundtrip for planesegmentation, imagesegmentation, etc.
+class TestMicroscopySegmentationsSimpleRoundtrip(pynwb_TestCase):
+    """Simple roundtrip test for MicroscopySegmentations."""
+
+    def setUp(self):
+        self.nwbfile_path = "test_microscopy_segmentations_roundtrip.nwb"
+
+    def tearDown(self):
+        pynwb.testing.remove_test_file(self.nwbfile_path)
+
+    def test_roundtrip(self):
+        nwbfile = mock_NWBFile()
+
+        microscope = mock_Microscope()
+        nwbfile.add_device(devices=microscope)
+
+        imaging_space = mock_PlanarImagingSpace(microscope=microscope)
+        nwbfile.add_lab_meta_data(lab_meta_data=imaging_space)  # Would prefer .add_imaging_space()
+
+        plane_segmentation_1 = mock_MicroscopyPlaneSegmentation(
+            imaging_space=imaging_space, name="MicroscopyPlaneSegmentation1"
+        )
+        plane_segmentation_2 = mock_MicroscopyPlaneSegmentation(
+            imaging_space=imaging_space, name="MicroscopyPlaneSegmentation2"
+        )
+        microscopy_plane_segmentations = [plane_segmentation_1, plane_segmentation_2]
+
+        segmentations = mock_MicroscopySegmentations(microscopy_plane_segmentations=microscopy_plane_segmentations)
+        processing_module = nwbfile.create_processing_module(name="ophys")
+        processing_module.add(segmentations)
+
+        with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="w") as io:
+            io.write(nwbfile)
+
+        with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="r", load_namespaces=True) as io:
+            read_nwbfile = io.read()
+
+            self.assertContainerEqual(microscope, read_nwbfile.devices["Microscope"])
+
+            self.assertContainerEqual(imaging_space, read_nwbfile.lab_meta_data["PlanarImagingSpace"])
+
+            self.assertContainerEqual(segmentations, read_nwbfile.processing["ophys"]["MicroscopySegmentations"])
+
 
 # TODO: add roundtrip test for MicroscopyResponseSeries
 
