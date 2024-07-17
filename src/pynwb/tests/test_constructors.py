@@ -4,7 +4,6 @@ import pytest
 
 import pynwb
 from ndx_microscopy.testing import (
-    mock_LightSource,
     mock_Microscope,
     mock_MicroscopyLightSource,
     mock_MicroscopyOpticalChannel,
