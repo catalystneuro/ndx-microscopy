@@ -6,10 +6,10 @@ import pynwb
 from ndx_microscopy.testing import (
     mock_LightSource,
     mock_Microscope,
-    mock_MicroscopySegmentations,
     mock_MicroscopyLightSource,
     mock_MicroscopyOpticalChannel,
     mock_MicroscopyPlaneSegmentation,
+    mock_MicroscopySegmentations,
     mock_MultiChannelMicroscopyVolume,
     mock_PlanarImagingSpace,
     mock_PlanarMicroscopySeries,

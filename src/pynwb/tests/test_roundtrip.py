@@ -9,14 +9,14 @@ from ndx_microscopy.testing import (
     mock_Microscope,
     mock_MicroscopyLightSource,
     mock_MicroscopyOpticalChannel,
+    mock_MicroscopyPlaneSegmentation,
+    mock_MicroscopySegmentations,
     mock_MultiChannelMicroscopyVolume,
     mock_PlanarImagingSpace,
     mock_PlanarMicroscopySeries,
     mock_VariableDepthMicroscopySeries,
     mock_VolumetricImagingSpace,
     mock_VolumetricMicroscopySeries,
-    mock_MicroscopySegmentations,
-    mock_MicroscopyPlaneSegmentation,
 )
 
 
