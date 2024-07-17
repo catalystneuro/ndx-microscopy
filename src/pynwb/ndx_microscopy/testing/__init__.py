@@ -1,9 +1,9 @@
 from ._mock import (
     mock_Microscope,
-    mock_MicroscopySegmentations,
     mock_MicroscopyLightSource,
     mock_MicroscopyOpticalChannel,
     mock_MicroscopyPlaneSegmentation,
+    mock_MicroscopySegmentations,
     mock_MultiChannelMicroscopyVolume,
     mock_PlanarImagingSpace,
     mock_PlanarMicroscopySeries,
