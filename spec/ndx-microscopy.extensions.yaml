@@ -170,9 +170,9 @@ groups:
   # These are needed to allow linkage of processed data to the new objects, until this is merged to core
   # Technically the RoiResponseSeries shouldn't need to be modified since it just takes a DynamicTableRegion and
   # does not care about the target
-  - neurodata_type_def: MicroscopyImageSegmentation
+  - neurodata_type_def: MicroscopySegmentations
     neurodata_type_inc: NWBDataInterface
-    default_name: MicroscopyImageSegmentation
+    default_name: MicroscopySegmentations
     doc: Stores pixels in an image that represent different regions of interest (ROIs)
       or masks. All segmentation for a given imaging plane is stored together, with
       storage for multiple imaging planes (masks) supported. Each ROI is stored in its
@@ -253,12 +253,11 @@ groups:
         masks are concatenated and parsing of this dataset is maintained by the PlaneSegmentation'
       quantity: '?'
     groups:
-    - name: reference_images
-      doc: Image stacks that the segmentation masks apply to.
+    - name: summary_images
+      doc: Summary images that are related to the plane segmentation, e.g., mean, correlation, maximum projection.
       groups:
-      - neurodata_type_inc: ImageSeries
-        doc: One or more image stacks that the masks apply to (can be one-element
-          stack).
+      - neurodata_type_inc: Images
+        doc: An  container for the estimated summary images.
         quantity: '*'
     links:
     - name: imaging_space
@@ -387,24 +386,32 @@ groups:
       - height
       - width
       - depths
-      - channels
+      - optical_channels
       shape:
       - null
       - null
       - null
       - null
     - name: light_sources
-      doc: Reference to a list of MicroscopyLightSource objects containing metadata about the excitation methods.
+      doc: An ordered list of references to MicroscopyLightSource objects containing metadata about the excitation methods.
       neurodata_type_inc: VectorData
       dtype:
         reftype: object
         target_type: MicroscopyLightSource
+      dims:
+        - light_sources
+      shape:
+        - null
     - name: optical_channels
-      doc: Reference to an ordered list of MicroscopyOpticalChannel objects containing metadata about the indicator and filters used to collect this data.
+      doc: An ordered list of references to MicroscopyOpticalChannel objects containing metadata about the indicator and filters used to collect this data. This maps to the last dimension of `data`, i.e., the i-th MicroscopyOpticalChannel contains metadata about the indicator and filters used to collect the volume at `data[:,:,:,i]`.
       neurodata_type_inc: VectorData
       dtype:
         reftype: object
         target_type: MicroscopyOpticalChannel
+      dims:
+        - optical_channels
+      shape:
+        - null
     links:
     - name: microscope
       doc: Link to a Microscope object containing metadata about the device used to acquire this imaging data.
@@ -472,19 +479,30 @@ groups:
       - depths
       shape:
       - null
+    - name: light_sources
+      doc: An ordered list of references to MicroscopyLightSource objects containing metadata about the excitation methods.
+      neurodata_type_inc: VectorData
+      dtype:
+        reftype: object
+        target_type: MicroscopyLightSource
+      dims:
+        - light_sources
+      shape:
+        - null
+    - name: optical_channels
+      doc: An ordered list of references to MicroscopyOpticalChannel objects containing metadata about the indicator and filters used to collect this data. This maps to the last dimension of `data`, i.e., the i-th MicroscopyOpticalChannel contains metadata about the indicator and filters used to collect the volume at `data[:,:,:,i]`.
+      neurodata_type_inc: VectorData
+      dtype:
+        reftype: object
+        target_type: MicroscopyOpticalChannel
+      dims:
+        - optical_channels
+      shape:
+        - null
     links:
     - name: microscope
       doc: Link to a Microscope object containing metadata about the device used to acquire this imaging data.
       target_type: Microscope
-      # TODO: figure out best way to link to list of light sources
-    - name: light_sources
-      doc: Link to an ordered list of MicroscopyLightSource objects containing metadata about the excitation method.
-      target_type: MicroscopyLightSource
-    # TODO: figure out best way to link to list of optical channels
-    - name: optical_channels
-      doc: Link to an ordered list of MicroscopyOpticalChannel objects containing metadata about the indicator and
-        filters used to collect this data.
-      target_type: MicroscopyOpticalChannel
     - name: imaging_space
       doc: Link to VolumetricImagingSpace object containing metadata about the region of physical space this imaging data
         was recorded from.

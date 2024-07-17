@@ -116,21 +116,22 @@ def mock_VolumetricImagingSpace(
     return volumetric_imaging_space
 
 
-def mock_MicroscopyImageSegmentation(
-    name: Optional[str] = None, microscopy_plane_segmentations: Optional[Iterable[PlaneSegmentation]] = None
+def mock_MicroscopySegmentations(
+    name: Optional[str] = None,
+    microscopy_plane_segmentations: Optional[Iterable[ndx_microscopy.PlaneSegmentation]] = None,
 ) -> ndx_microscopy.MicroscopyImageSegmentation:
-    name = name or name_generator("MicroscopyImageSegmentation")
+    name = name or name_generator("MicroscopySegmentations")
     microscopy_plane_segmentations = microscopy_plane_segmentations or [mock_MicroscopyPlaneSegmentation()]
 
-    image_segmentation = ndx_microscopy.ImageSegmentation(
+    segmentations = ndx_microscopy.MicroscopySegmentations(
         name=name, microscopy_plane_segmentations=microscopy_plane_segmentations
     )
 
-    return image_segmentation
+    return segmentations
 
 
 def mock_MicroscopyPlaneSegmentation(
-    imaging_space: ImagingSpace,
+    imaging_space: ndx_microscopy.ImagingSpace,
     name: Optional[str] = None,
     description: str = "This is a mock instance of a MicroscopyPlaneSegmentation type to be used for rapid testing.",
     number_of_rois: int = 5,
@@ -366,13 +367,15 @@ def mock_VariableDepthMultiChannelMicroscopyVolume(
     offset: float = 0.0,
 ) -> ndx_microscopy.VariableDepthMultiChannelMicroscopyVolume:
     series_name = name or name_generator("MultiChannelMicroscopyVolume")
-    imaging_data = data if data is not None else np.ones(shape=(10, 20, 7, 3))
+
+    series_data = data if data is not None else np.ones(shape=(15, 5, 5))
     volume_depth_per_frame_in_um = (
         depth_per_frame_in_mm
         if depth_per_frame_in_mm is not None
         else np.linspace(start=0.0, stop=1.0, num=series_data.shape[0])
     )
 
+    imaging_data = data if data is not None else np.ones(shape=(10, 20, 7, 3))
     variable_depth_multi_channel_microscopy_volume = ndx_microscopy.VariableDepthMultiChannelMicroscopyVolume(
         name=series_name,
         description=description,
