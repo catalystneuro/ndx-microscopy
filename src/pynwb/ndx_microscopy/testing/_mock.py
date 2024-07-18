@@ -147,11 +147,9 @@ def mock_MicroscopyPlaneSegmentation(
     name = name or name_generator("MicroscopyPlaneSegmentation")
 
     plane_segmentation = ndx_microscopy.MicroscopyPlaneSegmentation(
-        name=name,
-        description=description,
-        imaging_space=imaging_space,
+        name=name, description=description, imaging_space=imaging_space, id=list(range(number_of_rois))
     )
-    plane_segmentation.add_column(name="id", description="", data=list(range(number_of_rois)))
+    # plane_segmentation.add_column(name="id", description="", data=list(range(number_of_rois)))
 
     image_masks = list()
     for _ in range(number_of_rois):
@@ -367,9 +365,9 @@ def mock_MultiChannelMicroscopyVolume(
 def mock_VariableDepthMultiChannelMicroscopyVolume(
     *,
     microscope: ndx_microscopy.Microscope,
-    light_sources: List[ndx_microscopy.MicroscopyLightSource],
     imaging_space: ndx_microscopy.VolumetricImagingSpace,
-    optical_channels: List[ndx_microscopy.MicroscopyOpticalChannel],
+    light_sources: pynwb.base.VectorData,
+    optical_channels: pynwb.base.VectorData,
     name: Optional[str] = None,
     description: str = "This is a mock instance of a MultiChannelMicroscopyVolume type to be used for rapid testing.",
     data: Optional[np.ndarray] = None,
@@ -392,9 +390,9 @@ def mock_VariableDepthMultiChannelMicroscopyVolume(
         name=series_name,
         description=description,
         microscope=microscope,
-        light_sources=light_sources[0],  # TODO: figure out how to specify list
         imaging_space=imaging_space,
-        optical_channels=optical_channels[0],  # TODO: figure out how to specify list
+        light_sources=light_sources,
+        optical_channels=optical_channels,
         data=imaging_data,
         depth_per_frame_in_mm=volume_depth_per_frame_in_mm,
         unit=unit,
