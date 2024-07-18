@@ -247,10 +247,10 @@ class TestMicroscopySegmentationsSimpleRoundtrip(pynwb_TestCase):
     def test_roundtrip(self):
         nwbfile = mock_NWBFile()
 
-        microscope = mock_Microscope()
+        microscope = mock_Microscope(name="Microscope")
         nwbfile.add_device(devices=microscope)
 
-        imaging_space = mock_PlanarImagingSpace(microscope=microscope)
+        imaging_space = mock_PlanarImagingSpace(name="PlanarImagingSpace", microscope=microscope)
         nwbfile.add_lab_meta_data(lab_meta_data=imaging_space)  # Would prefer .add_imaging_space()
 
         plane_segmentation_1 = mock_MicroscopyPlaneSegmentation(
@@ -261,8 +261,10 @@ class TestMicroscopySegmentationsSimpleRoundtrip(pynwb_TestCase):
         )
         microscopy_plane_segmentations = [plane_segmentation_1, plane_segmentation_2]
 
-        segmentations = mock_MicroscopySegmentations(microscopy_plane_segmentations=microscopy_plane_segmentations)
-        processing_module = nwbfile.create_processing_module(name="ophys")
+        segmentations = mock_MicroscopySegmentations(
+            name="MicroscopySegmentations", microscopy_plane_segmentations=microscopy_plane_segmentations
+        )
+        processing_module = nwbfile.create_processing_module(name="ophys", description="")
         processing_module.add(segmentations)
 
         with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="w") as io:
