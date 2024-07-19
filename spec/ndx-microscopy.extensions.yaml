@@ -308,8 +308,8 @@ groups:
     doc: Volumetric imaging data acquired over an irregular number and amount of depths; for instance, when using an
       electrically tunable lens.
     datasets:
-    - name: depth_per_frame_in_mm
-      doc: Depth of each frame in the data array.
+    - name: depth_per_frame_in_um
+      doc: Depth in micrometers of each frame in the data array.
         These values offset the 'z' value of the `origin_coordinates` of the linked `imaging_space` object.
       dtype: numeric
       dims:
@@ -471,9 +471,8 @@ groups:
       - null
       - null
       - null
-    - name: depth_per_frame_in_mm
-      doc: Depth of each frame in the data array.
-        These values offset the 'z' value of the `origin_coordinates` of the linked `imaging_space` object.
+    - name: depth_per_frame_in_um
+      doc: Depth in micrometers of each frame in the data array.
       dtype: numeric
       dims:
       - depths

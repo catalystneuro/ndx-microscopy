@@ -223,7 +223,7 @@ def mock_VariableDepthMicroscopySeries(
     name: Optional[str] = None,
     description: str = "This is a mock instance of a PlanarMicroscopySeries type to be used for rapid testing.",
     data: Optional[np.ndarray] = None,
-    depth_per_frame_in_mm: Optional[np.ndarray] = None,
+    depth_per_frame_in_um: Optional[np.ndarray] = None,
     unit: str = "a.u.",
     conversion: float = 1.0,
     offset: float = 0.0,
@@ -233,10 +233,11 @@ def mock_VariableDepthMicroscopySeries(
 ) -> ndx_microscopy.VariableDepthMicroscopySeries:
     series_name = name or name_generator("VariableDepthMicroscopySeries")
     series_data = data if data is not None else np.ones(shape=(15, 5, 5))
-    series_depth_per_frame_in_mm = (
-        depth_per_frame_in_mm
-        if depth_per_frame_in_mm is not None
-        else np.linspace(start=0.0, stop=1.0, num=series_data.shape[0])
+
+    depth_per_frame_in_um = (
+        depth_per_frame_in_um
+        if depth_per_frame_in_um is not None
+        else np.linspace(start=0.0, stop=30.0, num=series_data.shape[0])
     )
 
     if timestamps is None:
@@ -265,7 +266,7 @@ def mock_VariableDepthMicroscopySeries(
         imaging_space=imaging_space,
         optical_channel=optical_channel,
         data=series_data,
-        depth_per_frame_in_mm=series_depth_per_frame_in_mm,
+        depth_per_frame_in_um=depth_per_frame_in_um,
         unit=unit,
         conversion=conversion,
         offset=offset,
@@ -371,7 +372,7 @@ def mock_VariableDepthMultiChannelMicroscopyVolume(
     name: Optional[str] = None,
     description: str = "This is a mock instance of a MultiChannelMicroscopyVolume type to be used for rapid testing.",
     data: Optional[np.ndarray] = None,
-    depth_per_frame_in_mm: Optional[np.ndarray] = None,
+    depth_per_frame_in_um: Optional[np.ndarray] = None,
     unit: str = "n.a.",
     conversion: float = 1.0,
     offset: float = 0.0,
@@ -379,10 +380,11 @@ def mock_VariableDepthMultiChannelMicroscopyVolume(
     series_name = name or name_generator("MultiChannelMicroscopyVolume")
 
     series_data = data if data is not None else np.ones(shape=(15, 5, 5))
-    volume_depth_per_frame_in_mm = (
-        depth_per_frame_in_mm
-        if depth_per_frame_in_mm is not None
-        else np.linspace(start=0.0, stop=1.0, num=series_data.shape[0])
+
+    volume_depth_per_frame_in_um = (
+        depth_per_frame_in_um
+        if depth_per_frame_in_um is not None
+        else np.linspace(start=0.0, stop=30.0, num=series_data.shape[0])
     )
 
     imaging_data = data if data is not None else np.ones(shape=(10, 20, 7, 3))
@@ -394,7 +396,7 @@ def mock_VariableDepthMultiChannelMicroscopyVolume(
         light_sources=light_sources,
         optical_channels=optical_channels,
         data=imaging_data,
-        depth_per_frame_in_mm=volume_depth_per_frame_in_mm,
+        depth_per_frame_in_um=volume_depth_per_frame_in_um,
         unit=unit,
         conversion=conversion,
         offset=offset,
