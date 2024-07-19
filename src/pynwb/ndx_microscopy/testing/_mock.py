@@ -1,5 +1,5 @@
 import warnings
-from typing import List, Optional, Tuple
+from typing import Iterable, List, Optional, Tuple
 
 import numpy as np
 import pynwb.base
@@ -78,7 +78,7 @@ def mock_PlanarImagingSpace(
     name: Optional[str] = None,
     description: str = "This is a mock instance of a PlanarImagingSpace type to be used for rapid testing.",
     origin_coordinates: Tuple[float, float, float] = (-1.2, -0.6, -2),
-    grid_spacing: Tuple[float, float, float] = (0.2, 0.2),
+    grid_spacing_in_um: Tuple[float, float, float] = (20, 20),
     location: str = "The location targeted by the mock imaging space.",
     reference_frame: str = "The reference frame of the mock planar imaging space.",
 ) -> ndx_microscopy.PlanarImagingSpace:
@@ -87,7 +87,7 @@ def mock_PlanarImagingSpace(
         description=description,
         microscope=microscope,
         origin_coordinates=origin_coordinates,
-        grid_spacing=grid_spacing,
+        grid_spacing_in_um=grid_spacing_in_um,
         location=location,
         reference_frame=reference_frame,
     )
@@ -100,7 +100,7 @@ def mock_VolumetricImagingSpace(
     name: Optional[str] = None,
     description: str = "This is a mock instance of a VolumetricImagingSpace type to be used for rapid testing.",
     origin_coordinates: Tuple[float, float, float] = (-1.2, -0.6, -2),
-    grid_spacing: Tuple[float, float, float] = (0.2, 0.2, 0.5),
+    grid_spacing_in_um: Tuple[float, float, float] = (20, 20, 50),
     location: str = "The location targeted by the mock imaging space.",
     reference_frame: str = "The reference frame of the mock volumetric imaging space.",
 ) -> ndx_microscopy.VolumetricImagingSpace:
@@ -109,11 +109,54 @@ def mock_VolumetricImagingSpace(
         description=description,
         microscope=microscope,
         origin_coordinates=origin_coordinates,
-        grid_spacing=grid_spacing,
+        grid_spacing_in_um=grid_spacing_in_um,
         location=location,
         reference_frame=reference_frame,
     )
     return volumetric_imaging_space
+
+
+def mock_MicroscopySegmentations(
+    *,
+    name: Optional[str] = None,
+    microscopy_plane_segmentations: Optional[Iterable[ndx_microscopy.MicroscopyPlaneSegmentation]] = None,
+) -> ndx_microscopy.MicroscopySegmentations:
+    name = name or name_generator("MicroscopySegmentations")
+
+    microscope = mock_Microscope()
+    imaging_space = mock_PlanarImagingSpace(microscope=microscope)
+    microscopy_plane_segmentations = microscopy_plane_segmentations or [
+        mock_MicroscopyPlaneSegmentation(imaging_space=imaging_space)
+    ]
+
+    segmentations = ndx_microscopy.MicroscopySegmentations(
+        name=name, microscopy_plane_segmentations=microscopy_plane_segmentations
+    )
+
+    return segmentations
+
+
+def mock_MicroscopyPlaneSegmentation(
+    *,
+    imaging_space: ndx_microscopy.ImagingSpace,
+    name: Optional[str] = None,
+    description: str = "This is a mock instance of a MicroscopyPlaneSegmentation type to be used for rapid testing.",
+    number_of_rois: int = 5,
+    image_shape: Tuple[int, int] = (10, 10),
+) -> ndx_microscopy.MicroscopyPlaneSegmentation:
+    name = name or name_generator("MicroscopyPlaneSegmentation")
+
+    plane_segmentation = ndx_microscopy.MicroscopyPlaneSegmentation(
+        name=name, description=description, imaging_space=imaging_space, id=list(range(number_of_rois))
+    )
+    # plane_segmentation.add_column(name="id", description="", data=list(range(number_of_rois)))
+
+    image_masks = list()
+    for _ in range(number_of_rois):
+        image_masks.append(np.zeros(image_shape, dtype=bool))
+    plane_segmentation.add_column(name="image_mask", description="", data=image_masks)
+
+    return plane_segmentation
 
 
 def mock_PlanarMicroscopySeries(
@@ -190,7 +233,6 @@ def mock_VariableDepthMicroscopySeries(
 ) -> ndx_microscopy.VariableDepthMicroscopySeries:
     series_name = name or name_generator("VariableDepthMicroscopySeries")
     series_data = data if data is not None else np.ones(shape=(15, 5, 5))
-
     series_depth_per_frame_in_mm = (
         depth_per_frame_in_mm
         if depth_per_frame_in_mm is not None
@@ -318,3 +360,43 @@ def mock_MultiChannelMicroscopyVolume(
         offset=offset,
     )
     return volumetric_microscopy_series
+
+
+def mock_VariableDepthMultiChannelMicroscopyVolume(
+    *,
+    microscope: ndx_microscopy.Microscope,
+    imaging_space: ndx_microscopy.VolumetricImagingSpace,
+    light_sources: pynwb.base.VectorData,
+    optical_channels: pynwb.base.VectorData,
+    name: Optional[str] = None,
+    description: str = "This is a mock instance of a MultiChannelMicroscopyVolume type to be used for rapid testing.",
+    data: Optional[np.ndarray] = None,
+    depth_per_frame_in_mm: Optional[np.ndarray] = None,
+    unit: str = "n.a.",
+    conversion: float = 1.0,
+    offset: float = 0.0,
+) -> ndx_microscopy.VariableDepthMultiChannelMicroscopyVolume:
+    series_name = name or name_generator("MultiChannelMicroscopyVolume")
+
+    series_data = data if data is not None else np.ones(shape=(15, 5, 5))
+    volume_depth_per_frame_in_mm = (
+        depth_per_frame_in_mm
+        if depth_per_frame_in_mm is not None
+        else np.linspace(start=0.0, stop=1.0, num=series_data.shape[0])
+    )
+
+    imaging_data = data if data is not None else np.ones(shape=(10, 20, 7, 3))
+    variable_depth_multi_channel_microscopy_volume = ndx_microscopy.VariableDepthMultiChannelMicroscopyVolume(
+        name=series_name,
+        description=description,
+        microscope=microscope,
+        imaging_space=imaging_space,
+        light_sources=light_sources,
+        optical_channels=optical_channels,
+        data=imaging_data,
+        depth_per_frame_in_mm=volume_depth_per_frame_in_mm,
+        unit=unit,
+        conversion=conversion,
+        offset=offset,
+    )
+    return variable_depth_multi_channel_microscopy_volume

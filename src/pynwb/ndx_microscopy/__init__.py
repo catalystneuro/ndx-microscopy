@@ -26,11 +26,14 @@ MicroscopyOpticalChannel = get_class("MicroscopyOpticalChannel", extension_name)
 ImagingSpace = get_class("ImagingSpace", extension_name)
 PlanarImagingSpace = get_class("PlanarImagingSpace", extension_name)
 VolumetricImagingSpace = get_class("VolumetricImagingSpace", extension_name)
+MicroscopySegmentations = get_class("MicroscopySegmentations", extension_name)
+MicroscopyPlaneSegmentation = get_class("MicroscopyPlaneSegmentation", extension_name)
 MicroscopySeries = get_class("MicroscopySeries", extension_name)
 PlanarMicroscopySeries = get_class("PlanarMicroscopySeries", extension_name)
 VariableDepthMicroscopySeries = get_class("VariableDepthMicroscopySeries", extension_name)
 VolumetricMicroscopySeries = get_class("VolumetricMicroscopySeries", extension_name)
 MultiChannelMicroscopyVolume = get_class("MultiChannelMicroscopyVolume", extension_name)
+VariableDepthMultiChannelMicroscopyVolume = get_class("VariableDepthMultiChannelMicroscopyVolume", extension_name)
 
 __all__ = [
     "Microscope",
@@ -39,9 +42,12 @@ __all__ = [
     "ImagingSpace",
     "PlanarImagingSpace",
     "VolumetricImagingSpace",
+    "MicroscopySegmentations",
+    "MicroscopyPlaneSegmentation",
     "MicroscopySeries",
     "PlanarMicroscopySeries",
     "VariableDepthMicroscopySeries",
     "VolumetricMicroscopySeries",
     "MultiChannelMicroscopyVolume",
+    "VariableDepthMultiChannelMicroscopyVolume",
 ]

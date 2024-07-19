@@ -95,7 +95,7 @@ groups:
       doc: General estimate of location in the brain being subset by this space.
         Specify the area, layer, etc.
         Use standard atlas names for anatomical regions when possible.
-        Specify 'whole-brain' if the entire brain is strictly contained within the space.
+        Specify 'whole brain' if the entire brain is strictly contained within the space.
       required: false
     links:
     - name: microscope
@@ -106,22 +106,14 @@ groups:
     neurodata_type_inc: ImagingSpace
     doc: Metadata about the 2-dimensional slice of physical space that imaging data was recorded from.
     datasets:
-    - name: grid_spacing
+    - name: grid_spacing_in_um
       dtype: float64
       dims:
       - - x, y
       shape:
       - - 2
-      doc: Amount of space between pixels in the specified unit.
-        Specify 'z' only when imaging volume is a regular grid; otherwise only specify 'x' and 'y'.
-        See origin_coordinates to determine where the grid begins.
+      doc: Amount of space between pixels in micrometers.
       quantity: '?'
-# TODO: deal with grid_spacing units
-#      attributes:
-#        - name: unit
-#          dtype: text
-#          default_value: micrometers
-#          doc: Measurement units for grid spacing. The default value is 'micrometers'.
     attributes:
     - name: reference_frame
       dtype: text
@@ -146,22 +138,14 @@ groups:
     neurodata_type_inc: ImagingSpace
     doc: Metadata about the 3-dimensional region of physical space that imaging data was recorded from.
     datasets:
-    - name: grid_spacing
-      doc: Amount of space between pixels in (x, y) or voxels in (x, y, z), in the specified unit.
-        Specify 'z' only when imaging volume is a regular grid; otherwise only specify 'x' and 'y'.
-        See origin_coordinates to determine where the grid begins.
+    - name: grid_spacing_in_um
+      doc: Amount of space between voxels in micrometers.
       dtype: float64
       dims:
       - - x, y, z
       shape:
       - - 3
       quantity: '?'
-# TODO: deal with grid_spacing units
-#      attributes:
-#      - name: unit
-#        dtype: text
-#        default_value: micrometers
-#        doc: Measurement units for grid spacing. The default value is 'micrometers'.
     attributes:
     - name: reference_frame
       doc: Describes the reference frame of origin_coordinates and grid_spacing.
@@ -181,6 +165,105 @@ groups:
         rightward). Third dimension corresponds to dorsal-ventral axis (larger index = more ventral)."
       dtype: text
       required: false
+
+
+  # These are needed to allow linkage of processed data to the new objects, until this is merged to core
+  # Technically the RoiResponseSeries shouldn't need to be modified since it just takes a DynamicTableRegion and
+  # does not care about the target
+  - neurodata_type_def: MicroscopySegmentations
+    neurodata_type_inc: NWBDataInterface
+    default_name: MicroscopySegmentations
+    doc: Stores pixels in an image that represent different regions of interest (ROIs)
+      or masks. All segmentation for a given imaging plane is stored together, with
+      storage for multiple imaging planes (masks) supported. Each ROI is stored in its
+      own subgroup, with the ROI group containing both a 2D mask and a list of pixels
+      that make up this mask. Segments can also be used for masking neuropil. If segmentation
+      is allowed to change with time, a new imaging plane (or module) is required and
+      ROI names should remain consistent between them.
+    groups:
+    - neurodata_type_inc: MicroscopyPlaneSegmentation
+      doc: Results from image segmentation of a specific imaging plane.
+      quantity: '+'
+
+
+  - neurodata_type_def: MicroscopyPlaneSegmentation
+    neurodata_type_inc: DynamicTable
+    doc: Results from image segmentation of a specific imaging plane.
+    datasets:
+    - name: image_mask
+      neurodata_type_inc: VectorData
+      dims:
+      - - num_roi
+        - num_x
+        - num_y
+      - - num_roi
+        - num_x
+        - num_y
+        - num_z
+      shape:
+      - - null
+        - null
+        - null
+      - - null
+        - null
+        - null
+        - null
+      doc: ROI masks for each ROI. Each image mask is the size of the original imaging
+        plane (or volume) and members of the ROI are finite non-zero.
+      quantity: '?'
+    - name: pixel_mask_index
+      neurodata_type_inc: VectorIndex
+      doc: Index into pixel_mask.
+      quantity: '?'
+    - name: pixel_mask
+      neurodata_type_inc: VectorData
+      dtype:
+      - name: x
+        dtype: uint32
+        doc: Pixel x-coordinate.
+      - name: y
+        dtype: uint32
+        doc: Pixel y-coordinate.
+      - name: weight
+        dtype: float32
+        doc: Weight of the pixel.
+      doc: 'Pixel masks for each ROI: a list of indices and weights for the ROI. Pixel
+        masks are concatenated and parsing of this dataset is maintained by the PlaneSegmentation'
+      quantity: '?'
+    - name: voxel_mask_index
+      neurodata_type_inc: VectorIndex
+      doc: Index into voxel_mask.
+      quantity: '?'
+    - name: voxel_mask
+      neurodata_type_inc: VectorData
+      dtype:
+      - name: x
+        dtype: uint32
+        doc: Voxel x-coordinate.
+      - name: y
+        dtype: uint32
+        doc: Voxel y-coordinate.
+      - name: z
+        dtype: uint32
+        doc: Voxel z-coordinate.
+      - name: weight
+        dtype: float32
+        doc: Weight of the voxel.
+      doc: 'Voxel masks for each ROI: a list of indices and weights for the ROI. Voxel
+        masks are concatenated and parsing of this dataset is maintained by the PlaneSegmentation'
+      quantity: '?'
+    groups:
+    - name: summary_images
+      doc: Summary images that are related to the plane segmentation, e.g., mean, correlation, maximum projection.
+      groups:
+      - neurodata_type_inc: Images
+        doc: An  container for the estimated summary images.
+        quantity: '*'
+    links:
+    - name: imaging_space
+      target_type: ImagingSpace
+      doc: Link to ImagingSpace object from which this data was generated.
+
 
   - neurodata_type_def: MicroscopySeries
     neurodata_type_inc: TimeSeries
@@ -227,7 +310,7 @@ groups:
     datasets:
     - name: depth_per_frame_in_mm
       doc: Depth of each frame in the data array.
-        These values offset the 'z' value of the origin_coordinates of the linked imaging_space object.
+        These values offset the 'z' value of the `origin_coordinates` of the linked `imaging_space` object.
       dtype: numeric
       dims:
       - frames
@@ -258,6 +341,7 @@ groups:
       doc: Link to VolumetricImagingSpace object containing metadata about the region of physical space this imaging data
         was recorded from.
       target_type: VolumetricImagingSpace
+
 
   - neurodata_type_def: MultiChannelMicroscopyVolume
     neurodata_type_inc: NWBDataInterface
@@ -307,6 +391,93 @@ groups:
       - null
       - null
       - null
+      - null
+    - name: light_sources
+      doc: An ordered list of references to MicroscopyLightSource objects containing metadata about the excitation methods.
+      neurodata_type_inc: VectorData
+      dtype:
+        reftype: object
+        target_type: MicroscopyLightSource
+      dims:
+        - light_sources
+      shape:
+        - null
+    - name: optical_channels
+      doc: An ordered list of references to MicroscopyOpticalChannel objects containing metadata about the indicator and filters used to collect this data. This maps to the last dimension of `data`, i.e., the i-th MicroscopyOpticalChannel contains metadata about the indicator and filters used to collect the volume at `data[:,:,:,i]`.
+      neurodata_type_inc: VectorData
+      dtype:
+        reftype: object
+        target_type: MicroscopyOpticalChannel
+      dims:
+        - optical_channels
+      shape:
+        - null
+    links:
+    - name: microscope
+      doc: Link to a Microscope object containing metadata about the device used to acquire this imaging data.
+      target_type: Microscope
+    - name: imaging_space
+      doc: Link to VolumetricImagingSpace object containing metadata about the region of physical space this imaging data
+        was recorded from.
+      target_type: VolumetricImagingSpace
+
+
+  - neurodata_type_def: VariableDepthMultiChannelMicroscopyVolume
+    neurodata_type_inc: NWBDataInterface
+    doc: Static (not time-varying) irregularly spaced volumetric imaging data acquired from multiple optical channels.
+    attributes:
+    - name: description
+      dtype: text
+      doc: Description of the VariableDepthMultiChannelMicroscopyVolume.
+      required: false
+    - name: unit
+      dtype: text
+      doc: Base unit of measurement for working with the data. Actual stored values are
+        not necessarily stored in these units. To access the data in these units,
+        multiply 'data' by 'conversion' and add 'offset'.
+    - name: conversion
+      dtype: float32
+      default_value: 1.0
+      doc: Scalar to multiply each element in data to convert it to the specified 'unit'.
+        If the data are stored in acquisition system units or other units
+        that require a conversion to be interpretable, multiply the data by 'conversion'
+        to convert the data to the specified 'unit'. e.g. if the data acquisition system
+        stores values in this object as signed 16-bit integers (int16 range
+        -32,768 to 32,767) that correspond to a 5V range (-2.5V to 2.5V), and the data
+        acquisition system gain is 8000X, then the 'conversion' multiplier to get from
+        raw data acquisition values to recorded volts is 2.5/32768/8000 = 9.5367e-9.
+      required: false
+    - name: offset
+      dtype: float32
+      default_value: 0.0
+      doc: Scalar to add to the data after scaling by 'conversion' to finalize its coercion
+        to the specified 'unit'. Two common examples of this include (a) data stored in an
+        unsigned type that requires a shift after scaling to re-center the data,
+        and (b) specialized recording devices that naturally cause a scalar offset with
+        respect to the true units.
+      required: false
+    datasets:
+    - name: data
+      doc: Recorded imaging data, shaped by (frame height, frame width, number of depth planes, number of optical
+        channels).
+      dtype: numeric
+      dims:
+      - height
+      - width
+      - depths
+      - channels
+      shape:
+      - null
+      - null
+      - null
+      - null
+    - name: depth_per_frame_in_mm
+      doc: Depth of each frame in the data array.
+        These values offset the 'z' value of the `origin_coordinates` of the linked `imaging_space` object.
+      dtype: numeric
+      dims:
+      - depths
+      shape:
       - null
     - name: light_sources
       doc: An ordered list of references to MicroscopyLightSource objects containing metadata about the excitation methods.
