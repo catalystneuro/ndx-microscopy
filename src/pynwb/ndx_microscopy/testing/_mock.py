@@ -385,7 +385,6 @@ def mock_VariableDepthMultiChannelMicroscopyVolume(
         depth_per_frame_in_um
         if depth_per_frame_in_um is not None
         else np.linspace(start=0.0, stop=30.0, num=series_data.shape[0])
-
     )
 
     imaging_data = data if data is not None else np.ones(shape=(10, 20, 7, 3))
