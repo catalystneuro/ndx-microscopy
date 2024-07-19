@@ -280,5 +280,8 @@ class TestMicroscopySegmentationsSimpleRoundtrip(pynwb_TestCase):
             self.assertContainerEqual(segmentations, read_nwbfile.processing["ophys"]["MicroscopySegmentations"])
 
 
+# TODO: add roundtrip test for MicroscopyResponseSeries
+
+
 if __name__ == "__main__":
     pytest.main()  # Required since not a typical package structure
