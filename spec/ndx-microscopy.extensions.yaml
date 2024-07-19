@@ -473,7 +473,6 @@ groups:
       - null
     - name: depth_per_frame_in_um
       doc: Depth in micrometers of each frame in the data array.
-        These values offset the 'z' value of the `origin_coordinates` of the linked `imaging_space` object.
       dtype: numeric
       dims:
       - depths
@@ -507,6 +506,7 @@ groups:
       doc: Link to VolumetricImagingSpace object containing metadata about the region of physical space this imaging data
         was recorded from.
       target_type: VolumetricImagingSpace
+
 
   - neurodata_type_def: MicroscopyResponseSeries
     neurodata_type_inc: TimeSeries

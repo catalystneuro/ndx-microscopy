@@ -34,8 +34,10 @@ VariableDepthMicroscopySeries = get_class("VariableDepthMicroscopySeries", exten
 VolumetricMicroscopySeries = get_class("VolumetricMicroscopySeries", extension_name)
 MultiChannelMicroscopyVolume = get_class("MultiChannelMicroscopyVolume", extension_name)
 VariableDepthMultiChannelMicroscopyVolume = get_class("VariableDepthMultiChannelMicroscopyVolume", extension_name)
+
 MicroscopyResponseSeries = get_class("MicroscopyResponseSeries", extension_name)
 MicroscopyResponseSeriesContainer = get_class("MicroscopyResponseSeriesContainer", extension_name)
+
 
 __all__ = [
     "Microscope",
