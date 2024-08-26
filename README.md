@@ -36,8 +36,8 @@ classDiagram
         links
         --------------------------------------
         microscope : Microscope
-        light_source : MicroscopyLightSource
-        optical_channel : MicroscopyOpticalChannel
+        excitation_light_path : ExcitationLightPath
+        emission_light_path : EmissionLightPath
     }
 
     class PlanarMicroscopySeries {
@@ -86,6 +86,32 @@ classDiagram
         imaging_space : VolumetricImageSpace
     }
 
+    class MultiChannelMicroscopyVolume {
+        <<NWBDataInterface>>
+        
+        --------------------------------------
+        attributes
+        --------------------------------------
+        description : text, optional
+        unit : text, optional
+        conversion : numeric, optional
+        offset : numeric, optional
+
+        --------------------------------------
+        datasets
+        --------------------------------------
+        data : numeric, frame x height x width x depth x emission_light_paths
+        --> unit : text
+        excitation_light_paths : ExcitationLightPath, excitation_light_paths
+        emission_light_paths : EmissionLightPath, emission_light_paths
+        
+        --------------------------------------
+        links
+        --------------------------------------
+        imaging_space : VolumetricImageSpace
+        microscope : Microscope
+    }
+    
     class ImagingSpace{
         <<NWBContainer>>
 
@@ -132,36 +158,34 @@ classDiagram
         reference_frame : text, optional
     }
 
-    class MicroscopyOpticalChannel{
+    class ExcitationLightPath{
         <<NWBContainer>>
 
         --------------------------------------
-        datasets
+        links
         --------------------------------------
-        description : text
+        excitation_source : ExcitationSource, optional
+        excitation_filter : OpticalFilter, optional
 
         --------------------------------------
         attributes
         --------------------------------------
-        indicator : text
-        filter_description : text, optional
-        emission_wavelength_in_nm : numeric, optional
+        excitation_wavelength_in_nm : numeric
     }
 
-    class MicroscopyLightSource{
-        <<Device>>
+    class EmissionLightPath{
+        <<NWBContainer>>
+
+        --------------------------------------
+        links
+        --------------------------------------
+        photodetector : Photodetector, optional
+        emission_filter : OpticalFilter, optional
 
         --------------------------------------
         attributes
         --------------------------------------
-        model : text, optional
-        filter_description : text, optional
-        excitation_wavelength_in_nm : numeric, optional
-        peak_power_in_W : numeric, optional
-        peak_pulse_energy_in_J : numeric, optional
-        intensity_in_W_per_m2 : numeric, optional
-        exposure_time_in_s : numeric, optional
-        pulse_rate_in_Hz : numeric, optional
+        emission_wavelength_in_nm : numeric
     }
 
     class Microscope{
@@ -182,8 +206,8 @@ classDiagram
     PlanarImagingSpace *-- ImagingSpace : extends
     VolumetricImagingSpace *-- ImagingSpace : extends
     MicroscopySeries ..> Microscope : links
-    MicroscopySeries ..> MicroscopyLightSource : links
-    MicroscopySeries ..> MicroscopyOpticalChannel : links
+    MicroscopySeries ..> ExcitationLightPath : links
+    MicroscopySeries ..> EmissionLightPath : links
 ```
 
 ---
