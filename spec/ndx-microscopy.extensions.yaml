@@ -360,7 +360,7 @@ groups:
       - height
       - width
       - depths
-      - optical_channels
+      - emission_light_paths
       shape:
       - null
       - null
