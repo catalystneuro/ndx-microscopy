@@ -6,9 +6,9 @@ from pynwb.testing.mock.file import mock_NWBFile
 
 import pynwb
 from ndx_microscopy.testing import (
-    mock_Microscope,
-    mock_ExcitationLightPath,
     mock_EmissionLightPath,
+    mock_ExcitationLightPath,
+    mock_Microscope,
     mock_MicroscopyPlaneSegmentation,
     mock_MicroscopySegmentations,
     mock_MultiChannelMicroscopyVolume,
@@ -199,7 +199,9 @@ class TestMultiChannelMicroscopyVolumeSimpleRoundtrip(pynwb_TestCase):
         # TODO: It might be more convenient in Python to have a custom constructor that takes in a list of
         # light sources and optical channels and does the VectorData wrapping internally
         excitation_light_paths_used_by_volume = pynwb.base.VectorData(
-            name="excitation_light_paths", description="Light sources used by this MultiChannelVolume.", data=excitation_light_paths
+            name="excitation_light_paths",
+            description="Light sources used by this MultiChannelVolume.",
+            data=excitation_light_paths,
         )
         emission_light_paths_used_by_volume = pynwb.base.VectorData(
             name="emission_light_paths",

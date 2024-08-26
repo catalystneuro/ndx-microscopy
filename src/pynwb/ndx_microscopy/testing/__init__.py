@@ -1,7 +1,7 @@
 from ._mock import (
-    mock_Microscope,
-    mock_ExcitationLightPath,
     mock_EmissionLightPath,
+    mock_ExcitationLightPath,
+    mock_Microscope,
     mock_MicroscopyPlaneSegmentation,
     mock_MicroscopySegmentations,
     mock_MultiChannelMicroscopyVolume,

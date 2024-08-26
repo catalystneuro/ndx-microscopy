@@ -88,7 +88,7 @@ classDiagram
 
     class MultiChannelMicroscopyVolume {
         <<NWBDataInterface>>
-        
+
         --------------------------------------
         attributes
         --------------------------------------
@@ -104,14 +104,14 @@ classDiagram
         --> unit : text
         excitation_light_paths : ExcitationLightPath, excitation_light_paths
         emission_light_paths : EmissionLightPath, emission_light_paths
-        
+
         --------------------------------------
         links
         --------------------------------------
         imaging_space : VolumetricImageSpace
         microscope : Microscope
     }
-    
+
     class ImagingSpace{
         <<NWBContainer>>
 
