@@ -5,8 +5,8 @@ import pytest
 import pynwb
 from ndx_microscopy.testing import (
     mock_Microscope,
-    mock_MicroscopyLightSource,
-    mock_MicroscopyOpticalChannel,
+    mock_ExcitationLightPath,
+    mock_EmissionLightPath,
     mock_MicroscopyPlaneSegmentation,
     mock_MicroscopySegmentations,
     mock_MultiChannelMicroscopyVolume,
@@ -23,24 +23,20 @@ def test_constructor_microscope():
     mock_Microscope()
 
 
-def test_constructor_light_source():
-    mock_MicroscopyLightSource()
+def test_constructor_excitation_light_path():
+    mock_ExcitationLightPath()
 
 
-def test_constructor_microscopy_optical_channel():
-    mock_MicroscopyOpticalChannel()
+def test_constructor_microscopy_emission_light_path():
+    mock_EmissionLightPath()
 
 
 def test_constructor_planar_image_space():
-    microscope = mock_Microscope()
-
-    mock_PlanarImagingSpace(microscope=microscope)
+    mock_PlanarImagingSpace()
 
 
 def test_constructor_volumetric_image_space():
-    microscope = mock_Microscope()
-
-    mock_VolumetricImagingSpace(microscope=microscope)
+    mock_VolumetricImagingSpace()
 
 
 def test_constructor_microscopy_segmentations():
@@ -48,16 +44,12 @@ def test_constructor_microscopy_segmentations():
 
 
 def test_constructor_microscopy_plane_segmentation():
-    microscope = mock_Microscope()
-    imaging_space = mock_PlanarImagingSpace(microscope=microscope)
-
+    imaging_space = mock_PlanarImagingSpace()
     mock_MicroscopyPlaneSegmentation(imaging_space=imaging_space)
 
 
 def test_constructor_microscopy_image_segmentation_with_plane_segmentation():
-    microscope = mock_Microscope()
-    imaging_space = mock_PlanarImagingSpace(microscope=microscope)
-
+    imaging_space = mock_PlanarImagingSpace()
     plane_segmentation_1 = mock_MicroscopyPlaneSegmentation(
         imaging_space=imaging_space, name="MicroscopyPlaneSegmentation1"
     )
@@ -71,84 +63,84 @@ def test_constructor_microscopy_image_segmentation_with_plane_segmentation():
 
 def test_constructor_planar_microscopy_series():
     microscope = mock_Microscope()
-    light_source = mock_MicroscopyLightSource()
-    imaging_space = mock_PlanarImagingSpace(microscope=microscope)
-    optical_channel = mock_MicroscopyOpticalChannel()
+    excitation_light_path = mock_ExcitationLightPath()
+    imaging_space = mock_PlanarImagingSpace()
+    emission_light_path = mock_EmissionLightPath()
 
     mock_PlanarMicroscopySeries(
-        microscope=microscope, light_source=light_source, imaging_space=imaging_space, optical_channel=optical_channel
+        microscope=microscope, excitation_light_path=excitation_light_path, imaging_space=imaging_space, emission_light_path=emission_light_path
     )
 
 
 def test_constructor_variable_depth_microscopy_series():
     microscope = mock_Microscope()
-    light_source = mock_MicroscopyLightSource()
-    imaging_space = mock_PlanarImagingSpace(microscope=microscope)
-    optical_channel = mock_MicroscopyOpticalChannel()
+    excitation_light_path = mock_ExcitationLightPath()
+    imaging_space = mock_PlanarImagingSpace()
+    emission_light_path = mock_EmissionLightPath()
 
     mock_VariableDepthMicroscopySeries(
-        microscope=microscope, light_source=light_source, imaging_space=imaging_space, optical_channel=optical_channel
+        microscope=microscope, excitation_light_path=excitation_light_path, imaging_space=imaging_space, emission_light_path=emission_light_path
     )
 
 
 def test_constructor_volumetric_microscopy_series():
     microscope = mock_Microscope()
-    light_source = mock_MicroscopyLightSource()
-    imaging_space = mock_VolumetricImagingSpace(microscope=microscope)
-    optical_channel = mock_MicroscopyOpticalChannel()
+    excitation_light_path = mock_ExcitationLightPath()
+    imaging_space = mock_VolumetricImagingSpace()
+    emission_light_path = mock_EmissionLightPath()
 
     mock_VolumetricMicroscopySeries(
-        microscope=microscope, light_source=light_source, imaging_space=imaging_space, optical_channel=optical_channel
+        microscope=microscope, excitation_light_path=excitation_light_path, imaging_space=imaging_space, emission_light_path=emission_light_path
     )
 
 
 def test_constructor_multi_channel_microscopy_volume():
     microscope = mock_Microscope()
-    imaging_space = mock_VolumetricImagingSpace(microscope=microscope)
-    light_sources = [mock_MicroscopyLightSource()]
-    optical_channels = [mock_MicroscopyOpticalChannel()]
+    imaging_space = mock_VolumetricImagingSpace()
+    excitation_light_paths = [mock_ExcitationLightPath()]
+    emission_light_paths = [mock_EmissionLightPath()]
 
-    light_sources_used_by_volume = pynwb.base.VectorData(
-        name="light_sources", description="Light sources used by this MultiChannelVolume.", data=light_sources
+    excitation_light_paths_used_by_volume = pynwb.base.VectorData(
+        name="excitation_light_paths", description="Light sources used by this MultiChannelVolume.", data=excitation_light_paths
     )
-    optical_channels_used_by_volume = pynwb.base.VectorData(
-        name="optical_channels",
+    emission_light_paths_used_by_volume = pynwb.base.VectorData(
+        name="emission_light_paths",
         description=(
             "Optical channels ordered to correspond to the third axis (e.g., [0, 0, :, 0]) "
             "of the data for this MultiChannelVolume."
         ),
-        data=optical_channels,
+        data=emission_light_paths,
     )
     mock_MultiChannelMicroscopyVolume(
         microscope=microscope,
         imaging_space=imaging_space,
-        light_sources=light_sources_used_by_volume,
-        optical_channels=optical_channels_used_by_volume,
+        excitation_light_paths=excitation_light_paths_used_by_volume,
+        emission_light_paths=emission_light_paths_used_by_volume,
     )
 
 
 def test_constructor_variable_depth_multi_channel_microscopy_volume():
     microscope = mock_Microscope()
-    imaging_space = mock_VolumetricImagingSpace(microscope=microscope)
-    light_sources = [mock_MicroscopyLightSource()]
-    optical_channels = [mock_MicroscopyOpticalChannel()]
+    imaging_space = mock_VolumetricImagingSpace()
+    excitation_light_paths = [mock_ExcitationLightPath()]
+    emission_light_paths = [mock_EmissionLightPath()]
 
-    light_sources_used_by_volume = pynwb.base.VectorData(
-        name="light_sources", description="Light sources used by this MultiChannelVolume.", data=light_sources
+    excitation_light_paths_used_by_volume = pynwb.base.VectorData(
+        name="excitation_light_paths", description="Light sources used by this MultiChannelVolume.", data=excitation_light_paths
     )
-    optical_channels_used_by_volume = pynwb.base.VectorData(
-        name="optical_channels",
+    emission_light_paths_used_by_volume = pynwb.base.VectorData(
+        name="emission_light_paths",
         description=(
             "Optical channels ordered to correspond to the third axis (e.g., [0, 0, :, 0]) "
             "of the data for this MultiChannelVolume."
         ),
-        data=optical_channels,
+        data=emission_light_paths,
     )
     mock_VariableDepthMultiChannelMicroscopyVolume(
         microscope=microscope,
         imaging_space=imaging_space,
-        light_sources=light_sources_used_by_volume,
-        optical_channels=optical_channels_used_by_volume,
+        excitation_light_paths=excitation_light_paths_used_by_volume,
+        emission_light_paths=emission_light_paths_used_by_volume,
     )
 
 

@@ -7,6 +7,18 @@ from pynwb.testing.mock.utils import name_generator
 
 import ndx_microscopy
 
+from ndx_ophys_devices import (
+    OpticalFilter,
+    ExcitationSource,
+    Indicator,
+    Photodetector,
+)
+from ndx_ophys_devices.testing import (
+    mock_Indicator,
+    mock_Photodetector,
+    mock_OpticalFilter,
+    mock_ExcitationSource,
+)
 
 def mock_Microscope(
     *,
@@ -24,57 +36,46 @@ def mock_Microscope(
     return microscope
 
 
-def mock_MicroscopyLightSource(
+def mock_ExcitationLightPath(
     *,
     name: Optional[str] = None,
-    description: str = "This is a mock instance of a MicroscopyLightSource type to be used for rapid testing.",
-    manufacturer: str = "A fake manufacturer of the mock light source.",
-    model: str = "A fake model of the mock light source.",
-    filter_description: str = "A description about the fake filter used by the mock light source.",
+    description: str = "This is a mock instance of a ExcitationLightPath type to be used for rapid testing.",
     excitation_wavelength_in_nm: float = 500.0,
-    peak_power_in_W: float = 0.7,
-    peak_pulse_energy_in_J: float = 0.7,
-    intensity_in_W_per_m2: float = 0.005,
-    exposure_time_in_s: float = 2.51e-13,
-    pulse_rate_in_Hz: float = 2.0e6,
-) -> ndx_microscopy.MicroscopyLightSource:
-    light_source = ndx_microscopy.MicroscopyLightSource(
-        name=name or name_generator("MicroscopyLightSource"),
+    excitation_source: ExcitationSource = None,
+    excitation_filter: OpticalFilter = None,
+) -> ndx_microscopy.ExcitationLightPath:
+    excitation_light_path = ndx_microscopy.ExcitationLightPath(
+        name=name or name_generator("ExcitationLightPath"),
         description=description,
-        manufacturer=manufacturer,
-        model=model,
-        filter_description=filter_description,
         excitation_wavelength_in_nm=excitation_wavelength_in_nm,
-        peak_power_in_W=peak_power_in_W,
-        peak_pulse_energy_in_J=peak_pulse_energy_in_J,
-        intensity_in_W_per_m2=intensity_in_W_per_m2,
-        exposure_time_in_s=exposure_time_in_s,
-        pulse_rate_in_Hz=pulse_rate_in_Hz,
+        excitation_source=excitation_source or mock_ExcitationSource(),
+        excitation_filter=excitation_filter or mock_OpticalFilter(),
     )
-    return light_source
+    return excitation_light_path
 
 
-def mock_MicroscopyOpticalChannel(
+def mock_EmissionLightPath(
     *,
     name: Optional[str] = None,
-    description: str = "This is a mock instance of a MicroscopyOpticalChannel type to be used for rapid testing.",
-    indicator: str = "The indicator targeted by the mock optical channel.",
-    filter_description: str = "A description about the fake filter used by the mock optical channel.",
+    description: str = "This is a mock instance of a EmissionLightPath type to be used for rapid testing.",
+    indicator: Indicator = None,
+    photodetector: Photodetector = None,
+    emission_filter: OpticalFilter = None,
     emission_wavelength_in_nm: float = 450.0,
-) -> ndx_microscopy.MicroscopyOpticalChannel:
-    optical_channel = ndx_microscopy.MicroscopyOpticalChannel(
-        name=name or name_generator("MicroscopyOpticalChannel"),
+) -> ndx_microscopy.EmissionLightPath:
+    emission_light_path = ndx_microscopy.EmissionLightPath(
+        name=name or name_generator("EmissionLightPath"),
         description=description,
-        indicator=indicator,
-        filter_description=filter_description,
+        indicator=indicator or mock_Indicator(),
+        photodetector=photodetector or mock_Photodetector(),
+        emission_filter=emission_filter or mock_OpticalFilter(),
         emission_wavelength_in_nm=emission_wavelength_in_nm,
     )
-    return optical_channel
+    return emission_light_path
 
 
 def mock_PlanarImagingSpace(
     *,
-    microscope: ndx_microscopy.Microscope,
     name: Optional[str] = None,
     description: str = "This is a mock instance of a PlanarImagingSpace type to be used for rapid testing.",
     origin_coordinates: Tuple[float, float, float] = (-1.2, -0.6, -2),
@@ -85,7 +86,6 @@ def mock_PlanarImagingSpace(
     planar_imaging_space = ndx_microscopy.PlanarImagingSpace(
         name=name or name_generator("PlanarImagingSpace"),
         description=description,
-        microscope=microscope,
         origin_coordinates=origin_coordinates,
         grid_spacing_in_um=grid_spacing_in_um,
         location=location,
@@ -96,7 +96,6 @@ def mock_PlanarImagingSpace(
 
 def mock_VolumetricImagingSpace(
     *,
-    microscope: ndx_microscopy.Microscope,
     name: Optional[str] = None,
     description: str = "This is a mock instance of a VolumetricImagingSpace type to be used for rapid testing.",
     origin_coordinates: Tuple[float, float, float] = (-1.2, -0.6, -2),
@@ -107,7 +106,6 @@ def mock_VolumetricImagingSpace(
     volumetric_imaging_space = ndx_microscopy.VolumetricImagingSpace(
         name=name or name_generator("VolumetricImagingSpace"),
         description=description,
-        microscope=microscope,
         origin_coordinates=origin_coordinates,
         grid_spacing_in_um=grid_spacing_in_um,
         location=location,
@@ -122,9 +120,7 @@ def mock_MicroscopySegmentations(
     microscopy_plane_segmentations: Optional[Iterable[ndx_microscopy.MicroscopyPlaneSegmentation]] = None,
 ) -> ndx_microscopy.MicroscopySegmentations:
     name = name or name_generator("MicroscopySegmentations")
-
-    microscope = mock_Microscope()
-    imaging_space = mock_PlanarImagingSpace(microscope=microscope)
+    imaging_space = mock_PlanarImagingSpace()
     microscopy_plane_segmentations = microscopy_plane_segmentations or [
         mock_MicroscopyPlaneSegmentation(imaging_space=imaging_space)
     ]
@@ -162,9 +158,9 @@ def mock_MicroscopyPlaneSegmentation(
 def mock_PlanarMicroscopySeries(
     *,
     microscope: ndx_microscopy.Microscope,
-    light_source: ndx_microscopy.MicroscopyLightSource,
+    excitation_light_path: ndx_microscopy.ExcitationLightPath,
     imaging_space: ndx_microscopy.PlanarImagingSpace,
-    optical_channel: ndx_microscopy.MicroscopyOpticalChannel,
+    emission_light_path: ndx_microscopy.EmissionLightPath,
     name: Optional[str] = None,
     description: str = "This is a mock instance of a PlanarMicroscopySeries type to be used for rapid testing.",
     data: Optional[np.ndarray] = None,
@@ -200,9 +196,9 @@ def mock_PlanarMicroscopySeries(
         name=series_name,
         description=description,
         microscope=microscope,
-        light_source=light_source,
+        excitation_light_path=excitation_light_path,
         imaging_space=imaging_space,
-        optical_channel=optical_channel,
+        emission_light_path=emission_light_path,
         data=series_data,
         unit=unit,
         conversion=conversion,
@@ -217,9 +213,9 @@ def mock_PlanarMicroscopySeries(
 def mock_VariableDepthMicroscopySeries(
     *,
     microscope: ndx_microscopy.Microscope,
-    light_source: ndx_microscopy.MicroscopyLightSource,
+    excitation_light_path: ndx_microscopy.ExcitationLightPath,
     imaging_space: ndx_microscopy.PlanarImagingSpace,
-    optical_channel: ndx_microscopy.MicroscopyOpticalChannel,
+    emission_light_path: ndx_microscopy.EmissionLightPath,
     name: Optional[str] = None,
     description: str = "This is a mock instance of a PlanarMicroscopySeries type to be used for rapid testing.",
     data: Optional[np.ndarray] = None,
@@ -262,9 +258,9 @@ def mock_VariableDepthMicroscopySeries(
         name=series_name,
         description=description,
         microscope=microscope,
-        light_source=light_source,
+        excitation_light_path=excitation_light_path,
         imaging_space=imaging_space,
-        optical_channel=optical_channel,
+        emission_light_path=emission_light_path,
         data=series_data,
         depth_per_frame_in_um=depth_per_frame_in_um,
         unit=unit,
@@ -280,9 +276,9 @@ def mock_VariableDepthMicroscopySeries(
 def mock_VolumetricMicroscopySeries(
     *,
     microscope: ndx_microscopy.Microscope,
-    light_source: ndx_microscopy.MicroscopyLightSource,
+    excitation_light_path: ndx_microscopy.ExcitationLightPath,
     imaging_space: ndx_microscopy.VolumetricImagingSpace,
-    optical_channel: ndx_microscopy.MicroscopyOpticalChannel,
+    emission_light_path: ndx_microscopy.EmissionLightPath,
     name: Optional[str] = None,
     description: str = "This is a mock instance of a VolumetricMicroscopySeries type to be used for rapid testing.",
     data: Optional[np.ndarray] = None,
@@ -318,9 +314,9 @@ def mock_VolumetricMicroscopySeries(
         name=series_name,
         description=description,
         microscope=microscope,
-        light_source=light_source,
+        excitation_light_path=excitation_light_path,
         imaging_space=imaging_space,
-        optical_channel=optical_channel,
+        emission_light_path=emission_light_path,
         data=series_data,
         unit=unit,
         conversion=conversion,
@@ -336,8 +332,8 @@ def mock_MultiChannelMicroscopyVolume(
     *,
     microscope: ndx_microscopy.Microscope,
     imaging_space: ndx_microscopy.VolumetricImagingSpace,
-    light_sources: pynwb.base.VectorData,
-    optical_channels: pynwb.base.VectorData,
+    excitation_light_paths: pynwb.base.VectorData,
+    emission_light_paths: pynwb.base.VectorData,
     name: Optional[str] = None,
     description: str = "This is a mock instance of a MultiChannelMicroscopyVolume type to be used for rapid testing.",
     data: Optional[np.ndarray] = None,
@@ -353,8 +349,8 @@ def mock_MultiChannelMicroscopyVolume(
         description=description,
         microscope=microscope,
         imaging_space=imaging_space,
-        light_sources=light_sources,
-        optical_channels=optical_channels,
+        excitation_light_paths=excitation_light_paths,
+        emission_light_paths=emission_light_paths,
         data=imaging_data,
         unit=unit,
         conversion=conversion,
@@ -367,8 +363,8 @@ def mock_VariableDepthMultiChannelMicroscopyVolume(
     *,
     microscope: ndx_microscopy.Microscope,
     imaging_space: ndx_microscopy.VolumetricImagingSpace,
-    light_sources: pynwb.base.VectorData,
-    optical_channels: pynwb.base.VectorData,
+    excitation_light_paths: pynwb.base.VectorData,
+    emission_light_paths: pynwb.base.VectorData,
     name: Optional[str] = None,
     description: str = "This is a mock instance of a MultiChannelMicroscopyVolume type to be used for rapid testing.",
     data: Optional[np.ndarray] = None,
@@ -393,8 +389,8 @@ def mock_VariableDepthMultiChannelMicroscopyVolume(
         description=description,
         microscope=microscope,
         imaging_space=imaging_space,
-        light_sources=light_sources,
-        optical_channels=optical_channels,
+        excitation_light_paths=excitation_light_paths,
+        emission_light_paths=emission_light_paths,
         data=imaging_data,
         depth_per_frame_in_um=volume_depth_per_frame_in_um,
         unit=unit,
