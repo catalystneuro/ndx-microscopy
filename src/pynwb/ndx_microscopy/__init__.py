@@ -1,5 +1,6 @@
 import os
-from pynwb import load_namespaces, get_class
+
+from pynwb import get_class, load_namespaces
 
 try:
     from importlib.resources import files
@@ -7,22 +8,53 @@ except ImportError:
     # TODO: Remove when python 3.9 becomes the new minimum
     from importlib_resources import files
 
+extension_name = "ndx-microscopy"
+
 # Get path to the namespace.yaml file with the expected location when installed not in editable mode
 __location_of_this_file = files(__name__)
-__spec_path = __location_of_this_file / "spec" / "ndx-microscopy.namespace.yaml"
+__spec_path = __location_of_this_file / "spec" / f"{extension_name}.namespace.yaml"
 
 # If that path does not exist, we are likely running in editable mode. Use the local path instead
 if not os.path.exists(__spec_path):
-    __spec_path = __location_of_this_file.parent.parent.parent / "spec" / "ndx-microscopy.namespace.yaml"
+    __spec_path = __location_of_this_file.parent.parent.parent / "spec" / f"{extension_name}.namespace.yaml"
 
-# Load the namespace
 load_namespaces(str(__spec_path))
+from ndx_ophys_devices import (
+    OpticalFilter,
+    ExcitationSource,
+    Indicator,
+    Photodetector,
+)
+Microscope = get_class("Microscope", extension_name)
+ExcitationLightPath = get_class("ExcitationLightPath", extension_name)
+EmissionLightPath = get_class("EmissionLightPath", extension_name)
+ImagingSpace = get_class("ImagingSpace", extension_name)
+PlanarImagingSpace = get_class("PlanarImagingSpace", extension_name)
+VolumetricImagingSpace = get_class("VolumetricImagingSpace", extension_name)
+MicroscopySegmentations = get_class("MicroscopySegmentations", extension_name)
+MicroscopyPlaneSegmentation = get_class("MicroscopyPlaneSegmentation", extension_name)
+MicroscopySeries = get_class("MicroscopySeries", extension_name)
+PlanarMicroscopySeries = get_class("PlanarMicroscopySeries", extension_name)
+VariableDepthMicroscopySeries = get_class("VariableDepthMicroscopySeries", extension_name)
+VolumetricMicroscopySeries = get_class("VolumetricMicroscopySeries", extension_name)
+MultiChannelMicroscopyVolume = get_class("MultiChannelMicroscopyVolume", extension_name)
+VariableDepthMultiChannelMicroscopyVolume = get_class("VariableDepthMultiChannelMicroscopyVolume", extension_name)
 
-# TODO: Define your classes here to make them accessible at the package level.
-# Either have PyNWB generate a class from the spec using `get_class` as shown
-# below or write a custom class and register it using the class decorator
-# `@register_class("TetrodeSeries", "ndx-microscopy")`
-TetrodeSeries = get_class("TetrodeSeries", "ndx-microscopy")
-
-# Remove these functions from the package
-del load_namespaces, get_class
+__all__ = [
+    "OpticalFilter",
+    "ExcitationSource",
+    "Indicator",
+    "Photodetector",
+    "Microscope",
+    "ImagingSpace",
+    "PlanarImagingSpace",
+    "VolumetricImagingSpace",
+    "MicroscopySegmentations",
+    "MicroscopyPlaneSegmentation",
+    "MicroscopySeries",
+    "PlanarMicroscopySeries",
+    "VariableDepthMicroscopySeries",
+    "VolumetricMicroscopySeries",
+    "MultiChannelMicroscopyVolume",
+    "VariableDepthMultiChannelMicroscopyVolume",
+]
