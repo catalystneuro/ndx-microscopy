@@ -19,10 +19,15 @@ if not os.path.exists(__spec_path):
     __spec_path = __location_of_this_file.parent.parent.parent / "spec" / f"{extension_name}.namespace.yaml"
 
 load_namespaces(str(__spec_path))
-
+from ndx_ophys_devices import (
+    OpticalFilter,
+    ExcitationSource,
+    Indicator,
+    Photodetector,
+)
 Microscope = get_class("Microscope", extension_name)
-MicroscopyLightSource = get_class("MicroscopyLightSource", extension_name)
-MicroscopyOpticalChannel = get_class("MicroscopyOpticalChannel", extension_name)
+ExcitationLightPath = get_class("ExcitationLightPath", extension_name)
+EmissionLightPath = get_class("EmissionLightPath", extension_name)
 ImagingSpace = get_class("ImagingSpace", extension_name)
 PlanarImagingSpace = get_class("PlanarImagingSpace", extension_name)
 VolumetricImagingSpace = get_class("VolumetricImagingSpace", extension_name)
@@ -36,9 +41,11 @@ MultiChannelMicroscopyVolume = get_class("MultiChannelMicroscopyVolume", extensi
 VariableDepthMultiChannelMicroscopyVolume = get_class("VariableDepthMultiChannelMicroscopyVolume", extension_name)
 
 __all__ = [
+    "OpticalFilter",
+    "ExcitationSource",
+    "Indicator",
+    "Photodetector",
     "Microscope",
-    "MicroscopyLightSource",
-    "MicroscopyOpticalChannel",
     "ImagingSpace",
     "PlanarImagingSpace",
     "VolumetricImagingSpace",

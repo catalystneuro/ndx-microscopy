@@ -9,5 +9,6 @@ namespaces:
   - alessandra.trapani@catalystneuro.com
   schema:
   - namespace: core
+  - namespace: ndx-ophys-devices
   - source: ndx-microscopy.extensions.yaml
   version: 0.1.0

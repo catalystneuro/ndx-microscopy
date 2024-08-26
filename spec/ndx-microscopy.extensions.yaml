@@ -6,67 +6,45 @@ groups:
     attributes:
       - name: model
         dtype: text
-        doc: Model identifier of the light source device.
+        doc: Model identifier of the microscope.
         required: false
 
-  - neurodata_type_def: MicroscopyLightSource
-    neurodata_type_inc: Device
-    doc: Light source used to illuminate an imaging space.
+  - neurodata_type_def: ExcitationLightPath
+    neurodata_type_inc: NWBContainer
+    doc: Excitation light path that illuminates an imaging space.
     attributes:
-      - name: model
-        dtype: text
-        doc: Model identifier of the light source device.
-        required: false
-      - name: filter_description
-        dtype: text
-        doc: Filter used to obtain the excitation wavelength of light, e.g. 'Short pass at 1040 nm'.
-        required: false
       - name: excitation_wavelength_in_nm
         dtype: numeric
         doc: Excitation wavelength of light, in nanometers.
+    links:
+      - name: excitation_source
+        target_type: ExcitationSource
+        doc: Link to ExcitationSource object which contains metadata about the excitation source device. If it is a pulsed excitation source link a PulsedExcitationSource object.
         required: false
-      - name: peak_power_in_W
-        dtype: numeric
-        doc: Incident power of stimulation device (in Watts).
-        required: false
-      - name: peak_pulse_energy_in_J
-        dtype: numeric
-        doc: If device is pulsed light source, pulse energy (in Joules).
-        required: false
-      - name: intensity_in_W_per_m2
-        dtype: numeric
-        doc: Intensity of the excitation in W/m^2, if known.
-        required: false
-      - name: exposure_time_in_s
-        dtype: numeric
-        doc: Exposure time of the sample (in sec).
-        required: false
-      - name: pulse_rate_in_Hz
-        dtype: numeric
-        doc: If device is pulsed light source, pulse rate (in Hz) used for stimulation.
+      - name: excitation_filter
+        target_type: OpticalFilter
+        doc: Link to OpticalFilter object which contains metadata about the optical filter in this excitation light path. It can be either a BandOpticalFilter (e.g., 'Bandpass', 'Bandstop', 'Longpass', 'Shortpass') or a EdgeOpticalFilter (Longpass or Shortpass).
         required: false
 
-  # Microscopy is added on to this only to differentiate from the OpticalChannel in the core namespace
-  # It would be removed when this structure is merged to core
-  - neurodata_type_def: MicroscopyOpticalChannel
-    neurodata_type_inc: LabMetaData  # Would prefer basic NWBContainer
-    doc: An optical channel used to filter light emission from an imaging space.
-    datasets:
-    - name: description
-      doc: Description or other notes about the channel.
-      dtype: text
+  - neurodata_type_def: EmissionLightPath
+    neurodata_type_inc: NWBContainer
+    doc: Emission light path from an imaging space.
     attributes:
-    - name: indicator
-      doc: Identifier for the indicator pertaining to this optical channel.
-      dtype: text
-    - name: filter_description
-      doc: Metadata information about the filter used by this optical channel.
-      dtype: text
-      required: false
-    - name: emission_wavelength_in_nm
-      doc: Emission wavelength for this optical channel, in nanometers.
-      dtype: numeric
-      required: false
+      - name: emission_wavelength_in_nm
+        dtype: numeric
+        doc: Emission wavelength of light, in nanometers.
+    links:
+      - name: photodetector
+        target_type: Photodetector
+        doc: Link to Photodetector object which contains metadata about the photodetector device.
+        required: false
+      - name: emission_filter
+        target_type: OpticalFilter
+        doc: Link to OpticalFilter object which contains metadata about the optical filter in this emission light path. It can be either a BandOpticalFilter (e.g., 'Bandpass', 'Bandstop', 'Longpass', 'Shortpass') or a EdgeOpticalFilter (Longpass or Shortpass).
+        required: false
+      - name: indicator
+        target_type: Indicator
+        doc: Link to Indicator object which contains metadata about the indicator used in this light path.
 
   - neurodata_type_def: ImagingSpace
     neurodata_type_inc: LabMetaData  # Would prefer basic NWBContainer
@@ -97,10 +75,6 @@ groups:
         Use standard atlas names for anatomical regions when possible.
         Specify 'whole brain' if the entire brain is strictly contained within the space.
       required: false
-    links:
-    - name: microscope
-      target_type: Microscope
-      doc: Link to Microscope object which contains metadata about the device which imaged this space.
 
   - neurodata_type_def: PlanarImagingSpace
     neurodata_type_inc: ImagingSpace
@@ -273,13 +247,13 @@ groups:
     - name: microscope
       doc: Link to a Microscope object containing metadata about the device used to acquire this imaging data.
       target_type: Microscope
-    - name: light_source
-      doc: Link to a MicroscopyLightSource object containing metadata about the device used to illuminate the imaging space.
-      target_type: MicroscopyLightSource
-    - name: optical_channel
-      doc: Link to a MicroscopyOpticalChannel object containing metadata about the indicator and filters used to collect
+    - name: excitation_light_path
+      doc: Link to a ExcitationLightPath object containing metadata about the device used to illuminate the imaging space.
+      target_type: ExcitationLightPath
+    - name: emission_light_path
+      doc: Link to a EmissionLightPath object containing metadata about the indicator and filters used to collect
         this data.
-      target_type: MicroscopyOpticalChannel
+      target_type: EmissionLightPath
 
   - neurodata_type_def: PlanarMicroscopySeries
     neurodata_type_inc: MicroscopySeries
@@ -392,24 +366,24 @@ groups:
       - null
       - null
       - null
-    - name: light_sources
-      doc: An ordered list of references to MicroscopyLightSource objects containing metadata about the excitation methods.
+    - name: excitation_light_paths
+      doc: An ordered list of references to ExcitationLightPath objects containing metadata about the excitation methods.
       neurodata_type_inc: VectorData
       dtype:
         reftype: object
-        target_type: MicroscopyLightSource
+        target_type: ExcitationLightPath
       dims:
-        - light_sources
+        - excitation_light_paths
       shape:
         - null
-    - name: optical_channels
-      doc: An ordered list of references to MicroscopyOpticalChannel objects containing metadata about the indicator and filters used to collect this data. This maps to the last dimension of `data`, i.e., the i-th MicroscopyOpticalChannel contains metadata about the indicator and filters used to collect the volume at `data[:,:,:,i]`.
+    - name: emission_light_paths
+      doc: An ordered list of references to EmissionLightPath objects containing metadata about the indicator and filters used to collect this data. This maps to the last dimension of `data`, i.e., the i-th MicroscopyOpticalChannel contains metadata about the indicator and filters used to collect the volume at `data[:,:,:,i]`.
       neurodata_type_inc: VectorData
       dtype:
         reftype: object
-        target_type: MicroscopyOpticalChannel
+        target_type: EmissionLightPath
       dims:
-        - optical_channels
+        - emission_light_paths
       shape:
         - null
     links:
@@ -478,24 +452,24 @@ groups:
       - depths
       shape:
       - null
-    - name: light_sources
-      doc: An ordered list of references to MicroscopyLightSource objects containing metadata about the excitation methods.
+    - name: excitation_light_paths
+      doc: An ordered list of references to ExcitationLightPath objects containing metadata about the excitation methods.
       neurodata_type_inc: VectorData
       dtype:
         reftype: object
-        target_type: MicroscopyLightSource
+        target_type: ExcitationLightPath
       dims:
-        - light_sources
+        - excitation_light_paths
       shape:
         - null
-    - name: optical_channels
-      doc: An ordered list of references to MicroscopyOpticalChannel objects containing metadata about the indicator and filters used to collect this data. This maps to the last dimension of `data`, i.e., the i-th MicroscopyOpticalChannel contains metadata about the indicator and filters used to collect the volume at `data[:,:,:,i]`.
+    - name: emission_light_paths
+      doc: An ordered list of references to EmissionLightPath objects containing metadata about the indicator and filters used to collect this data. This maps to the last dimension of `data`, i.e., the i-th MicroscopyOpticalChannel contains metadata about the indicator and filters used to collect the volume at `data[:,:,:,i]`.
       neurodata_type_inc: VectorData
       dtype:
         reftype: object
-        target_type: MicroscopyOpticalChannel
+        target_type: EmissionLightPath
       dims:
-        - optical_channels
+        - emission_light_paths
       shape:
         - null
     links:
