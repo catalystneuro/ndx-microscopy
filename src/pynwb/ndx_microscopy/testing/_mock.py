@@ -3,22 +3,17 @@ from typing import Iterable, List, Optional, Tuple
 
 import numpy as np
 import pynwb.base
+from ndx_ophys_devices import ExcitationSource, Indicator, OpticalFilter, Photodetector
+from ndx_ophys_devices.testing import (
+    mock_ExcitationSource,
+    mock_Indicator,
+    mock_OpticalFilter,
+    mock_Photodetector,
+)
 from pynwb.testing.mock.utils import name_generator
 
 import ndx_microscopy
 
-from ndx_ophys_devices import (
-    OpticalFilter,
-    ExcitationSource,
-    Indicator,
-    Photodetector,
-)
-from ndx_ophys_devices.testing import (
-    mock_Indicator,
-    mock_Photodetector,
-    mock_OpticalFilter,
-    mock_ExcitationSource,
-)
 
 def mock_Microscope(
     *,

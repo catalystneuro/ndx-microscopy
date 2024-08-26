@@ -4,9 +4,9 @@ import pytest
 
 import pynwb
 from ndx_microscopy.testing import (
-    mock_Microscope,
-    mock_ExcitationLightPath,
     mock_EmissionLightPath,
+    mock_ExcitationLightPath,
+    mock_Microscope,
     mock_MicroscopyPlaneSegmentation,
     mock_MicroscopySegmentations,
     mock_MultiChannelMicroscopyVolume,
@@ -68,7 +68,10 @@ def test_constructor_planar_microscopy_series():
     emission_light_path = mock_EmissionLightPath()
 
     mock_PlanarMicroscopySeries(
-        microscope=microscope, excitation_light_path=excitation_light_path, imaging_space=imaging_space, emission_light_path=emission_light_path
+        microscope=microscope,
+        excitation_light_path=excitation_light_path,
+        imaging_space=imaging_space,
+        emission_light_path=emission_light_path,
     )
 
 
@@ -79,7 +82,10 @@ def test_constructor_variable_depth_microscopy_series():
     emission_light_path = mock_EmissionLightPath()
 
     mock_VariableDepthMicroscopySeries(
-        microscope=microscope, excitation_light_path=excitation_light_path, imaging_space=imaging_space, emission_light_path=emission_light_path
+        microscope=microscope,
+        excitation_light_path=excitation_light_path,
+        imaging_space=imaging_space,
+        emission_light_path=emission_light_path,
     )
 
 
@@ -90,7 +96,10 @@ def test_constructor_volumetric_microscopy_series():
     emission_light_path = mock_EmissionLightPath()
 
     mock_VolumetricMicroscopySeries(
-        microscope=microscope, excitation_light_path=excitation_light_path, imaging_space=imaging_space, emission_light_path=emission_light_path
+        microscope=microscope,
+        excitation_light_path=excitation_light_path,
+        imaging_space=imaging_space,
+        emission_light_path=emission_light_path,
     )
 
 
@@ -101,7 +110,9 @@ def test_constructor_multi_channel_microscopy_volume():
     emission_light_paths = [mock_EmissionLightPath()]
 
     excitation_light_paths_used_by_volume = pynwb.base.VectorData(
-        name="excitation_light_paths", description="Light sources used by this MultiChannelVolume.", data=excitation_light_paths
+        name="excitation_light_paths",
+        description="Light sources used by this MultiChannelVolume.",
+        data=excitation_light_paths,
     )
     emission_light_paths_used_by_volume = pynwb.base.VectorData(
         name="emission_light_paths",
@@ -126,7 +137,9 @@ def test_constructor_variable_depth_multi_channel_microscopy_volume():
     emission_light_paths = [mock_EmissionLightPath()]
 
     excitation_light_paths_used_by_volume = pynwb.base.VectorData(
-        name="excitation_light_paths", description="Light sources used by this MultiChannelVolume.", data=excitation_light_paths
+        name="excitation_light_paths",
+        description="Light sources used by this MultiChannelVolume.",
+        data=excitation_light_paths,
     )
     emission_light_paths_used_by_volume = pynwb.base.VectorData(
         name="emission_light_paths",

@@ -19,12 +19,8 @@ if not os.path.exists(__spec_path):
     __spec_path = __location_of_this_file.parent.parent.parent / "spec" / f"{extension_name}.namespace.yaml"
 
 load_namespaces(str(__spec_path))
-from ndx_ophys_devices import (
-    OpticalFilter,
-    ExcitationSource,
-    Indicator,
-    Photodetector,
-)
+from ndx_ophys_devices import ExcitationSource, Indicator, OpticalFilter, Photodetector
+
 Microscope = get_class("Microscope", extension_name)
 ExcitationLightPath = get_class("ExcitationLightPath", extension_name)
 EmissionLightPath = get_class("EmissionLightPath", extension_name)
