@@ -418,7 +418,7 @@ def mock_MicroscopyResponseSeries(
 
 def mock_MicroscopyResponseSeriesContainer(
     *,
-    microscopy_response_series: List[microscopy_response_series],
+    microscopy_response_series: List[ndx_microscopy.MicroscopyResponseSeries],
     name: Optional[str] = None,
 ) -> ndx_microscopy.MicroscopyResponseSeriesContainer:
     container_name = name or name_generator("MicroscopyResponseSeriesContainer")

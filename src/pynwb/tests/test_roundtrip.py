@@ -256,8 +256,8 @@ class TestMicroscopySegmentationsSimpleRoundtrip(pynwb_TestCase):
         segmentations = ndx_microscopy.testing.mock_MicroscopySegmentations(
             name="MicroscopySegmentations", microscopy_plane_segmentations=microscopy_plane_segmentations
         )
-        processing_module = nwbfile.create_processing_module(name="ophys", description="")
-        processing_module.add(segmentations)
+        ophys_module = nwbfile.create_processing_module(name="ophys", description="")
+        ophys_module.add(segmentations)
 
         with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="w") as io:
             io.write(nwbfile)
@@ -284,34 +284,38 @@ class TestMicroscopyResponseSeriesSimpleRoundtrip(pynwb_TestCase):
     def test_roundtrip(self):
         nwbfile = mock_NWBFile()
 
-        ophys_module = nwbfile.create_processing_module(name="ophys", description="Optical neurophysiology data.")
-
         microscope = ndx_microscopy.testing.mock_Microscope(name="Microscope")
         nwbfile.add_device(devices=microscope)
 
-        imaging_space = ndx_microscopy.testing.mock_PlanarImagingSpace(device=device)
+        imaging_space = ndx_microscopy.testing.mock_PlanarImagingSpace(microscope=microscope)
         nwbfile.add_lab_meta_data(lab_meta_data=imaging_space)  # Would prefer .add_imaging_space()
 
-        plane_segmentation = ndx_microscopy.testing.mock_MicroscopyPlaneSegmentation(
+        microscopy_plane_segmentations = ndx_microscopy.testing.mock_MicroscopyPlaneSegmentation(
             name="MicroscopyPlaneSegmentation", imaging_space=imaging_space
         )
-        ophys_module.add(plane_segmentation)
+
+        segmentations = ndx_microscopy.testing.mock_MicroscopySegmentations(
+            name="MicroscopySegmentations", microscopy_plane_segmentations=[microscopy_plane_segmentations]
+        )
+        ophys_module = nwbfile.create_processing_module(name="ophys", description="")
+        ophys_module.add(segmentations)
 
         number_of_rois = 10
         plane_segmentation_region = pynwb.ophys.DynamicTableRegion(
             name="table_region",  # Name must be exactly this
             description="",
             data=[x for x in range(number_of_rois)],
-            table=plane_segmentation,
+            table=microscopy_plane_segmentations,
         )
         microscopy_response_series = ndx_microscopy.testing.mock_MicroscopyResponseSeries(
             name="MicroscopyResponseSeries",
             table_region=plane_segmentation_region,
         )
 
-        container = ndx_microscopy.MicroscopyResponseSeriesContainer(
+        microscopy_response_series_container = ndx_microscopy.MicroscopyResponseSeriesContainer(
             name="MicroscopyResponseSeriesContainer", microscopy_response_series=[microscopy_response_series]
         )
+        ophys_module.add(microscopy_response_series_container)
 
         with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="w") as io:
             io.write(nwbfile)
@@ -325,7 +329,10 @@ class TestMicroscopyResponseSeriesSimpleRoundtrip(pynwb_TestCase):
 
             self.assertContainerEqual(segmentations, read_nwbfile.processing["ophys"]["MicroscopySegmentations"])
 
-            self.assertContainerEqual(container, read_nwbfile.processing["ophys"]["MicroscopyResponseSeriesContainer"])
+            self.assertContainerEqual(
+                microscopy_response_series_container,
+                read_nwbfile.processing["ophys"]["MicroscopyResponseSeriesContainer"],
+            )
 
 
 if __name__ == "__main__":
