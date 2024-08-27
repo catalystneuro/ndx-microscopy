@@ -378,7 +378,11 @@ def mock_MicroscopyResponseSeries(
 ) -> ndx_microscopy.MicroscopyResponseSeries:
     series_name = name or name_generator("MicroscopyResponseSeries")
 
-    response_series = ndx_microscopy.MicroscopyResponseSeries(
+    number_of_frames = 100
+    number_of_rois = len(table_region.data)
+    series_data = data if data is not None else np.ones(shape=(number_of_frames, number_of_rois))
+
+    microscopy_response_series = ndx_microscopy.MicroscopyResponseSeries(
         name=series_name,
         description=description,
         table_region=table_region,
@@ -391,38 +395,21 @@ def mock_MicroscopyResponseSeries(
         timestamps=timestamps,
     )
 
-    return response_series
+    return microscopy_response_series
 
 
 def mock_MicroscopyResponseSeriesContainer(
     *,
-    table_region: pynwb.core.DynamicTableRegion,
+    microscopy_response_series: List[microscopy_response_series],
     name: Optional[str] = None,
-    description: str = "A mock instance of a MicroscopyResponseSeriesContainer type to be used for rapid testing.",
-    data: Optional[np.ndarray] = None,
-    unit: str = "a.u.",
-    conversion: float = 1.0,
-    offset: float = 0.0,
-    starting_time: Optional[float] = None,
-    rate: Optional[float] = None,
-    timestamps: Optional[np.ndarray] = None,
 ) -> ndx_microscopy.MicroscopyResponseSeriesContainer:
-    series_name = name or name_generator("MicroscopyResponseSeries")
+    container_name = name or name_generator("MicroscopyResponseSeriesContainer")
 
-    response_series = ndx_microscopy.MicroscopyResponseSeries(
-        name=series_name,
-        description=description,
-        table_region=table_region,
-        data=data,
-        unit=unit,
-        conversion=conversion,
-        offset=offset,
-        starting_time=starting_time,
-        rate=rate,
-        timestamps=timestamps,
+    microscopy_response_series_container = ndx_microscopy.MicroscopyResponseSeriesContainer(
+        name=container_name, microscopy_response_series=microscopy_response_series
     )
 
-    return response_series
+    return microscopy_response_series_container
 
 
 def mock_VariableDepthMultiChannelMicroscopyVolume(
@@ -464,6 +451,3 @@ def mock_VariableDepthMultiChannelMicroscopyVolume(
         offset=offset,
     )
     return variable_depth_multi_channel_microscopy_volume
-
-
-# TODO: add mock for MicroscopyResponseSeries
