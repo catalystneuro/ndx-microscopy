@@ -117,9 +117,11 @@ def test_constructor_microscopy_response_series_container():
         table=plane_segmentation,
     )
 
-    microscopy_response_series = [ndx_microscopy.testing.mock_MicroscopyResponseSeries(table_region=table_region)]
+    microscopy_response_series = ndx_microscopy.testing.mock_MicroscopyResponseSeries(table_region=table_region)
 
-    ndx_microscopy.testing.mock_MicroscopyResponseSeriesContainer(microscopy_response_series=microscopy_response_series)
+    ndx_microscopy.testing.mock_MicroscopyResponseSeriesContainer(
+        microscopy_response_series=[microscopy_response_series]
+    )
 
 
 def test_constructor_multi_channel_microscopy_volume():

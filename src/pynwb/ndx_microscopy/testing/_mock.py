@@ -382,17 +382,35 @@ def mock_MicroscopyResponseSeries(
     number_of_rois = len(table_region.data)
     series_data = data if data is not None else np.ones(shape=(number_of_frames, number_of_rois))
 
+    if timestamps is None:
+        series_starting_time = starting_time or 0.0
+        series_rate = rate or 10.0
+        series_timestamps = None
+    else:
+        if starting_time is not None or rate is not None:
+            warnings.warn(
+                message=(
+                    "Timestamps were provided in addition to either rate or starting_time! "
+                    "Please specify only timestamps, or both starting_time and rate. Timestamps will take precedence."
+                ),
+                stacklevel=2,
+            )
+
+        series_starting_time = None
+        series_rate = None
+        series_timestamps = timestamps
+
     microscopy_response_series = ndx_microscopy.MicroscopyResponseSeries(
         name=series_name,
         description=description,
         table_region=table_region,
-        data=data,
+        data=series_data,
         unit=unit,
         conversion=conversion,
         offset=offset,
-        starting_time=starting_time,
-        rate=rate,
-        timestamps=timestamps,
+        starting_time=series_starting_time,
+        rate=series_rate,
+        timestamps=series_timestamps,
     )
 
     return microscopy_response_series
