@@ -287,7 +287,7 @@ class TestMicroscopyResponseSeriesSimpleRoundtrip(pynwb_TestCase):
         microscope = ndx_microscopy.testing.mock_Microscope(name="Microscope")
         nwbfile.add_device(devices=microscope)
 
-        imaging_space = ndx_microscopy.testing.mock_PlanarImagingSpace(microscope=microscope)
+        imaging_space = ndx_microscopy.testing.mock_PlanarImagingSpace(name="PlanarImagingSpace", microscope=microscope)
         nwbfile.add_lab_meta_data(lab_meta_data=imaging_space)  # Would prefer .add_imaging_space()
 
         microscopy_plane_segmentations = ndx_microscopy.testing.mock_MicroscopyPlaneSegmentation(
