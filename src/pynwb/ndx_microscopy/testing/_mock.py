@@ -11,7 +11,7 @@ import ndx_microscopy
 def mock_Microscope(
     *,
     name: Optional[str] = None,
-    description: str = "This is a mock instance of a Microscope type to be used for rapid testing.",
+    description: str = "A mock instance of a Microscope type to be used for rapid testing.",
     manufacturer: str = "A fake manufacturer of the mock microscope.",
     model: str = "A fake model of the mock microscope.",
 ) -> ndx_microscopy.Microscope:
@@ -27,7 +27,7 @@ def mock_Microscope(
 def mock_MicroscopyLightSource(
     *,
     name: Optional[str] = None,
-    description: str = "This is a mock instance of a MicroscopyLightSource type to be used for rapid testing.",
+    description: str = "A mock instance of a MicroscopyLightSource type to be used for rapid testing.",
     manufacturer: str = "A fake manufacturer of the mock light source.",
     model: str = "A fake model of the mock light source.",
     filter_description: str = "A description about the fake filter used by the mock light source.",
@@ -57,7 +57,7 @@ def mock_MicroscopyLightSource(
 def mock_MicroscopyOpticalChannel(
     *,
     name: Optional[str] = None,
-    description: str = "This is a mock instance of a MicroscopyOpticalChannel type to be used for rapid testing.",
+    description: str = "A mock instance of a MicroscopyOpticalChannel type to be used for rapid testing.",
     indicator: str = "The indicator targeted by the mock optical channel.",
     filter_description: str = "A description about the fake filter used by the mock optical channel.",
     emission_wavelength_in_nm: float = 450.0,
@@ -76,7 +76,7 @@ def mock_PlanarImagingSpace(
     *,
     microscope: ndx_microscopy.Microscope,
     name: Optional[str] = None,
-    description: str = "This is a mock instance of a PlanarImagingSpace type to be used for rapid testing.",
+    description: str = "A mock instance of a PlanarImagingSpace type to be used for rapid testing.",
     origin_coordinates: Tuple[float, float, float] = (-1.2, -0.6, -2),
     grid_spacing_in_um: Tuple[float, float, float] = (20, 20),
     location: str = "The location targeted by the mock imaging space.",
@@ -98,7 +98,7 @@ def mock_VolumetricImagingSpace(
     *,
     microscope: ndx_microscopy.Microscope,
     name: Optional[str] = None,
-    description: str = "This is a mock instance of a VolumetricImagingSpace type to be used for rapid testing.",
+    description: str = "A mock instance of a VolumetricImagingSpace type to be used for rapid testing.",
     origin_coordinates: Tuple[float, float, float] = (-1.2, -0.6, -2),
     grid_spacing_in_um: Tuple[float, float, float] = (20, 20, 50),
     location: str = "The location targeted by the mock imaging space.",
@@ -140,7 +140,7 @@ def mock_MicroscopyPlaneSegmentation(
     *,
     imaging_space: ndx_microscopy.ImagingSpace,
     name: Optional[str] = None,
-    description: str = "This is a mock instance of a MicroscopyPlaneSegmentation type to be used for rapid testing.",
+    description: str = "A mock instance of a MicroscopyPlaneSegmentation type to be used for rapid testing.",
     number_of_rois: int = 5,
     image_shape: Tuple[int, int] = (10, 10),
 ) -> ndx_microscopy.MicroscopyPlaneSegmentation:
@@ -166,7 +166,7 @@ def mock_PlanarMicroscopySeries(
     imaging_space: ndx_microscopy.PlanarImagingSpace,
     optical_channel: ndx_microscopy.MicroscopyOpticalChannel,
     name: Optional[str] = None,
-    description: str = "This is a mock instance of a PlanarMicroscopySeries type to be used for rapid testing.",
+    description: str = "A mock instance of a PlanarMicroscopySeries type to be used for rapid testing.",
     data: Optional[np.ndarray] = None,
     unit: str = "a.u.",
     conversion: float = 1.0,
@@ -221,7 +221,7 @@ def mock_VariableDepthMicroscopySeries(
     imaging_space: ndx_microscopy.PlanarImagingSpace,
     optical_channel: ndx_microscopy.MicroscopyOpticalChannel,
     name: Optional[str] = None,
-    description: str = "This is a mock instance of a PlanarMicroscopySeries type to be used for rapid testing.",
+    description: str = "A mock instance of a PlanarMicroscopySeries type to be used for rapid testing.",
     data: Optional[np.ndarray] = None,
     depth_per_frame_in_um: Optional[np.ndarray] = None,
     unit: str = "a.u.",
@@ -284,7 +284,7 @@ def mock_VolumetricMicroscopySeries(
     imaging_space: ndx_microscopy.VolumetricImagingSpace,
     optical_channel: ndx_microscopy.MicroscopyOpticalChannel,
     name: Optional[str] = None,
-    description: str = "This is a mock instance of a VolumetricMicroscopySeries type to be used for rapid testing.",
+    description: str = "A mock instance of a VolumetricMicroscopySeries type to be used for rapid testing.",
     data: Optional[np.ndarray] = None,
     unit: str = "a.u.",
     conversion: float = 1.0,
@@ -339,7 +339,7 @@ def mock_MultiChannelMicroscopyVolume(
     light_sources: pynwb.base.VectorData,
     optical_channels: pynwb.base.VectorData,
     name: Optional[str] = None,
-    description: str = "This is a mock instance of a MultiChannelMicroscopyVolume type to be used for rapid testing.",
+    description: str = "A mock instance of a MultiChannelMicroscopyVolume type to be used for rapid testing.",
     data: Optional[np.ndarray] = None,
     unit: str = "n.a.",
     conversion: float = 1.0,
@@ -363,6 +363,73 @@ def mock_MultiChannelMicroscopyVolume(
     return volumetric_microscopy_series
 
 
+def mock_MicroscopyResponseSeries(
+    *,
+    table_region: pynwb.core.DynamicTableRegion,
+    name: Optional[str] = None,
+    description: str = "A mock instance of a MicroscopyResponseSeries type to be used for rapid testing.",
+    data: Optional[np.ndarray] = None,
+    unit: str = "a.u.",
+    conversion: float = 1.0,
+    offset: float = 0.0,
+    starting_time: Optional[float] = None,
+    rate: Optional[float] = None,
+    timestamps: Optional[np.ndarray] = None,
+) -> ndx_microscopy.MicroscopyResponseSeries:
+    series_name = name or name_generator("MicroscopyResponseSeries")
+
+    number_of_frames = 100
+    number_of_rois = len(table_region.data)
+    series_data = data if data is not None else np.ones(shape=(number_of_frames, number_of_rois))
+
+    if timestamps is None:
+        series_starting_time = starting_time or 0.0
+        series_rate = rate or 10.0
+        series_timestamps = None
+    else:
+        if starting_time is not None or rate is not None:
+            warnings.warn(
+                message=(
+                    "Timestamps were provided in addition to either rate or starting_time! "
+                    "Please specify only timestamps, or both starting_time and rate. Timestamps will take precedence."
+                ),
+                stacklevel=2,
+            )
+
+        series_starting_time = None
+        series_rate = None
+        series_timestamps = timestamps
+
+    microscopy_response_series = ndx_microscopy.MicroscopyResponseSeries(
+        name=series_name,
+        description=description,
+        table_region=table_region,
+        data=series_data,
+        unit=unit,
+        conversion=conversion,
+        offset=offset,
+        starting_time=series_starting_time,
+        rate=series_rate,
+        timestamps=series_timestamps,
+    )
+
+    return microscopy_response_series
+
+
+def mock_MicroscopyResponseSeriesContainer(
+    *,
+    microscopy_response_series: List[ndx_microscopy.MicroscopyResponseSeries],
+    name: Optional[str] = None,
+) -> ndx_microscopy.MicroscopyResponseSeriesContainer:
+    container_name = name or name_generator("MicroscopyResponseSeriesContainer")
+
+    microscopy_response_series_container = ndx_microscopy.MicroscopyResponseSeriesContainer(
+        name=container_name, microscopy_response_series=microscopy_response_series
+    )
+
+    return microscopy_response_series_container
+
+
 def mock_VariableDepthMultiChannelMicroscopyVolume(
     *,
     microscope: ndx_microscopy.Microscope,
@@ -370,7 +437,7 @@ def mock_VariableDepthMultiChannelMicroscopyVolume(
     light_sources: pynwb.base.VectorData,
     optical_channels: pynwb.base.VectorData,
     name: Optional[str] = None,
-    description: str = "This is a mock instance of a MultiChannelMicroscopyVolume type to be used for rapid testing.",
+    description: str = "A mock instance of a MultiChannelMicroscopyVolume type to be used for rapid testing.",
     data: Optional[np.ndarray] = None,
     depth_per_frame_in_um: Optional[np.ndarray] = None,
     unit: str = "n.a.",
