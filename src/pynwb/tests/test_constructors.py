@@ -1,5 +1,6 @@
 """Test in-memory Python API constructors for the ndx-microscopy extension."""
 
+import pynwb.testing.mock.ophys
 import pytest
 
 import pynwb
@@ -9,6 +10,8 @@ from ndx_microscopy.testing import (
     mock_Microscope,
     mock_MicroscopyPlaneSegmentation,
     mock_MicroscopySegmentations,
+    mock_MicroscopyResponseSeries,
+    mock_MicroscopyResponseSeriesContainer,
     mock_MultiChannelMicroscopyVolume,
     mock_PlanarImagingSpace,
     mock_PlanarMicroscopySeries,
@@ -100,6 +103,40 @@ def test_constructor_volumetric_microscopy_series():
         excitation_light_path=excitation_light_path,
         imaging_space=imaging_space,
         emission_light_path=emission_light_path,
+    )
+
+
+def test_constructor_microscopy_response_series():
+    number_of_rois = 10
+
+    plane_segmentation = pynwb.testing.mock.ophys.mock_PlaneSegmentation()
+
+    table_region = pynwb.core.DynamicTableRegion(
+        name="table_region",
+        description="",
+        data=[x for x in range(number_of_rois)],
+        table=plane_segmentation,
+    )
+
+    mock_MicroscopyResponseSeries(table_region=table_region)
+
+
+def test_constructor_microscopy_response_series_container():
+    number_of_rois = 10
+
+    plane_segmentation = pynwb.testing.mock.ophys.mock_PlaneSegmentation()
+
+    table_region = pynwb.core.DynamicTableRegion(
+        name="table_region",
+        description="",
+        data=[x for x in range(number_of_rois)],
+        table=plane_segmentation,
+    )
+
+    microscopy_response_series = mock_MicroscopyResponseSeries(table_region=table_region)
+
+    mock_MicroscopyResponseSeriesContainer(
+        microscopy_response_series=[microscopy_response_series]
     )
 
 

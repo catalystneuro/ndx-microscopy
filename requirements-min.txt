@@ -1,2 +1,3 @@
 pynwb
-ndx-ophys-devices git+https://github.com/catalystneuro/ndx-ophys-devices.git@create_specs
+git+https://github.com/catalystneuro/ndx-ophys-devices.git@main#egg=ndx-ophys-devices
+

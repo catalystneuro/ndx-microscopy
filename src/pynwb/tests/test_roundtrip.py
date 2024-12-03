@@ -11,6 +11,7 @@ from ndx_microscopy.testing import (
     mock_Microscope,
     mock_MicroscopyPlaneSegmentation,
     mock_MicroscopySegmentations,
+    mock_MicroscopyResponseSeries,
     mock_MultiChannelMicroscopyVolume,
     mock_PlanarImagingSpace,
     mock_PlanarMicroscopySeries,
@@ -18,7 +19,7 @@ from ndx_microscopy.testing import (
     mock_VolumetricImagingSpace,
     mock_VolumetricMicroscopySeries,
 )
-
+from ndx_microscopy import MicroscopyResponseSeriesContainer
 
 class TestPlanarMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
     """Simple roundtrip test for PlanarMicroscopySeries."""
@@ -266,8 +267,8 @@ class TestMicroscopySegmentationsSimpleRoundtrip(pynwb_TestCase):
         segmentations = mock_MicroscopySegmentations(
             name="MicroscopySegmentations", microscopy_plane_segmentations=microscopy_plane_segmentations
         )
-        processing_module = nwbfile.create_processing_module(name="ophys", description="")
-        processing_module.add(segmentations)
+        ophys_module = nwbfile.create_processing_module(name="ophys", description="")
+        ophys_module.add(segmentations)
 
         with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="w") as io:
             io.write(nwbfile)
@@ -280,6 +281,69 @@ class TestMicroscopySegmentationsSimpleRoundtrip(pynwb_TestCase):
             self.assertContainerEqual(imaging_space, read_nwbfile.lab_meta_data["PlanarImagingSpace"])
 
             self.assertContainerEqual(segmentations, read_nwbfile.processing["ophys"]["MicroscopySegmentations"])
+
+
+class TestMicroscopyResponseSeriesSimpleRoundtrip(pynwb_TestCase):
+    """Simple roundtrip test for MicroscopyResponseSeries."""
+
+    def setUp(self):
+        self.nwbfile_path = "test_microscopy_response_series_roundtrip.nwb"
+
+    def tearDown(self):
+        pynwb.testing.remove_test_file(self.nwbfile_path)
+
+    def test_roundtrip(self):
+        nwbfile = mock_NWBFile()
+
+        microscope = mock_Microscope(name="Microscope")
+        nwbfile.add_device(devices=microscope)
+
+        imaging_space = mock_PlanarImagingSpace(name="PlanarImagingSpace", microscope=microscope)
+        nwbfile.add_lab_meta_data(lab_meta_data=imaging_space)  # Would prefer .add_imaging_space()
+
+        microscopy_plane_segmentations = mock_MicroscopyPlaneSegmentation(
+            name="MicroscopyPlaneSegmentation", imaging_space=imaging_space
+        )
+
+        segmentations = mock_MicroscopySegmentations(
+            name="MicroscopySegmentations", microscopy_plane_segmentations=[microscopy_plane_segmentations]
+        )
+        ophys_module = nwbfile.create_processing_module(name="ophys", description="")
+        ophys_module.add(segmentations)
+
+        number_of_rois = 10
+        plane_segmentation_region = pynwb.ophys.DynamicTableRegion(
+            name="table_region",  # Name must be exactly this
+            description="",
+            data=[x for x in range(number_of_rois)],
+            table=microscopy_plane_segmentations,
+        )
+        microscopy_response_series = mock_MicroscopyResponseSeries(
+            name="MicroscopyResponseSeries",
+            table_region=plane_segmentation_region,
+        )
+
+        microscopy_response_series_container = MicroscopyResponseSeriesContainer(
+            name="MicroscopyResponseSeriesContainer", microscopy_response_series=[microscopy_response_series]
+        )
+        ophys_module.add(microscopy_response_series_container)
+
+        with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="w") as io:
+            io.write(nwbfile)
+
+        with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="r", load_namespaces=True) as io:
+            read_nwbfile = io.read()
+
+            self.assertContainerEqual(microscope, read_nwbfile.devices["Microscope"])
+
+            self.assertContainerEqual(imaging_space, read_nwbfile.lab_meta_data["PlanarImagingSpace"])
+
+            self.assertContainerEqual(segmentations, read_nwbfile.processing["ophys"]["MicroscopySegmentations"])
+
+            self.assertContainerEqual(
+                microscopy_response_series_container,
+                read_nwbfile.processing["ophys"]["MicroscopyResponseSeriesContainer"],
+            )
 
 
 if __name__ == "__main__":
