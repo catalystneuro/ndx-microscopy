@@ -1,12 +1,13 @@
 namespaces:
-- name: ndx-microscopy
-  doc: Microscopy extension to NWB standard.
-  author:
-  - Cody Baker
+- author:
   - Alessandra Trapani
+  - Cody Baker
   contact:
-  - cody.baker@catalystneuro.com
   - alessandra.trapani@catalystneuro.com
+  - cody.baker@catalystneuro.com
+  doc: An NWB extension to demonstrate the TAB proposal for enhancements to optical
+    physiology neurodata types.
+  name: ndx-microscopy
   schema:
   - namespace: core
   - source: ndx-microscopy.extensions.yaml
