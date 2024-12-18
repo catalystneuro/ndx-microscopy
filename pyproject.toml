@@ -35,6 +35,7 @@ keywords = [
 dependencies = [
     "pynwb>=2.8.0",
     "hdmf>=3.14.1",
+    "ndx-ophys-devices>=0.1.0"
 ]
 
 # TODO: add URLs before release
