@@ -1,7 +1,6 @@
 """Test roundtrip (write and read back) of the Python API for the ndx-microscopy extension."""
 from datetime import datetime
 
-from ndx_ophys_devices import Photodetector
 from pytz import UTC
 import pytest
 from pynwb.testing import TestCase as pynwb_TestCase
