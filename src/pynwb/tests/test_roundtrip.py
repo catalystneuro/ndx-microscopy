@@ -39,7 +39,7 @@ class TestPlanarMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
         excitation_light_path = mock_ExcitationLightPath(name="ExcitationLightPath")
         nwbfile.add_lab_meta_data(lab_meta_data=excitation_light_path)
 
-        imaging_space = mock_PlanarImagingSpace(name="PlanarImagingSpace", microscope=microscope)
+        imaging_space = mock_PlanarImagingSpace(name="PlanarImagingSpace")
         nwbfile.add_lab_meta_data(lab_meta_data=imaging_space)  # Would prefer .add_imaging_spacec()
 
         emission_light_path = mock_EmissionLightPath(name="EmissionLightPath")
@@ -87,7 +87,7 @@ class TestVolumetricMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
         excitation_light_path = mock_ExcitationLightPath(name="ExcitationLightPath")
         nwbfile.add_lab_meta_data(lab_meta_data=excitation_light_path)
 
-        imaging_space = mock_VolumetricImagingSpace(name="VolumetricImagingSpace", microscope=microscope)
+        imaging_space = mock_VolumetricImagingSpace(name="VolumetricImagingSpace")
         nwbfile.add_lab_meta_data(lab_meta_data=imaging_space)  # Would prefer .add_imaging_spacec()
 
         emission_light_path = mock_EmissionLightPath(name="EmissionLightPath")
@@ -137,7 +137,7 @@ class TestVariableDepthMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
         excitation_light_path = mock_ExcitationLightPath(name="ExcitationLightPath")
         nwbfile.add_lab_meta_data(lab_meta_data=excitation_light_path)
 
-        imaging_space = mock_PlanarImagingSpace(name="PlanarImagingSpace", microscope=microscope)
+        imaging_space = mock_PlanarImagingSpace(name="PlanarImagingSpace")
         nwbfile.add_lab_meta_data(lab_meta_data=imaging_space)  # Would prefer .add_imaging_space()
 
         emission_light_path = mock_EmissionLightPath(name="EmissionLightPath")
@@ -184,7 +184,7 @@ class TestMultiChannelMicroscopyVolumeSimpleRoundtrip(pynwb_TestCase):
         microscope = mock_Microscope(name="Microscope")
         nwbfile.add_device(devices=microscope)
 
-        imaging_space = mock_VolumetricImagingSpace(name="VolumetricImagingSpace", microscope=microscope)
+        imaging_space = mock_VolumetricImagingSpace(name="VolumetricImagingSpace")
         nwbfile.add_lab_meta_data(lab_meta_data=imaging_space)  # Would prefer .add_imaging_space()
 
         excitation_light_paths = list()
@@ -198,7 +198,7 @@ class TestMultiChannelMicroscopyVolumeSimpleRoundtrip(pynwb_TestCase):
         emission_light_paths.append(emission_light_path_0)
 
         # TODO: It might be more convenient in Python to have a custom constructor that takes in a list of
-        # light sources and optical channels and does the VectorData wrapping internally
+        # excitation light paths and emission light paths and does the VectorData wrapping internally
         excitation_light_paths_used_by_volume = pynwb.base.VectorData(
             name="excitation_light_paths",
             description="Light sources used by this MultiChannelVolume.",
@@ -253,7 +253,7 @@ class TestMicroscopySegmentationsSimpleRoundtrip(pynwb_TestCase):
         microscope = mock_Microscope(name="Microscope")
         nwbfile.add_device(devices=microscope)
 
-        imaging_space = mock_PlanarImagingSpace(name="PlanarImagingSpace", microscope=microscope)
+        imaging_space = mock_PlanarImagingSpace(name="PlanarImagingSpace")
         nwbfile.add_lab_meta_data(lab_meta_data=imaging_space)  # Would prefer .add_imaging_space()
 
         plane_segmentation_1 = mock_MicroscopyPlaneSegmentation(
@@ -298,7 +298,7 @@ class TestMicroscopyResponseSeriesSimpleRoundtrip(pynwb_TestCase):
         microscope = mock_Microscope(name="Microscope")
         nwbfile.add_device(devices=microscope)
 
-        imaging_space = mock_PlanarImagingSpace(name="PlanarImagingSpace", microscope=microscope)
+        imaging_space = mock_PlanarImagingSpace(name="PlanarImagingSpace")
         nwbfile.add_lab_meta_data(lab_meta_data=imaging_space)  # Would prefer .add_imaging_space()
 
         microscopy_plane_segmentations = mock_MicroscopyPlaneSegmentation(
