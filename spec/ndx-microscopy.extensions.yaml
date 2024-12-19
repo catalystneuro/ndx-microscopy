@@ -39,6 +39,10 @@ groups:
       - name: description
         dtype: text
         doc: Description of the emission light path.
+    groups:
+      - neurodata_type_inc: Indicator
+        doc: Indicator object which contains metadata about the indicator used in this light path.
+        quantity: 1
     links:
       - name: photodetector
         target_type: Photodetector
@@ -48,9 +52,6 @@ groups:
         target_type: OpticalFilter
         doc: Link to OpticalFilter object which contains metadata about the optical filter in this emission light path. It can be either a BandOpticalFilter (e.g., 'Bandpass', 'Bandstop', 'Longpass', 'Shortpass') or a EdgeOpticalFilter (Longpass or Shortpass).
         required: false
-      - name: indicator
-        target_type: Indicator
-        doc: Link to Indicator object which contains metadata about the indicator used in this light path.
 
   - neurodata_type_def: ImagingSpace
     neurodata_type_inc: LabMetaData  # Would prefer basic NWBContainer

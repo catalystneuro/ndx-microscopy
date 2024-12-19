@@ -1,10 +1,14 @@
 """Test roundtrip (write and read back) of the Python API for the ndx-microscopy extension."""
+from datetime import datetime
 
+from ndx_ophys_devices import Photodetector
+from pytz import UTC
 import pytest
 from pynwb.testing import TestCase as pynwb_TestCase
 from pynwb.testing.mock.file import mock_NWBFile
 
 import pynwb
+from ndx_ophys_devices.testing import mock_ExcitationSource, mock_Photodetector, mock_OpticalFilter
 from ndx_microscopy.testing import (
     mock_EmissionLightPath,
     mock_ExcitationLightPath,
@@ -31,18 +35,38 @@ class TestPlanarMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
         pynwb.testing.remove_test_file(self.nwbfile_path)
 
     def test_roundtrip(self):
-        nwbfile = mock_NWBFile()
+        nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=UTC))
 
         microscope = mock_Microscope(name="Microscope")
         nwbfile.add_device(devices=microscope)
 
-        excitation_light_path = mock_ExcitationLightPath(name="ExcitationLightPath")
+        excitation_source=mock_ExcitationSource()
+        nwbfile.add_device(devices=excitation_source)
+
+        excitation_filter=mock_OpticalFilter()
+        nwbfile.add_device(devices=excitation_filter)
+
+        excitation_light_path = mock_ExcitationLightPath(
+            name="ExcitationLightPath",
+            excitation_source=excitation_source,
+            excitation_filter=excitation_filter
+        )
         nwbfile.add_lab_meta_data(lab_meta_data=excitation_light_path)
 
         imaging_space = mock_PlanarImagingSpace(name="PlanarImagingSpace")
         nwbfile.add_lab_meta_data(lab_meta_data=imaging_space)  # Would prefer .add_imaging_spacec()
 
-        emission_light_path = mock_EmissionLightPath(name="EmissionLightPath")
+        photodetector=mock_Photodetector()
+        nwbfile.add_device(devices=photodetector)
+
+        emission_filter=mock_OpticalFilter()
+        nwbfile.add_device(devices=emission_filter)
+
+        emission_light_path = mock_EmissionLightPath(
+            name="EmissionLightPath",
+            emission_filter=emission_filter,
+            photodetector=photodetector
+        )
         nwbfile.add_lab_meta_data(lab_meta_data=emission_light_path)
 
         planar_microscopy_series = mock_PlanarMicroscopySeries(
@@ -79,18 +103,38 @@ class TestVolumetricMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
         pynwb.testing.remove_test_file(self.nwbfile_path)
 
     def test_roundtrip(self):
-        nwbfile = mock_NWBFile()
+        nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=UTC))
 
         microscope = mock_Microscope(name="Microscope")
         nwbfile.add_device(devices=microscope)
 
-        excitation_light_path = mock_ExcitationLightPath(name="ExcitationLightPath")
+        excitation_source=mock_ExcitationSource()
+        nwbfile.add_device(devices=excitation_source)
+
+        excitation_filter=mock_OpticalFilter()
+        nwbfile.add_device(devices=excitation_filter)
+
+        excitation_light_path = mock_ExcitationLightPath(
+            name="ExcitationLightPath",
+            excitation_source=excitation_source,
+            excitation_filter=excitation_filter
+        )
         nwbfile.add_lab_meta_data(lab_meta_data=excitation_light_path)
 
         imaging_space = mock_VolumetricImagingSpace(name="VolumetricImagingSpace")
         nwbfile.add_lab_meta_data(lab_meta_data=imaging_space)  # Would prefer .add_imaging_spacec()
 
-        emission_light_path = mock_EmissionLightPath(name="EmissionLightPath")
+        photodetector=mock_Photodetector()
+        nwbfile.add_device(devices=photodetector)
+
+        emission_filter=mock_OpticalFilter()
+        nwbfile.add_device(devices=emission_filter)
+
+        emission_light_path = mock_EmissionLightPath(
+            name="EmissionLightPath",
+            emission_filter=emission_filter,
+            photodetector=photodetector
+        )
         nwbfile.add_lab_meta_data(lab_meta_data=emission_light_path)
 
         volumetric_microscopy_series = mock_VolumetricMicroscopySeries(
@@ -129,18 +173,38 @@ class TestVariableDepthMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
         pynwb.testing.remove_test_file(self.nwbfile_path)
 
     def test_roundtrip(self):
-        nwbfile = mock_NWBFile()
+        nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=UTC))
 
         microscope = mock_Microscope(name="Microscope")
         nwbfile.add_device(devices=microscope)
 
-        excitation_light_path = mock_ExcitationLightPath(name="ExcitationLightPath")
+        excitation_source=mock_ExcitationSource()
+        nwbfile.add_device(devices=excitation_source)
+
+        excitation_filter=mock_OpticalFilter()
+        nwbfile.add_device(devices=excitation_filter)
+
+        excitation_light_path = mock_ExcitationLightPath(
+            name="ExcitationLightPath",
+            excitation_source=excitation_source,
+            excitation_filter=excitation_filter
+        )
         nwbfile.add_lab_meta_data(lab_meta_data=excitation_light_path)
 
         imaging_space = mock_PlanarImagingSpace(name="PlanarImagingSpace")
         nwbfile.add_lab_meta_data(lab_meta_data=imaging_space)  # Would prefer .add_imaging_space()
 
-        emission_light_path = mock_EmissionLightPath(name="EmissionLightPath")
+        photodetector=mock_Photodetector()
+        nwbfile.add_device(devices=photodetector)
+
+        emission_filter=mock_OpticalFilter()
+        nwbfile.add_device(devices=emission_filter)
+
+        emission_light_path = mock_EmissionLightPath(
+            name="EmissionLightPath",
+            emission_filter=emission_filter,
+            photodetector=photodetector
+        )
         nwbfile.add_lab_meta_data(lab_meta_data=emission_light_path)
 
         variable_depth_microscopy_series = mock_VariableDepthMicroscopySeries(
@@ -179,7 +243,7 @@ class TestMultiChannelMicroscopyVolumeSimpleRoundtrip(pynwb_TestCase):
         pynwb.testing.remove_test_file(self.nwbfile_path)
 
     def test_roundtrip(self):
-        nwbfile = mock_NWBFile()
+        nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=UTC))
 
         microscope = mock_Microscope(name="Microscope")
         nwbfile.add_device(devices=microscope)
@@ -188,12 +252,28 @@ class TestMultiChannelMicroscopyVolumeSimpleRoundtrip(pynwb_TestCase):
         nwbfile.add_lab_meta_data(lab_meta_data=imaging_space)  # Would prefer .add_imaging_space()
 
         excitation_light_paths = list()
-        excitation_light_path_0 = mock_ExcitationLightPath(name="ExcitationLightPath")
+        excitation_source=mock_ExcitationSource()
+        nwbfile.add_device(devices=excitation_source)
+        excitation_filter=mock_OpticalFilter()
+        nwbfile.add_device(devices=excitation_filter)
+        excitation_light_path_0 = mock_ExcitationLightPath(
+            name="ExcitationLightPath",
+            excitation_source=excitation_source,
+            excitation_filter=excitation_filter
+        )
         nwbfile.add_lab_meta_data(lab_meta_data=excitation_light_path_0)
         excitation_light_paths.append(excitation_light_path_0)
 
         emission_light_paths = list()
-        emission_light_path_0 = mock_EmissionLightPath(name="EmissionLightPath")
+        photodetector=mock_Photodetector()
+        nwbfile.add_device(devices=photodetector)
+        emission_filter=mock_OpticalFilter()
+        nwbfile.add_device(devices=emission_filter)
+        emission_light_path_0 = mock_EmissionLightPath(
+            name="EmissionLightPath",
+            photodetector=photodetector,
+            emission_filter=emission_filter
+        )
         nwbfile.add_lab_meta_data(lab_meta_data=emission_light_path_0)
         emission_light_paths.append(emission_light_path_0)
 
@@ -248,7 +328,7 @@ class TestMicroscopySegmentationsSimpleRoundtrip(pynwb_TestCase):
         pynwb.testing.remove_test_file(self.nwbfile_path)
 
     def test_roundtrip(self):
-        nwbfile = mock_NWBFile()
+        nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=UTC))
 
         microscope = mock_Microscope(name="Microscope")
         nwbfile.add_device(devices=microscope)
@@ -293,7 +373,7 @@ class TestMicroscopyResponseSeriesSimpleRoundtrip(pynwb_TestCase):
         pynwb.testing.remove_test_file(self.nwbfile_path)
 
     def test_roundtrip(self):
-        nwbfile = mock_NWBFile()
+        nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=UTC))
 
         microscope = mock_Microscope(name="Microscope")
         nwbfile.add_device(devices=microscope)
