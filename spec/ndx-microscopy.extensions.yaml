@@ -23,11 +23,11 @@ groups:
       - name: excitation_source
         target_type: ExcitationSource
         doc: Link to ExcitationSource object which contains metadata about the excitation source device. If it is a pulsed excitation source link a PulsedExcitationSource object.
-        required: false
+        quantity: '?'
       - name: excitation_filter
         target_type: OpticalFilter
         doc: Link to OpticalFilter object which contains metadata about the optical filter in this excitation light path. It can be either a BandOpticalFilter (e.g., 'Bandpass', 'Bandstop', 'Longpass', 'Shortpass') or a EdgeOpticalFilter (Longpass or Shortpass).
-        required: false
+        quantity: '?'
 
   - neurodata_type_def: EmissionLightPath
     neurodata_type_inc: LabMetaData
@@ -47,11 +47,11 @@ groups:
       - name: photodetector
         target_type: Photodetector
         doc: Link to Photodetector object which contains metadata about the photodetector device.
-        required: false
+        quantity: '?'
       - name: emission_filter
         target_type: OpticalFilter
         doc: Link to OpticalFilter object which contains metadata about the optical filter in this emission light path. It can be either a BandOpticalFilter (e.g., 'Bandpass', 'Bandstop', 'Longpass', 'Shortpass') or a EdgeOpticalFilter (Longpass or Shortpass).
-        required: false
+        quantity: '?'
 
   - neurodata_type_def: ImagingSpace
     neurodata_type_inc: LabMetaData  # Would prefer basic NWBContainer
