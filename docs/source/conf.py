@@ -58,6 +58,12 @@ intersphinx_mapping.update({
 # Always rebuild the source docs from YAML even if the folder with the source files already exists
 spec_doc_rebuild_always = True
 
+def register_custom_namespace(_):
+    """Register the ndx-ophys-devices namespace for documentation generation"""
+    try:
+        import ndx_ophys_devices
+    except ImportError:
+        print("Warning: Could not import ndx-ophys-devices")
 
 def run_doc_autogen(_):
     # Execute the autogeneration of Sphinx format docs from the YAML sources
@@ -74,6 +80,7 @@ def run_doc_autogen(_):
 
 
 def setup(app):
+    app.connect('builder-inited', register_custom_namespace)
     app.connect('builder-inited', run_doc_autogen)
     # overrides for wide tables in RTD theme
     try:
