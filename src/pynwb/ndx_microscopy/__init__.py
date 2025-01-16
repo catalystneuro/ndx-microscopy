@@ -1,7 +1,7 @@
 import os
 
 from pynwb import get_class, load_namespaces
-from pynwb.spec import NWBNamespaceBuilder
+
 try:
     from importlib.resources import files
 except ImportError:
