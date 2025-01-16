@@ -22,16 +22,153 @@ pip install ndx-microscopy
 
 ## Entity relationship diagram
 
-```mermaid
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#ffffff', "primaryBorderColor': '#144E73', 'lineColor': '#D96F32'}}}%%
+In this PR I added neurodatatypes from ndx-ophys-devices:
 
+#### Entity relationship diagram for ndx-ophys-devices objects in ndx-microscopy 
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#ffffff', 'primaryBorderColor': '#144E73', 'lineColor': '#D96F32'}}}%%
+
+classDiagram
+    direction TB
+
+    class DeviceModel {
+        <<Device>>
+        --------------------------------------
+        attributes
+        --------------------------------------
+        model : text, optional
+    }
+
+    class ExcitationLightPath {
+        <<LabMetaData>>
+        --------------------------------------
+        attributes
+        --------------------------------------
+        excitation_wavelength_in_nm : numeric
+        description : text
+        --------------------------------------
+        links
+        --------------------------------------
+        excitation_source : ExcitationSource, optional
+        excitation_filter : OpticalFilter, optional
+    }
+
+    class EmissionLightPath {
+        <<LabMetaData>>
+        --------------------------------------
+        attributes
+        --------------------------------------
+        emission_wavelength_in_nm : numeric
+        description : text
+        --------------------------------------
+        groups
+        --------------------------------------
+        indicator : Indicator
+        --------------------------------------
+        links
+        --------------------------------------
+        photodetector : Photodetector, optional
+        emission_filter : OpticalFilter, optional
+    }
+
+    class ExcitationSource {
+        <<DeviceModel>>
+        --------------------------------------
+        attributes
+        --------------------------------------
+        illumination_type : text
+        excitation_wavelength_in_nm : float
+        power_in_W : float, optional
+        intensity_in_W_per_m2 : float, optional
+        exposure_time_in_s : float, optional
+    }
+
+    class PulsedExcitationSource {
+        <<ExcitationSource>>
+        --------------------------------------
+        attributes
+        --------------------------------------
+        peak_power_in_W : float, optional
+        peak_pulse_energy_in_J : float, optional
+        pulse_rate_in_Hz : float, optional
+    }
+
+    class OpticalFilter {
+        <<DeviceModel>>
+        --------------------------------------
+        attributes
+        --------------------------------------
+        filter_type : text
+    }
+
+    class BandOpticalFilter {
+        <<OpticalFilter>>
+        --------------------------------------
+        attributes
+        --------------------------------------
+        center_wavelength_in_nm : float
+        bandwidth_in_nm : float
+    }
+
+    class EdgeOpticalFilter {
+        <<OpticalFilter>>
+        --------------------------------------
+        attributes
+        --------------------------------------
+        cut_wavelength_in_nm : float
+        slope_in_percent_cut_wavelength : float, optional
+        slope_starting_transmission_in_percent : float, optional
+        slope_ending_transmission_in_percent : float, optional
+    }
+
+    class Photodetector {
+        <<DeviceModel>>
+        --------------------------------------
+        attributes
+        --------------------------------------
+        detector_type : text
+        detected_wavelength_in_nm : float
+        gain : float, optional
+        gain_unit : text, optional
+    }
+
+    class Indicator {
+        <<NWBContainer>>
+        --------------------------------------
+        attributes
+        --------------------------------------
+        label : text
+        description : text, optional
+        manufacturer : text, optional
+        injection_brain_region : text, optional
+        injection_coordinates_in_mm : float[3], optional
+    }
+
+    DeviceModel <|-- ExcitationSource : extends
+    DeviceModel <|-- OpticalFilter : extends
+    DeviceModel <|-- Photodetector : extends
+    ExcitationSource <|-- PulsedExcitationSource : extends
+    OpticalFilter <|-- BandOpticalFilter : extends
+    OpticalFilter <|-- EdgeOpticalFilter : extends
+
+    ExcitationLightPath ..> ExcitationSource : links
+    ExcitationLightPath ..> OpticalFilter : links
+    EmissionLightPath ..> Photodetector : links
+    EmissionLightPath ..> OpticalFilter : links
+    EmissionLightPath *-- Indicator : contains
+```
+
+#### Entity relationship diagram for ndx-microscopy 
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#ffffff', 'primaryBorderColor': '#144E73', 'lineColor': '#D96F32'}}}%%
 
 classDiagram
     direction BT
 
     class MicroscopySeries {
         <<TimeSeries>>
-
         --------------------------------------
         links
         --------------------------------------
@@ -42,13 +179,10 @@ classDiagram
 
     class PlanarMicroscopySeries {
         <<MicroscopySeries>>
-
         --------------------------------------
         datasets
         --------------------------------------
         data : numeric, frame x height x width
-        --> unit : text
-
         --------------------------------------
         links
         --------------------------------------
@@ -56,141 +190,119 @@ classDiagram
     }
 
     class VariableDepthMicroscopySeries {
-        <<MicroscopySeries>>
-
+        <<PlanarMicroscopySeries>>
         --------------------------------------
         datasets
         --------------------------------------
-        data : numeric, frame x height x width
-        --> unit : text
         depth_per_frame_in_um : numeric, length of frames
-
-        --------------------------------------
-        links
-        --------------------------------------
-        imaging_space : PlanarImagingSpace
     }
 
     class VolumetricMicroscopySeries {
         <<MicroscopySeries>>
-
         --------------------------------------
         datasets
         --------------------------------------
         data : numeric, frame x height x width x depth
-        --> unit : text
-
         --------------------------------------
         links
         --------------------------------------
-        imaging_space : VolumetricImageSpace
+        imaging_space : VolumetricImagingSpace
     }
 
     class MultiChannelMicroscopyVolume {
         <<NWBDataInterface>>
-
         --------------------------------------
         attributes
         --------------------------------------
         description : text, optional
-        unit : text, optional
-        conversion : numeric, optional
-        offset : numeric, optional
-
+        unit : text
+        conversion : float32, optional, default=1.0
+        offset : float32, optional, default=0.0
         --------------------------------------
         datasets
         --------------------------------------
-        data : numeric, frame x height x width x depth x emission_light_paths
-        --> unit : text
-        excitation_light_paths : ExcitationLightPath, excitation_light_paths
-        emission_light_paths : EmissionLightPath, emission_light_paths
-
+        data : numeric, height x width x depth x emission_light_paths
+        excitation_light_paths : ExcitationLightPath[]
+        emission_light_paths : EmissionLightPath[]
         --------------------------------------
         links
         --------------------------------------
-        imaging_space : VolumetricImageSpace
+        imaging_space : VolumetricImagingSpace
         microscope : Microscope
     }
-
-    class ImagingSpace{
-        <<NWBContainer>>
-
+    
+    class ImagingSpace {
+        <<LabMetaData>>
         --------------------------------------
         datasets
         --------------------------------------
         description : text
-        origin_coordinates : numeric, length 3, optional
+        origin_coordinates : float64[3], optional
         --> unit : text, default="micrometers"
-
         --------------------------------------
         attributes
         --------------------------------------
         location : text, optional
     }
 
-    class PlanarImagingSpace{
+    class PlanarImagingSpace {
         <<ImagingSpace>>
-
         --------------------------------------
         datasets
         --------------------------------------
-        grid_spacing : numeric, length 2, optional
-        --> unit : text, default="micrometers"
-
+        grid_spacing_in_um : float64[2], optional
         --------------------------------------
         attributes
         --------------------------------------
         reference_frame : text, optional
     }
 
-    class VolumetricImagingSpace{
+    class VolumetricImagingSpace {
         <<ImagingSpace>>
-
         --------------------------------------
         datasets
         --------------------------------------
-        grid_spacing : numeric, length 2, optional
-        --> unit : text, default="micrometers"
-
+        grid_spacing_in_um : float64[3], optional
         --------------------------------------
         attributes
         --------------------------------------
         reference_frame : text, optional
     }
 
-    class ExcitationLightPath{
-        <<NWBContainer>>
-
+    class ExcitationLightPath {
+        <<LabMetaData>>
+        --------------------------------------
+        attributes
+        --------------------------------------
+        excitation_wavelength_in_nm : numeric
+        description : text
         --------------------------------------
         links
         --------------------------------------
         excitation_source : ExcitationSource, optional
         excitation_filter : OpticalFilter, optional
+    }
 
+    class EmissionLightPath {
+        <<LabMetaData>>
         --------------------------------------
         attributes
         --------------------------------------
-        excitation_wavelength_in_nm : numeric
-    }
-
-    class EmissionLightPath{
-        <<NWBContainer>>
-
+        emission_wavelength_in_nm : numeric
+        description : text
+        --------------------------------------
+        groups
+        --------------------------------------
+        indicator : Indicator
         --------------------------------------
         links
         --------------------------------------
         photodetector : Photodetector, optional
         emission_filter : OpticalFilter, optional
-
-        --------------------------------------
-        attributes
-        --------------------------------------
-        emission_wavelength_in_nm : numeric
     }
 
-    class Microscope{
+    class Microscope {
         <<Device>>
-
         --------------------------------------
         attributes
         --------------------------------------
@@ -199,10 +311,10 @@ classDiagram
 
     PlanarMicroscopySeries *-- MicroscopySeries : extends
     PlanarMicroscopySeries -- PlanarImagingSpace : links
-    VariableDepthMicroscopySeries *-- MicroscopySeries : extends
-    VariableDepthMicroscopySeries -- PlanarImagingSpace : links
+    VariableDepthMicroscopySeries *-- PlanarMicroscopySeries : extends
     VolumetricMicroscopySeries *-- MicroscopySeries : extends
     VolumetricMicroscopySeries -- VolumetricImagingSpace : links
+    MultiChannelMicroscopyVolume -- VolumetricImagingSpace : links
     PlanarImagingSpace *-- ImagingSpace : extends
     VolumetricImagingSpace *-- ImagingSpace : extends
     MicroscopySeries ..> Microscope : links
