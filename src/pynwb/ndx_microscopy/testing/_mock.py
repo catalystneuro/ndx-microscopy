@@ -428,7 +428,7 @@ def mock_VariableDepthMultiChannelMicroscopyVolume(
     excitation_light_paths: pynwb.base.VectorData,
     emission_light_paths: pynwb.base.VectorData,
     name: Optional[str] = None,
-    description: str = "A mock instance of a VariableDepthMultiChannelMicroscopyVolume type to be used for rapid testing.",
+    description: Optional[str] = None,
     data: Optional[np.ndarray] = None,
     depth_per_frame_in_um: Optional[np.ndarray] = None,
     unit: str = "n.a.",
@@ -436,6 +436,10 @@ def mock_VariableDepthMultiChannelMicroscopyVolume(
     offset: float = 0.0,
 ) -> ndx_microscopy.VariableDepthMultiChannelMicroscopyVolume:
     series_name = name or name_generator("MultiChannelMicroscopyVolume")
+    description = (
+        description
+        or "A mock instance of a VariableDepthMultiChannelMicroscopyVolume type to be used for rapid testing."
+    )
 
     series_data = data if data is not None else np.ones(shape=(15, 5, 5))
 
