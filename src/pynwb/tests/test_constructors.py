@@ -23,32 +23,39 @@ from ndx_microscopy.testing import (
 
 
 def test_constructor_microscope():
-    mock_Microscope()
+    microscope=mock_Microscope()
+    assert microscope.description == "A mock instance of a Microscope type to be used for rapid testing."
 
 
 def test_constructor_excitation_light_path():
-    mock_ExcitationLightPath()
+    excitation_light_path = mock_ExcitationLightPath()
+    assert excitation_light_path.description == "A mock instance of a ExcitationLightPath type to be used for rapid testing."
 
 
 def test_constructor_microscopy_emission_light_path():
-    mock_EmissionLightPath()
+    emission_light_path = mock_EmissionLightPath()
+    assert emission_light_path.description == "A mock instance of a EmissionLightPath type to be used for rapid testing."
 
 
 def test_constructor_planar_image_space():
-    mock_PlanarImagingSpace()
+    planar_imaging_space = mock_PlanarImagingSpace()
+    assert planar_imaging_space.description == "A mock instance of a PlanarImagingSpace type to be used for rapid testing."
 
 
 def test_constructor_volumetric_image_space():
-    mock_VolumetricImagingSpace()
+    volumetric_imaging_space = mock_VolumetricImagingSpace()
+    assert volumetric_imaging_space.description == "A mock instance of a VolumetricImagingSpace type to be used for rapid testing."
 
 
 def test_constructor_microscopy_segmentations():
-    mock_MicroscopySegmentations()
+    microscopy_segmentations = mock_MicroscopySegmentations()
+    assert microscopy_segmentations.name == "MicroscopySegmentations"
 
 
 def test_constructor_microscopy_plane_segmentation():
     imaging_space = mock_PlanarImagingSpace()
-    mock_MicroscopyPlaneSegmentation(imaging_space=imaging_space)
+    microscopy_plane_segmentation = mock_MicroscopyPlaneSegmentation(imaging_space=imaging_space)
+    assert microscopy_plane_segmentation.description == "A mock instance of a MicroscopyPlaneSegmentation type to be used for rapid testing."
 
 
 def test_constructor_microscopy_image_segmentation_with_plane_segmentation():
@@ -61,7 +68,8 @@ def test_constructor_microscopy_image_segmentation_with_plane_segmentation():
     )
     microscopy_plane_segmentations = [plane_segmentation_1, plane_segmentation_2]
 
-    mock_MicroscopySegmentations(microscopy_plane_segmentations=microscopy_plane_segmentations)
+    microscopy_segmentations = mock_MicroscopySegmentations(microscopy_plane_segmentations=microscopy_plane_segmentations)
+    assert microscopy_segmentations.name == "MicroscopySegmentations"
 
 
 def test_constructor_planar_microscopy_series():
@@ -70,12 +78,13 @@ def test_constructor_planar_microscopy_series():
     imaging_space = mock_PlanarImagingSpace()
     emission_light_path = mock_EmissionLightPath()
 
-    mock_PlanarMicroscopySeries(
+    planar_microscopy_series = mock_PlanarMicroscopySeries(
         microscope=microscope,
         excitation_light_path=excitation_light_path,
         imaging_space=imaging_space,
         emission_light_path=emission_light_path,
     )
+    assert planar_microscopy_series.description == "A mock instance of a PlanarMicroscopySeries type to be used for rapid testing."
 
 
 def test_constructor_variable_depth_microscopy_series():
@@ -84,12 +93,13 @@ def test_constructor_variable_depth_microscopy_series():
     imaging_space = mock_PlanarImagingSpace()
     emission_light_path = mock_EmissionLightPath()
 
-    mock_VariableDepthMicroscopySeries(
+    variable_depth_microscopy_series = mock_VariableDepthMicroscopySeries(
         microscope=microscope,
         excitation_light_path=excitation_light_path,
         imaging_space=imaging_space,
         emission_light_path=emission_light_path,
     )
+    assert variable_depth_microscopy_series.description == "A mock instance of a VariableDepthMicroscopySeries type to be used for rapid testing."
 
 
 def test_constructor_volumetric_microscopy_series():
@@ -98,12 +108,13 @@ def test_constructor_volumetric_microscopy_series():
     imaging_space = mock_VolumetricImagingSpace()
     emission_light_path = mock_EmissionLightPath()
 
-    mock_VolumetricMicroscopySeries(
+    volumetric_microscopy_series = mock_VolumetricMicroscopySeries(
         microscope=microscope,
         excitation_light_path=excitation_light_path,
         imaging_space=imaging_space,
         emission_light_path=emission_light_path,
     )
+    assert volumetric_microscopy_series.description == "A mock instance of a VolumetricMicroscopySeries type to be used for rapid testing."
 
 
 def test_constructor_microscopy_response_series():
@@ -118,7 +129,8 @@ def test_constructor_microscopy_response_series():
         table=plane_segmentation,
     )
 
-    mock_MicroscopyResponseSeries(table_region=table_region)
+    microscopy_response_series = mock_MicroscopyResponseSeries(table_region=table_region)
+    assert microscopy_response_series.description == "A mock instance of a MicroscopyResponseSeries type to be used for rapid testing."
 
 
 def test_constructor_microscopy_response_series_container():
@@ -135,9 +147,10 @@ def test_constructor_microscopy_response_series_container():
 
     microscopy_response_series = mock_MicroscopyResponseSeries(table_region=table_region)
 
-    mock_MicroscopyResponseSeriesContainer(
+    microscopy_response_series_container = mock_MicroscopyResponseSeriesContainer(
         microscopy_response_series=[microscopy_response_series]
     )
+    assert microscopy_response_series_container.name == "MicroscopyResponseSeriesContainer"
 
 
 def test_constructor_multi_channel_microscopy_volume():
@@ -159,12 +172,13 @@ def test_constructor_multi_channel_microscopy_volume():
         ),
         data=emission_light_paths,
     )
-    mock_MultiChannelMicroscopyVolume(
+    multichannel_microscopy_volume = mock_MultiChannelMicroscopyVolume(
         microscope=microscope,
         imaging_space=imaging_space,
         excitation_light_paths=excitation_light_paths_used_by_volume,
         emission_light_paths=emission_light_paths_used_by_volume,
     )
+    assert multichannel_microscopy_volume.description == "A mock instance of a MultiChannelMicroscopyVolume type to be used for rapid testing."
 
 
 def test_constructor_variable_depth_multi_channel_microscopy_volume():
@@ -186,12 +200,13 @@ def test_constructor_variable_depth_multi_channel_microscopy_volume():
         ),
         data=emission_light_paths,
     )
-    mock_VariableDepthMultiChannelMicroscopyVolume(
+    variable_depth_multi_channel_microscopy_volume = mock_VariableDepthMultiChannelMicroscopyVolume(
         microscope=microscope,
         imaging_space=imaging_space,
         excitation_light_paths=excitation_light_paths_used_by_volume,
         emission_light_paths=emission_light_paths_used_by_volume,
     )
+    assert variable_depth_multi_channel_microscopy_volume.description == "A mock instance of a VariableDepthMultiChannelMicroscopyVolume type to be used for rapid testing."
 
 
 if __name__ == "__main__":
