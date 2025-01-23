@@ -28,6 +28,10 @@ groups:
         target_type: OpticalFilter
         doc: Link to OpticalFilter object which contains metadata about the optical filter in this excitation light path. It can be either a BandOpticalFilter (e.g., 'Bandpass', 'Bandstop', 'Longpass', 'Shortpass') or a EdgeOpticalFilter (Longpass or Shortpass).
         quantity: '?'
+      - name: dichroic_mirror
+        target_type: DichroicMirror
+        doc: Link to DichroicMirror object which contains metadata about the dichroic mirror in the excitation light path.
+        quantity: '?'
 
   - neurodata_type_def: EmissionLightPath
     neurodata_type_inc: LabMetaData
@@ -51,6 +55,10 @@ groups:
       - name: emission_filter
         target_type: OpticalFilter
         doc: Link to OpticalFilter object which contains metadata about the optical filter in this emission light path. It can be either a BandOpticalFilter (e.g., 'Bandpass', 'Bandstop', 'Longpass', 'Shortpass') or a EdgeOpticalFilter (Longpass or Shortpass).
+        quantity: '?'
+      - name: dichroic_mirror
+        target_type: DichroicMirror
+        doc: Link to DichroicMirror object which contains metadata about the dichroic mirror in the emission light path.
         quantity: '?'
 
   - neurodata_type_def: ImagingSpace

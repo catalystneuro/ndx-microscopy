@@ -48,6 +48,7 @@ __all__ = [
     "ExcitationSource",
     "Indicator",
     "Photodetector",
+    "DichroicMirror",
     "Microscope",
     "ImagingSpace",
     "PlanarImagingSpace",
