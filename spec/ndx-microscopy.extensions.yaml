@@ -10,7 +10,7 @@ groups:
         required: false
 
   - neurodata_type_def: ExcitationLightPath
-    neurodata_type_inc: LabMetaData
+    neurodata_type_inc: NWBContainer
     doc: Excitation light path that illuminates an imaging space.
     attributes:
       - name: excitation_wavelength_in_nm
@@ -34,7 +34,7 @@ groups:
         quantity: '?'
 
   - neurodata_type_def: EmissionLightPath
-    neurodata_type_inc: LabMetaData
+    neurodata_type_inc: NWBContainer
     doc: Emission light path from an imaging space.
     attributes:
       - name: emission_wavelength_in_nm
@@ -62,7 +62,7 @@ groups:
         quantity: '?'
 
   - neurodata_type_def: ImagingSpace
-    neurodata_type_inc: LabMetaData  # Would prefer basic NWBContainer
+    neurodata_type_inc: NWBContainer
     doc: Metadata about the region of physical space that imaging data was recorded from.
     datasets:
     - name: description
@@ -248,10 +248,8 @@ groups:
       - neurodata_type_inc: Images
         doc: An  container for the estimated summary images.
         quantity: '*'
-    links:
-    - name: imaging_space
-      target_type: ImagingSpace
-      doc: Link to ImagingSpace object from which this data was generated.
+    - neurodata_type_inc: ImagingSpace
+      doc: Group containing metadata about the region of physical space from which this data was generated.
 
 
   - neurodata_type_def: MicroscopySeries
@@ -262,13 +260,11 @@ groups:
     - name: microscope
       doc: Link to a Microscope object containing metadata about the device used to acquire this imaging data.
       target_type: Microscope
-    - name: excitation_light_path
-      doc: Link to a ExcitationLightPath object containing metadata about the device used to illuminate the imaging space.
-      target_type: ExcitationLightPath
-    - name: emission_light_path
-      doc: Link to a EmissionLightPath object containing metadata about the indicator and filters used to collect
-        this data.
-      target_type: EmissionLightPath
+    groups:
+    - neurodata_type_inc: ExcitationLightPath
+      doc: Group containing metadata about the device used to illuminate the imaging space.
+    - neurodata_type_inc: EmissionLightPath
+      doc: Group containing metadata about the indicator and filters used to collect this data.
 
   - neurodata_type_def: PlanarMicroscopySeries
     neurodata_type_inc: MicroscopySeries
@@ -286,11 +282,9 @@ groups:
       - null
       - null
       - null
-    links:
-    - name: imaging_space
-      doc: Link to PlanarImagingSpace object containing metadata about the region of physical space this imaging data
-        was recorded from.
-      target_type: PlanarImagingSpace
+    groups:
+    - neurodata_type_inc: PlanarImagingSpace
+      doc: Group containing metadata about the region of physical space this imaging data was recorded from.
 
   - neurodata_type_def: VariableDepthMicroscopySeries
     neurodata_type_inc: PlanarMicroscopySeries
@@ -325,11 +319,9 @@ groups:
       - null
       - null
       - null
-    links:
-    - name: imaging_space
-      doc: Link to VolumetricImagingSpace object containing metadata about the region of physical space this imaging data
-        was recorded from.
-      target_type: VolumetricImagingSpace
+    groups:
+    - neurodata_type_inc: VolumetricImagingSpace
+      doc: Group containing metadata about the region of physical space this imaging data was recorded from.
 
 
   - neurodata_type_def: MultiChannelMicroscopyVolume
@@ -405,10 +397,9 @@ groups:
     - name: microscope
       doc: Link to a Microscope object containing metadata about the device used to acquire this imaging data.
       target_type: Microscope
-    - name: imaging_space
-      doc: Link to VolumetricImagingSpace object containing metadata about the region of physical space this imaging data
-        was recorded from.
-      target_type: VolumetricImagingSpace
+    groups:
+    - neurodata_type_inc: VolumetricImagingSpace
+      doc: Group containing metadata about the region of physical space this imaging data was recorded from.
 
 
   - neurodata_type_def: VariableDepthMultiChannelMicroscopyVolume
@@ -491,10 +482,9 @@ groups:
     - name: microscope
       doc: Link to a Microscope object containing metadata about the device used to acquire this imaging data.
       target_type: Microscope
-    - name: imaging_space
-      doc: Link to VolumetricImagingSpace object containing metadata about the region of physical space this imaging data
-        was recorded from.
-      target_type: VolumetricImagingSpace
+    groups:
+    - neurodata_type_inc: VolumetricImagingSpace
+      doc: Group containing metadata about the region of physical space this imaging data was recorded from.
 
 
   - neurodata_type_def: MicroscopyResponseSeries

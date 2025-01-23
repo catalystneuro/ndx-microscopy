@@ -96,7 +96,7 @@ def test_constructor_planar_microscopy_series():
     planar_microscopy_series = mock_PlanarMicroscopySeries(
         microscope=microscope,
         excitation_light_path=excitation_light_path,
-        imaging_space=imaging_space,
+        planar_imaging_space=imaging_space,
         emission_light_path=emission_light_path,
     )
     assert (
@@ -114,7 +114,7 @@ def test_constructor_variable_depth_microscopy_series():
     variable_depth_microscopy_series = mock_VariableDepthMicroscopySeries(
         microscope=microscope,
         excitation_light_path=excitation_light_path,
-        imaging_space=imaging_space,
+        planar_imaging_space=imaging_space,
         emission_light_path=emission_light_path,
     )
     assert (
@@ -132,7 +132,7 @@ def test_constructor_volumetric_microscopy_series():
     volumetric_microscopy_series = mock_VolumetricMicroscopySeries(
         microscope=microscope,
         excitation_light_path=excitation_light_path,
-        imaging_space=imaging_space,
+        volumetric_imaging_space=imaging_space,
         emission_light_path=emission_light_path,
     )
     assert (
@@ -201,7 +201,7 @@ def test_constructor_multi_channel_microscopy_volume():
     )
     multichannel_microscopy_volume = mock_MultiChannelMicroscopyVolume(
         microscope=microscope,
-        imaging_space=imaging_space,
+        volumetric_imaging_space=imaging_space,
         excitation_light_paths=excitation_light_paths_used_by_volume,
         emission_light_paths=emission_light_paths_used_by_volume,
     )
@@ -232,7 +232,7 @@ def test_constructor_variable_depth_multi_channel_microscopy_volume():
     )
     variable_depth_multi_channel_microscopy_volume = mock_VariableDepthMultiChannelMicroscopyVolume(
         microscope=microscope,
-        imaging_space=imaging_space,
+        volumetric_imaging_space=imaging_space,
         excitation_light_paths=excitation_light_paths_used_by_volume,
         emission_light_paths=emission_light_paths_used_by_volume,
     )
