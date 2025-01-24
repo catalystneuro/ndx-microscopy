@@ -250,7 +250,7 @@ groups:
         quantity: '*'
     - neurodata_type_inc: ImagingSpace
       doc: Link to ImagingSpace object from which this data was generated.
-      quantity: '?'
+
 
   - neurodata_type_def: MicroscopySeries
     neurodata_type_inc: TimeSeries
@@ -288,7 +288,7 @@ groups:
     - neurodata_type_inc: PlanarImagingSpace
       doc: Link to PlanarImagingSpace object containing metadata about the region of physical space this imaging data
         was recorded from.
-      quantity: '?'
+
 
   - neurodata_type_def: VariableDepthMicroscopySeries
     neurodata_type_inc: PlanarMicroscopySeries
@@ -327,7 +327,7 @@ groups:
     - neurodata_type_inc: VolumetricImagingSpace
       doc: Link to VolumetricImagingSpace object containing metadata about the region of physical space this imaging data
         was recorded from.
-      quantity: '?'
+
 
 
   - neurodata_type_def: MultiChannelMicroscopyVolume
@@ -407,7 +407,7 @@ groups:
     - neurodata_type_inc: VolumetricImagingSpace
       doc: Link to VolumetricImagingSpace object containing metadata about the region of physical space this imaging data
         was recorded from.
-      quantity: '?'
+
 
 
   - neurodata_type_def: VariableDepthMultiChannelMicroscopyVolume
@@ -494,7 +494,7 @@ groups:
     - neurodata_type_inc: VolumetricImagingSpace
       doc: Link to VolumetricImagingSpace object containing metadata about the region of physical space this imaging data
         was recorded from.
-      quantity: '?'
+
 
 
   - neurodata_type_def: MicroscopyResponseSeries
