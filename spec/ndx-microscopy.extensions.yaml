@@ -249,7 +249,7 @@ groups:
         doc: An  container for the estimated summary images.
         quantity: '*'
     - neurodata_type_inc: ImagingSpace
-      doc: Link to ImagingSpace object from which this data was generated.
+      doc: ImagingSpace object from which this data was generated.
 
 
   - neurodata_type_def: MicroscopySeries
@@ -286,7 +286,7 @@ groups:
       - null
     groups:
     - neurodata_type_inc: PlanarImagingSpace
-      doc: Link to PlanarImagingSpace object containing metadata about the region of physical space this imaging data
+      doc: PlanarImagingSpace object containing metadata about the region of physical space this imaging data
         was recorded from.
 
 
@@ -325,7 +325,7 @@ groups:
       - null
     groups:
     - neurodata_type_inc: VolumetricImagingSpace
-      doc: Link to VolumetricImagingSpace object containing metadata about the region of physical space this imaging data
+      doc: VolumetricImagingSpace object containing metadata about the region of physical space this imaging data
         was recorded from.
 
 
@@ -405,7 +405,7 @@ groups:
       target_type: Microscope
     groups:
     - neurodata_type_inc: VolumetricImagingSpace
-      doc: Link to VolumetricImagingSpace object containing metadata about the region of physical space this imaging data
+      doc: VolumetricImagingSpace object containing metadata about the region of physical space this imaging data
         was recorded from.
 
 
@@ -492,7 +492,7 @@ groups:
       target_type: Microscope
     groups:
     - neurodata_type_inc: VolumetricImagingSpace
-      doc: Link to VolumetricImagingSpace object containing metadata about the region of physical space this imaging data
+      doc: VolumetricImagingSpace object containing metadata about the region of physical space this imaging data
         was recorded from.
 
 
