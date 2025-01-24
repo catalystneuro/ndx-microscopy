@@ -8,6 +8,10 @@ except ImportError:
     # TODO: Remove when python 3.9 becomes the new minimum
     from importlib_resources import files
 
+# NOTE: ndx-ophys-devices needs to be imported first because loading the ndx-microscopy namespace depends on
+# having the ndx-ophys-devices namespace loaded into the global type map.
+from ndx_ophys_devices import ExcitationSource, Indicator, OpticalFilter, Photodetector
+
 extension_name = "ndx-microscopy"
 
 # Get path to the namespace.yaml file with the expected location when installed not in editable mode
@@ -21,8 +25,8 @@ if not os.path.exists(__spec_path):
 load_namespaces(str(__spec_path))
 
 Microscope = get_class("Microscope", extension_name)
-MicroscopyLightSource = get_class("MicroscopyLightSource", extension_name)
-MicroscopyOpticalChannel = get_class("MicroscopyOpticalChannel", extension_name)
+ExcitationLightPath = get_class("ExcitationLightPath", extension_name)
+EmissionLightPath = get_class("EmissionLightPath", extension_name)
 ImagingSpace = get_class("ImagingSpace", extension_name)
 PlanarImagingSpace = get_class("PlanarImagingSpace", extension_name)
 VolumetricImagingSpace = get_class("VolumetricImagingSpace", extension_name)
@@ -40,9 +44,12 @@ MicroscopyResponseSeriesContainer = get_class("MicroscopyResponseSeriesContainer
 
 
 __all__ = [
+    "OpticalFilter",
+    "ExcitationSource",
+    "Indicator",
+    "Photodetector",
+    "DichroicMirror",
     "Microscope",
-    "MicroscopyLightSource",
-    "MicroscopyOpticalChannel",
     "ImagingSpace",
     "PlanarImagingSpace",
     "VolumetricImagingSpace",
