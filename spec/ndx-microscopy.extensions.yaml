@@ -62,7 +62,7 @@ groups:
         quantity: '?'
 
   - neurodata_type_def: ImagingSpace
-    neurodata_type_inc: LabMetaData  # Would prefer basic NWBContainer
+    neurodata_type_inc: NWBContainer
     doc: Metadata about the region of physical space that imaging data was recorded from.
     datasets:
     - name: description
@@ -248,11 +248,9 @@ groups:
       - neurodata_type_inc: Images
         doc: An  container for the estimated summary images.
         quantity: '*'
-    links:
-    - name: imaging_space
-      target_type: ImagingSpace
+    - neurodata_type_inc: ImagingSpace
       doc: Link to ImagingSpace object from which this data was generated.
-
+      quantity: '?'
 
   - neurodata_type_def: MicroscopySeries
     neurodata_type_inc: TimeSeries
@@ -286,11 +284,11 @@ groups:
       - null
       - null
       - null
-    links:
-    - name: imaging_space
+    groups:
+    - neurodata_type_inc: PlanarImagingSpace
       doc: Link to PlanarImagingSpace object containing metadata about the region of physical space this imaging data
         was recorded from.
-      target_type: PlanarImagingSpace
+      quantity: '?'
 
   - neurodata_type_def: VariableDepthMicroscopySeries
     neurodata_type_inc: PlanarMicroscopySeries
@@ -325,11 +323,11 @@ groups:
       - null
       - null
       - null
-    links:
-    - name: imaging_space
+    groups:
+    - neurodata_type_inc: VolumetricImagingSpace
       doc: Link to VolumetricImagingSpace object containing metadata about the region of physical space this imaging data
         was recorded from.
-      target_type: VolumetricImagingSpace
+      quantity: '?'
 
 
   - neurodata_type_def: MultiChannelMicroscopyVolume
@@ -405,10 +403,11 @@ groups:
     - name: microscope
       doc: Link to a Microscope object containing metadata about the device used to acquire this imaging data.
       target_type: Microscope
-    - name: imaging_space
+    groups:
+    - neurodata_type_inc: VolumetricImagingSpace
       doc: Link to VolumetricImagingSpace object containing metadata about the region of physical space this imaging data
         was recorded from.
-      target_type: VolumetricImagingSpace
+      quantity: '?'
 
 
   - neurodata_type_def: VariableDepthMultiChannelMicroscopyVolume
@@ -491,10 +490,11 @@ groups:
     - name: microscope
       doc: Link to a Microscope object containing metadata about the device used to acquire this imaging data.
       target_type: Microscope
-    - name: imaging_space
+    groups:
+    - neurodata_type_inc: VolumetricImagingSpace
       doc: Link to VolumetricImagingSpace object containing metadata about the region of physical space this imaging data
         was recorded from.
-      target_type: VolumetricImagingSpace
+      quantity: '?'
 
 
   - neurodata_type_def: MicroscopyResponseSeries
