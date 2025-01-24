@@ -59,7 +59,7 @@ def test_constructor_volumetric_image_space():
 
 def test_constructor_microscopy_segmentations():
     microscopy_segmentations = mock_MicroscopySegmentations()
-    assert "MicroscopySegmentations" in microscopy_segmentations.name  
+    assert "MicroscopySegmentations" in microscopy_segmentations.name
 
 
 def test_constructor_microscopy_plane_segmentation():
@@ -90,13 +90,13 @@ def test_constructor_microscopy_image_segmentation_with_plane_segmentation():
 def test_constructor_planar_microscopy_series():
     microscope = mock_Microscope()
     excitation_light_path = mock_ExcitationLightPath()
-    planar_imaging_space = mock_PlanarImagingSpace() 
+    planar_imaging_space = mock_PlanarImagingSpace()
     emission_light_path = mock_EmissionLightPath()
 
     planar_microscopy_series = mock_PlanarMicroscopySeries(
         microscope=microscope,
         excitation_light_path=excitation_light_path,
-        planar_imaging_space=planar_imaging_space ,
+        planar_imaging_space=planar_imaging_space,
         emission_light_path=emission_light_path,
     )
     assert (
@@ -108,13 +108,13 @@ def test_constructor_planar_microscopy_series():
 def test_constructor_variable_depth_microscopy_series():
     microscope = mock_Microscope()
     excitation_light_path = mock_ExcitationLightPath()
-    planar_imaging_space = mock_PlanarImagingSpace() 
+    planar_imaging_space = mock_PlanarImagingSpace()
     emission_light_path = mock_EmissionLightPath()
 
     variable_depth_microscopy_series = mock_VariableDepthMicroscopySeries(
         microscope=microscope,
         excitation_light_path=excitation_light_path,
-        planar_imaging_space =planar_imaging_space ,
+        planar_imaging_space=planar_imaging_space,
         emission_light_path=emission_light_path,
     )
     assert (
