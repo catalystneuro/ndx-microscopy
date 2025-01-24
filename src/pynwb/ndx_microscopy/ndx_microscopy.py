@@ -1,8 +1,9 @@
 from hdmf.utils import docval, popargs
-from pynwb import get_class
+from pynwb import get_class, register_class
+from pynwb.core import MultiContainerInterface
 import numpy as np
 
-extension_name = "ndx_microscopy"
+extension_name = "ndx-microscopy"
 
 MicroscopyPlaneSegmentation = get_class("MicroscopyPlaneSegmentation", extension_name)
 
@@ -69,17 +70,3 @@ def create_roi_table_region(self, **kwargs):
     return super(MicroscopyPlaneSegmentation,self).create_region(**kwargs)
 
 MicroscopyPlaneSegmentation.create_roi_table_region = create_roi_table_region
-
-MicroscopySegmentation = get_class("MicroscopySegmentation", extension_name)
-ImagingSpace = get_class("ImagingSpace", extension_name)
-
-@docval({'name': 'imaging_space', 'type': ImagingSpace, 'doc': 'the ImagingSpace this ROI applies to'},
-        {'name': 'description', 'type': str,
-            'doc': 'Description of image space, recording wavelength, depth, etc.', 'default': None},
-        {'name': 'name', 'type': str, 'doc': 'name of PlaneSegmentation.', 'default': None})
-
-def add_segmentation(self, **kwargs):
-    kwargs.setdefault('description', kwargs['imaging_space'].description)
-    return super(MicroscopySegmentation,self).create_plane_segmentation(**kwargs)
-
-MicroscopySegmentation.add_segmentation = add_segmentation
