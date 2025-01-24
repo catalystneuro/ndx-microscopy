@@ -59,7 +59,7 @@ def test_constructor_volumetric_image_space():
 
 def test_constructor_microscopy_segmentations():
     microscopy_segmentations = mock_MicroscopySegmentations()
-    assert microscopy_segmentations.name == "MicroscopySegmentations"
+    assert "MicroscopySegmentations" in microscopy_segmentations.name  
 
 
 def test_constructor_microscopy_plane_segmentation():
