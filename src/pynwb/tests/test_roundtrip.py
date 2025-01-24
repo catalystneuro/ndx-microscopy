@@ -52,7 +52,7 @@ class TestPlanarMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
         )
         nwbfile.add_lab_meta_data(lab_meta_data=excitation_light_path)
 
-        imaging_space = mock_PlanarImagingSpace(name="PlanarImagingSpace")
+        planar_imaging_space = mock_PlanarImagingSpace(name="PlanarImagingSpace")
 
         photodetector = mock_Photodetector()
         nwbfile.add_device(devices=photodetector)
@@ -69,7 +69,7 @@ class TestPlanarMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
             name="PlanarMicroscopySeries",
             microscope=microscope,
             excitation_light_path=excitation_light_path,
-            imaging_space=imaging_space,
+            planar_imaging_space=planar_imaging_space,
             emission_light_path=emission_light_path,
         )
         nwbfile.add_acquisition(nwbdata=planar_microscopy_series)
@@ -83,7 +83,6 @@ class TestPlanarMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
             self.assertContainerEqual(microscope, read_nwbfile.devices["Microscope"])
 
             self.assertContainerEqual(excitation_light_path, read_nwbfile.lab_meta_data["ExcitationLightPath"])
-            self.assertContainerEqual(imaging_space, read_nwbfile.lab_meta_data["PlanarImagingSpace"])
             self.assertContainerEqual(emission_light_path, read_nwbfile.lab_meta_data["EmissionLightPath"])
 
             self.assertContainerEqual(planar_microscopy_series, read_nwbfile.acquisition["PlanarMicroscopySeries"])
@@ -118,7 +117,7 @@ class TestExcitationLightPathWithUntrackedDevice(pynwb_TestCase):
         nwbfile.add_device(devices=emission_filter)
 
         # Create imaging space
-        imaging_space = mock_PlanarImagingSpace(name="PlanarImagingSpace")
+        planar_imaging_space = mock_PlanarImagingSpace(name="PlanarImagingSpace")
 
         # Create light paths
         emission_light_path = mock_EmissionLightPath(
@@ -138,7 +137,7 @@ class TestExcitationLightPathWithUntrackedDevice(pynwb_TestCase):
             name="PlanarMicroscopySeries",
             microscope=microscope,
             excitation_light_path=excitation_light_path,
-            imaging_space=imaging_space,
+            planar_imaging_space=planar_imaging_space,
             emission_light_path=emission_light_path,
         )
         nwbfile.add_acquisition(nwbdata=planar_microscopy_series)
@@ -174,7 +173,7 @@ class TestVolumetricMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
         )
         nwbfile.add_lab_meta_data(lab_meta_data=excitation_light_path)
 
-        imaging_space = mock_VolumetricImagingSpace(name="VolumetricImagingSpace")
+        volumetric_imaging_space = mock_VolumetricImagingSpace(name="VolumetricImagingSpace")
 
         photodetector = mock_Photodetector()
         nwbfile.add_device(devices=photodetector)
@@ -191,7 +190,7 @@ class TestVolumetricMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
             name="VolumetricMicroscopySeries",
             microscope=microscope,
             excitation_light_path=excitation_light_path,
-            imaging_space=imaging_space,
+            volumetric_imaging_space=volumetric_imaging_space,
             emission_light_path=emission_light_path,
         )
         nwbfile.add_acquisition(nwbdata=volumetric_microscopy_series)
@@ -205,7 +204,6 @@ class TestVolumetricMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
             self.assertContainerEqual(microscope, read_nwbfile.devices["Microscope"])
 
             self.assertContainerEqual(excitation_light_path, read_nwbfile.lab_meta_data["ExcitationLightPath"])
-            self.assertContainerEqual(imaging_space, read_nwbfile.lab_meta_data["VolumetricImagingSpace"])
             self.assertContainerEqual(emission_light_path, read_nwbfile.lab_meta_data["EmissionLightPath"])
 
             self.assertContainerEqual(
@@ -239,7 +237,7 @@ class TestVariableDepthMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
         )
         nwbfile.add_lab_meta_data(lab_meta_data=excitation_light_path)
 
-        imaging_space = mock_PlanarImagingSpace(name="PlanarImagingSpace")
+        planar_imaging_space = mock_PlanarImagingSpace(name="PlanarImagingSpace")
 
         photodetector = mock_Photodetector()
         nwbfile.add_device(devices=photodetector)
@@ -256,7 +254,7 @@ class TestVariableDepthMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
             name="VariableDepthMicroscopySeries",
             microscope=microscope,
             excitation_light_path=excitation_light_path,
-            imaging_space=imaging_space,
+            planar_imaging_space=planar_imaging_space,
             emission_light_path=emission_light_path,
         )
         nwbfile.add_acquisition(nwbdata=variable_depth_microscopy_series)
@@ -292,7 +290,7 @@ class TestMultiChannelMicroscopyVolumeSimpleRoundtrip(pynwb_TestCase):
         microscope = mock_Microscope(name="Microscope")
         nwbfile.add_device(devices=microscope)
 
-        imaging_space = mock_VolumetricImagingSpace(name="VolumetricImagingSpace")
+        volumetric_imaging_space = mock_VolumetricImagingSpace(name="VolumetricImagingSpace")
 
         excitation_light_paths = list()
         excitation_source = mock_ExcitationSource()
@@ -334,7 +332,7 @@ class TestMultiChannelMicroscopyVolumeSimpleRoundtrip(pynwb_TestCase):
         multi_channel_microscopy_volume = mock_MultiChannelMicroscopyVolume(
             name="MultiChannelMicroscopyVolume",
             microscope=microscope,
-            imaging_space=imaging_space,
+            volumetric_imaging_space=volumetric_imaging_space,
             excitation_light_paths=excitation_light_paths_used_by_volume,
             emission_light_paths=emission_light_paths_used_by_volume,
         )
