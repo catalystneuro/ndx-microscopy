@@ -212,6 +212,8 @@ class EmissionLightPath(LabMetaData):
         )
         args_to_set = popargs_to_dict(keys_to_set, kwargs)
         super().__init__(**kwargs)
+        for key, val in args_to_set.items():
+            setattr(self, key, val)
         emission_wavelength_in_nm = args_to_set["emission_wavelength_in_nm"]
         photodetector = args_to_set["photodetector"]
         check_wavelength(emission_wavelength_in_nm, photodetector.detected_wavelength_in_nm)
