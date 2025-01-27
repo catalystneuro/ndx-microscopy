@@ -96,12 +96,15 @@ MicroscopyPlaneSegmentation.create_roi_table_region = create_roi_table_region
 def check_wavelength(wavelengthset_in_light_path, wavelength_set_in_device):
     if not wavelengthset_in_light_path == wavelength_set_in_device:
         raise ValueError(
-            f"wavelength set in the light path ({wavelengthset_in_light_path}) and the one set in the device ({wavelength_set_in_device}) must be the same."
+            f"wavelength set in the light path ({wavelengthset_in_light_path}) and the one set in the device "
+            f"({wavelength_set_in_device}) must be the same."
         )
 
 
 @register_class("ExcitationLightPath", extension_name)
 class ExcitationLightPath(LabMetaData):
+    """Excitation light path that illuminates an imaging space."""
+
     __nwbfields__ = (
         "excitation_wavelength_in_nm",
         "description",
@@ -120,19 +123,29 @@ class ExcitationLightPath(LabMetaData):
         {
             "name": "description",
             "type": str,
-            "doc": "Link to ExcitationSource object which contains metadata about the excitation source device. If it is a pulsed excitation source link a PulsedExcitationSource object.",
+            "doc": (
+                "Link to ExcitationSource object which contains metadata about the excitation source device. "
+                "If it is a pulsed excitation source link a PulsedExcitationSource object."
+            ),
         },
         {"name": "excitation_source", "type": ExcitationSource, "doc": "The excitation source", "default": None},
         {
             "name": "excitation_filter",
             "type": OpticalFilter,
-            "doc": "Link to OpticalFilter object which contains metadata about the optical filter in this excitation light path. It can be either a BandOpticalFilter (e.g., 'Bandpass', 'Bandstop', 'Longpass', 'Shortpass') or a EdgeOpticalFilter (Longpass or Shortpass).",
+            "doc": (
+                "Link to OpticalFilter object which contains metadata about the optical filter in this light path. "
+                "It can be either a BandOpticalFilter (e.g., 'Bandpass', 'Bandstop', 'Longpass', 'Shortpass') "
+                "or a EdgeOpticalFilter (Longpass or Shortpass)."
+            ),
             "default": None,
         },
         {
             "name": "dichroic_mirror",
             "type": DichroicMirror,
-            "doc": "Link to DichroicMirror object which contains metadata about the dichroic mirror in the excitation light path.",
+            "doc": (
+                "Link to DichroicMirror object which contains metadata about the dichroic mirror "
+                "in the excitation light path."
+            ),
             "default": None,
         },
     )
@@ -156,6 +169,8 @@ class ExcitationLightPath(LabMetaData):
 
 @register_class("EmissionLightPath", extension_name)
 class EmissionLightPath(LabMetaData):
+    """Emission light path from an imaging space."""
+
     __nwbfields__ = (
         "emission_wavelength_in_nm",
         "description",
@@ -191,13 +206,20 @@ class EmissionLightPath(LabMetaData):
         {
             "name": "emission_filter",
             "type": OpticalFilter,
-            "doc": "Link to OpticalFilter object which contains metadata about the optical filter in this emission light path. It can be either a BandOpticalFilter (e.g., 'Bandpass', 'Bandstop', 'Longpass', 'Shortpass') or a EdgeOpticalFilter (Longpass or Shortpass).",
+            "doc": (
+                "Link to OpticalFilter object which contains metadata about the optical filter in this light path. "
+                "It can be either a BandOpticalFilter (e.g., 'Bandpass', 'Bandstop', 'Longpass', 'Shortpass') "
+                "or a EdgeOpticalFilter (Longpass or Shortpass)."
+            ),
             "default": None,
         },
         {
             "name": "dichroic_mirror",
             "type": DichroicMirror,
-            "doc": "Link to DichroicMirror object which contains metadata about the dichroic mirror in the emission light path.",
+            "doc": (
+                "Link to DichroicMirror object which contains metadata about the dichroic mirror "
+                "in the emission light path."
+            ),
             "default": None,
         },
     )

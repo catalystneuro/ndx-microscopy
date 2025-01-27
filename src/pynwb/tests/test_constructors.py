@@ -41,13 +41,13 @@ def test_constructor_excitation_light_path_failing():
     excitation_wavelength_in_nm = 600.0
     excitation_source = mock_ExcitationSource(excitation_wavelength_in_nm=488.0)
     try:
-        excitation_light_path = mock_ExcitationLightPath(
+        _ = mock_ExcitationLightPath(
             excitation_wavelength_in_nm=excitation_wavelength_in_nm, excitation_source=excitation_source
         )
     except ValueError as e:
-        assert (
-            str(e)
-            == f"wavelength set in the light path ({excitation_wavelength_in_nm}) and the one set in the device ({excitation_source.excitation_wavelength_in_nm}) must be the same."
+        assert str(e) == (
+            f"wavelength set in the light path ({excitation_wavelength_in_nm}) and the one set in the device "
+            f"({excitation_source.excitation_wavelength_in_nm}) must be the same."
         )
     else:
         assert False, "Expected ValueError not raised"
@@ -66,13 +66,11 @@ def test_constructor_emission_light_path_failing():
     emission_wavelength_in_nm = 600.0
     photodetector = mock_Photodetector(detected_wavelength_in_nm=488.0)
     try:
-        emission_light_path = mock_EmissionLightPath(
-            emission_wavelength_in_nm=emission_wavelength_in_nm, photodetector=photodetector
-        )
+        _ = mock_EmissionLightPath(emission_wavelength_in_nm=emission_wavelength_in_nm, photodetector=photodetector)
     except ValueError as e:
-        assert (
-            str(e)
-            == f"wavelength set in the light path ({emission_wavelength_in_nm}) and the one set in the device ({photodetector.detected_wavelength_in_nm}) must be the same."
+        assert str(e) == (
+            f"wavelength set in the light path ({emission_wavelength_in_nm}) and the one set in the device "
+            f"({photodetector.detected_wavelength_in_nm}) must be the same."
         )
     else:
         assert False, "Expected ValueError not raised"
