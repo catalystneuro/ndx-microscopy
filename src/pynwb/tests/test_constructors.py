@@ -35,6 +35,11 @@ def test_constructor_excitation_light_path():
     )
 
 
+def test_constructor_excitation_light_path_with_mode():
+    excitation_light_path = mock_ExcitationLightPath(excitation_mode="two-photon")
+    assert excitation_light_path.excitation_mode == "two-photon"
+
+
 def test_constructor_excitation_light_path_failing():
     from ndx_ophys_devices.testing import mock_ExcitationSource
 
@@ -42,7 +47,8 @@ def test_constructor_excitation_light_path_failing():
     excitation_source = mock_ExcitationSource(excitation_wavelength_in_nm=488.0)
     try:
         _ = mock_ExcitationLightPath(
-            excitation_wavelength_in_nm=excitation_wavelength_in_nm, excitation_source=excitation_source
+            excitation_wavelength_in_nm=excitation_wavelength_in_nm,
+            excitation_source=excitation_source,
         )
     except ValueError as e:
         assert str(e) == (

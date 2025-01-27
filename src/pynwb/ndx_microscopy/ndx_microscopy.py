@@ -107,6 +107,7 @@ class ExcitationLightPath(LabMetaData):
 
     __nwbfields__ = (
         "excitation_wavelength_in_nm",
+        "excitation_mode",
         "description",
         "excitation_source",
         "excitation_filter",
@@ -119,6 +120,12 @@ class ExcitationLightPath(LabMetaData):
             "name": "excitation_wavelength_in_nm",
             "type": float,
             "doc": "The excitation wavelength of light, in nanometers.",
+        },
+        {
+            "name": "excitation_mode",
+            "type": str,
+            "doc": "The type of excitation used in the light path (e.g., 'one-photon', 'two-photon', 'three-photon', 'multiphoton').",
+            "default": None,
         },
         {
             "name": "description",
@@ -152,6 +159,7 @@ class ExcitationLightPath(LabMetaData):
     def __init__(self, **kwargs):
         keys_to_set = (
             "excitation_wavelength_in_nm",
+            "excitation_mode",
             "description",
             "excitation_source",
             "excitation_filter",
