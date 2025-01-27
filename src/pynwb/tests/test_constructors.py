@@ -41,8 +41,8 @@ def test_constructor_excitation_light_path_with_wrong_mode():
         _ = mock_ExcitationLightPath(excitation_mode=excitation_mode)
     except ValueError as e:
         assert (
-            str(e)
-            == f"excitation_mode must be one of 'one-photon', 'two-photon', 'three-photon', 'multiphoton', not {excitation_mode}"
+            str(e) == f"excitation_mode must be one of 'one-photon', 'two-photon', "
+            f"'three-photon', 'multiphoton', not {excitation_mode}"
         )
     else:
         assert False, "Expected ValueError not raised"

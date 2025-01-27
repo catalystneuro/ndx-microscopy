@@ -104,7 +104,8 @@ def check_wavelength(wavelengthset_in_light_path, wavelength_set_in_device):
 def _check_excitation_mode_str(excitation_mode):
     if excitation_mode not in ("one-photon", "two-photon", "three-photon", "multiphoton"):
         raise ValueError(
-            f"excitation_mode must be one of 'one-photon', 'two-photon', 'three-photon', 'multiphoton', not {excitation_mode}"
+            f"excitation_mode must be one of 'one-photon', 'two-photon', "
+            f"'three-photon', 'multiphoton', not {excitation_mode}"
         )
 
 
@@ -131,7 +132,10 @@ class ExcitationLightPath(LabMetaData):
         {
             "name": "excitation_mode",
             "type": str,
-            "doc": "The type of excitation used in the light path (e.g., 'one-photon', 'two-photon', 'three-photon', 'multiphoton').",
+            "doc": (
+                "The type of excitation used in the light path (e.g., 'one-photon', "
+                "'two-photon', 'three-photon', 'multiphoton')."
+            ),
             "default": None,
         },
         {
