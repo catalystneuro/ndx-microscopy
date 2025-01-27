@@ -10,7 +10,7 @@ except ImportError:
 
 # NOTE: ndx-ophys-devices needs to be imported first because loading the ndx-microscopy namespace depends on
 # having the ndx-ophys-devices namespace loaded into the global type map.
-from ndx_ophys_devices import ExcitationSource, Indicator, OpticalFilter, Photodetector
+from ndx_ophys_devices import ExcitationSource, Indicator, OpticalFilter, Photodetector, DichroicMirror
 
 extension_name = "ndx-microscopy"
 
@@ -27,21 +27,24 @@ load_namespaces(str(__spec_path))
 Microscope = get_class("Microscope", extension_name)
 ExcitationLightPath = get_class("ExcitationLightPath", extension_name)
 EmissionLightPath = get_class("EmissionLightPath", extension_name)
+
 ImagingSpace = get_class("ImagingSpace", extension_name)
 PlanarImagingSpace = get_class("PlanarImagingSpace", extension_name)
 VolumetricImagingSpace = get_class("VolumetricImagingSpace", extension_name)
-MicroscopySegmentations = get_class("MicroscopySegmentations", extension_name)
-MicroscopyPlaneSegmentation = get_class("MicroscopyPlaneSegmentation", extension_name)
+
 MicroscopySeries = get_class("MicroscopySeries", extension_name)
 PlanarMicroscopySeries = get_class("PlanarMicroscopySeries", extension_name)
 VariableDepthMicroscopySeries = get_class("VariableDepthMicroscopySeries", extension_name)
 VolumetricMicroscopySeries = get_class("VolumetricMicroscopySeries", extension_name)
+
 MultiChannelMicroscopyVolume = get_class("MultiChannelMicroscopyVolume", extension_name)
 VariableDepthMultiChannelMicroscopyVolume = get_class("VariableDepthMultiChannelMicroscopyVolume", extension_name)
 
 MicroscopyResponseSeries = get_class("MicroscopyResponseSeries", extension_name)
 MicroscopyResponseSeriesContainer = get_class("MicroscopyResponseSeriesContainer", extension_name)
 
+MicroscopySegmentations = get_class("MicroscopySegmentations", extension_name)
+from .ndx_microscopy import MicroscopyPlaneSegmentation
 
 __all__ = [
     "OpticalFilter",
