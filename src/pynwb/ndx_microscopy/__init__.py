@@ -25,8 +25,6 @@ if not os.path.exists(__spec_path):
 load_namespaces(str(__spec_path))
 
 Microscope = get_class("Microscope", extension_name)
-ExcitationLightPath = get_class("ExcitationLightPath", extension_name)
-EmissionLightPath = get_class("EmissionLightPath", extension_name)
 
 ImagingSpace = get_class("ImagingSpace", extension_name)
 PlanarImagingSpace = get_class("PlanarImagingSpace", extension_name)
@@ -44,7 +42,7 @@ MicroscopyResponseSeries = get_class("MicroscopyResponseSeries", extension_name)
 MicroscopyResponseSeriesContainer = get_class("MicroscopyResponseSeriesContainer", extension_name)
 
 MicroscopySegmentations = get_class("MicroscopySegmentations", extension_name)
-from .ndx_microscopy import MicroscopyPlaneSegmentation
+from .ndx_microscopy import MicroscopyPlaneSegmentation, ExcitationLightPath, EmissionLightPath
 
 __all__ = [
     "OpticalFilter",
