@@ -53,8 +53,14 @@ class TestPlanarMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
         excitation_filter = mock_OpticalFilter()
         nwbfile.add_device(devices=excitation_filter)
 
+        dichroic_mirror = mock_DichroicMirror()
+        nwbfile.add_device(devices=dichroic_mirror)
+
         excitation_light_path = mock_ExcitationLightPath(
-            name="ExcitationLightPath", excitation_source=excitation_source, excitation_filter=excitation_filter
+            name="ExcitationLightPath",
+            excitation_source=excitation_source,
+            excitation_filter=excitation_filter,
+            dichroic_mirror=dichroic_mirror,
         )
         nwbfile.add_lab_meta_data(lab_meta_data=excitation_light_path)
 
@@ -67,7 +73,10 @@ class TestPlanarMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
         nwbfile.add_device(devices=emission_filter)
 
         emission_light_path = mock_EmissionLightPath(
-            name="EmissionLightPath", emission_filter=emission_filter, photodetector=photodetector
+            name="EmissionLightPath",
+            emission_filter=emission_filter,
+            photodetector=photodetector,
+            dichroic_mirror=dichroic_mirror,
         )
         nwbfile.add_lab_meta_data(lab_meta_data=emission_light_path)
 
@@ -174,8 +183,14 @@ class TestVolumetricMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
         excitation_filter = mock_OpticalFilter()
         nwbfile.add_device(devices=excitation_filter)
 
+        dichroic_mirror = mock_DichroicMirror()
+        nwbfile.add_device(devices=dichroic_mirror)
+
         excitation_light_path = mock_ExcitationLightPath(
-            name="ExcitationLightPath", excitation_source=excitation_source, excitation_filter=excitation_filter
+            name="ExcitationLightPath",
+            excitation_source=excitation_source,
+            excitation_filter=excitation_filter,
+            dichroic_mirror=dichroic_mirror,
         )
         nwbfile.add_lab_meta_data(lab_meta_data=excitation_light_path)
 
@@ -187,8 +202,14 @@ class TestVolumetricMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
         emission_filter = mock_OpticalFilter()
         nwbfile.add_device(devices=emission_filter)
 
+        dichroic_mirror = mock_DichroicMirror()
+        nwbfile.add_device(devices=dichroic_mirror)
+
         emission_light_path = mock_EmissionLightPath(
-            name="EmissionLightPath", emission_filter=emission_filter, photodetector=photodetector
+            name="EmissionLightPath",
+            emission_filter=emission_filter,
+            photodetector=photodetector,
+            dichroic_mirror=dichroic_mirror,
         )
         nwbfile.add_lab_meta_data(lab_meta_data=emission_light_path)
 
@@ -238,8 +259,14 @@ class TestVariableDepthMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
         excitation_filter = mock_OpticalFilter()
         nwbfile.add_device(devices=excitation_filter)
 
+        dichroic_mirror = mock_DichroicMirror()
+        nwbfile.add_device(devices=dichroic_mirror)
+
         excitation_light_path = mock_ExcitationLightPath(
-            name="ExcitationLightPath", excitation_source=excitation_source, excitation_filter=excitation_filter
+            name="ExcitationLightPath",
+            excitation_source=excitation_source,
+            excitation_filter=excitation_filter,
+            dichroic_mirror=dichroic_mirror,
         )
         nwbfile.add_lab_meta_data(lab_meta_data=excitation_light_path)
 
@@ -251,8 +278,14 @@ class TestVariableDepthMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
         emission_filter = mock_OpticalFilter()
         nwbfile.add_device(devices=emission_filter)
 
+        dichroic_mirror = mock_DichroicMirror()
+        nwbfile.add_device(devices=dichroic_mirror)
+
         emission_light_path = mock_EmissionLightPath(
-            name="EmissionLightPath", emission_filter=emission_filter, photodetector=photodetector
+            name="EmissionLightPath",
+            emission_filter=emission_filter,
+            photodetector=photodetector,
+            dichroic_mirror=dichroic_mirror,
         )
         nwbfile.add_lab_meta_data(lab_meta_data=emission_light_path)
 

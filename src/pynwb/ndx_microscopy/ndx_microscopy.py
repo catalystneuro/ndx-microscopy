@@ -159,7 +159,7 @@ class EmissionLightPath(LabMetaData):
     __nwbfields__ = (
         "emission_wavelength_in_nm",
         "description",
-        "indicator",
+        {"name": "indicator", "child": True},
         "photodetector",
         "emission_filter",
         "dichroic_mirror",
