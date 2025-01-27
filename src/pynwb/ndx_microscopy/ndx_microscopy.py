@@ -93,6 +93,13 @@ def create_roi_table_region(self, **kwargs):
 MicroscopyPlaneSegmentation.create_roi_table_region = create_roi_table_region
 
 
+def check_wavelength(wavelengthset_in_light_path, wavelength_set_in_device):
+    if not wavelengthset_in_light_path == wavelength_set_in_device:
+        raise ValueError(
+            f"wavelength set in the light path ({wavelengthset_in_light_path}) and the one set in the device ({wavelength_set_in_device}) must be the same."
+        )
+
+
 @register_class("ExcitationLightPath", extension_name)
 class ExcitationLightPath(LabMetaData):
     __nwbfields__ = (
@@ -114,7 +121,6 @@ class ExcitationLightPath(LabMetaData):
             "name": "description",
             "type": str,
             "doc": "Link to ExcitationSource object which contains metadata about the excitation source device. If it is a pulsed excitation source link a PulsedExcitationSource object.",
-            "default": None,
         },
         {"name": "excitation_source", "type": ExcitationSource, "doc": "The excitation source", "default": None},
         {
@@ -130,13 +136,6 @@ class ExcitationLightPath(LabMetaData):
             "default": None,
         },
     )
-    @classmethod
-    def check_wavelength(cls, excitation_wavelength_in_nm, excitation_source):
-        if not excitation_wavelength_in_nm == excitation_source.excitation_wavelength_in_nm:
-            raise ValueError(
-                f"excitation_wavelength_in_nm ({excitation_wavelength_in_nm}) and excitation_source.excitation_wavelength_in_nm ({excitation_source.excitation_wavelength_in_nm}) must be the same."
-            )
-
     def __init__(self, **kwargs):
         keys_to_set = (
             "excitation_wavelength_in_nm",
@@ -151,7 +150,7 @@ class ExcitationLightPath(LabMetaData):
             setattr(self, key, val)
         excitation_wavelength_in_nm = args_to_set["excitation_wavelength_in_nm"]
         excitation_source = args_to_set["excitation_source"]
-        self.check_wavelength(excitation_wavelength_in_nm=excitation_wavelength_in_nm, excitation_source=excitation_source)
+        check_wavelength(excitation_wavelength_in_nm, excitation_source.excitation_wavelength_in_nm)
 
 
 @register_class("EmissionLightPath", extension_name)
@@ -176,7 +175,6 @@ class EmissionLightPath(LabMetaData):
             "name": "description",
             "type": str,
             "doc": "Description of the emission light path",
-            "default": None,
         },
         {
             "name": "indicator",
@@ -203,13 +201,6 @@ class EmissionLightPath(LabMetaData):
             "default": None,
         },
     )
-    @classmethod
-    def check_wavelength(cls, emission_wavelength_in_nm, photodetector):
-        if not emission_wavelength_in_nm == photodetector.detected_wavelength_in_nm:
-            raise ValueError(
-                f"emission_wavelength_in_nm ({emission_wavelength_in_nm}) and photodetector.detected_wavelength_in_nm ({photodetector.detected_wavelength_in_nm}) must be the same."
-            )
-
     def __init__(self, **kwargs):
         keys_to_set = (
             "emission_wavelength_in_nm",
@@ -220,7 +211,7 @@ class EmissionLightPath(LabMetaData):
             "dichroic_mirror",
         )
         args_to_set = popargs_to_dict(keys_to_set, kwargs)
-        super().__init__(args_to_set, **kwargs)
+        super().__init__(**kwargs)
         emission_wavelength_in_nm = args_to_set["emission_wavelength_in_nm"]
         photodetector = args_to_set["photodetector"]
-        self.check_wavelength(emission_wavelength_in_nm=emission_wavelength_in_nm, photodetector=photodetector)
+        check_wavelength(emission_wavelength_in_nm, photodetector.detected_wavelength_in_nm)

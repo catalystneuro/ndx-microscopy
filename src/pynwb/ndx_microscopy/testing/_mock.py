@@ -35,7 +35,7 @@ def mock_Microscope(
 def mock_ExcitationLightPath(
     *,
     name: Optional[str] = None,
-    description: str = "A mock instance of a ExcitationLightPath type to be used for rapid testing.",
+    description: str = None,
     excitation_wavelength_in_nm: float = 500.0,
     excitation_source: ExcitationSource = None,
     excitation_filter: OpticalFilter = None,
@@ -43,7 +43,7 @@ def mock_ExcitationLightPath(
 ) -> ndx_microscopy.ExcitationLightPath:
     excitation_light_path = ndx_microscopy.ExcitationLightPath(
         name=name or name_generator("ExcitationLightPath"),
-        description=description,
+        description=description or "A mock instance of a ExcitationLightPath type to be used for rapid testing.",
         excitation_wavelength_in_nm=excitation_wavelength_in_nm,
         excitation_source=excitation_source or mock_ExcitationSource(),
         excitation_filter=excitation_filter or mock_OpticalFilter(),
@@ -55,16 +55,16 @@ def mock_ExcitationLightPath(
 def mock_EmissionLightPath(
     *,
     name: Optional[str] = None,
-    description: str = "A mock instance of a EmissionLightPath type to be used for rapid testing.",
+    description: Optional[str] = None,
     indicator: Indicator = None,
     photodetector: Photodetector = None,
     emission_filter: OpticalFilter = None,
-    emission_wavelength_in_nm: float = 450.0,
+    emission_wavelength_in_nm: float = 520.0,
     dichroic_mirror: DichroicMirror = None,
 ) -> ndx_microscopy.EmissionLightPath:
     emission_light_path = ndx_microscopy.EmissionLightPath(
         name=name or name_generator("EmissionLightPath"),
-        description=description,
+        description=description or "A mock instance of a EmissionLightPath type to be used for rapid testing.",
         indicator=indicator or mock_Indicator(),
         photodetector=photodetector or mock_Photodetector(),
         emission_filter=emission_filter or mock_OpticalFilter(),
