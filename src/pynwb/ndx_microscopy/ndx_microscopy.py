@@ -106,7 +106,7 @@ class ExcitationLightPath(LabMetaData):
         "excitation_wavelength_in_nm",
         "description",
         "excitation_source",
-        "optical_filters",
+        "excitation_filter",
         "dichroic_mirror",
     )
 
@@ -125,7 +125,7 @@ class ExcitationLightPath(LabMetaData):
         {"name": "excitation_source", "type": ExcitationSource, "doc": "The excitation source", "default": None},
         {
             "name": "excitation_filter",
-            "type": (list, tuple, OpticalFilter),
+            "type": OpticalFilter,
             "doc": "Link to OpticalFilter object which contains metadata about the optical filter in this excitation light path. It can be either a BandOpticalFilter (e.g., 'Bandpass', 'Bandstop', 'Longpass', 'Shortpass') or a EdgeOpticalFilter (Longpass or Shortpass).",
             "default": None,
         },
@@ -150,7 +150,8 @@ class ExcitationLightPath(LabMetaData):
             setattr(self, key, val)
         excitation_wavelength_in_nm = args_to_set["excitation_wavelength_in_nm"]
         excitation_source = args_to_set["excitation_source"]
-        check_wavelength(excitation_wavelength_in_nm, excitation_source.excitation_wavelength_in_nm)
+        if excitation_source is not None:
+            check_wavelength(excitation_wavelength_in_nm, excitation_source.excitation_wavelength_in_nm)
 
 
 @register_class("EmissionLightPath", extension_name)
@@ -160,7 +161,7 @@ class EmissionLightPath(LabMetaData):
         "description",
         "indicator",
         "photodetector",
-        "emission_filer",
+        "emission_filter",
         "dichroic_mirror",
     )
 
@@ -179,8 +180,7 @@ class EmissionLightPath(LabMetaData):
         {
             "name": "indicator",
             "type": Indicator,
-            "doc": " Indicator object which contains metadata about the indicator used in this light path.",
-            "default": None,
+            "doc": "Indicator object which contains metadata about the indicator used in this light path.",
         },
         {
             "name": "photodetector",
@@ -190,7 +190,7 @@ class EmissionLightPath(LabMetaData):
         },
         {
             "name": "emission_filter",
-            "type": (list, tuple, OpticalFilter),
+            "type": OpticalFilter,
             "doc": "Link to OpticalFilter object which contains metadata about the optical filter in this emission light path. It can be either a BandOpticalFilter (e.g., 'Bandpass', 'Bandstop', 'Longpass', 'Shortpass') or a EdgeOpticalFilter (Longpass or Shortpass).",
             "default": None,
         },
@@ -216,4 +216,5 @@ class EmissionLightPath(LabMetaData):
             setattr(self, key, val)
         emission_wavelength_in_nm = args_to_set["emission_wavelength_in_nm"]
         photodetector = args_to_set["photodetector"]
-        check_wavelength(emission_wavelength_in_nm, photodetector.detected_wavelength_in_nm)
+        if photodetector is not None:
+            check_wavelength(emission_wavelength_in_nm, photodetector.detected_wavelength_in_nm)

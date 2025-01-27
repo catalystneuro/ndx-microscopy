@@ -51,6 +51,8 @@ __all__ = [
     "Photodetector",
     "DichroicMirror",
     "Microscope",
+    "ExcitationLightPath",
+    "EmissionLightPath",
     "ImagingSpace",
     "PlanarImagingSpace",
     "VolumetricImagingSpace",
