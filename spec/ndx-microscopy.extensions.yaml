@@ -18,7 +18,7 @@ groups:
         doc: Excitation wavelength of light, in nanometers.
       - name: excitation_mode
         dtype: text
-        doc: The type of excitation used in the light path (e.g., 'one-photon', 'two-photon', 'three-photon', 'multiphoton').
+        doc: The type of excitation used in the light path (e.g., 'one-photon', 'two-photon', 'three-photon', 'other').
       - name: description
         dtype: text
         doc: Description of the excitation light path.

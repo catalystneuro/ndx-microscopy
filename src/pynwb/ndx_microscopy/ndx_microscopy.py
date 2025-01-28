@@ -102,10 +102,12 @@ def check_wavelength(wavelengthset_in_light_path, wavelength_set_in_device):
 
 
 def _check_excitation_mode_str(excitation_mode):
-    if excitation_mode not in ("one-photon", "two-photon", "three-photon", "multiphoton"):
+    if excitation_mode not in ("one-photon", "two-photon", "three-photon", "other"):
         raise ValueError(
             f"excitation_mode must be one of 'one-photon', 'two-photon', "
-            f"'three-photon', 'multiphoton', not {excitation_mode}"
+            f"'three-photon', 'other', not {excitation_mode}. "
+            f"If you want to include a different excitation mode, please open an issue on GitHub at "
+            f"https://github.com/CatalystNeuro/ndx-microscopy/issues"
         )
 
 
@@ -134,7 +136,7 @@ class ExcitationLightPath(LabMetaData):
             "type": str,
             "doc": (
                 "The type of excitation used in the light path (e.g., 'one-photon', "
-                "'two-photon', 'three-photon', 'multiphoton')."
+                "'two-photon', 'three-photon', 'other')."
             ),
             "default": None,
         },
