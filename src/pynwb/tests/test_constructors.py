@@ -70,26 +70,6 @@ def test_constructor_emission_light_path_failing():
     )
 
 
-def test_constructor_microscopy_emission_light_path():
-    emission_light_path = mock_EmissionLightPath()
-    assert (
-        emission_light_path.description == "A mock instance of a EmissionLightPath type to be used for rapid testing."
-    )
-
-
-def test_constructor_emission_light_path_failing():
-    from ndx_ophys_devices.testing import mock_Photodetector
-
-    emission_wavelength_in_nm = 600.0
-    photodetector = mock_Photodetector(detected_wavelength_in_nm=488.0)
-    with pytest.raises(ValueError) as e:
-        _ = mock_EmissionLightPath(emission_wavelength_in_nm=emission_wavelength_in_nm, photodetector=photodetector)
-    assert str(e.value) == (
-        f"wavelength set in the light path ({emission_wavelength_in_nm}) and the one set in the device "
-        f"({photodetector.detected_wavelength_in_nm}) must be the same."
-    )
-
-
 def test_constructor_planar_image_space():
     planar_imaging_space = mock_PlanarImagingSpace()
     assert (
