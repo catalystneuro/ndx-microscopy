@@ -158,7 +158,6 @@ groups:
       dtype: text
       required: false
 
-
   # These are needed to allow linkage of processed data to the new objects, until this is merged to core
   # Technically the RoiResponseSeries shouldn't need to be modified since it just takes a DynamicTableRegion and
   # does not care about the target
@@ -176,7 +175,6 @@ groups:
     - neurodata_type_inc: MicroscopyPlaneSegmentation
       doc: Results from image segmentation of a specific imaging plane.
       quantity: '+'
-
 
   - neurodata_type_def: MicroscopyPlaneSegmentation
     neurodata_type_inc: DynamicTable
@@ -254,7 +252,6 @@ groups:
     - neurodata_type_inc: ImagingSpace
       doc: ImagingSpace object from which this data was generated.
 
-
   - neurodata_type_def: MicroscopySeries
     neurodata_type_inc: TimeSeries
     doc: Imaging data acquired over time from an optical channel in a microscope while a light source illuminates the
@@ -291,7 +288,6 @@ groups:
     - neurodata_type_inc: PlanarImagingSpace
       doc: PlanarImagingSpace object containing metadata about the region of physical space this imaging data
         was recorded from.
-
 
   - neurodata_type_def: VariableDepthMicroscopySeries
     neurodata_type_inc: PlanarMicroscopySeries
@@ -330,8 +326,6 @@ groups:
     - neurodata_type_inc: VolumetricImagingSpace
       doc: VolumetricImagingSpace object containing metadata about the region of physical space this imaging data
         was recorded from.
-
-
 
   - neurodata_type_def: MultiChannelMicroscopyVolume
     neurodata_type_inc: NWBDataInterface
@@ -410,8 +404,6 @@ groups:
     - neurodata_type_inc: VolumetricImagingSpace
       doc: VolumetricImagingSpace object containing metadata about the region of physical space this imaging data
         was recorded from.
-
-
 
   - neurodata_type_def: VariableDepthMultiChannelMicroscopyVolume
     neurodata_type_inc: NWBDataInterface
@@ -497,8 +489,6 @@ groups:
     - neurodata_type_inc: VolumetricImagingSpace
       doc: VolumetricImagingSpace object containing metadata about the region of physical space this imaging data
         was recorded from.
-
-
 
   - neurodata_type_def: MicroscopyResponseSeries
     neurodata_type_inc: TimeSeries
