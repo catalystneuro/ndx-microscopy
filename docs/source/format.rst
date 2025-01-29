@@ -1,13 +1,7 @@
-.. _ndx-microscopy:
+*******
+Format
+*******
 
-**************
-ndx-microscopy
-**************
-
-Version |release| |today|
-
-Format Overview
-=============
 
 The ndx-microscopy extension defines several neurodata types to represent microscopy data and metadata in a standardized way.
 
@@ -616,10 +610,3 @@ For extracted ROI responses.
           - name: table_region
             neurodata_type_inc: DynamicTableRegion
             doc: Reference to segmentation table.
-
-Usage Examples
-============
-
-See the :ref:`examples` section for detailed usage examples of each neurodata type.
-
-For additional examples and best practices, please refer to the :ref:`user-guide`.
