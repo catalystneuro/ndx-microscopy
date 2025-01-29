@@ -1,6 +1,10 @@
+.. _getting_started:
+
 ***************
 Getting Started
 ***************
+
+.. _installation_guide:
 
 Installation
 ===========
@@ -22,6 +26,8 @@ For MATLAB users:
 .. code-block:: matlab
 
    generateExtension('<directory path>/ndx-microscopy/spec/ndx-microscopy.namespace.yaml');
+
+.. _quick_start_guide:
 
 Quick Start
 ==========
@@ -84,6 +90,8 @@ Here's a basic example of using ndx-microscopy for two-photon calcium imaging:
     # Save file
     with NWBHDF5IO('calcium_imaging.nwb', 'w') as io:
         io.write(nwbfile)
+
+.. _key_concepts:
 
 Key Concepts
 ===========

@@ -29,6 +29,8 @@ Documentation
    release_notes
    credits
 
+.. _installation:
+
 Installation
 ===========
 
@@ -45,6 +47,8 @@ MATLAB Installation
 .. code-block:: matlab
 
    generateExtension('<directory path>/ndx-microscopy/spec/ndx-microscopy.namespace.yaml');
+
+.. _quick_example:
 
 Quick Example
 ===========

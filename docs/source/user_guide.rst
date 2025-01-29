@@ -1,3 +1,5 @@
+.. _user_guide:
+
 **********
 User Guide
 **********
@@ -23,7 +25,7 @@ The Microscope class represents the physical microscope device:
     nwbfile.add_device(microscope)
 
 Light Path Configuration
----------------------
+----------------------
 
 Light paths are defined using ExcitationLightPath and EmissionLightPath:
 
@@ -81,7 +83,7 @@ Imaging spaces define the physical region being imaged:
        )
 
 Data Series Types
---------------
+---------------
 
 Different types of microscopy data series are available:
 
@@ -111,7 +113,7 @@ Data Organization
    - Include quality control metrics
 
 Performance Optimization
----------------------
+----------------------
 
 1. **Data Storage**
    - Use appropriate chunking for large datasets

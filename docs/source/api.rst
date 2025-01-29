@@ -1,3 +1,5 @@
+.. _api:
+
 ***
 API
 ***
@@ -16,7 +18,7 @@ Light Paths
 ==========
 
 ExcitationLightPath
------------------
+------------------
 
 .. autoclass:: ndx_microscopy.ExcitationLightPath
    :members:
@@ -24,7 +26,7 @@ ExcitationLightPath
    :show-inheritance:
 
 EmissionLightPath
----------------
+----------------
 
 .. autoclass:: ndx_microscopy.EmissionLightPath
    :members:
@@ -32,10 +34,10 @@ EmissionLightPath
    :show-inheritance:
 
 Imaging Spaces
-============
+=============
 
 ImagingSpace
-----------
+-----------
 
 .. autoclass:: ndx_microscopy.ImagingSpace
    :members:
@@ -43,7 +45,7 @@ ImagingSpace
    :show-inheritance:
 
 PlanarImagingSpace
-----------------
+-----------------
 
 .. autoclass:: ndx_microscopy.PlanarImagingSpace
    :members:
@@ -51,7 +53,7 @@ PlanarImagingSpace
    :show-inheritance:
 
 VolumetricImagingSpace
--------------------
+---------------------
 
 .. autoclass:: ndx_microscopy.VolumetricImagingSpace
    :members:
@@ -59,10 +61,10 @@ VolumetricImagingSpace
    :show-inheritance:
 
 Microscopy Series
-===============
+================
 
 MicroscopySeries
---------------
+---------------
 
 .. autoclass:: ndx_microscopy.MicroscopySeries
    :members:
@@ -70,7 +72,7 @@ MicroscopySeries
    :show-inheritance:
 
 PlanarMicroscopySeries
---------------------
+---------------------
 
 .. autoclass:: ndx_microscopy.PlanarMicroscopySeries
    :members:
@@ -78,7 +80,7 @@ PlanarMicroscopySeries
    :show-inheritance:
 
 VariableDepthMicroscopySeries
----------------------------
+----------------------------
 
 .. autoclass:: ndx_microscopy.VariableDepthMicroscopySeries
    :members:
@@ -86,7 +88,7 @@ VariableDepthMicroscopySeries
    :show-inheritance:
 
 VolumetricMicroscopySeries
-------------------------
+-------------------------
 
 .. autoclass:: ndx_microscopy.VolumetricMicroscopySeries
    :members:
@@ -94,10 +96,10 @@ VolumetricMicroscopySeries
    :show-inheritance:
 
 Multi-Channel Data
-===============
+================
 
 MultiChannelMicroscopyVolume
---------------------------
+---------------------------
 
 .. autoclass:: ndx_microscopy.MultiChannelMicroscopyVolume
    :members:
@@ -105,7 +107,7 @@ MultiChannelMicroscopyVolume
    :show-inheritance:
 
 VariableDepthMultiChannelMicroscopyVolume
---------------------------------------
+---------------------------------------
 
 .. autoclass:: ndx_microscopy.VariableDepthMultiChannelMicroscopyVolume
    :members:
@@ -113,10 +115,10 @@ VariableDepthMultiChannelMicroscopyVolume
    :show-inheritance:
 
 Response Data
-===========
+============
 
 MicroscopyResponseSeries
-----------------------
+-----------------------
 
 .. autoclass:: ndx_microscopy.MicroscopyResponseSeries
    :members:
@@ -124,10 +126,10 @@ MicroscopyResponseSeries
    :show-inheritance:
 
 Segmentation
-==========
+===========
 
 MicroscopySegmentations
----------------------
+----------------------
 
 .. autoclass:: ndx_microscopy.MicroscopySegmentations
    :members:
@@ -135,7 +137,7 @@ MicroscopySegmentations
    :show-inheritance:
 
 MicroscopyPlaneSegmentation
--------------------------
+--------------------------
 
 .. autoclass:: ndx_microscopy.MicroscopyPlaneSegmentation
    :members:

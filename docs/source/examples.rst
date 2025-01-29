@@ -1,3 +1,5 @@
+.. _examples:
+
 ********
 Examples
 ********
@@ -5,7 +7,7 @@ Examples
 This section provides detailed examples of using the ndx-microscopy extension for various microscopy techniques.
 
 Two-photon Calcium Imaging
-========================
+=========================
 
 Complete example of two-photon calcium imaging with full optical path configuration:
 
@@ -157,7 +159,7 @@ Complete example of two-photon calcium imaging with full optical path configurat
         io.write(nwbfile)
 
 One-photon (Widefield) Imaging
-===========================
+============================
 
 Example of one-photon widefield imaging setup:
 
@@ -239,7 +241,7 @@ Example of one-photon widefield imaging setup:
     nwbfile.add_lab_meta_data(emission)
 
 Multi-Channel Volume Imaging
-=========================
+==========================
 
 Example of multi-channel volumetric imaging:
 
@@ -298,7 +300,7 @@ Example of multi-channel volumetric imaging:
     nwbfile.add_acquisition(volume)
 
 Variable Depth Imaging
-===================
+====================
 
 Example of variable depth imaging:
 
@@ -319,7 +321,7 @@ Example of variable depth imaging:
     nwbfile.add_acquisition(variable_series)
 
 ROI Response Data
-===============
+================
 
 Example of storing ROI response data:
 
