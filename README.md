@@ -46,12 +46,14 @@ classDiagram
         attributes
         --------------------------------------
         excitation_wavelength_in_nm : numeric
+        excitation_mode : txt
         description : text
         --------------------------------------
         links
         --------------------------------------
         excitation_source : ExcitationSource, optional
         excitation_filter : OpticalFilter, optional
+        dichroic_mirror : DichroicMirror, optional
     }
 
     class EmissionLightPath {
@@ -70,6 +72,7 @@ classDiagram
         --------------------------------------
         photodetector : Photodetector, optional
         emission_filter : OpticalFilter, optional
+        dichroic_mirror : DichroicMirror, optional
     }
 
     class ExcitationSource {
@@ -184,7 +187,7 @@ classDiagram
         --------------------------------------
         data : numeric, frame x height x width
         --------------------------------------
-        links
+        groups
         --------------------------------------
         imaging_space : PlanarImagingSpace
     }
@@ -204,7 +207,7 @@ classDiagram
         --------------------------------------
         data : numeric, frame x height x width x depth
         --------------------------------------
-        links
+        groups
         --------------------------------------
         imaging_space : VolumetricImagingSpace
     }
@@ -225,14 +228,17 @@ classDiagram
         excitation_light_paths : ExcitationLightPath[]
         emission_light_paths : EmissionLightPath[]
         --------------------------------------
-        links
+        groups
         --------------------------------------
         imaging_space : VolumetricImagingSpace
+        --------------------------------------
+        links
+        --------------------------------------
         microscope : Microscope
     }
     
     class ImagingSpace {
-        <<LabMetaData>>
+        <<NWBContainer>>
         --------------------------------------
         datasets
         --------------------------------------
@@ -275,12 +281,14 @@ classDiagram
         attributes
         --------------------------------------
         excitation_wavelength_in_nm : numeric
+        excitation_mode : txt
         description : text
         --------------------------------------
         links
         --------------------------------------
         excitation_source : ExcitationSource, optional
         excitation_filter : OpticalFilter, optional
+        dichroic_mirror : DichroicMirror, optional
     }
 
     class EmissionLightPath {
@@ -299,6 +307,7 @@ classDiagram
         --------------------------------------
         photodetector : Photodetector, optional
         emission_filter : OpticalFilter, optional
+        dichroic_mirror : DichroicMirror, optional
     }
 
     class Microscope {

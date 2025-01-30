@@ -35,6 +35,18 @@ def test_constructor_excitation_light_path():
     )
 
 
+def test_constructor_excitation_light_path_with_wrong_mode():
+    excitation_mode = "2P"
+    expected_error_message = (
+        f"excitation_mode must be one of 'one-photon', 'two-photon', "
+        f"'three-photon', 'other', not {excitation_mode}. "
+        f"If you want to include a different excitation mode, please open an issue on GitHub at "
+        f"https://github.com/CatalystNeuro/ndx-microscopy/issues"
+    )
+    with pytest.raises(ValueError, match=expected_error_message):
+        _ = mock_ExcitationLightPath(excitation_mode=excitation_mode)
+
+
 def test_constructor_excitation_light_path_failing():
     from ndx_ophys_devices.testing import mock_ExcitationSource
 
@@ -46,7 +58,8 @@ def test_constructor_excitation_light_path_failing():
     )
     with pytest.raises(ValueError, match=expected_error_message):
         _ = mock_ExcitationLightPath(
-            excitation_wavelength_in_nm=excitation_wavelength_in_nm, excitation_source=excitation_source
+            excitation_wavelength_in_nm=excitation_wavelength_in_nm,
+            excitation_source=excitation_source,
         )
 
 

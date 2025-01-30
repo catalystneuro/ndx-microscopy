@@ -101,12 +101,23 @@ def check_wavelength(wavelengthset_in_light_path, wavelength_set_in_device):
         )
 
 
+def _check_excitation_mode_str(excitation_mode):
+    if excitation_mode not in ("one-photon", "two-photon", "three-photon", "other"):
+        raise ValueError(
+            f"excitation_mode must be one of 'one-photon', 'two-photon', "
+            f"'three-photon', 'other', not {excitation_mode}. "
+            f"If you want to include a different excitation mode, please open an issue on GitHub at "
+            f"https://github.com/CatalystNeuro/ndx-microscopy/issues"
+        )
+
+
 @register_class("ExcitationLightPath", extension_name)
 class ExcitationLightPath(LabMetaData):
     """Excitation light path that illuminates an imaging space."""
 
     __nwbfields__ = (
         "excitation_wavelength_in_nm",
+        "excitation_mode",
         "description",
         "excitation_source",
         "excitation_filter",
@@ -119,6 +130,15 @@ class ExcitationLightPath(LabMetaData):
             "name": "excitation_wavelength_in_nm",
             "type": float,
             "doc": "The excitation wavelength of light, in nanometers.",
+        },
+        {
+            "name": "excitation_mode",
+            "type": str,
+            "doc": (
+                "The type of excitation used in the light path (e.g., 'one-photon', "
+                "'two-photon', 'three-photon', 'other')."
+            ),
+            "default": None,
         },
         {
             "name": "description",
@@ -152,6 +172,7 @@ class ExcitationLightPath(LabMetaData):
     def __init__(self, **kwargs):
         keys_to_set = (
             "excitation_wavelength_in_nm",
+            "excitation_mode",
             "description",
             "excitation_source",
             "excitation_filter",
@@ -161,6 +182,7 @@ class ExcitationLightPath(LabMetaData):
         super().__init__(**kwargs)
         for key, val in args_to_set.items():
             setattr(self, key, val)
+        _check_excitation_mode_str(args_to_set["excitation_mode"])
         excitation_wavelength_in_nm = args_to_set["excitation_wavelength_in_nm"]
         excitation_source = args_to_set["excitation_source"]
         if excitation_source is not None:
