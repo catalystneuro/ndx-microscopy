@@ -1,5 +1,7 @@
-from hdmf.utils import docval, popargs
-from pynwb import get_class
+from hdmf.utils import docval, popargs_to_dict, get_docval, popargs
+from pynwb import get_class, register_class
+from pynwb.file import LabMetaData
+from ndx_ophys_devices import ExcitationSource, OpticalFilter, DichroicMirror, Photodetector, Indicator
 import numpy as np
 
 extension_name = "ndx-microscopy"
@@ -89,3 +91,152 @@ def create_roi_table_region(self, **kwargs):
 
 
 MicroscopyPlaneSegmentation.create_roi_table_region = create_roi_table_region
+
+
+def check_wavelength(wavelengthset_in_light_path, wavelength_set_in_device):
+    if not wavelengthset_in_light_path == wavelength_set_in_device:
+        raise ValueError(
+            f"wavelength set in the light path ({wavelengthset_in_light_path}) and the one set in the device "
+            f"({wavelength_set_in_device}) must be the same."
+        )
+
+
+@register_class("ExcitationLightPath", extension_name)
+class ExcitationLightPath(LabMetaData):
+    """Excitation light path that illuminates an imaging space."""
+
+    __nwbfields__ = (
+        "excitation_wavelength_in_nm",
+        "description",
+        "excitation_source",
+        "excitation_filter",
+        "dichroic_mirror",
+    )
+
+    @docval(
+        *get_docval(LabMetaData.__init__, "name"),
+        {
+            "name": "excitation_wavelength_in_nm",
+            "type": float,
+            "doc": "The excitation wavelength of light, in nanometers.",
+        },
+        {
+            "name": "description",
+            "type": str,
+            "doc": (
+                "Link to ExcitationSource object which contains metadata about the excitation source device. "
+                "If it is a pulsed excitation source link a PulsedExcitationSource object."
+            ),
+        },
+        {"name": "excitation_source", "type": ExcitationSource, "doc": "The excitation source", "default": None},
+        {
+            "name": "excitation_filter",
+            "type": OpticalFilter,
+            "doc": (
+                "Link to OpticalFilter object which contains metadata about the optical filter in this light path. "
+                "It can be either a BandOpticalFilter (e.g., 'Bandpass', 'Bandstop', 'Longpass', 'Shortpass') "
+                "or a EdgeOpticalFilter (Longpass or Shortpass)."
+            ),
+            "default": None,
+        },
+        {
+            "name": "dichroic_mirror",
+            "type": DichroicMirror,
+            "doc": (
+                "Link to DichroicMirror object which contains metadata about the dichroic mirror "
+                "in the excitation light path."
+            ),
+            "default": None,
+        },
+    )
+    def __init__(self, **kwargs):
+        keys_to_set = (
+            "excitation_wavelength_in_nm",
+            "description",
+            "excitation_source",
+            "excitation_filter",
+            "dichroic_mirror",
+        )
+        args_to_set = popargs_to_dict(keys_to_set, kwargs)
+        super().__init__(**kwargs)
+        for key, val in args_to_set.items():
+            setattr(self, key, val)
+        excitation_wavelength_in_nm = args_to_set["excitation_wavelength_in_nm"]
+        excitation_source = args_to_set["excitation_source"]
+        if excitation_source is not None:
+            check_wavelength(excitation_wavelength_in_nm, excitation_source.excitation_wavelength_in_nm)
+
+
+@register_class("EmissionLightPath", extension_name)
+class EmissionLightPath(LabMetaData):
+    """Emission light path from an imaging space."""
+
+    __nwbfields__ = (
+        "emission_wavelength_in_nm",
+        "description",
+        {"name": "indicator", "child": True},
+        "photodetector",
+        "emission_filter",
+        "dichroic_mirror",
+    )
+
+    @docval(
+        *get_docval(LabMetaData.__init__, "name"),
+        {
+            "name": "emission_wavelength_in_nm",
+            "type": float,
+            "doc": "The emission wavelength of light, in nanometers.",
+        },
+        {
+            "name": "description",
+            "type": str,
+            "doc": "Description of the emission light path",
+        },
+        {
+            "name": "indicator",
+            "type": Indicator,
+            "doc": "Indicator object which contains metadata about the indicator used in this light path.",
+        },
+        {
+            "name": "photodetector",
+            "type": Photodetector,
+            "doc": "Link to Photodetector object which contains metadata about the photodetector device.",
+            "default": None,
+        },
+        {
+            "name": "emission_filter",
+            "type": OpticalFilter,
+            "doc": (
+                "Link to OpticalFilter object which contains metadata about the optical filter in this light path. "
+                "It can be either a BandOpticalFilter (e.g., 'Bandpass', 'Bandstop', 'Longpass', 'Shortpass') "
+                "or a EdgeOpticalFilter (Longpass or Shortpass)."
+            ),
+            "default": None,
+        },
+        {
+            "name": "dichroic_mirror",
+            "type": DichroicMirror,
+            "doc": (
+                "Link to DichroicMirror object which contains metadata about the dichroic mirror "
+                "in the emission light path."
+            ),
+            "default": None,
+        },
+    )
+    def __init__(self, **kwargs):
+        keys_to_set = (
+            "emission_wavelength_in_nm",
+            "description",
+            "indicator",
+            "photodetector",
+            "emission_filter",
+            "dichroic_mirror",
+        )
+        args_to_set = popargs_to_dict(keys_to_set, kwargs)
+        super().__init__(**kwargs)
+        for key, val in args_to_set.items():
+            setattr(self, key, val)
+        emission_wavelength_in_nm = args_to_set["emission_wavelength_in_nm"]
+        photodetector = args_to_set["photodetector"]
+        if photodetector is not None:
+            check_wavelength(emission_wavelength_in_nm, photodetector.detected_wavelength_in_nm)
