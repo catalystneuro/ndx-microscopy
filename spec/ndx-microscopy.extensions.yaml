@@ -265,11 +265,11 @@ groups:
       target_type: Microscope
     - name: excitation_light_path
       doc: Link to a ExcitationLightPath object containing metadata about the device used to illuminate the imaging space.
-      target_type: LabMetaData
+      target_type: ExcitationLightPath
     - name: emission_light_path
       doc: Link to a EmissionLightPath object containing metadata about the indicator and filters used to collect
         this data.
-      target_type: LabMetaData
+      target_type: EmissionLightPath
 
   - neurodata_type_def: PlanarMicroscopySeries
     neurodata_type_inc: MicroscopySeries
@@ -387,7 +387,7 @@ groups:
       neurodata_type_inc: VectorData
       dtype:
         reftype: object
-        target_type: LabMetaData
+        target_type: ExcitationLightPath
       dims:
         - excitation_light_paths
       shape:
@@ -397,7 +397,7 @@ groups:
       neurodata_type_inc: VectorData
       dtype:
         reftype: object
-        target_type: LabMetaData
+        target_type: EmissionLightPath
       dims:
         - emission_light_paths
       shape:
@@ -474,7 +474,7 @@ groups:
       neurodata_type_inc: VectorData
       dtype:
         reftype: object
-        target_type: LabMetaData
+        target_type: ExcitationLightPath
       dims:
         - excitation_light_paths
       shape:
@@ -484,7 +484,7 @@ groups:
       neurodata_type_inc: VectorData
       dtype:
         reftype: object
-        target_type: LabMetaData
+        target_type: EmissionLightPath
       dims:
         - emission_light_paths
       shape:
