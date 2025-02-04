@@ -6,7 +6,7 @@ import os
 # -- Input options for the specification files to be used -----------------------
 
 # Directory where the YAML files for the namespace to be documented are located
-spec_input_spec_dir = os.path.join("..", "spec")
+spec_input_spec_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "spec"))
 
 # Name of the YAML file with the specification of the Namespace to be documented
 spec_input_namespace_filename = "ndx-microscopy.namespace.yaml"
@@ -88,4 +88,5 @@ spec_default_type_map = pynwb.get_type_map()
 # spec classes. In the general cases these are the spec classes from HDMF
 spec_group_spec_cls = pynwb.spec.NWBGroupSpec
 spec_dataset_spec_cls = pynwb.spec.NWBDatasetSpec
+spec_link_spec_cls = pynwb.spec.NWBLinkSpec
 spec_namespace_spec_cls = pynwb.spec.NWBNamespace

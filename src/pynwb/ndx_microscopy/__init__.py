@@ -44,7 +44,6 @@ MicroscopyResponseSeries = get_class("MicroscopyResponseSeries", extension_name)
 MicroscopyResponseSeriesContainer = get_class("MicroscopyResponseSeriesContainer", extension_name)
 
 MicroscopySegmentations = get_class("MicroscopySegmentations", extension_name)
-# from .ndx_microscopy import MicroscopyPlaneSegmentation, ExcitationLightPath, EmissionLightPath
 
 __all__ = [
     "OpticalFilter",
