@@ -25,7 +25,7 @@ from ndx_microscopy.testing import (
     mock_MultiChannelMicroscopyVolume,
     mock_PlanarImagingSpace,
     mock_PlanarMicroscopySeries,
-    mock_VariableDepthMicroscopySeries,
+    mock_MultiPlaneMicroscopyContainer,
     mock_VolumetricImagingSpace,
     mock_VolumetricMicroscopySeries,
 )
@@ -238,11 +238,11 @@ class TestVolumetricMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
             )
 
 
-class TestVariableDepthMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
-    """Simple roundtrip test for VariableDepthMicroscopySeries."""
+class TestMultiPlaneMicroscopyContainerSimpleRoundtrip(pynwb_TestCase):
+    """Simple roundtrip test for MultiPlaneMicroscopyContainer."""
 
     def setUp(self):
-        self.nwbfile_path = "test_variable_depth_microscopy_series_roundtrip.nwb"
+        self.nwbfile_path = "test_multi_plane_microscopy_container_roundtrip.nwb"
 
     def tearDown(self):
         pynwb.testing.remove_test_file(self.nwbfile_path)
@@ -270,7 +270,12 @@ class TestVariableDepthMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
         )
         nwbfile.add_lab_meta_data(lab_meta_data=excitation_light_path)
 
-        planar_imaging_space = mock_PlanarImagingSpace(name="PlanarImagingSpace")
+        planar_imaging_space_1 = mock_PlanarImagingSpace(
+            name="PlanarImagingSpace_1", origin_coordinates=[0.0, 0.0, 0.0]
+        )
+        planar_imaging_space_2 = mock_PlanarImagingSpace(
+            name="PlanarImagingSpace_2", origin_coordinates=[0.0, 0.0, 1.0]
+        )
 
         photodetector = mock_Photodetector()
         nwbfile.add_device(devices=photodetector)
@@ -289,14 +294,27 @@ class TestVariableDepthMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
         )
         nwbfile.add_lab_meta_data(lab_meta_data=emission_light_path)
 
-        variable_depth_microscopy_series = mock_VariableDepthMicroscopySeries(
-            name="VariableDepthMicroscopySeries",
+        planar_microscopy_series_1 = mock_PlanarMicroscopySeries(
+            name="PlanarMicroscopySeries_1",
             microscope=microscope,
             excitation_light_path=excitation_light_path,
-            planar_imaging_space=planar_imaging_space,
+            planar_imaging_space=planar_imaging_space_1,
             emission_light_path=emission_light_path,
         )
-        nwbfile.add_acquisition(nwbdata=variable_depth_microscopy_series)
+
+        planar_microscopy_series_2 = mock_PlanarMicroscopySeries(
+            name="PlanarMicroscopySeries_2",
+            microscope=microscope,
+            excitation_light_path=excitation_light_path,
+            planar_imaging_space=planar_imaging_space_2,
+            emission_light_path=emission_light_path,
+        )
+
+        multi_plane_microscopy_container = mock_MultiPlaneMicroscopyContainer(
+            planar_microscopy_series=[planar_microscopy_series_1, planar_microscopy_series_2]
+        )
+
+        nwbfile.add_acquisition(nwbdata=multi_plane_microscopy_container)
 
         with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="w") as io:
             io.write(nwbfile)
@@ -310,7 +328,7 @@ class TestVariableDepthMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
             self.assertContainerEqual(emission_light_path, read_nwbfile.lab_meta_data["EmissionLightPath"])
 
             self.assertContainerEqual(
-                variable_depth_microscopy_series, read_nwbfile.acquisition["VariableDepthMicroscopySeries"]
+                multi_plane_microscopy_container, read_nwbfile.acquisition["MultiPlaneMicroscopyContainer"]
             )
 
 

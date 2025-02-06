@@ -15,7 +15,7 @@ from ndx_microscopy.testing import (
     mock_MultiChannelMicroscopyVolume,
     mock_PlanarImagingSpace,
     mock_PlanarMicroscopySeries,
-    mock_VariableDepthMicroscopySeries,
+    mock_MultiPlaneMicroscopyContainer,
     mock_VariableDepthMultiChannelMicroscopyVolume,
     mock_VolumetricImagingSpace,
     mock_VolumetricMicroscopySeries,
@@ -146,22 +146,23 @@ def test_constructor_planar_microscopy_series():
     )
 
 
-def test_constructor_variable_depth_microscopy_series():
+def test_constructor_multi_plane_microscopy_container():
+
     microscope = mock_Microscope()
     excitation_light_path = mock_ExcitationLightPath()
     planar_imaging_space = mock_PlanarImagingSpace()
     emission_light_path = mock_EmissionLightPath()
-
-    variable_depth_microscopy_series = mock_VariableDepthMicroscopySeries(
+    planar_microscopy_series = mock_PlanarMicroscopySeries(
         microscope=microscope,
         excitation_light_path=excitation_light_path,
         planar_imaging_space=planar_imaging_space,
         emission_light_path=emission_light_path,
     )
-    assert (
-        variable_depth_microscopy_series.description
-        == "A mock instance of a VariableDepthMicroscopySeries type to be used for rapid testing."
+
+    multi_plane_microscopy_container = mock_MultiPlaneMicroscopyContainer(
+        planar_microscopy_series=[planar_microscopy_series]
     )
+    assert multi_plane_microscopy_container.name == "MultiPlaneMicroscopyContainer"
 
 
 def test_constructor_volumetric_microscopy_series():

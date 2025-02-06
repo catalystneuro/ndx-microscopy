@@ -192,12 +192,12 @@ classDiagram
         imaging_space : PlanarImagingSpace
     }
 
-    class VariableDepthMicroscopySeries {
-        <<PlanarMicroscopySeries>>
+    class MultiPlaneMicroscopyContainer {
+        <<NWBDataInterface>>
         --------------------------------------
-        datasets
+        groups
         --------------------------------------
-        depth_per_frame_in_um : numeric, length of frames
+        planar_microscopy_series : PlanarMicroscopySeries, number of depths scanned
     }
 
     class VolumetricMicroscopySeries {
@@ -320,7 +320,7 @@ classDiagram
 
     PlanarMicroscopySeries *-- MicroscopySeries : extends
     PlanarMicroscopySeries -- PlanarImagingSpace : links
-    VariableDepthMicroscopySeries *-- PlanarMicroscopySeries : extends
+    MultiPlaneMicroscopyContainer ..> PlanarMicroscopySeries : links
     VolumetricMicroscopySeries *-- MicroscopySeries : extends
     VolumetricMicroscopySeries -- VolumetricImagingSpace : links
     MultiChannelMicroscopyVolume -- VolumetricImagingSpace : links
