@@ -311,7 +311,8 @@ class TestMultiPlaneMicroscopyContainerSimpleRoundtrip(pynwb_TestCase):
         )
 
         multi_plane_microscopy_container = mock_MultiPlaneMicroscopyContainer(
-            planar_microscopy_series=[planar_microscopy_series_1, planar_microscopy_series_2]
+            name="MultiPlaneMicroscopyContainer",
+            planar_microscopy_series=[planar_microscopy_series_1, planar_microscopy_series_2],
         )
 
         nwbfile.add_acquisition(nwbdata=multi_plane_microscopy_container)
