@@ -13,7 +13,6 @@ from ndx_ophys_devices.testing import (
     mock_Photodetector,
     mock_OpticalFilter,
     mock_DichroicMirror,
-    mock_Indicator,
 )
 from ndx_microscopy.testing import (
     mock_EmissionLightPath,
