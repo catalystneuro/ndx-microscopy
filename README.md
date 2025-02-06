@@ -211,32 +211,7 @@ classDiagram
         --------------------------------------
         imaging_space : VolumetricImagingSpace
     }
-
-    class MultiChannelMicroscopyVolume {
-        <<NWBDataInterface>>
-        --------------------------------------
-        attributes
-        --------------------------------------
-        description : text, optional
-        unit : text
-        conversion : float32, optional, default=1.0
-        offset : float32, optional, default=0.0
-        --------------------------------------
-        datasets
-        --------------------------------------
-        data : numeric, height x width x depth x emission_light_paths
-        excitation_light_paths : ExcitationLightPath[]
-        emission_light_paths : EmissionLightPath[]
-        --------------------------------------
-        groups
-        --------------------------------------
-        imaging_space : VolumetricImagingSpace
-        --------------------------------------
-        links
-        --------------------------------------
-        microscope : Microscope
-    }
-    
+   
     class ImagingSpace {
         <<NWBContainer>>
         --------------------------------------
@@ -323,7 +298,6 @@ classDiagram
     VariableDepthMicroscopySeries *-- PlanarMicroscopySeries : extends
     VolumetricMicroscopySeries *-- MicroscopySeries : extends
     VolumetricMicroscopySeries -- VolumetricImagingSpace : links
-    MultiChannelMicroscopyVolume -- VolumetricImagingSpace : links
     PlanarImagingSpace *-- ImagingSpace : extends
     VolumetricImagingSpace *-- ImagingSpace : extends
     MicroscopySeries ..> Microscope : links
