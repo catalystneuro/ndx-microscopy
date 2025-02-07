@@ -19,15 +19,17 @@ from ndx_microscopy.testing import (
     mock_EmissionLightPath,
     mock_ExcitationLightPath,
     mock_Microscope,
-    mock_MicroscopyPlaneSegmentation,
-    mock_MicroscopySegmentations,
-    mock_MicroscopyResponseSeries,
-    mock_MultiChannelMicroscopyVolume,
+    mock_Segmentation,
+    mock_PlanarSegmentation,
+    mock_VolumetricSegmentation,
+    mock_SegmentationContainer,
     mock_PlanarImagingSpace,
+    mock_VolumetricImagingSpace,
     mock_PlanarMicroscopySeries,
     mock_VariableDepthMicroscopySeries,
-    mock_VolumetricImagingSpace,
     mock_VolumetricMicroscopySeries,
+    mock_MultiChannelMicroscopyVolume,
+    mock_MicroscopyResponseSeries,
 )
 from ndx_microscopy import MicroscopyResponseSeriesContainer
 
@@ -404,11 +406,11 @@ class TestMultiChannelMicroscopyVolumeSimpleRoundtrip(pynwb_TestCase):
             )
 
 
-class TestMicroscopySegmentationsSimpleRoundtrip(pynwb_TestCase):
-    """Simple roundtrip test for MicroscopySegmentations."""
+class TestSegmentationContainerSimpleRoundtrip(pynwb_TestCase):
+    """Simple roundtrip test for SegmentationContainer."""
 
     def setUp(self):
-        self.nwbfile_path = "test_microscopy_segmentations_roundtrip.nwb"
+        self.nwbfile_path = "test_segmentation_container_roundtrip.nwb"
 
     def tearDown(self):
         pynwb.testing.remove_test_file(self.nwbfile_path)
@@ -416,24 +418,9 @@ class TestMicroscopySegmentationsSimpleRoundtrip(pynwb_TestCase):
     def test_roundtrip(self):
         nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=UTC))
 
-        microscope = mock_Microscope(name="Microscope")
-        nwbfile.add_device(devices=microscope)
-
-        imaging_space = mock_PlanarImagingSpace(name="PlanarImagingSpace")
-
-        plane_segmentation_1 = mock_MicroscopyPlaneSegmentation(
-            imaging_space=imaging_space, name="MicroscopyPlaneSegmentation1"
-        )
-        plane_segmentation_2 = mock_MicroscopyPlaneSegmentation(
-            imaging_space=imaging_space, name="MicroscopyPlaneSegmentation2"
-        )
-        microscopy_plane_segmentations = [plane_segmentation_1, plane_segmentation_2]
-
-        segmentations = mock_MicroscopySegmentations(
-            name="MicroscopySegmentations", microscopy_plane_segmentations=microscopy_plane_segmentations
-        )
+        container = mock_SegmentationContainer(name="SegmentationContainer")
         ophys_module = nwbfile.create_processing_module(name="ophys", description="")
-        ophys_module.add(segmentations)
+        ophys_module.add(container)
 
         with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="w") as io:
             io.write(nwbfile)
@@ -441,8 +428,7 @@ class TestMicroscopySegmentationsSimpleRoundtrip(pynwb_TestCase):
         with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="r", load_namespaces=True) as io:
             read_nwbfile = io.read()
 
-            self.assertContainerEqual(microscope, read_nwbfile.devices["Microscope"])
-            self.assertContainerEqual(segmentations, read_nwbfile.processing["ophys"]["MicroscopySegmentations"])
+            self.assertContainerEqual(container, read_nwbfile.processing["ophys"]["SegmentationContainer"])
 
 
 class TestMicroscopyResponseSeriesSimpleRoundtrip(pynwb_TestCase):
@@ -460,28 +446,28 @@ class TestMicroscopyResponseSeriesSimpleRoundtrip(pynwb_TestCase):
         microscope = mock_Microscope(name="Microscope")
         nwbfile.add_device(devices=microscope)
 
-        imaging_space = mock_PlanarImagingSpace(name="PlanarImagingSpace")
+        planar_imaging_space = mock_PlanarImagingSpace(name="PlanarImagingSpace")
 
-        microscopy_plane_segmentations = mock_MicroscopyPlaneSegmentation(
-            name="MicroscopyPlaneSegmentation", imaging_space=imaging_space
+        planar_segmentation = mock_PlanarSegmentation(
+            name="PlanarSegmentation", planar_imaging_space=planar_imaging_space
         )
 
-        segmentations = mock_MicroscopySegmentations(
-            name="MicroscopySegmentations", microscopy_plane_segmentations=[microscopy_plane_segmentations]
+        segmentation_container = mock_SegmentationContainer(
+            name="SegmentationContainer", segmentations=[planar_segmentation]
         )
         ophys_module = nwbfile.create_processing_module(name="ophys", description="")
-        ophys_module.add(segmentations)
+        ophys_module.add(segmentation_container)
 
         number_of_rois = 10
         plane_segmentation_region = pynwb.ophys.DynamicTableRegion(
-            name="table_region",  # Name must be exactly this
+            name="rois",  # Name must be exactly this
             description="",
             data=[x for x in range(number_of_rois)],
-            table=microscopy_plane_segmentations,
+            table=planar_segmentation,
         )
         microscopy_response_series = mock_MicroscopyResponseSeries(
             name="MicroscopyResponseSeries",
-            table_region=plane_segmentation_region,
+            rois=plane_segmentation_region,
         )
 
         microscopy_response_series_container = MicroscopyResponseSeriesContainer(
@@ -496,7 +482,7 @@ class TestMicroscopyResponseSeriesSimpleRoundtrip(pynwb_TestCase):
             read_nwbfile = io.read()
 
             self.assertContainerEqual(microscope, read_nwbfile.devices["Microscope"])
-            self.assertContainerEqual(segmentations, read_nwbfile.processing["ophys"]["MicroscopySegmentations"])
+            self.assertContainerEqual(segmentation_container, read_nwbfile.processing["ophys"]["SegmentationContainer"])
 
             self.assertContainerEqual(
                 microscopy_response_series_container,

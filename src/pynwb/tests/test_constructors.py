@@ -1,24 +1,32 @@
 """Test in-memory Python API constructors for the ndx-microscopy extension."""
 
-import pynwb.testing.mock.ophys
+import numpy as np
 import pytest
-
 import pynwb
+
 from ndx_microscopy.testing import (
     mock_EmissionLightPath,
     mock_ExcitationLightPath,
     mock_Microscope,
-    mock_MicroscopyPlaneSegmentation,
-    mock_MicroscopySegmentations,
-    mock_MicroscopyResponseSeries,
-    mock_MicroscopyResponseSeriesContainer,
-    mock_MultiChannelMicroscopyVolume,
+    mock_Segmentation,
+    mock_PlanarSegmentation,
+    mock_VolumetricSegmentation,
+    mock_SegmentationContainer,
     mock_PlanarImagingSpace,
+    mock_VolumetricImagingSpace,
     mock_PlanarMicroscopySeries,
     mock_VariableDepthMicroscopySeries,
-    mock_VariableDepthMultiChannelMicroscopyVolume,
-    mock_VolumetricImagingSpace,
     mock_VolumetricMicroscopySeries,
+    mock_MultiChannelMicroscopyVolume,
+    mock_MicroscopyResponseSeries,
+    mock_MicroscopyResponseSeriesContainer,
+)
+from ndx_microscopy import (
+    Segmentation,
+    PlanarSegmentation,
+    VolumetricSegmentation,
+    PlanarImagingSpace,
+    VolumetricImagingSpace,
 )
 
 
@@ -83,49 +91,64 @@ def test_constructor_emission_light_path_failing():
         _ = mock_EmissionLightPath(emission_wavelength_in_nm=emission_wavelength_in_nm, photodetector=photodetector)
 
 
-def test_constructor_planar_image_space():
+def test_constructor_planar_imaging_space():
     planar_imaging_space = mock_PlanarImagingSpace()
     assert (
         planar_imaging_space.description == "A mock instance of a PlanarImagingSpace type to be used for rapid testing."
     )
+    assert isinstance(planar_imaging_space, PlanarImagingSpace)
 
 
-def test_constructor_volumetric_image_space():
+def test_constructor_volumetric_imaging_space():
     volumetric_imaging_space = mock_VolumetricImagingSpace()
     assert (
         volumetric_imaging_space.description
         == "A mock instance of a VolumetricImagingSpace type to be used for rapid testing."
     )
+    assert isinstance(volumetric_imaging_space, VolumetricImagingSpace)
 
 
-def test_constructor_microscopy_segmentations():
-    microscopy_segmentations = mock_MicroscopySegmentations()
-    assert "MicroscopySegmentations" in microscopy_segmentations.name
+def test_constructor_segmentation():
+    """Test constructor for base Segmentation class."""
+    segmentation = mock_Segmentation()
+    assert segmentation.description == "A mock instance of a Segmentation type to be used for rapid testing."
+    assert len(segmentation.summary_images) == 2
+    assert "mean" in segmentation.summary_images
+    assert "max" in segmentation.summary_images
+    assert isinstance(segmentation, Segmentation)
 
 
-def test_constructor_microscopy_plane_segmentation():
-    imaging_space = mock_PlanarImagingSpace()
-    microscopy_plane_segmentation = mock_MicroscopyPlaneSegmentation(imaging_space=imaging_space)
-    assert (
-        microscopy_plane_segmentation.description
-        == "A mock instance of a MicroscopyPlaneSegmentation type to be used for rapid testing."
-    )
+def test_constructor_planar_segmentation():
+    """Test constructor for PlanarSegmentation class."""
+    planar_imaging_space = mock_PlanarImagingSpace()
+    segmentation = mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space)
+    assert segmentation.description == "A mock instance of a PlanarSegmentation type to be used for rapid testing."
+    assert len(segmentation.id) == 5  # Default number_of_rois
+    assert "image_mask" in segmentation.colnames
+    assert isinstance(segmentation.planar_imaging_space, PlanarImagingSpace)
+    assert isinstance(segmentation, PlanarSegmentation)
+    assert isinstance(segmentation, Segmentation)  # Test inheritance
 
 
-def test_constructor_microscopy_image_segmentation_with_plane_segmentation():
-    imaging_space = mock_PlanarImagingSpace()
-    plane_segmentation_1 = mock_MicroscopyPlaneSegmentation(
-        imaging_space=imaging_space, name="MicroscopyPlaneSegmentation1"
-    )
-    plane_segmentation_2 = mock_MicroscopyPlaneSegmentation(
-        imaging_space=imaging_space, name="MicroscopyPlaneSegmentation2"
-    )
-    microscopy_plane_segmentations = [plane_segmentation_1, plane_segmentation_2]
+def test_constructor_volumetric_segmentation():
+    """Test constructor for VolumetricSegmentation class."""
+    volumetric_imaging_space = mock_VolumetricImagingSpace()
+    segmentation = mock_VolumetricSegmentation(volumetric_imaging_space=volumetric_imaging_space)
+    assert segmentation.description == "A mock instance of a VolumetricSegmentation type to be used for rapid testing."
+    assert len(segmentation.id) == 5  # Default number_of_rois
+    assert "image_mask" in segmentation.colnames
+    assert isinstance(segmentation.volumetric_imaging_space, VolumetricImagingSpace)
+    assert isinstance(segmentation, VolumetricSegmentation)
+    assert isinstance(segmentation, Segmentation)  # Test inheritance
 
-    microscopy_segmentations = mock_MicroscopySegmentations(
-        name="MicroscopySegmentations2", microscopy_plane_segmentations=microscopy_plane_segmentations
-    )
-    assert microscopy_segmentations.name == "MicroscopySegmentations2"
+
+def test_constructor_segmentation_container():
+    """Test constructor for SegmentationContainer class."""
+    container = mock_SegmentationContainer()
+    assert len(container.segmentations) == 2  # Default includes both planar and volumetric
+    segmentation_names = [seg_name for seg_name in container.segmentations]
+    assert isinstance(container.segmentations[segmentation_names[0]], PlanarSegmentation)
+    assert isinstance(container.segmentations[segmentation_names[1]], VolumetricSegmentation)
 
 
 def test_constructor_planar_microscopy_series():
@@ -184,17 +207,15 @@ def test_constructor_volumetric_microscopy_series():
 
 def test_constructor_microscopy_response_series():
     number_of_rois = 10
+    planar_imaging_space = mock_PlanarImagingSpace()
+    segmentation = mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space, number_of_rois=number_of_rois)
 
-    plane_segmentation = pynwb.testing.mock.ophys.mock_PlaneSegmentation()
-
-    table_region = pynwb.core.DynamicTableRegion(
-        name="table_region",
-        description="",
-        data=[x for x in range(number_of_rois)],
-        table=plane_segmentation,
+    rois = segmentation.create_roi_table_region(
+        description="test region",
+        region=[x for x in range(number_of_rois)],
     )
 
-    microscopy_response_series = mock_MicroscopyResponseSeries(table_region=table_region)
+    microscopy_response_series = mock_MicroscopyResponseSeries(rois=rois)
     assert (
         microscopy_response_series.description
         == "A mock instance of a MicroscopyResponseSeries type to be used for rapid testing."
@@ -203,17 +224,15 @@ def test_constructor_microscopy_response_series():
 
 def test_constructor_microscopy_response_series_container():
     number_of_rois = 10
+    planar_imaging_space = mock_PlanarImagingSpace()
+    segmentation = mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space, number_of_rois=number_of_rois)
 
-    plane_segmentation = pynwb.testing.mock.ophys.mock_PlaneSegmentation()
-
-    table_region = pynwb.core.DynamicTableRegion(
-        name="table_region",
-        description="",
-        data=[x for x in range(number_of_rois)],
-        table=plane_segmentation,
+    rois = segmentation.create_roi_table_region(
+        description="test region",
+        region=[x for x in range(number_of_rois)],
     )
 
-    microscopy_response_series = mock_MicroscopyResponseSeries(table_region=table_region)
+    microscopy_response_series = mock_MicroscopyResponseSeries(rois=rois)
 
     microscopy_response_series_container = mock_MicroscopyResponseSeriesContainer(
         microscopy_response_series=[microscopy_response_series]
@@ -252,36 +271,5 @@ def test_constructor_multi_channel_microscopy_volume():
     )
 
 
-def test_constructor_variable_depth_multi_channel_microscopy_volume():
-    microscope = mock_Microscope()
-    volumetric_imaging_space = mock_VolumetricImagingSpace()
-    excitation_light_paths = [mock_ExcitationLightPath()]
-    emission_light_paths = [mock_EmissionLightPath()]
-
-    excitation_light_paths_used_by_volume = pynwb.base.VectorData(
-        name="excitation_light_paths",
-        description="Light sources used by this MultiChannelVolume.",
-        data=excitation_light_paths,
-    )
-    emission_light_paths_used_by_volume = pynwb.base.VectorData(
-        name="emission_light_paths",
-        description=(
-            "Optical channels ordered to correspond to the third axis (e.g., [0, 0, :, 0]) "
-            "of the data for this MultiChannelVolume."
-        ),
-        data=emission_light_paths,
-    )
-    variable_depth_multi_channel_microscopy_volume = mock_VariableDepthMultiChannelMicroscopyVolume(
-        microscope=microscope,
-        volumetric_imaging_space=volumetric_imaging_space,
-        excitation_light_paths=excitation_light_paths_used_by_volume,
-        emission_light_paths=emission_light_paths_used_by_volume,
-    )
-    assert (
-        variable_depth_multi_channel_microscopy_volume.description
-        == "A mock instance of a VariableDepthMultiChannelMicroscopyVolume type to be used for rapid testing."
-    )
-
-
 if __name__ == "__main__":
-    pytest.main()  # Required since not a typical package structure
+    pytest.main([__file__])
