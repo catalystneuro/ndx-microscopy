@@ -8,9 +8,9 @@ import numpy as np
 extension_name = "ndx-microscopy"
 
 
-# PlanarSegmentation API functions
+# Segmentation2D API functions
 
-PlanarSegmentation = get_class("PlanarSegmentation", extension_name)
+Segmentation2D = get_class("Segmentation2D", extension_name)
 
 
 @docval(
@@ -32,7 +32,7 @@ PlanarSegmentation = get_class("PlanarSegmentation", extension_name)
     allow_extra=True,
 )
 def add_roi(self, **kwargs):
-    """Add a Region Of Interest (ROI) data to this PlanarSegmentation.
+    """Add a Region Of Interest (ROI) data to this Segmentation2D.
 
     Parameters
     ----------
@@ -60,7 +60,7 @@ def add_roi(self, **kwargs):
         # TODO: should we check that image_masks shape matches the shape of the FOV in the imaging space?
     if pixel_mask is not None:
         rkwargs["pixel_mask"] = pixel_mask
-    return super(PlanarSegmentation, self).add_row(**rkwargs)
+    return super(Segmentation2D, self).add_row(**rkwargs)
 
 
 @staticmethod
@@ -131,9 +131,9 @@ def image_to_pixel(image_mask):
     return pixel_mask
 
 
-PlanarSegmentation.add_roi = add_roi
-PlanarSegmentation.pixel_to_image = pixel_to_image
-PlanarSegmentation.image_to_pixel = image_to_pixel
+Segmentation2D.add_roi = add_roi
+Segmentation2D.pixel_to_image = pixel_to_image
+Segmentation2D.image_to_pixel = image_to_pixel
 
 
 @docval(
@@ -158,10 +158,10 @@ def create_roi_table_region(self, **kwargs):
     DynamicTableRegion
         Table region object for the selected ROIs.
     """
-    return super(PlanarSegmentation, self).create_region(**kwargs)
+    return super(Segmentation2D, self).create_region(**kwargs)
 
 
-PlanarSegmentation.create_roi_table_region = create_roi_table_region
+Segmentation2D.create_roi_table_region = create_roi_table_region
 
 
 # VolumetricSegmentation API functions

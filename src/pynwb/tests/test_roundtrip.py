@@ -448,9 +448,7 @@ class TestMicroscopyResponseSeriesSimpleRoundtrip(pynwb_TestCase):
 
         planar_imaging_space = mock_PlanarImagingSpace(name="PlanarImagingSpace")
 
-        planar_segmentation = mock_PlanarSegmentation(
-            name="PlanarSegmentation", planar_imaging_space=planar_imaging_space
-        )
+        planar_segmentation = mock_PlanarSegmentation(name="Segmentation2D", planar_imaging_space=planar_imaging_space)
 
         segmentation_container = mock_SegmentationContainer(
             name="SegmentationContainer", segmentations=[planar_segmentation]

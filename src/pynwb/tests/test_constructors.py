@@ -23,7 +23,7 @@ from ndx_microscopy.testing import (
 )
 from ndx_microscopy import (
     Segmentation,
-    PlanarSegmentation,
+    Segmentation2D,
     VolumetricSegmentation,
     PlanarImagingSpace,
     VolumetricImagingSpace,
@@ -119,14 +119,14 @@ def test_constructor_segmentation():
 
 
 def test_constructor_planar_segmentation():
-    """Test constructor for PlanarSegmentation class."""
+    """Test constructor for Segmentation2D class."""
     planar_imaging_space = mock_PlanarImagingSpace()
     segmentation = mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space)
-    assert segmentation.description == "A mock instance of a PlanarSegmentation type to be used for rapid testing."
+    assert segmentation.description == "A mock instance of a Segmentation2D type to be used for rapid testing."
     assert len(segmentation.id) == 5  # Default number_of_rois
     assert "image_mask" in segmentation.colnames
     assert isinstance(segmentation.planar_imaging_space, PlanarImagingSpace)
-    assert isinstance(segmentation, PlanarSegmentation)
+    assert isinstance(segmentation, Segmentation2D)
     assert isinstance(segmentation, Segmentation)  # Test inheritance
 
 
@@ -147,7 +147,7 @@ def test_constructor_segmentation_container():
     container = mock_SegmentationContainer()
     assert len(container.segmentations) == 2  # Default includes both planar and volumetric
     segmentation_names = [seg_name for seg_name in container.segmentations]
-    assert isinstance(container.segmentations[segmentation_names[0]], PlanarSegmentation)
+    assert isinstance(container.segmentations[segmentation_names[0]], Segmentation2D)
     assert isinstance(container.segmentations[segmentation_names[1]], VolumetricSegmentation)
 
 

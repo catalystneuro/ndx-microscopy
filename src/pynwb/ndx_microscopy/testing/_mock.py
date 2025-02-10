@@ -144,13 +144,13 @@ def mock_PlanarSegmentation(
     *,
     planar_imaging_space: ndx_microscopy.PlanarImagingSpace,
     name: Optional[str] = None,
-    description: str = "A mock instance of a PlanarSegmentation type to be used for rapid testing.",
+    description: str = "A mock instance of a Segmentation2D type to be used for rapid testing.",
     number_of_rois: int = 5,
     image_shape: Tuple[int, int] = (10, 10),
     summary_images: Optional[List[pynwb.base.Images]] = None,
-) -> ndx_microscopy.PlanarSegmentation:
+) -> ndx_microscopy.Segmentation2D:
     """2D segmentation with image_mask/pixel_mask."""
-    name = name or name_generator("PlanarSegmentation")
+    name = name or name_generator("Segmentation2D")
 
     # Create default summary images if none provided
     if summary_images is None:
@@ -158,7 +158,7 @@ def mock_PlanarSegmentation(
         max_image = pynwb.base.Image(name="max", data=np.ones(image_shape), description="Maximum intensity projection")
         summary_images = [mean_image, max_image]
 
-    planar_segmentation = ndx_microscopy.PlanarSegmentation(
+    planar_segmentation = ndx_microscopy.Segmentation2D(
         name=name,
         description=description,
         planar_imaging_space=planar_imaging_space,

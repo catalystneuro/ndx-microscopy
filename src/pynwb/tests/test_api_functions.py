@@ -12,7 +12,7 @@ from ndx_microscopy.testing import (
     mock_Segmentation,
 )
 from ndx_microscopy import (
-    PlanarSegmentation,
+    Segmentation2D,
     VolumetricSegmentation,
     Segmentation,
 )
@@ -85,10 +85,10 @@ def test_planar_add_roi_with_pixel_mask():
 
     planar_imaging_space = mock_PlanarImagingSpace()
 
-    name = "PlanarSegmentation"
-    description = "A mock instance of a PlanarSegmentation type to be used for rapid testing."
+    name = "Segmentation2D"
+    description = "A mock instance of a Segmentation2D type to be used for rapid testing."
 
-    planar_seg = PlanarSegmentation(name=name, description=description, planar_imaging_space=planar_imaging_space)
+    planar_seg = Segmentation2D(name=name, description=description, planar_imaging_space=planar_imaging_space)
 
     planar_seg.add_roi(pixel_mask=pixel_mask)
     assert planar_seg.pixel_mask[:] == pixel_mask
@@ -101,10 +101,10 @@ def test_planar_add_roi_with_image_mask():
 
     planar_imaging_space = mock_PlanarImagingSpace()
 
-    name = "PlanarSegmentation"
-    description = "A mock instance of a PlanarSegmentation type to be used for rapid testing."
+    name = "Segmentation2D"
+    description = "A mock instance of a Segmentation2D type to be used for rapid testing."
 
-    planar_seg = PlanarSegmentation(name=name, description=description, planar_imaging_space=planar_imaging_space)
+    planar_seg = Segmentation2D(name=name, description=description, planar_imaging_space=planar_imaging_space)
 
     planar_seg.add_roi(image_mask=image_mask)
     assert np.array_equal(planar_seg.image_mask[0], image_mask)
