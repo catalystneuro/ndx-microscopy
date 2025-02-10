@@ -21,7 +21,7 @@ from ndx_microscopy.testing import (
     mock_Microscope,
     mock_Segmentation,
     mock_Segmentation2D,
-    mock_VolumetricSegmentation,
+    mock_Segmentation3D,
     mock_SegmentationContainer,
     mock_PlanarImagingSpace,
     mock_VolumetricImagingSpace,

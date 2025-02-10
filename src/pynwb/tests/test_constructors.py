@@ -10,7 +10,7 @@ from ndx_microscopy.testing import (
     mock_Microscope,
     mock_Segmentation,
     mock_Segmentation2D,
-    mock_VolumetricSegmentation,
+    mock_Segmentation3D,
     mock_SegmentationContainer,
     mock_PlanarImagingSpace,
     mock_VolumetricImagingSpace,
@@ -24,7 +24,7 @@ from ndx_microscopy.testing import (
 from ndx_microscopy import (
     Segmentation,
     Segmentation2D,
-    VolumetricSegmentation,
+    Segmentation3D,
     PlanarImagingSpace,
     VolumetricImagingSpace,
 )
@@ -131,14 +131,14 @@ def test_constructor_segmentation_2D():
 
 
 def test_constructor_volumetric_segmentation():
-    """Test constructor for VolumetricSegmentation class."""
+    """Test constructor for Segmentation3D class."""
     volumetric_imaging_space = mock_VolumetricImagingSpace()
-    segmentation = mock_VolumetricSegmentation(volumetric_imaging_space=volumetric_imaging_space)
-    assert segmentation.description == "A mock instance of a VolumetricSegmentation type to be used for rapid testing."
+    segmentation = mock_Segmentation3D(volumetric_imaging_space=volumetric_imaging_space)
+    assert segmentation.description == "A mock instance of a Segmentation3D type to be used for rapid testing."
     assert len(segmentation.id) == 5  # Default number_of_rois
     assert "image_mask" in segmentation.colnames
     assert isinstance(segmentation.volumetric_imaging_space, VolumetricImagingSpace)
-    assert isinstance(segmentation, VolumetricSegmentation)
+    assert isinstance(segmentation, Segmentation3D)
     assert isinstance(segmentation, Segmentation)  # Test inheritance
 
 
@@ -148,7 +148,7 @@ def test_constructor_segmentation_container():
     assert len(container.segmentations) == 2  # Default includes both planar and volumetric
     segmentation_names = [seg_name for seg_name in container.segmentations]
     assert isinstance(container.segmentations[segmentation_names[0]], Segmentation2D)
-    assert isinstance(container.segmentations[segmentation_names[1]], VolumetricSegmentation)
+    assert isinstance(container.segmentations[segmentation_names[1]], Segmentation3D)
 
 
 def test_constructor_planar_microscopy_series():

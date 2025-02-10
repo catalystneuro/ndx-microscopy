@@ -468,7 +468,7 @@ groups:
     groups:
     - neurodata_type_inc: PlanarImagingSpace
       doc: PlanarImagingSpace object from which this data was generated.
-  - neurodata_type_def: VolumetricSegmentation
+  - neurodata_type_def: Segmentation3D
     neurodata_type_inc: Segmentation
     doc: Results from image segmentation of a specific volumetric imaging space.
     datasets:

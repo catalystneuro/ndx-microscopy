@@ -176,17 +176,17 @@ def mock_Segmentation2D(
     return segmentation_2D
 
 
-def mock_VolumetricSegmentation(
+def mock_Segmentation3D(
     *,
     volumetric_imaging_space: ndx_microscopy.VolumetricImagingSpace,
     name: Optional[str] = None,
-    description: str = "A mock instance of a VolumetricSegmentation type to be used for rapid testing.",
+    description: str = "A mock instance of a Segmentation3D type to be used for rapid testing.",
     number_of_rois: int = 5,
     image_shape: Tuple[int, int, int] = (10, 10, 10),
     summary_images: Optional[List[pynwb.base.Images]] = None,
-) -> ndx_microscopy.VolumetricSegmentation:
+) -> ndx_microscopy.Segmentation3D:
     """3D segmentation with image_mask/voxel_mask."""
-    name = name or name_generator("VolumetricSegmentation")
+    name = name or name_generator("Segmentation3D")
 
     # Create default summary images if none provided
     if summary_images is None:
@@ -202,7 +202,7 @@ def mock_VolumetricSegmentation(
         )
         summary_images = [mean_image, max_image]
 
-    volumetric_segmentation = ndx_microscopy.VolumetricSegmentation(
+    volumetric_segmentation = ndx_microscopy.Segmentation3D(
         name=name,
         description=description,
         volumetric_imaging_space=volumetric_imaging_space,
@@ -234,7 +234,7 @@ def mock_SegmentationContainer(
         volumetric_imaging_space = mock_VolumetricImagingSpace()
         segmentations = [
             mock_Segmentation2D(planar_imaging_space=planar_imaging_space),
-            mock_VolumetricSegmentation(volumetric_imaging_space=volumetric_imaging_space),
+            mock_Segmentation3D(volumetric_imaging_space=volumetric_imaging_space),
         ]
 
     container = ndx_microscopy.SegmentationContainer(name=name, segmentations=segmentations)

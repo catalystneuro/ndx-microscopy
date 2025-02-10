@@ -29,7 +29,7 @@ from .ndx_microscopy import (
     SegmentationContainer,
     Segmentation,
     Segmentation2D,
-    VolumetricSegmentation,
+    Segmentation3D,
     ExcitationLightPath,
     EmissionLightPath,
 )
@@ -66,7 +66,7 @@ __all__ = [
     "Segmentation",
     "SegmentationContainer",
     "Segmentation2D",
-    "VolumetricSegmentation",
+    "Segmentation3D",
     "MicroscopySeries",
     "PlanarMicroscopySeries",
     "VariableDepthMicroscopySeries",
