@@ -9,7 +9,7 @@ from ndx_microscopy.testing import (
     mock_ExcitationLightPath,
     mock_Microscope,
     mock_Segmentation,
-    mock_PlanarSegmentation,
+    mock_Segmentation2D,
     mock_VolumetricSegmentation,
     mock_SegmentationContainer,
     mock_PlanarImagingSpace,
@@ -118,10 +118,10 @@ def test_constructor_segmentation():
     assert isinstance(segmentation, Segmentation)
 
 
-def test_constructor_planar_segmentation():
+def test_constructor_segmentation_2D():
     """Test constructor for Segmentation2D class."""
     planar_imaging_space = mock_PlanarImagingSpace()
-    segmentation = mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space)
+    segmentation = mock_Segmentation2D(planar_imaging_space=planar_imaging_space)
     assert segmentation.description == "A mock instance of a Segmentation2D type to be used for rapid testing."
     assert len(segmentation.id) == 5  # Default number_of_rois
     assert "image_mask" in segmentation.colnames
@@ -208,7 +208,7 @@ def test_constructor_volumetric_microscopy_series():
 def test_constructor_microscopy_response_series():
     number_of_rois = 10
     planar_imaging_space = mock_PlanarImagingSpace()
-    segmentation = mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space, number_of_rois=number_of_rois)
+    segmentation = mock_Segmentation2D(planar_imaging_space=planar_imaging_space, number_of_rois=number_of_rois)
 
     rois = segmentation.create_roi_table_region(
         description="test region",
@@ -225,7 +225,7 @@ def test_constructor_microscopy_response_series():
 def test_constructor_microscopy_response_series_container():
     number_of_rois = 10
     planar_imaging_space = mock_PlanarImagingSpace()
-    segmentation = mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space, number_of_rois=number_of_rois)
+    segmentation = mock_Segmentation2D(planar_imaging_space=planar_imaging_space, number_of_rois=number_of_rois)
 
     rois = segmentation.create_roi_table_region(
         description="test region",

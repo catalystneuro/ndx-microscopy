@@ -140,7 +140,7 @@ def mock_Segmentation(
     return segmentation
 
 
-def mock_PlanarSegmentation(
+def mock_Segmentation2D(
     *,
     planar_imaging_space: ndx_microscopy.PlanarImagingSpace,
     name: Optional[str] = None,
@@ -158,7 +158,7 @@ def mock_PlanarSegmentation(
         max_image = pynwb.base.Image(name="max", data=np.ones(image_shape), description="Maximum intensity projection")
         summary_images = [mean_image, max_image]
 
-    planar_segmentation = ndx_microscopy.Segmentation2D(
+    segmentation_2D = ndx_microscopy.Segmentation2D(
         name=name,
         description=description,
         planar_imaging_space=planar_imaging_space,
@@ -171,9 +171,9 @@ def mock_PlanarSegmentation(
     for _ in range(number_of_rois):
         image_masks.append(np.zeros(image_shape, dtype=bool))
 
-    planar_segmentation.add_column(name="image_mask", description="ROI image masks", data=image_masks)
+    segmentation_2D.add_column(name="image_mask", description="ROI image masks", data=image_masks)
 
-    return planar_segmentation
+    return segmentation_2D
 
 
 def mock_VolumetricSegmentation(
@@ -233,7 +233,7 @@ def mock_SegmentationContainer(
         planar_imaging_space = mock_PlanarImagingSpace()
         volumetric_imaging_space = mock_VolumetricImagingSpace()
         segmentations = [
-            mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space),
+            mock_Segmentation2D(planar_imaging_space=planar_imaging_space),
             mock_VolumetricSegmentation(volumetric_imaging_space=volumetric_imaging_space),
         ]
 

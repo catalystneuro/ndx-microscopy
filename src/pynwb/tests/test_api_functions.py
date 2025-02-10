@@ -6,7 +6,7 @@ import pytest
 from ndx_microscopy.testing import (
     mock_PlanarImagingSpace,
     mock_VolumetricImagingSpace,
-    mock_PlanarSegmentation,
+    mock_Segmentation2D,
     mock_VolumetricSegmentation,
     mock_SegmentationContainer,
     mock_Segmentation,
@@ -21,7 +21,7 @@ from ndx_microscopy import (
 def test_planar_pixel_to_image_conversion():
     """Test conversion from pixel_mask to image_mask for 2D."""
     planar_imaging_space = mock_PlanarImagingSpace()
-    segmentation = mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space)
+    segmentation = mock_Segmentation2D(planar_imaging_space=planar_imaging_space)
 
     pixel_mask = [[0, 0, 1.0], [1, 0, 2.0], [2, 0, 2.0]]
     image_shape = (3, 3)
@@ -32,7 +32,7 @@ def test_planar_pixel_to_image_conversion():
 def test_planar_image_to_pixel_conversion():
     """Test conversion from image_mask to pixel_mask for 2D."""
     planar_imaging_space = mock_PlanarImagingSpace()
-    segmentation = mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space)
+    segmentation = mock_Segmentation2D(planar_imaging_space=planar_imaging_space)
 
     image_mask = np.asarray([[1.0, 0.0, 0.0], [2.0, 0.0, 0.0], [2.0, 0.0, 0.0]])
 
@@ -148,7 +148,7 @@ def test_volumetric_add_roi_with_image_mask():
 def test_add_roi_without_masks():
     """Test error when adding ROI without any mask."""
     planar_imaging_space = mock_PlanarImagingSpace()
-    segmentation = mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space)
+    segmentation = mock_Segmentation2D(planar_imaging_space=planar_imaging_space)
 
     with pytest.raises(ValueError, match="Must provide 'image_mask' and/or 'pixel_mask'"):
         segmentation.add_roi(id=len(segmentation.id))
@@ -157,9 +157,9 @@ def test_add_roi_without_masks():
 def test_create_roi_table_region():
     """Test creation of ROI table region."""
     planar_imaging_space = mock_PlanarImagingSpace()
-    segmentation = mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space)
+    segmentation_2D = mock_Segmentation2D(planar_imaging_space=planar_imaging_space)
 
-    region = segmentation.create_roi_table_region(description="test region", region=[0, 2, 4])
+    region = segmentation_2D.create_roi_table_region(description="test region", region=[0, 2, 4])
     assert len(region) == 3
     assert np.array_equal(region.data, [0, 2, 4])
 
@@ -188,7 +188,7 @@ def test_segmentation_container_add():
 
     # Test adding new segmentation
     planar_imaging_space = mock_PlanarImagingSpace()
-    new_segmentation = mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space)
+    new_segmentation = mock_Segmentation2D(planar_imaging_space=planar_imaging_space)
     container.add_segmentation(segmentations=new_segmentation)
     assert len(container.segmentations) == 3
 
@@ -199,14 +199,14 @@ def test_segmentation_inheritance():
     volumetric_imaging_space = mock_VolumetricImagingSpace()
 
     # Test that concrete classes inherit from Segmentation
-    planar_seg = mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space)
+    segmentation_2D = mock_Segmentation2D(planar_imaging_space=planar_imaging_space)
     volumetric_seg = mock_VolumetricSegmentation(volumetric_imaging_space=volumetric_imaging_space)
 
-    assert isinstance(planar_seg, Segmentation)
+    assert isinstance(segmentation_2D, Segmentation)
     assert isinstance(volumetric_seg, Segmentation)
 
     # Test that each has appropriate summary images
-    assert len(planar_seg.summary_images) == 2
+    assert len(segmentation_2D.summary_images) == 2
     assert len(volumetric_seg.summary_images) == 2
 
 
