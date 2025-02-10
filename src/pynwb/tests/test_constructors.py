@@ -1,6 +1,5 @@
 """Test in-memory Python API constructors for the ndx-microscopy extension."""
 
-import numpy as np
 import pytest
 import pynwb
 
