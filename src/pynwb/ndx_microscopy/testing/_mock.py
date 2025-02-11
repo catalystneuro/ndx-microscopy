@@ -84,6 +84,7 @@ def mock_PlanarImagingSpace(
     grid_spacing_in_um: Tuple[float, float, float] = (20, 20),
     location: str = "The location targeted by the mock imaging space.",
     reference_frame: str = "The reference frame of the mock planar imaging space.",
+    orientation: str = "The orientation of the mock planar imaging space.",
 ) -> ndx_microscopy.PlanarImagingSpace:
     planar_imaging_space = ndx_microscopy.PlanarImagingSpace(
         name=name or name_generator("PlanarImagingSpace"),
@@ -92,6 +93,7 @@ def mock_PlanarImagingSpace(
         grid_spacing_in_um=grid_spacing_in_um,
         location=location,
         reference_frame=reference_frame,
+        orientation=orientation,
     )
     return planar_imaging_space
 
@@ -104,6 +106,7 @@ def mock_VolumetricImagingSpace(
     grid_spacing_in_um: Tuple[float, float, float] = (20, 20, 50),
     location: str = "The location targeted by the mock imaging space.",
     reference_frame: str = "The reference frame of the mock volumetric imaging space.",
+    orientation: str = "The orientation of the mock planar imaging space.",
 ) -> ndx_microscopy.VolumetricImagingSpace:
     volumetric_imaging_space = ndx_microscopy.VolumetricImagingSpace(
         name=name or name_generator("VolumetricImagingSpace"),
@@ -112,6 +115,7 @@ def mock_VolumetricImagingSpace(
         grid_spacing_in_um=grid_spacing_in_um,
         location=location,
         reference_frame=reference_frame,
+        orientation=orientation,
     )
     return volumetric_imaging_space
 

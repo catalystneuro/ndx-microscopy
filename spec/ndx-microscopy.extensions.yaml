@@ -94,6 +94,20 @@ groups:
           Use standard atlas names for anatomical regions when possible.
           Specify 'whole brain' if the entire brain is strictly contained within the space.
         required: false
+      - name: reference_frame
+        dtype: text
+        doc:
+          The reference frame for the origin coordinates. For example, 'bregma' or 'lambda' for rodent brains.
+          If the origin coordinates are relative to a specific anatomical landmark, specify that here.
+        required: false
+      - name: orientation
+        doc:
+          "A 3-letter string. One of A,P,L,R,S,I for each of x, y, and z. For example, the most common
+          orientation is 'RAS', which means x is right, y is anterior, and z is superior (a.k.a. dorsal).
+          For dorsal/ventral use 'S/I' (superior/inferior). In the AnatomicalCoordinatesTable, an orientation of
+          'RAS' corresponds to coordinates in the order of (ML (x), AP (y), DV (z))."
+        dtype: text
+        required: false
 
   - neurodata_type_def: PlanarImagingSpace
     neurodata_type_inc: ImagingSpace
@@ -107,26 +121,6 @@ groups:
           - - 2
         doc: Amount of space between pixels in micrometers.
         quantity: "?"
-    attributes:
-      - name: reference_frame
-        dtype: text
-        doc:
-          Describes the reference frame of origin_coordinates and grid_spacing.
-          For example, this can be a text description of the anatomical location and orientation of the grid
-          defined by origin_coords and grid_spacing or the vectors needed to transform or rotate the grid to
-          a common anatomical axis (e.g., AP/DV/ML).
-          This field is necessary to interpret origin_coords and grid_spacing.
-          If origin_coords and grid_spacing are not present, then this field is not required.
-          For example, if the microscope returns 10 x 10 images, where the first value of the data matrix
-          (index (0, 0)) corresponds to (-1.2, -0.6, -2) mm relative to bregma, the spacing between pixels is 0.2 mm in
-          x, 0.2 mm in y and 0.5 mm in z, and larger numbers in x means more anterior, larger numbers in y means more
-          rightward, and larger numbers in z means more ventral, then enter the following --
-          origin_coords = (-1.2, -0.6, -2)
-          grid_spacing = (0.2, 0.2)
-          reference_frame = "Origin coordinates are relative to bregma. First dimension corresponds to anterior-posterior
-          axis (larger index = more anterior). Second dimension corresponds to medial-lateral axis (larger index = more
-          rightward). Third dimension corresponds to dorsal-ventral axis (larger index = more ventral)."
-        required: false
 
   - neurodata_type_def: VolumetricImagingSpace
     neurodata_type_inc: ImagingSpace
@@ -140,26 +134,6 @@ groups:
         shape:
           - - 3
         quantity: "?"
-    attributes:
-      - name: reference_frame
-        doc:
-          Describes the reference frame of origin_coordinates and grid_spacing.
-          For example, this can be a text description of the anatomical location and orientation of the grid
-          defined by origin_coords and grid_spacing or the vectors needed to transform or rotate the grid to
-          a common anatomical axis (e.g., AP/DV/ML).
-          This field is necessary to interpret origin_coords and grid_spacing.
-          If origin_coords and grid_spacing are not present, then this field is not required.
-          For example, if the microscope returns 10 x 10 x 2 images, where the first value of the data matrix
-          (index (0, 0, 0)) corresponds to (-1.2, -0.6, -2) mm relative to bregma, the spacing between pixels is 0.2 mm in
-          x, 0.2 mm in y and 0.5 mm in z, and larger numbers in x means more anterior, larger numbers in y means more
-          rightward, and larger numbers in z means more ventral, then enter the following --
-          origin_coords = (-1.2, -0.6, -2)
-          grid_spacing = (0.2, 0.2, 0.5)
-          reference_frame = "Origin coordinates are relative to bregma. First dimension corresponds to anterior-posterior
-          axis (larger index = more anterior). Second dimension corresponds to medial-lateral axis (larger index = more
-          rightward). Third dimension corresponds to dorsal-ventral axis (larger index = more ventral)."
-        dtype: text
-        required: false
 
   - neurodata_type_def: MicroscopySeries
     neurodata_type_inc: TimeSeries
