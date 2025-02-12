@@ -13,7 +13,6 @@ from ndx_ophys_devices.testing import (
     mock_Photodetector,
     mock_OpticalFilter,
     mock_DichroicMirror,
-    mock_Indicator,
 )
 from ndx_microscopy.testing import (
     mock_EmissionLightPath,
@@ -22,7 +21,6 @@ from ndx_microscopy.testing import (
     mock_MicroscopyPlaneSegmentation,
     mock_MicroscopySegmentations,
     mock_MicroscopyResponseSeries,
-    mock_MultiChannelMicroscopyVolume,
     mock_PlanarImagingSpace,
     mock_PlanarMicroscopySeries,
     mock_VariableDepthMicroscopySeries,
@@ -311,96 +309,6 @@ class TestVariableDepthMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
 
             self.assertContainerEqual(
                 variable_depth_microscopy_series, read_nwbfile.acquisition["VariableDepthMicroscopySeries"]
-            )
-
-
-class TestMultiChannelMicroscopyVolumeSimpleRoundtrip(pynwb_TestCase):
-    """Simple roundtrip test for MultiChannelMicroscopyVolume."""
-
-    def setUp(self):
-        self.nwbfile_path = "test_multi_channel_microscopy_volume_roundtrip.nwb"
-
-    def tearDown(self):
-        pynwb.testing.remove_test_file(self.nwbfile_path)
-
-    def test_roundtrip(self):
-        nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=UTC))
-
-        microscope = mock_Microscope(name="Microscope")
-        nwbfile.add_device(devices=microscope)
-
-        volumetric_imaging_space = mock_VolumetricImagingSpace(name="VolumetricImagingSpace")
-
-        excitation_light_paths = list()
-        excitation_source = mock_ExcitationSource()
-        nwbfile.add_device(devices=excitation_source)
-        excitation_filter = mock_OpticalFilter()
-        nwbfile.add_device(devices=excitation_filter)
-        dichroic_mirror = mock_DichroicMirror()
-        nwbfile.add_device(devices=dichroic_mirror)
-        excitation_light_path_0 = mock_ExcitationLightPath(
-            name="ExcitationLightPath",
-            excitation_source=excitation_source,
-            excitation_filter=excitation_filter,
-            dichroic_mirror=dichroic_mirror,
-        )
-        nwbfile.add_lab_meta_data(lab_meta_data=excitation_light_path_0)
-        excitation_light_paths.append(excitation_light_path_0)
-
-        emission_light_paths = list()
-        photodetector = mock_Photodetector()
-        nwbfile.add_device(devices=photodetector)
-        emission_filter = mock_OpticalFilter()
-        nwbfile.add_device(devices=emission_filter)
-        dichroic_mirror = mock_DichroicMirror()
-        nwbfile.add_device(devices=dichroic_mirror)
-        emission_light_path_0 = mock_EmissionLightPath(
-            name="EmissionLightPath",
-            photodetector=photodetector,
-            emission_filter=emission_filter,
-            dichroic_mirror=dichroic_mirror,
-            indicator=mock_Indicator(),
-        )
-        nwbfile.add_lab_meta_data(lab_meta_data=emission_light_path_0)
-        emission_light_paths.append(emission_light_path_0)
-
-        # TODO: It might be more convenient in Python to have a custom constructor that takes in a list of
-        # excitation light paths and emission light paths and does the VectorData wrapping internally
-        excitation_light_paths_used_by_volume = pynwb.base.VectorData(
-            name="excitation_light_paths",
-            description="Light sources used by this MultiChannelVolume.",
-            data=excitation_light_paths,
-        )
-        emission_light_paths_used_by_volume = pynwb.base.VectorData(
-            name="emission_light_paths",
-            description=(
-                "Optical channels ordered to correspond to the third axis (e.g., [0, 0, :, 0]) "
-                "of the data for this MultiChannelVolume."
-            ),
-            data=emission_light_paths,
-        )
-        multi_channel_microscopy_volume = mock_MultiChannelMicroscopyVolume(
-            name="MultiChannelMicroscopyVolume",
-            microscope=microscope,
-            volumetric_imaging_space=volumetric_imaging_space,
-            excitation_light_paths=excitation_light_paths_used_by_volume,
-            emission_light_paths=emission_light_paths_used_by_volume,
-        )
-        nwbfile.add_acquisition(nwbdata=multi_channel_microscopy_volume)
-
-        with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="w") as io:
-            io.write(nwbfile)
-
-        with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="r", load_namespaces=True) as io:
-            read_nwbfile = io.read()
-
-            self.assertContainerEqual(microscope, read_nwbfile.devices["Microscope"])
-
-            self.assertContainerEqual(excitation_light_path_0, read_nwbfile.lab_meta_data["ExcitationLightPath"])
-            self.assertContainerEqual(emission_light_path_0, read_nwbfile.lab_meta_data["EmissionLightPath"])
-
-            self.assertContainerEqual(
-                multi_channel_microscopy_volume, read_nwbfile.acquisition["MultiChannelMicroscopyVolume"]
             )
 
 
