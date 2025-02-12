@@ -12,11 +12,9 @@ from ndx_microscopy.testing import (
     mock_MicroscopySegmentations,
     mock_MicroscopyResponseSeries,
     mock_MicroscopyResponseSeriesContainer,
-    mock_MultiChannelMicroscopyVolume,
     mock_PlanarImagingSpace,
     mock_PlanarMicroscopySeries,
     mock_MultiPlaneMicroscopyContainer,
-    mock_VariableDepthMultiChannelMicroscopyVolume,
     mock_VolumetricImagingSpace,
     mock_VolumetricMicroscopySeries,
 )
@@ -220,68 +218,6 @@ def test_constructor_microscopy_response_series_container():
         microscopy_response_series=[microscopy_response_series]
     )
     assert microscopy_response_series_container.name == "MicroscopyResponseSeriesContainer"
-
-
-def test_constructor_multi_channel_microscopy_volume():
-    microscope = mock_Microscope()
-    volumetric_imaging_space = mock_VolumetricImagingSpace()
-    excitation_light_paths = [mock_ExcitationLightPath()]
-    emission_light_paths = [mock_EmissionLightPath()]
-
-    excitation_light_paths_used_by_volume = pynwb.base.VectorData(
-        name="excitation_light_paths",
-        description="Light sources used by this MultiChannelVolume.",
-        data=excitation_light_paths,
-    )
-    emission_light_paths_used_by_volume = pynwb.base.VectorData(
-        name="emission_light_paths",
-        description=(
-            "Optical channels ordered to correspond to the third axis (e.g., [0, 0, :, 0]) "
-            "of the data for this MultiChannelVolume."
-        ),
-        data=emission_light_paths,
-    )
-    multichannel_microscopy_volume = mock_MultiChannelMicroscopyVolume(
-        microscope=microscope,
-        volumetric_imaging_space=volumetric_imaging_space,
-        excitation_light_paths=excitation_light_paths_used_by_volume,
-        emission_light_paths=emission_light_paths_used_by_volume,
-    )
-    assert (
-        multichannel_microscopy_volume.description
-        == "A mock instance of a MultiChannelMicroscopyVolume type to be used for rapid testing."
-    )
-
-
-def test_constructor_variable_depth_multi_channel_microscopy_volume():
-    microscope = mock_Microscope()
-    volumetric_imaging_space = mock_VolumetricImagingSpace()
-    excitation_light_paths = [mock_ExcitationLightPath()]
-    emission_light_paths = [mock_EmissionLightPath()]
-
-    excitation_light_paths_used_by_volume = pynwb.base.VectorData(
-        name="excitation_light_paths",
-        description="Light sources used by this MultiChannelVolume.",
-        data=excitation_light_paths,
-    )
-    emission_light_paths_used_by_volume = pynwb.base.VectorData(
-        name="emission_light_paths",
-        description=(
-            "Optical channels ordered to correspond to the third axis (e.g., [0, 0, :, 0]) "
-            "of the data for this MultiChannelVolume."
-        ),
-        data=emission_light_paths,
-    )
-    variable_depth_multi_channel_microscopy_volume = mock_VariableDepthMultiChannelMicroscopyVolume(
-        microscope=microscope,
-        volumetric_imaging_space=volumetric_imaging_space,
-        excitation_light_paths=excitation_light_paths_used_by_volume,
-        emission_light_paths=emission_light_paths_used_by_volume,
-    )
-    assert (
-        variable_depth_multi_channel_microscopy_volume.description
-        == "A mock instance of a VariableDepthMultiChannelMicroscopyVolume type to be used for rapid testing."
-    )
 
 
 if __name__ == "__main__":

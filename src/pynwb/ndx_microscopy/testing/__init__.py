@@ -6,11 +6,9 @@ from ._mock import (
     mock_MicroscopyResponseSeries,
     mock_MicroscopyResponseSeriesContainer,
     mock_MicroscopySegmentations,
-    mock_MultiChannelMicroscopyVolume,
     mock_PlanarImagingSpace,
     mock_PlanarMicroscopySeries,
     mock_MultiPlaneMicroscopyContainer,
-    mock_VariableDepthMultiChannelMicroscopyVolume,
     mock_VolumetricImagingSpace,
     mock_VolumetricMicroscopySeries,
 )
@@ -26,8 +24,6 @@ __all__ = [
     "mock_PlanarMicroscopySeries",
     "mock_MultiPlaneMicroscopyContainer",
     "mock_VolumetricMicroscopySeries",
-    "mock_MultiChannelMicroscopyVolume",
     "mock_MicroscopyResponseSeries",
     "mock_MicroscopyResponseSeriesContainer",
-    "mock_VariableDepthMultiChannelMicroscopyVolume",
 ]

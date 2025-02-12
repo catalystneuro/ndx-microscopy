@@ -281,37 +281,6 @@ def mock_VolumetricMicroscopySeries(
     return volumetric_microscopy_series
 
 
-def mock_MultiChannelMicroscopyVolume(
-    *,
-    microscope: ndx_microscopy.Microscope,
-    volumetric_imaging_space: ndx_microscopy.VolumetricImagingSpace,
-    excitation_light_paths: pynwb.base.VectorData,
-    emission_light_paths: pynwb.base.VectorData,
-    name: Optional[str] = None,
-    description: str = "A mock instance of a MultiChannelMicroscopyVolume type to be used for rapid testing.",
-    data: Optional[np.ndarray] = None,
-    unit: str = "n.a.",
-    conversion: float = 1.0,
-    offset: float = 0.0,
-) -> ndx_microscopy.MultiChannelMicroscopyVolume:
-    series_name = name or name_generator("MultiChannelMicroscopyVolume")
-    imaging_data = data if data is not None else np.ones(shape=(10, 20, 7, 3))
-
-    volumetric_microscopy_series = ndx_microscopy.MultiChannelMicroscopyVolume(
-        name=series_name,
-        description=description,
-        microscope=microscope,
-        volumetric_imaging_space=volumetric_imaging_space,
-        excitation_light_paths=excitation_light_paths,
-        emission_light_paths=emission_light_paths,
-        data=imaging_data,
-        unit=unit,
-        conversion=conversion,
-        offset=offset,
-    )
-    return volumetric_microscopy_series
-
-
 def mock_MicroscopyResponseSeries(
     *,
     table_region: pynwb.core.DynamicTableRegion,
@@ -377,48 +346,3 @@ def mock_MicroscopyResponseSeriesContainer(
     )
 
     return microscopy_response_series_container
-
-
-def mock_VariableDepthMultiChannelMicroscopyVolume(
-    *,
-    microscope: ndx_microscopy.Microscope,
-    volumetric_imaging_space: ndx_microscopy.VolumetricImagingSpace,
-    excitation_light_paths: pynwb.base.VectorData,
-    emission_light_paths: pynwb.base.VectorData,
-    name: Optional[str] = None,
-    description: Optional[str] = None,
-    data: Optional[np.ndarray] = None,
-    depth_per_frame_in_um: Optional[np.ndarray] = None,
-    unit: str = "n.a.",
-    conversion: float = 1.0,
-    offset: float = 0.0,
-) -> ndx_microscopy.VariableDepthMultiChannelMicroscopyVolume:
-    series_name = name or name_generator("MultiChannelMicroscopyVolume")
-    description = (
-        description
-        or "A mock instance of a VariableDepthMultiChannelMicroscopyVolume type to be used for rapid testing."
-    )
-
-    series_data = data if data is not None else np.ones(shape=(15, 5, 5))
-
-    volume_depth_per_frame_in_um = (
-        depth_per_frame_in_um
-        if depth_per_frame_in_um is not None
-        else np.linspace(start=0.0, stop=30.0, num=series_data.shape[0])
-    )
-
-    imaging_data = data if data is not None else np.ones(shape=(10, 20, 7, 3))
-    variable_depth_multi_channel_microscopy_volume = ndx_microscopy.VariableDepthMultiChannelMicroscopyVolume(
-        name=series_name,
-        description=description,
-        microscope=microscope,
-        volumetric_imaging_space=volumetric_imaging_space,
-        excitation_light_paths=excitation_light_paths,
-        emission_light_paths=emission_light_paths,
-        data=imaging_data,
-        depth_per_frame_in_um=volume_depth_per_frame_in_um,
-        unit=unit,
-        conversion=conversion,
-        offset=offset,
-    )
-    return variable_depth_multi_channel_microscopy_volume
