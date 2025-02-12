@@ -79,6 +79,66 @@ def test_volumetric_image_to_voxel_conversion():
     np.testing.assert_allclose(voxel_mask, expected_voxel_mask)
 
 
+def test_pixel_to_image_value_error():
+    """Test ValueError for pixel_to_image with invalid pixel mask shape."""
+    planar_imaging_space = mock_PlanarImagingSpace()
+    segmentation_2d = mock_Segmentation2D(planar_imaging_space=planar_imaging_space)
+
+    invalid_pixel_mask = np.array([[0, 0]])  # Missing weight column
+    with pytest.raises(ValueError, match="pixel_mask must have shape \\(N, 3\\) where each row is \\(x, y, weight\\)"):
+        segmentation_2d.pixel_to_image(invalid_pixel_mask)
+
+
+def test_voxel_to_image_value_error():
+    """Test ValueError for voxel_to_image with invalid voxel mask shape."""
+    volumetric_imaging_space = mock_VolumetricImagingSpace()
+    segmentation_3d = mock_Segmentation3D(volumetric_imaging_space=volumetric_imaging_space)
+
+    invalid_voxel_mask = np.array([[0, 0, 0]])  # Missing weight column
+    with pytest.raises(
+        ValueError, match="voxel_mask must have shape \\(N, 4\\) where each row is \\(x, y, z, weight\\)"
+    ):
+        segmentation_3d.voxel_to_image(invalid_voxel_mask)
+
+
+def test_image_to_pixel_value_error():
+    """Test ValueError for image_to_pixel with wrong dimensions."""
+    planar_imaging_space = mock_PlanarImagingSpace()
+    segmentation_2d = mock_Segmentation2D(planar_imaging_space=planar_imaging_space)
+
+    invalid_image = np.ones((3,))  # 1D array
+    with pytest.raises(ValueError, match="image_mask must be 2D \\(height, width\\)"):
+        segmentation_2d.image_to_pixel(invalid_image)
+
+
+def test_image_to_voxel_value_error():
+    """Test ValueError for image_to_voxel with wrong dimensions."""
+    volumetric_imaging_space = mock_VolumetricImagingSpace()
+    segmentation_3d = mock_Segmentation3D(volumetric_imaging_space=volumetric_imaging_space)
+
+    invalid_image = np.ones((3, 3))  # 2D array
+    with pytest.raises(ValueError, match="image_mask must be 3D \\(depth, height, width\\)"):
+        segmentation_3d.image_to_voxel(invalid_image)
+
+
+def test_add_roi_2d_value_error():
+    """Test ValueError for add_roi in 2D when no masks are provided."""
+    planar_imaging_space = mock_PlanarImagingSpace()
+    segmentation_2d = mock_Segmentation2D(planar_imaging_space=planar_imaging_space)
+
+    with pytest.raises(ValueError, match="Must provide 'image_mask' and/or 'pixel_mask'"):
+        segmentation_2d.add_roi()  # No masks provided
+
+
+def test_add_roi_3d_value_error():
+    """Test ValueError for add_roi in 3D when no masks are provided."""
+    volumetric_imaging_space = mock_VolumetricImagingSpace()
+    segmentation_3d = mock_Segmentation3D(volumetric_imaging_space=volumetric_imaging_space)
+
+    with pytest.raises(ValueError, match="Must provide 'image_mask' and/or 'voxel_mask'"):
+        segmentation_3d.add_roi()  # No masks provided
+
+
 def test_planar_add_roi_with_pixel_mask():
     """Test adding ROI with pixel_mask."""
     pixel_mask = [[1, 2, 1.0], [3, 4, 1.0], [5, 6, 1.0], [7, 8, 2.0], [9, 10, 2.0]]

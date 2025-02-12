@@ -118,7 +118,14 @@ def image_to_pixel(image_mask):
     list
         List of [x, y, weight] coordinates for each non-zero pixel in the image_mask.
         The weight is the value at that pixel location in the image_mask.
+
+    Raises
+    ------
+    ValueError
+        If image_mask is not 2D.
     """
+    if len(image_mask.shape) != 2:
+        raise ValueError("image_mask must be 2D (height, width)")
     pixel_mask = []
     it = np.nditer(image_mask, flags=["multi_index"])
     while not it.finished:
@@ -279,7 +286,14 @@ def image_to_voxel(image_mask):
     list
         List of [x, y, z, weight] coordinates for each non-zero voxel in the image_mask.
         The weight is the value at that voxel location in the image_mask.
+
+    Raises
+    ------
+    ValueError
+        If image_mask is not 3D.
     """
+    if len(image_mask.shape) != 3:
+        raise ValueError("image_mask must be 3D (depth, height, width)")
     voxel_mask = []
     it = np.nditer(image_mask, flags=["multi_index"])
     while not it.finished:
