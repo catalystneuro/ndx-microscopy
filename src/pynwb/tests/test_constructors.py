@@ -14,9 +14,9 @@ from ndx_microscopy.testing import (
     mock_PlanarImagingSpace,
     mock_VolumetricImagingSpace,
     mock_PlanarMicroscopySeries,
-    mock_VariableDepthMicroscopySeries,
+    mock_MultiPlaneMicroscopyContainer,
+    mock_VolumetricImagingSpace,
     mock_VolumetricMicroscopySeries,
-    mock_MultiChannelMicroscopyVolume,
     mock_MicroscopyResponseSeries,
     mock_MicroscopyResponseSeriesContainer,
 )
@@ -168,22 +168,23 @@ def test_constructor_planar_microscopy_series():
     )
 
 
-def test_constructor_variable_depth_microscopy_series():
+def test_constructor_multi_plane_microscopy_container():
+
     microscope = mock_Microscope()
     excitation_light_path = mock_ExcitationLightPath()
     planar_imaging_space = mock_PlanarImagingSpace()
     emission_light_path = mock_EmissionLightPath()
-
-    variable_depth_microscopy_series = mock_VariableDepthMicroscopySeries(
+    planar_microscopy_series = mock_PlanarMicroscopySeries(
         microscope=microscope,
         excitation_light_path=excitation_light_path,
         planar_imaging_space=planar_imaging_space,
         emission_light_path=emission_light_path,
     )
-    assert (
-        variable_depth_microscopy_series.description
-        == "A mock instance of a VariableDepthMicroscopySeries type to be used for rapid testing."
+
+    multi_plane_microscopy_container = mock_MultiPlaneMicroscopyContainer(
+        planar_microscopy_series=[planar_microscopy_series]
     )
+    assert multi_plane_microscopy_container.name == "MultiPlaneMicroscopyContainer"
 
 
 def test_constructor_volumetric_microscopy_series():
@@ -237,37 +238,6 @@ def test_constructor_microscopy_response_series_container():
         microscopy_response_series=[microscopy_response_series]
     )
     assert microscopy_response_series_container.name == "MicroscopyResponseSeriesContainer"
-
-
-def test_constructor_multi_channel_microscopy_volume():
-    microscope = mock_Microscope()
-    volumetric_imaging_space = mock_VolumetricImagingSpace()
-    excitation_light_paths = [mock_ExcitationLightPath()]
-    emission_light_paths = [mock_EmissionLightPath()]
-
-    excitation_light_paths_used_by_volume = pynwb.base.VectorData(
-        name="excitation_light_paths",
-        description="Light sources used by this MultiChannelVolume.",
-        data=excitation_light_paths,
-    )
-    emission_light_paths_used_by_volume = pynwb.base.VectorData(
-        name="emission_light_paths",
-        description=(
-            "Optical channels ordered to correspond to the third axis (e.g., [0, 0, :, 0]) "
-            "of the data for this MultiChannelVolume."
-        ),
-        data=emission_light_paths,
-    )
-    multichannel_microscopy_volume = mock_MultiChannelMicroscopyVolume(
-        microscope=microscope,
-        volumetric_imaging_space=volumetric_imaging_space,
-        excitation_light_paths=excitation_light_paths_used_by_volume,
-        emission_light_paths=emission_light_paths_used_by_volume,
-    )
-    assert (
-        multichannel_microscopy_volume.description
-        == "A mock instance of a MultiChannelMicroscopyVolume type to be used for rapid testing."
-    )
 
 
 if __name__ == "__main__":

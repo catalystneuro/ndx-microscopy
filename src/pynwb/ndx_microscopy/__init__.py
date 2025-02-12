@@ -41,11 +41,8 @@ VolumetricImagingSpace = get_class("VolumetricImagingSpace", extension_name)
 
 MicroscopySeries = get_class("MicroscopySeries", extension_name)
 PlanarMicroscopySeries = get_class("PlanarMicroscopySeries", extension_name)
-VariableDepthMicroscopySeries = get_class("VariableDepthMicroscopySeries", extension_name)
 VolumetricMicroscopySeries = get_class("VolumetricMicroscopySeries", extension_name)
-
-MultiChannelMicroscopyVolume = get_class("MultiChannelMicroscopyVolume", extension_name)
-VariableDepthMultiChannelMicroscopyVolume = get_class("VariableDepthMultiChannelMicroscopyVolume", extension_name)
+MultiPlaneMicroscopyContainer = get_class("MultiPlaneMicroscopyContainer", extension_name)
 
 MicroscopyResponseSeries = get_class("MicroscopyResponseSeries", extension_name)
 MicroscopyResponseSeriesContainer = get_class("MicroscopyResponseSeriesContainer", extension_name)
@@ -69,10 +66,8 @@ __all__ = [
     "Segmentation3D",
     "MicroscopySeries",
     "PlanarMicroscopySeries",
-    "VariableDepthMicroscopySeries",
     "VolumetricMicroscopySeries",
-    "MultiChannelMicroscopyVolume",
-    "VariableDepthMultiChannelMicroscopyVolume",
+    "MultiPlaneMicroscopyContainer",
     "MicroscopyResponseSeries",
     "MicroscopyResponseSeriesContainer",
 ]
