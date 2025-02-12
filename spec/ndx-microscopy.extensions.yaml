@@ -138,7 +138,7 @@ groups:
   - neurodata_type_def: MicroscopySeries
     neurodata_type_inc: TimeSeries
     doc:
-      Imaging data acquired over time from an optical channel in a microscope while a light source illuminates the
+      Abstract class to contain imaging data acquired over time from an optical channel in a microscope while a light source illuminates the
       imaging space.
     links:
       - name: microscope
@@ -235,7 +235,7 @@ groups:
 
   - neurodata_type_def: Segmentation
     neurodata_type_inc: DynamicTable
-    doc: Results from image segmentation of a specific imaging space.
+    doc: Abstract class to contain the results from image segmentation of a specific imaging space.
     groups:
       - neurodata_type_inc: SummaryImages
         doc: Summary images that are related to the segmentation, e.g., mean, correlation, maximum projection.
