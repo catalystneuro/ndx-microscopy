@@ -1,7 +1,6 @@
 """Test in-memory Python API constructors for the ndx-microscopy extension."""
 
 import pytest
-import pynwb
 
 from ndx_microscopy.testing import (
     mock_EmissionLightPath,
@@ -12,7 +11,6 @@ from ndx_microscopy.testing import (
     mock_Segmentation3D,
     mock_SegmentationContainer,
     mock_PlanarImagingSpace,
-    mock_VolumetricImagingSpace,
     mock_PlanarMicroscopySeries,
     mock_MultiPlaneMicroscopyContainer,
     mock_VolumetricImagingSpace,
