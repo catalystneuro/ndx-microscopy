@@ -212,67 +212,18 @@ def mock_PlanarMicroscopySeries(
     return planar_microscopy_series
 
 
-def mock_VariableDepthMicroscopySeries(
+def mock_MultiPlaneMicroscopyContainer(
     *,
-    microscope: ndx_microscopy.Microscope,
-    excitation_light_path: ndx_microscopy.ExcitationLightPath,
-    planar_imaging_space: ndx_microscopy.PlanarImagingSpace,
-    emission_light_path: ndx_microscopy.EmissionLightPath,
+    planar_microscopy_series: List[ndx_microscopy.PlanarMicroscopySeries],
     name: Optional[str] = None,
-    description: str = "A mock instance of a VariableDepthMicroscopySeries type to be used for rapid testing.",
-    data: Optional[np.ndarray] = None,
-    depth_per_frame_in_um: Optional[np.ndarray] = None,
-    unit: str = "a.u.",
-    conversion: float = 1.0,
-    offset: float = 0.0,
-    starting_time: Optional[float] = None,
-    rate: Optional[float] = None,
-    timestamps: Optional[np.ndarray] = None,
-) -> ndx_microscopy.VariableDepthMicroscopySeries:
-    series_name = name or name_generator("VariableDepthMicroscopySeries")
-    series_data = data if data is not None else np.ones(shape=(15, 5, 5))
+) -> ndx_microscopy.MultiPlaneMicroscopyContainer:
+    container_name = name or name_generator("MultiPlaneMicroscopyContainer")
 
-    depth_per_frame_in_um = (
-        depth_per_frame_in_um
-        if depth_per_frame_in_um is not None
-        else np.linspace(start=0.0, stop=30.0, num=series_data.shape[0])
+    multi_plane_microscopy_container = ndx_microscopy.MultiPlaneMicroscopyContainer(
+        name=container_name, planar_microscopy_series=planar_microscopy_series
     )
 
-    if timestamps is None:
-        series_starting_time = starting_time or 0.0
-        series_rate = rate or 10.0
-        series_timestamps = None
-    else:
-        if starting_time is not None or rate is not None:
-            warnings.warn(
-                message=(
-                    "Timestamps were provided in addition to either rate or starting_time! "
-                    "Please specify only timestamps, or both starting_time and rate. Timestamps will take precedence."
-                ),
-                stacklevel=2,
-            )
-
-        series_starting_time = None
-        series_rate = None
-        series_timestamps = timestamps
-
-    variable_depth_microscopy_series = ndx_microscopy.VariableDepthMicroscopySeries(
-        name=series_name,
-        description=description,
-        microscope=microscope,
-        excitation_light_path=excitation_light_path,
-        planar_imaging_space=planar_imaging_space,
-        emission_light_path=emission_light_path,
-        data=series_data,
-        depth_per_frame_in_um=depth_per_frame_in_um,
-        unit=unit,
-        conversion=conversion,
-        offset=offset,
-        starting_time=series_starting_time,
-        rate=series_rate,
-        timestamps=series_timestamps,
-    )
-    return variable_depth_microscopy_series
+    return multi_plane_microscopy_container
 
 
 def mock_VolumetricMicroscopySeries(
