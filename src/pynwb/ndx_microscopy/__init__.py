@@ -35,7 +35,7 @@ from .ndx_microscopy import (
 )
 
 Microscope = get_class("Microscope", extension_name)
-
+SummaryImage = get_class("SummaryImage", extension_name)
 PlanarImagingSpace = get_class("PlanarImagingSpace", extension_name)
 VolumetricImagingSpace = get_class("VolumetricImagingSpace", extension_name)
 
