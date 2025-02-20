@@ -1,8 +1,7 @@
-from hdmf.utils import docval, popargs_to_dict, get_docval, popargs
+from hdmf.utils import docval, popargs
 from pynwb import get_class, register_class
 from pynwb.core import MultiContainerInterface
-from pynwb.file import LabMetaData
-from ndx_ophys_devices import ExcitationSource, OpticalFilter, DichroicMirror, Photodetector, Indicator
+from ndx_ophys_devices import ExcitationSource, Photodetector, Indicator
 import numpy as np
 
 extension_name = "ndx-microscopy"
@@ -391,3 +390,48 @@ class SegmentationContainer(MultiContainerInterface):
         """
         kwargs.setdefault("description", kwargs["imaging_space"].description)
         return self.create_segmentation(**kwargs)
+
+
+ExcitationLightPath = get_class("ExcitationLightPath", extension_name)
+
+
+@docval(
+    {"name": "excitation_source", "type": ExcitationSource, "doc": "The excitation source", "default": None},
+    allow_extra=True,
+)
+def get_excitation_wavelength(self, **kwargs):
+    """Get the excitation wavelength from the excitation source."""
+    excitation_source = popargs("excitation_source", kwargs)
+    return excitation_source.excitation_wavelength_in_nm
+
+
+ExcitationLightPath.get_excitation_wavelength = get_excitation_wavelength
+
+
+EmissionLightPath = get_class("EmissionLightPath", extension_name)
+
+
+@docval(
+    {"name": "photodetector", "type": Photodetector, "doc": "The photodetector", "default": None},
+    allow_extra=True,
+)
+def get_emission_wavelength(self, **kwargs):
+    """Get the emission wavelength from the photodetector."""
+    photodetector = popargs("photodetector", kwargs)
+    return photodetector.detected_wavelength_in_nm
+
+
+EmissionLightPath.get_emission_wavelength = get_emission_wavelength
+
+
+@docval(
+    {"name": "indicator", "type": Indicator, "doc": "The indicator", "default": None},
+    allow_extra=True,
+)
+def get_indicator_label(self, **kwargs):
+    """Get the label of the indicator."""
+    indicator = popargs("indicator", kwargs)
+    return indicator.label
+
+
+EmissionLightPath.get_indicator_label = get_indicator_label

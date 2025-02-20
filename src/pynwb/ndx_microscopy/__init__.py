@@ -30,11 +30,12 @@ from .ndx_microscopy import (
     Segmentation,
     Segmentation2D,
     Segmentation3D,
+    ExcitationLightPath,
+    EmissionLightPath,
 )
 
 Microscope = get_class("Microscope", extension_name)
-ExcitationLightPath = get_class("ExcitationLightPath", extension_name)
-EmissionLightPath = get_class("EmissionLightPath", extension_name)
+
 PlanarImagingSpace = get_class("PlanarImagingSpace", extension_name)
 VolumetricImagingSpace = get_class("VolumetricImagingSpace", extension_name)
 
