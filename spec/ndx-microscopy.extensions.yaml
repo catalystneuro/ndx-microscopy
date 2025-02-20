@@ -229,15 +229,34 @@ groups:
         doc: Results from image segmentation of a specific imaging space.
         quantity: "+"
 
-  - neurodata_type_def: SummaryImages
-    neurodata_type_inc: Images
+  - neurodata_type_def: SummaryImage
+    neurodata_type_inc: NWBContainer
     doc: Summary images that are related to the segmentation, e.g., mean, correlation, maximum projection.
+    datasets:
+      - name: data
+        doc: Summary image data.
+        dtype: numeric
+        dims:
+          - - height
+            - width
+          - - height
+            - width
+            - depth
+        shape:
+          - - null
+            - null
+          - - null
+            - null
+            - null
+      - name: description
+        dtype: text
+        doc: Description of the summary image.
 
   - neurodata_type_def: Segmentation
     neurodata_type_inc: DynamicTable
     doc: Abstract class to contain the results from image segmentation of a specific imaging space.
     groups:
-      - neurodata_type_inc: SummaryImages
+      - neurodata_type_inc: SummaryImage
         doc: Summary images that are related to the segmentation, e.g., mean, correlation, maximum projection.
         quantity: "*"
 
