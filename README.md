@@ -45,13 +45,11 @@ classDiagram
         --------------------------------------
         attributes
         --------------------------------------
-        excitation_wavelength_in_nm : numeric
-        excitation_mode : txt
         description : text
         --------------------------------------
         links
         --------------------------------------
-        excitation_source : ExcitationSource, optional
+        excitation_source : ExcitationSource
         excitation_filter : OpticalFilter, optional
         dichroic_mirror : DichroicMirror, optional
     }
@@ -61,7 +59,6 @@ classDiagram
         --------------------------------------
         attributes
         --------------------------------------
-        emission_wavelength_in_nm : numeric
         description : text
         --------------------------------------
         groups
@@ -70,7 +67,7 @@ classDiagram
         --------------------------------------
         links
         --------------------------------------
-        photodetector : Photodetector, optional
+        photodetector : Photodetector
         emission_filter : OpticalFilter, optional
         dichroic_mirror : DichroicMirror, optional
     }
@@ -82,6 +79,7 @@ classDiagram
         --------------------------------------
         illumination_type : text
         excitation_wavelength_in_nm : float
+        excitation_mode: text
         power_in_W : float, optional
         intensity_in_W_per_m2 : float, optional
         exposure_time_in_s : float, optional

@@ -36,8 +36,6 @@ def mock_ExcitationLightPath(
     *,
     name: Optional[str] = None,
     description: str = None,
-    excitation_wavelength_in_nm: float = 500.0,
-    excitation_mode: str = "two-photon",
     excitation_source: ExcitationSource = None,
     excitation_filter: OpticalFilter = None,
     dichroic_mirror: DichroicMirror = None,
@@ -45,8 +43,6 @@ def mock_ExcitationLightPath(
     excitation_light_path = ndx_microscopy.ExcitationLightPath(
         name=name or name_generator("ExcitationLightPath"),
         description=description or "A mock instance of a ExcitationLightPath type to be used for rapid testing.",
-        excitation_wavelength_in_nm=excitation_wavelength_in_nm,
-        excitation_mode=excitation_mode,
         excitation_source=excitation_source or mock_ExcitationSource(),
         excitation_filter=excitation_filter or mock_OpticalFilter(),
         dichroic_mirror=dichroic_mirror or mock_DichroicMirror(),
@@ -61,7 +57,6 @@ def mock_EmissionLightPath(
     indicator: Indicator = None,
     photodetector: Photodetector = None,
     emission_filter: OpticalFilter = None,
-    emission_wavelength_in_nm: float = 520.0,
     dichroic_mirror: DichroicMirror = None,
 ) -> ndx_microscopy.EmissionLightPath:
     emission_light_path = ndx_microscopy.EmissionLightPath(
@@ -70,7 +65,6 @@ def mock_EmissionLightPath(
         indicator=indicator or mock_Indicator(),
         photodetector=photodetector or mock_Photodetector(),
         emission_filter=emission_filter or mock_OpticalFilter(),
-        emission_wavelength_in_nm=emission_wavelength_in_nm,
         dichroic_mirror=dichroic_mirror or mock_DichroicMirror(),
     )
     return emission_light_path

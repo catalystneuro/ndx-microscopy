@@ -12,12 +12,6 @@ groups:
     neurodata_type_inc: LabMetaData
     doc: Excitation light path that illuminates an imaging space.
     attributes:
-      - name: excitation_wavelength_in_nm
-        dtype: numeric
-        doc: Excitation wavelength of light, in nanometers.
-      - name: excitation_mode
-        dtype: text
-        doc: The type of excitation used in the light path (e.g., 'one-photon', 'two-photon', 'three-photon', 'other').
       - name: description
         dtype: text
         doc: Description of the excitation light path.
@@ -25,7 +19,7 @@ groups:
       - name: excitation_source
         target_type: ExcitationSource
         doc: Link to ExcitationSource object which contains metadata about the excitation source device. If it is a pulsed excitation source link a PulsedExcitationSource object.
-        quantity: "?"
+        quantity: 1
       - name: excitation_filter
         target_type: OpticalFilter
         doc: Link to OpticalFilter object which contains metadata about the optical filter in this excitation light path. It can be either a BandOpticalFilter (e.g., 'Bandpass', 'Bandstop', 'Longpass', 'Shortpass') or a EdgeOpticalFilter (Longpass or Shortpass).
@@ -39,9 +33,6 @@ groups:
     neurodata_type_inc: LabMetaData
     doc: Emission light path from an imaging space.
     attributes:
-      - name: emission_wavelength_in_nm
-        dtype: numeric
-        doc: Emission wavelength of light, in nanometers.
       - name: description
         dtype: text
         doc: Description of the emission light path.
@@ -53,7 +44,7 @@ groups:
       - name: photodetector
         target_type: Photodetector
         doc: Link to Photodetector object which contains metadata about the photodetector device.
-        quantity: "?"
+        quantity: 1
       - name: emission_filter
         target_type: OpticalFilter
         doc: Link to OpticalFilter object which contains metadata about the optical filter in this emission light path. It can be either a BandOpticalFilter (e.g., 'Bandpass', 'Bandstop', 'Longpass', 'Shortpass') or a EdgeOpticalFilter (Longpass or Shortpass).
