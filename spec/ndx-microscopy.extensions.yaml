@@ -58,9 +58,6 @@ groups:
     neurodata_type_inc: NWBContainer
     doc: Abstract class to contain metadata about the region of physical space that imaging data was recorded from. Extended by PlanarImagingSpace and VolumetricImagingSpace.
     datasets:
-      - name: description
-        dtype: text
-        doc: Description of the imaging space.
       - name: origin_coordinates
         dtype: float64
         dims:
@@ -77,6 +74,9 @@ groups:
             default_value: micrometers
             doc: Measurement units for origin coordinates. The default value is 'micrometers'.
     attributes:
+      - name: description
+        dtype: text
+        doc: Description of the imaging space.
       - name: location
         dtype: text
         doc:
@@ -239,6 +239,7 @@ groups:
           - - null
             - null
             - null
+    attributes:
       - name: description
         dtype: text
         doc: Description of the summary image.
@@ -246,6 +247,10 @@ groups:
   - neurodata_type_def: Segmentation
     neurodata_type_inc: DynamicTable
     doc: Abstract class to contain the results from image segmentation of a specific imaging space.
+    attributes:
+      - name: description
+        dtype: text
+        doc: Description of the segmentation method used.
     groups:
       - neurodata_type_inc: SummaryImage
         doc: Summary images that are related to the segmentation, e.g., mean, correlation, maximum projection.
