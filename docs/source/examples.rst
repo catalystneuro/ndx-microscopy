@@ -4,10 +4,10 @@
 Examples
 ********
 
-This section provides detailed examples of using the ndx-microscopy extension for various microscopy techniques.
+This section provides detailed examples of using the ndx-microscopy extension for various microscopy techniques and workflows.
 
-Two-photon Calcium Imaging
-=========================
+Two-Photon Calcium Imaging
+------------------------
 
 Complete example of two-photon calcium imaging with full optical path configuration:
 
@@ -15,17 +15,22 @@ Complete example of two-photon calcium imaging with full optical path configurat
 
     from datetime import datetime
     from uuid import uuid4
+    import numpy as np
     from pynwb import NWBFile, NWBHDF5IO
     from ndx_microscopy import (
         Microscope, 
         ExcitationLightPath,
         EmissionLightPath,
         PlanarImagingSpace,
-        PlanarMicroscopySeries
+        PlanarMicroscopySeries,
+        Segmentation2D,
+        SummaryImage,
+        MicroscopyResponseSeries,
+        MicroscopyResponseSeriesContainer
     )
     from ndx_ophys_devices import (
-        ExcitationSource,
-        OpticalFilter,
+        PulsedExcitationSource,
+        BandOpticalFilter,
         DichroicMirror,
         Photodetector,
         Indicator
@@ -35,13 +40,18 @@ Complete example of two-photon calcium imaging with full optical path configurat
     nwbfile = NWBFile(
         session_description='Two-photon calcium imaging session',
         identifier=str(uuid4()),
-        session_start_time=datetime.now()
+        session_start_time=datetime.now(),
+        lab='Neural Imaging Lab',
+        institution='University of Neuroscience',
+        experiment_description='GCaMP6f imaging in visual cortex'
     )
 
     # Set up microscope
     microscope = Microscope(
         name='2p-scope',
-        model='Custom two-photon microscope'
+        description='Custom two-photon microscope for calcium imaging',
+        manufacturer='Custom Build',
+        model='2P-Special'
     )
     nwbfile.add_device(microscope)
 
@@ -73,7 +83,7 @@ Complete example of two-photon calcium imaging with full optical path configurat
         name='primary_dichroic',
         manufacturer='Semrock',
         model='FF695-Di02',
-        center_wavelength_in_nm=695.0
+        cut_wavelength_in_nm=695.0
     )
     nwbfile.add_device(dichroic)
 
@@ -108,11 +118,9 @@ Complete example of two-photon calcium imaging with full optical path configurat
         injection_coordinates_in_mm=[-2.5, 3.2, 0.5]
     )
 
-    # Configure light paths with optical components
+    # Configure light paths
     excitation = ExcitationLightPath(
         name='2p_excitation',
-        excitation_wavelength_in_nm=920.0,
-        excitation_mode='two-photon',
         description='Femtosecond pulsed laser pathway',
         excitation_source=laser,
         excitation_filter=excitation_filter,
@@ -122,7 +130,6 @@ Complete example of two-photon calcium imaging with full optical path configurat
 
     emission = EmissionLightPath(
         name='gcamp_emission',
-        emission_wavelength_in_nm=510.0,
         description='GCaMP6f emission pathway',
         indicator=indicator,
         photodetector=detector,
@@ -136,63 +143,206 @@ Complete example of two-photon calcium imaging with full optical path configurat
         name='cortex_plane1',
         description='Layer 2/3 of visual cortex',
         grid_spacing_in_um=[1.0, 1.0],
-        origin_coordinates=[100.0, 200.0, 300.0]
+        origin_coordinates=[-1.2, -0.6, -2.0],
+        location='Visual cortex, layer 2/3',
+        reference_frame='bregma',
+        orientation='RAS'  # Right-Anterior-Superior
     )
 
-    # Create microscopy series
+    # Create example imaging data
+    frames = 1000
+    height = 512
+    width = 512
+    data = np.random.rand(frames, height, width)
+
+    # Create imaging series
     imaging_series = PlanarMicroscopySeries(
         name='imaging_data',
+        description='Two-photon calcium imaging',
         microscope=microscope,
         excitation_light_path=excitation,
         emission_light_path=emission,
         imaging_space=imaging_space,
-        data=data_array,  # Your imaging data array
-        unit='n.a.',
-        rate=30.0
+        data=data,
+        unit='a.u.',
+        rate=30.0,
+        starting_time=0.0
+    )
+    nwbfile.add_acquisition(imaging_series)
+
+    # Create ophys processing module
+    ophys_module = nwbfile.create_processing_module(
+        name='ophys',
+        description='Optical physiology processing module'
     )
 
-    # Add to file
-    nwbfile.add_acquisition(imaging_series)
+    # Create summary images
+    mean_image = SummaryImage(
+        name='mean',
+        description='Mean intensity projection',
+        data=np.mean(data, axis=0)
+    )
+
+    max_image = SummaryImage(
+        name='max',
+        description='Maximum intensity projection',
+        data=np.max(data, axis=0)
+    )
+
+    # Create segmentation
+    segmentation = Segmentation2D(
+        name='rois',
+        description='Manual ROI segmentation',
+        planar_imaging_space=imaging_space,
+        summary_images=[mean_image, max_image]
+    )
+
+    # Add ROIs using image masks
+    roi_mask = np.zeros((height, width), dtype=bool)
+    roi_mask[256:266, 256:266] = True  # 10x10 ROI
+    segmentation.add_roi(image_mask=roi_mask)
+
+    # Add ROIs using pixel masks
+    pixel_mask = [
+        [100, 100, 1.0],  # x, y, weight
+        [101, 100, 1.0],
+        [102, 100, 1.0]
+    ]
+    segmentation.add_roi(pixel_mask=pixel_mask)
+
+    # Create ROI responses
+    roi_region = segmentation.create_roi_table_region(
+        description='All ROIs',
+        region=list(range(len(segmentation.id)))
+    )
+
+    # Extract responses (example calculation)
+    num_rois = len(segmentation.id)
+    responses = np.zeros((frames, num_rois))
+    
+    for i, roi_mask in enumerate(segmentation.image_mask[:]):
+        roi_data = data[:, roi_mask]
+        responses[:, i] = np.mean(roi_data, axis=1)
+
+    # Create response series
+    response_series = MicroscopyResponseSeries(
+        name='roi_responses',
+        description='Fluorescence responses from ROIs',
+        data=responses,
+        rois=roi_region,
+        unit='n.a.',
+        rate=30.0,
+        starting_time=0.0
+    )
+
+    # Create container for response series
+    response_container = MicroscopyResponseSeriesContainer(
+        name='responses',
+        microscopy_response_series=[response_series]
+    )
+
+    # Add segmentation and responses to ophys module
+    ophys_module.add(segmentation)
+    ophys_module.add(response_container)
 
     # Save file
     with NWBHDF5IO('calcium_imaging.nwb', 'w') as io:
         io.write(nwbfile)
 
-One-photon (Widefield) Imaging
-============================
+    # Read file and access data
+    with NWBHDF5IO('calcium_imaging.nwb', 'r') as io:
+        nwbfile = io.read()
+        
+        # Access imaging data
+        imaging = nwbfile.acquisition['imaging_data']
+        raw_data = imaging.data[:]
+        
+        # Access ROI data
+        ophys = nwbfile.processing['ophys']
+        rois = ophys['rois']
+        roi_masks = rois.image_mask[:]
+        
+        # Access responses
+        responses = ophys['responses']
+        roi_data = responses['roi_responses'].data[:]
 
-Example of one-photon widefield imaging setup:
+Volumetric Imaging
+---------------
+
+Example of volumetric imaging with 3D ROI segmentation:
 
 .. code-block:: python
 
-    # Set up optical components for one-photon imaging
-    led = ExcitationSource(
-        name='led_source',
-        illumination_type='LED',
-        manufacturer='Thorlabs',
-        model='M480L4',
-        excitation_wavelength_in_nm=480.0,
-        power_in_W=0.340,
-        intensity_in_W_per_m2=1000.0,
-        exposure_time_in_s=0.020
+    from datetime import datetime
+    from uuid import uuid4
+    import numpy as np
+    from pynwb import NWBFile, NWBHDF5IO
+    from ndx_microscopy import (
+        Microscope,
+        ExcitationLightPath,
+        EmissionLightPath,
+        VolumetricImagingSpace,
+        VolumetricMicroscopySeries,
+        Segmentation3D,
+        SummaryImage,
+        MicroscopyResponseSeries,
+        MicroscopyResponseSeriesContainer
     )
-    nwbfile.add_device(led)
+    from ndx_ophys_devices import (
+        ExcitationSource,
+        BandOpticalFilter,
+        DichroicMirror,
+        Photodetector,
+        Indicator
+    )
+
+    # Create NWB file
+    nwbfile = NWBFile(
+        session_description='Volumetric imaging session',
+        identifier=str(uuid4()),
+        session_start_time=datetime.now(),
+        lab='Neural Dynamics Lab',
+        institution='University of Neuroscience',
+        experiment_description='Volumetric imaging in cortex'
+    )
+
+    # Set up microscope
+    microscope = Microscope(
+        name='volume-scope',
+        description='Custom volumetric imaging microscope',
+        manufacturer='Custom Build',
+        model='Volume-Special'
+    )
+    nwbfile.add_device(microscope)
+
+    # Set up optical components
+    laser = ExcitationSource(
+        name='laser',
+        illumination_type='Laser',
+        manufacturer='Coherent',
+        model='Chameleon',
+        excitation_wavelength_in_nm=920.0,
+        power_in_W=2.0,
+        intensity_in_W_per_m2=1000.0,
+        exposure_time_in_s=0.001
+    )
+    nwbfile.add_device(laser)
 
     excitation_filter = BandOpticalFilter(
         name='excitation_filter',
         filter_type='Bandpass',
         manufacturer='Semrock',
-        model='FF01-480/40',
-        center_wavelength_in_nm=480.0,
-        bandwidth_in_nm=40.0
+        model='FF01-920/80',
+        center_wavelength_in_nm=920.0,
+        bandwidth_in_nm=80.0
     )
     nwbfile.add_device(excitation_filter)
 
     dichroic = DichroicMirror(
         name='primary_dichroic',
         manufacturer='Semrock',
-        model='FF495-Di03',
-        center_wavelength_in_nm=495.0
+        model='FF695-Di02',
+        cut_wavelength_in_nm=695.0
     )
     nwbfile.add_device(dichroic)
 
@@ -206,133 +356,451 @@ Example of one-photon widefield imaging setup:
     )
     nwbfile.add_device(emission_filter)
 
-    camera = Photodetector(
-        name='camera',
-        detector_type='Camera',
+    detector = Photodetector(
+        name='pmt',
+        detector_type='PMT',
         manufacturer='Hamamatsu',
-        model='ORCA-Flash4.0',
+        model='R6357',
         detected_wavelength_in_nm=510.0,
-        gain=1.0,
-        gain_unit='relative'
+        gain=70.0,
+        gain_unit='dB'
     )
-    nwbfile.add_device(camera)
+    nwbfile.add_device(detector)
+
+    # Create indicator
+    indicator = Indicator(
+        name='gcamp6f',
+        label='GCaMP6f',
+        description='Calcium indicator for volumetric imaging',
+        manufacturer='Addgene',
+        injection_brain_region='Visual cortex',
+        injection_coordinates_in_mm=[-2.5, 3.2, 0.5]
+    )
 
     # Configure light paths
     excitation = ExcitationLightPath(
-        name='1p_excitation',
-        excitation_wavelength_in_nm=480.0,
-        excitation_mode='one-photon',
-        description='LED illumination pathway',
-        excitation_source=led,
+        name='volume_excitation',
+        description='Laser excitation pathway for volumetric imaging',
+        excitation_source=laser,
         excitation_filter=excitation_filter,
         dichroic_mirror=dichroic
     )
     nwbfile.add_lab_meta_data(excitation)
 
     emission = EmissionLightPath(
-        name='gcamp_emission',
-        emission_wavelength_in_nm=510.0,
+        name='volume_emission',
         description='GCaMP6f emission pathway',
         indicator=indicator,
-        photodetector=camera,
+        photodetector=detector,
         emission_filter=emission_filter,
         dichroic_mirror=dichroic
     )
     nwbfile.add_lab_meta_data(emission)
 
-Multi-Channel Volume Imaging
-==========================
-
-Example of multi-channel volumetric imaging:
-
-.. code-block:: python
-
-    # Set up multiple light paths
-    excitation1 = ExcitationLightPath(
-        name='excitation_ch1',
-        excitation_wavelength_in_nm=920.0,
-        excitation_mode='two-photon'
-    )
-    nwbfile.add_lab_meta_data(excitation1)
-
-    excitation2 = ExcitationLightPath(
-        name='excitation_ch2',
-        excitation_wavelength_in_nm=1040.0,
-        excitation_mode='two-photon'
-    )
-    nwbfile.add_lab_meta_data(excitation2)
-
-    emission1 = EmissionLightPath(
-        name='emission_ch1',
-        emission_wavelength_in_nm=510.0,
-        indicator=indicator1
-    )
-    nwbfile.add_lab_meta_data(emission1)
-
-    emission2 = EmissionLightPath(
-        name='emission_ch2',
-        emission_wavelength_in_nm=610.0,
-        indicator=indicator2
-    )
-    nwbfile.add_lab_meta_data(emission2)
-
-    # Create volumetric imaging space
-    space_3d = VolumetricImagingSpace(
+    # Define volumetric imaging space
+    volume_space = VolumetricImagingSpace(
         name='cortex_volume',
         description='Visual cortex volume',
-        grid_spacing_in_um=[1.0, 1.0, 2.0],
-        origin_coordinates=[100.0, 200.0, 300.0],
+        grid_spacing_in_um=[1.0, 1.0, 2.0],  # Higher spacing in z
+        origin_coordinates=[-1.2, -0.6, -2.0],
         location='Visual cortex',
-        reference_frame='Bregma'
+        reference_frame='bregma',
+        orientation='RAS'  # Right-Anterior-Superior
     )
 
-    # Create multi-channel volume
-    volume = MultiChannelMicroscopyVolume(
-        name='multi_channel_data',
-        description='Two-channel volume data',
-        data=volume_data,  # [height, width, depth, channels]
-        unit='n.a.',
-        microscope=microscope,
-        imaging_space=space_3d,
-        excitation_light_paths=[excitation1, excitation2],
-        emission_light_paths=[emission1, emission2]
-    )
-    nwbfile.add_acquisition(volume)
+    # Create example volumetric data
+    frames = 100
+    height = 512
+    width = 512
+    depths = 10
+    data = np.random.rand(frames, height, width, depths)
 
-Variable Depth Imaging
-====================
-
-Example of variable depth imaging:
-
-.. code-block:: python
-
-    # Create imaging series with variable depth
-    variable_series = VariableDepthMicroscopySeries(
-        name='variable_depth_data',
+    # Create volumetric series
+    volume_series = VolumetricMicroscopySeries(
+        name='volume_data',
+        description='Volumetric imaging series',
         microscope=microscope,
         excitation_light_path=excitation,
         emission_light_path=emission,
-        imaging_space=imaging_space,
-        data=data_array,  # [frames, height, width]
-        depth_per_frame_in_um=depth_array,  # [frames]
-        unit='n.a.',
-        rate=30.0
+        imaging_space=volume_space,
+        data=data,
+        unit='a.u.',
+        rate=5.0,  # Lower rate for volumetric imaging
+        starting_time=0.0
     )
-    nwbfile.add_acquisition(variable_series)
+    nwbfile.add_acquisition(volume_series)
 
-ROI Response Data
-================
+    # Create ophys processing module
+    ophys_module = nwbfile.create_processing_module(
+        name='ophys',
+        description='Optical physiology processing module'
+    )
 
-Example of storing ROI response data:
+    # Create 3D summary images
+    mean_image = SummaryImage(
+        name='mean',
+        description='Mean intensity projection',
+        data=np.mean(data, axis=0)
+    )
 
-.. code-block:: python
+    max_image = SummaryImage(
+        name='max',
+        description='Maximum intensity projection',
+        data=np.max(data, axis=0)
+    )
+
+    # Create 3D segmentation
+    segmentation = Segmentation3D(
+        name='volume_rois',
+        description='3D ROI segmentation',
+        volumetric_imaging_space=volume_space,
+        summary_images=[mean_image, max_image]
+    )
+
+    # Add 3D ROIs using image masks
+    roi_mask = np.zeros((height, width, depths), dtype=bool)
+    roi_mask[256:266, 256:266, 4:6] = True  # 10x10x2 ROI
+    segmentation.add_roi(image_mask=roi_mask)
+
+    # Add ROIs using voxel masks
+    voxel_mask = [
+        [100, 100, 5, 1.0],  # x, y, z, weight
+        [101, 100, 5, 1.0],
+        [102, 100, 5, 1.0]
+    ]
+    segmentation.add_roi(voxel_mask=voxel_mask)
+
+    # Create ROI responses
+    roi_region = segmentation.create_roi_table_region(
+        description='All 3D ROIs',
+        region=list(range(len(segmentation.id)))
+    )
+
+    # Extract responses (example calculation)
+    num_rois = len(segmentation.id)
+    responses = np.zeros((frames, num_rois))
+    
+    for i, roi_mask in enumerate(segmentation.image_mask[:]):
+        roi_data = data[:, roi_mask]
+        responses[:, i] = np.mean(roi_data, axis=1)
 
     # Create response series
     response_series = MicroscopyResponseSeries(
-        name='roi_responses',
-        data=response_data,  # [frames, rois]
-        unit='dF/F',
-        rate=30.0,
-        table_region=roi_table_region  # Reference to segmentation table
+        name='volume_responses',
+        description='Fluorescence responses from 3D ROIs',
+        data=responses,
+        rois=roi_region,
+        unit='n.a.',
+        rate=5.0,
+        starting_time=0.0
     )
-    nwbfile.add_acquisition(response_series)
+
+    # Create container for response series
+    response_container = MicroscopyResponseSeriesContainer(
+        name='volume_responses',
+        microscopy_response_series=[response_series]
+    )
+
+    # Add segmentation and responses to ophys module
+    ophys_module.add(segmentation)
+    ophys_module.add(response_container)
+
+    # Save file
+    with NWBHDF5IO('volumetric_imaging.nwb', 'w') as io:
+        io.write(nwbfile)
+
+    # Read file and access data
+    with NWBHDF5IO('volumetric_imaging.nwb', 'r') as io:
+        nwbfile = io.read()
+        
+        # Access volumetric data
+        imaging = nwbfile.acquisition['volume_data']
+        volume_data = imaging.data[:]
+        
+        # Access ROI data
+        ophys = nwbfile.processing['ophys']
+        rois = ophys['volume_rois']
+        roi_masks = rois.image_mask[:]
+        
+        # Access responses
+        responses = ophys['volume_responses']
+        roi_data = responses['volume_responses'].data[:]
+
+Multi-Plane Imaging
+----------------
+
+Example of multi-plane imaging with an electrically tunable lens:
+
+.. code-block:: python
+
+    from datetime import datetime
+    from uuid import uuid4
+    import numpy as np
+    from pynwb import NWBFile, NWBHDF5IO
+    from ndx_microscopy import (
+        Microscope,
+        ExcitationLightPath,
+        EmissionLightPath,
+        PlanarImagingSpace,
+        PlanarMicroscopySeries,
+        MultiPlaneMicroscopyContainer,
+        Segmentation2D,
+        SummaryImage,
+        MicroscopyResponseSeries,
+        MicroscopyResponseSeriesContainer,
+        SegmentationContainer
+    )
+    from ndx_ophys_devices import (
+        ExcitationSource,
+        BandOpticalFilter,
+        DichroicMirror,
+        Photodetector,
+        Indicator
+    )
+
+    # Create NWB file
+    nwbfile = NWBFile(
+        session_description='Multi-plane imaging session',
+        identifier=str(uuid4()),
+        session_start_time=datetime.now(),
+        lab='Neural Circuits Lab',
+        institution='University of Neuroscience',
+        experiment_description='Multi-plane imaging with ETL'
+    )
+
+    # Set up microscope with ETL
+    microscope = Microscope(
+        name='etl-scope',
+        description='Two-photon microscope with electrically tunable lens',
+        manufacturer='Custom Build',
+        model='ETL-Special'
+    )
+    nwbfile.add_device(microscope)
+
+    # Set up optical components
+    laser = ExcitationSource(
+        name='laser',
+        illumination_type='Laser',
+        manufacturer='Coherent',
+        model='Chameleon',
+        excitation_wavelength_in_nm=920.0,
+        power_in_W=1.5,
+        intensity_in_W_per_m2=1000.0,
+        exposure_time_in_s=0.001
+    )
+    nwbfile.add_device(laser)
+
+    excitation_filter = BandOpticalFilter(
+        name='excitation_filter',
+        filter_type='Bandpass',
+        manufacturer='Semrock',
+        model='FF01-920/80',
+        center_wavelength_in_nm=920.0,
+        bandwidth_in_nm=80.0
+    )
+    nwbfile.add_device(excitation_filter)
+
+    dichroic = DichroicMirror(
+        name='primary_dichroic',
+        manufacturer='Semrock',
+        model='FF695-Di02',
+        cut_wavelength_in_nm=695.0
+    )
+    nwbfile.add_device(dichroic)
+
+    emission_filter = BandOpticalFilter(
+        name='emission_filter',
+        filter_type='Bandpass',
+        manufacturer='Semrock',
+        model='FF01-510/84',
+        center_wavelength_in_nm=510.0,
+        bandwidth_in_nm=84.0
+    )
+    nwbfile.add_device(emission_filter)
+
+    detector = Photodetector(
+        name='pmt',
+        detector_type='PMT',
+        manufacturer='Hamamatsu',
+        model='R6357',
+        detected_wavelength_in_nm=510.0,
+        gain=70.0,
+        gain_unit='dB'
+    )
+    nwbfile.add_device(detector)
+
+    # Create indicator
+    indicator = Indicator(
+        name='gcamp6f',
+        label='GCaMP6f',
+        description='Calcium indicator for multi-plane imaging',
+        manufacturer='Addgene',
+        injection_brain_region='Visual cortex',
+        injection_coordinates_in_mm=[-2.5, 3.2, 0.5]
+    )
+
+    # Configure light paths
+    excitation = ExcitationLightPath(
+        name='etl_excitation',
+        description='Laser excitation pathway with ETL',
+        excitation_source=laser,
+        excitation_filter=excitation_filter,
+        dichroic_mirror=dichroic
+    )
+    nwbfile.add_lab_meta_data(excitation)
+
+    emission = EmissionLightPath(
+        name='etl_emission',
+        description='GCaMP6f emission pathway',
+        indicator=indicator,
+        photodetector=detector,
+        emission_filter=emission_filter,
+        dichroic_mirror=dichroic
+    )
+    nwbfile.add_lab_meta_data(emission)
+
+    # Create ophys processing module
+    ophys_module = nwbfile.create_processing_module(
+        name='ophys',
+        description='Optical physiology processing module'
+    )
+
+    # Create multiple imaging planes
+    planar_series_list = []
+    segmentation_list = []
+    response_series_list = []
+    depths = [-100, -50, 0, 50, 100]  # Depths in µm
+
+    for depth in depths:
+        # Create imaging space for this depth
+        plane_space = PlanarImagingSpace(
+            name=f'plane_depth_{depth}',
+            description=f'Imaging plane at {depth} µm depth',
+            grid_spacing_in_um=[1.0, 1.0],
+            origin_coordinates=[-1.2, -0.6, depth/1000],  # Convert to mm
+            location='Visual cortex',
+            reference_frame='bregma',
+            orientation='RAS'
+        )
+
+        # Create example data for this plane
+        frames = 1000
+        height = 512
+        width = 512
+        data = np.random.rand(frames, height, width)
+
+        # Create imaging series for this plane
+        plane_series = PlanarMicroscopySeries(
+            name=f'imaging_depth_{depth}',
+            description=f'Imaging data at {depth} µm depth',
+            microscope=microscope,
+            excitation_light_path=excitation,
+            emission_light_path=emission,
+            imaging_space=plane_space,
+            data=data,
+            unit='a.u.',
+            conversion=1.0,
+            offset=0.0,
+            rate=30.0,
+            starting_time=0.0
+        )
+        planar_series_list.append(plane_series)
+
+        # Create summary images for this plane
+        mean_image = SummaryImage(
+            name=f'mean_{depth}',
+            description=f'Mean intensity projection at {depth} µm',
+            data=np.mean(data, axis=0)
+        )
+
+        max_image = SummaryImage(
+            name=f'max_{depth}',
+            description=f'Maximum intensity projection at {depth} µm',
+            data=np.max(data, axis=0)
+        )
+
+        # Create segmentation for this plane
+        segmentation = Segmentation2D(
+            name=f'rois_{depth}',
+            description=f'ROI segmentation at {depth} µm',
+            planar_imaging_space=plane_space,
+            summary_images=[mean_image, max_image]
+        )
+
+        # Add ROIs
+        roi_mask = np.zeros((height, width), dtype=bool)
+        roi_mask[256:266, 256:266] = True
+        segmentation.add_roi(image_mask=roi_mask)
+
+        segmentation_list.append(segmentation)
+
+        # Create ROI responses
+        roi_region = segmentation.create_roi_table_region(
+            description=f'ROIs at {depth} µm',
+            region=list(range(len(segmentation.id)))
+        )
+
+        # Extract responses
+        num_rois = len(segmentation.id)
+        responses = np.zeros((frames, num_rois))
+        
+        for i, roi_mask in enumerate(segmentation.image_mask[:]):
+            roi_data = data[:, roi_mask]
+            responses[:, i] = np.mean(roi_data, axis=1)
+
+        # Create response series
+        response_series = MicroscopyResponseSeries(
+            name=f'responses_{depth}',
+            description=f'Fluorescence responses at {depth} µm',
+            data=responses,
+            rois=roi_region,
+            unit='n.a.',
+            rate=30.0,
+            starting_time=0.0
+        )
+        response_series_list.append(response_series)
+
+    # Create containers
+    multi_plane_container = MultiPlaneMicroscopyContainer(
+        name='multi_plane_data',
+        planar_microscopy_series=planar_series_list
+    )
+    nwbfile.add_acquisition(multi_plane_container)
+
+    segmentation_container = SegmentationContainer(
+        name='plane_segmentations',
+        segmentations=segmentation_list
+    )
+    ophys_module.add(segmentation_container)
+
+    response_container = MicroscopyResponseSeriesContainer(
+        name='plane_responses',
+        microscopy_response_series=response_series_list
+    )
+    ophys_module.add(response_container)
+
+    # Save file
+    with NWBHDF5IO('multi_plane_imaging.nwb', 'w') as io:
+        io.write(nwbfile)
+
+    # Read file and access data
+    with NWBHDF5IO('multi_plane_imaging.nwb', 'r') as io:
+        nwbfile = io.read()
+        
+        # Access multi-plane data
+        multi_plane = nwbfile.acquisition['multi_plane_data']
+        
+        # Access specific plane data
+        plane_0 = multi_plane.planar_microscopy_series['imaging_depth_0']
+        plane_data = plane_0.data[:]
+        
+        # Access ROI data
+        ophys = nwbfile.processing['ophys']
+        segmentations = ophys['plane_segmentations']
+        rois_0 = segmentations['rois_0']
+        roi_masks = rois_0.image_mask[:]
+        
+        # Access responses
+        responses = ophys['plane_responses']
+        responses_0 = responses['responses_0']
+        roi_data = responses_0.data[:]

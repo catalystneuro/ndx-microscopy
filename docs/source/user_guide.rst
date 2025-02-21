@@ -4,204 +4,231 @@
 User Guide
 **********
 
-This guide provides detailed information about using the ndx-microscopy extension.
+This guide provides detailed information about using the ndx-microscopy extension effectively.
 
-Core Components
-=============
+Core Concepts
+-----------
 
-Microscope Device
----------------
+Device Components
+^^^^^^^^^^^^^^^
 
-The Microscope class represents the physical microscope device:
+The primary device component is the Microscope class:
 
 .. code-block:: python
 
     microscope = Microscope(
         name='2p-scope',
-        model='Custom two-photon microscope',
-        description='Two-photon microscope for calcium imaging',
-        manufacturer='Custom build'
+        description='Custom two-photon microscope'
+        manufacturer='Company X'
+        model='Model Y'
     )
     nwbfile.add_device(microscope)
 
+Other optical components (filters, sources, detectors) are provided by the ndx-ophys-devices extension.
+
 Light Path Configuration
-----------------------
+^^^^^^^^^^^^^^^^^^^^^
 
-Light paths are defined using ExcitationLightPath and EmissionLightPath:
+Light paths define how light travels through the microscope:
 
-1. **ExcitationLightPath**: Defines how light reaches the sample
-   
+1. **ExcitationLightPath**: Defines illumination pathway
+
    .. code-block:: python
 
        excitation = ExcitationLightPath(
            name='2p_excitation',
-           excitation_wavelength_in_nm=920.0,
-           excitation_mode='two-photon',
-           description='Femtosecond pulsed laser'
+           description='Two-photon excitation path',
+           excitation_source=laser,          # from ndx-ophys-devices
+           excitation_filter=ex_filter,      # from ndx-ophys-devices
+           dichroic_mirror=dichroic         # from ndx-ophys-devices
        )
 
-2. **EmissionLightPath**: Defines how emitted light is collected
-   
+2. **EmissionLightPath**: Defines collection pathway
+
    .. code-block:: python
 
        emission = EmissionLightPath(
            name='gcamp_emission',
-           emission_wavelength_in_nm=510.0,
            description='GCaMP6f emission path',
-           indicator=indicator
+           indicator=indicator,              # from ndx-ophys-devices
+           photodetector=detector,           # from ndx-ophys-devices
+           emission_filter=em_filter,        # from ndx-ophys-devices
+           dichroic_mirror=dichroic         # from ndx-ophys-devices
        )
 
-Imaging Spaces
-------------
+Imaging Space Definition
+^^^^^^^^^^^^^^^^^^^^^
 
 Imaging spaces define the physical region being imaged:
 
 1. **PlanarImagingSpace**: For 2D imaging
-   
+
    .. code-block:: python
 
        space_2d = PlanarImagingSpace(
-           name='cortex_plane1',
+           name='cortex_plane',
            description='Layer 2/3 of visual cortex',
-           grid_spacing_in_um=[1.0, 1.0],  # x, y spacing
-           origin_coordinates=[100.0, 200.0, 300.0],  # x, y, z
-           location='Visual cortex, layer 2/3',
-           reference_frame='Bregma'
+           grid_spacing_in_um=[1.0, 1.0],        # x, y spacing
+           origin_coordinates=[-1.2, -0.6, -2.0], # relative to bregma
+           location='Visual cortex',
+           reference_frame='bregma',
+           orientation='RAS'                      # Right-Anterior-Superior
        )
 
 2. **VolumetricImagingSpace**: For 3D imaging
-   
+
    .. code-block:: python
 
        space_3d = VolumetricImagingSpace(
-           name='cortex_volume1',
+           name='cortex_volume',
            description='Visual cortex volume',
-           grid_spacing_in_um=[1.0, 1.0, 2.0],  # x, y, z spacing
-           origin_coordinates=[100.0, 200.0, 300.0],
+           grid_spacing_in_um=[1.0, 1.0, 2.0],   # x, y, z spacing
+           origin_coordinates=[-1.2, -0.6, -2.0],
            location='Visual cortex',
-           reference_frame='Bregma'
+           reference_frame='bregma',
+           orientation='RAS'
        )
 
-Data Series Types
----------------
+Common Workflows
+-------------
 
-Different types of microscopy data series are available:
+2D Imaging
+^^^^^^^^^
 
-1. **PlanarMicroscopySeries**: For 2D time series
-2. **VariableDepthMicroscopySeries**: For 2D series with variable depth
-3. **VolumetricMicroscopySeries**: For 3D time series
+Basic workflow for 2D imaging:
+
+.. code-block:: python
+
+    # 1. Set up imaging space
+    planar_imaging_space = PlanarImagingSpace(
+        name='cortex_plane',
+        description='Layer 2/3 of visual cortex',
+        grid_spacing_in_um=[1.0, 1.0],        # x, y spacing
+        origin_coordinates=[-1.2, -0.6, -2.0], # relative to bregma
+        location='Visual cortex',
+        reference_frame='bregma',
+        orientation='RAS'                      # Right-Anterior-Superior
+    )
+
+    # 2. Create imaging series
+    microscopy_series = PlanarMicroscopySeries(
+        name='microscopy_series',
+        description='Two-photon calcium imaging',
+        microscope=microscope,
+        excitation_light_path=excitation,
+        emission_light_path=emission,
+        planar_imaging_space=planar_imaging_space,
+        data=data,                # [frames, height, width]
+        unit='a.u.',
+        rate=30.0,
+        starting_time=0.0,
+    )
+    nwbfile.add_acquisition(microscopy_series)
+
+3D Imaging
+^^^^^^^^^
+
+Workflow for volumetric imaging:
+
+.. code-block:: python
+
+    # 1. Set up volumetric space
+    volumetric_imaging_space = VolumetricImagingSpace(
+        name='cortex_volume',
+        description='Visual cortex volume',
+        grid_spacing_in_um=[1.0, 1.0, 2.0],   # x, y, z spacing
+        origin_coordinates=[-1.2, -0.6, -2.0],
+        location='Visual cortex',
+        reference_frame='bregma',
+        orientation='RAS'
+    )
+
+    # 2. Create volumetric series
+    volume_series = VolumetricMicroscopySeries(
+        name='volume_data',
+        microscope=microscope,
+        excitation_light_path=excitation,
+        emission_light_path=emission,
+        volumetric_imaging_space=volumetric_imaging_space,
+        data=data,                # [frames, height, width, depths]
+        unit='a.u.',
+        rate=5.0,
+        starting_time=0.0,
+    )
+    nwbfile.add_acquisition(volume_series)
+
+ROI Segmentation
+^^^^^^^^^^^^^
+
+Workflow for ROI segmentation:
+
+.. code-block:: python
+
+    # 1. Create summary images
+    mean_image = SummaryImage(
+        name='mean',
+        description='Mean intensity projection',
+        data=np.mean(data, axis=0)
+    )
+
+    # 2. Create segmentation
+    segmentation = Segmentation2D(
+        name='rois',
+        description='Manual ROI segmentation',
+        planar_imaging_space=imaging_space,
+        summary_images=[mean_image]
+    )
+
+    # 3. Add ROIs using image masks
+    roi_mask = np.zeros((height, width), dtype=bool)
+    roi_mask[256:266, 256:266] = True
+    segmentation.add_roi(image_mask=roi_mask)
+
+    # 4. Add ROIs using pixel masks
+    pixel_mask = [
+        [100, 100, 1.0],  # x, y, weight
+        [101, 100, 1.0],
+        [102, 100, 1.0]
+    ]
+    segmentation.add_roi(pixel_mask=pixel_mask)
+
+Response Data Storage
+^^^^^^^^^^^^^^^^^
+
+Workflow for storing ROI responses:
+
+.. code-block:: python
+
+    # 1. Create ROI region
+    roi_region = segmentation.create_roi_table_region(
+        description='All ROIs',
+        region=list(range(len(segmentation.id)))
+    )
+
+    # 2. Create response series
+    response_series = MicroscopyResponseSeries(
+        name='roi_responses',
+        description='Fluorescence responses',
+        data=responses,
+        rois=roi_region,
+        unit='n.a.',
+        rate=30.0,
+        starting_time=0.0,
+    )
 
 Best Practices
-============
+-----------
 
 Data Organization
---------------
+^^^^^^^^^^^^^
 
-1. **Consistent Naming**
-   - Use descriptive names for devices and components
-   - Follow a consistent naming convention
-   - Include version information when relevant
+1. **Naming Conventions**
+   - Use descriptive, consistent names
+   - Include relevant metadata in descriptions
+   - Document coordinate systems and reference frames
 
-2. **Metadata Documentation**
-   - Document all known microscope parameters
-   - Include calibration data when available
-   - Specify coordinate systems clearly
-
-3. **Data Hierarchy**
-   - Group related data streams
+2. **Data Structure**
+   - Group related data appropriately
    - Maintain clear relationships between raw and processed data
-   - Include quality control metrics
-
-Performance Optimization
-----------------------
-
-1. **Data Storage**
-   - Use appropriate chunking for large datasets
-   - Consider compression options
-   - Balance between compression and access speed
-
-2. **Memory Management**
-   - Load data in chunks when processing
-   - Use memory-mapped files when appropriate
-   - Clear memory when processing large datasets
-
-Common Use Cases
-=============
-
-Calcium Imaging
--------------
-
-For calcium imaging experiments:
-
-1. Set up the indicator:
-
-.. code-block:: python
-
-    indicator = Indicator(
-        name='gcamp6f',
-        label='GCaMP6f',
-        description='Calcium indicator',
-        manufacturer='Addgene',
-        injection_brain_region='Visual cortex',
-        injection_coordinates_in_mm=[-2.5, 3.2, 0.5]
-    )
-
-2. Configure appropriate light paths:
-
-.. code-block:: python
-
-    excitation = ExcitationLightPath(
-        name='2p_excitation',
-        excitation_wavelength_in_nm=920.0,
-        excitation_mode='two-photon'
-    )
-
-    emission = EmissionLightPath(
-        name='gcamp_emission',
-        emission_wavelength_in_nm=510.0,
-        indicator=indicator
-    )
-
-Voltage Imaging
--------------
-
-For voltage imaging:
-
-1. Set up voltage indicators:
-
-.. code-block:: python
-
-    indicator = Indicator(
-        name='ace2n',
-        label='Ace2N',
-        description='Voltage indicator',
-        manufacturer='Addgene'
-    )
-
-2. Configure high-speed imaging:
-
-.. code-block:: python
-
-    imaging_series = PlanarMicroscopySeries(
-        name='voltage_imaging',
-        rate=1000.0,  # 1 kHz acquisition
-        ...
-    )
-
-Multi-Channel Imaging
-------------------
-
-For experiments with multiple channels:
-
-.. code-block:: python
-
-    volume = MultiChannelMicroscopyVolume(
-        name='multi_channel_data',
-        description='Multi-channel volume data',
-        data=volume_data,  # [height, width, depth, channels]
-        unit='n.a.',
-        microscope=microscope,
-        imaging_space=space_3d,
-        excitation_light_paths=[excitation1, excitation2],
-        emission_light_paths=[emission1, emission2]
-    )
+   - Include all necessary metadata
+   

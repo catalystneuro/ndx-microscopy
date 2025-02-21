@@ -4,7 +4,14 @@
 Getting Started
 ***************
 
-.. _installation_guide:
+Prerequisites
+============
+
+Before installing ndx-microscopy, ensure you have:
+
+- Python 3.7 or later
+- PyNWB installed
+- ndx-ophys-devices extension installed (required for optical components)
 
 Installation
 ===========
@@ -18,27 +25,51 @@ The ndx-microscopy extension can be installed via pip:
 
    pip install ndx-microscopy
 
-MATLAB Installation
------------------
+This will automatically install all required dependencies.
 
-For MATLAB users:
+Basic Concepts
+============
 
-.. code-block:: matlab
+The ndx-microscopy extension provides a standardized way to store and organize microscopy data in the NWB format. Here are the key components:
 
-   generateExtension('<directory path>/ndx-microscopy/spec/ndx-microscopy.namespace.yaml');
+Device Components
+---------------
+- **Microscope**: The primary device used for imaging
+- Other optical components (from ndx-ophys-devices):
+    - ExcitationSource (lasers, LEDs)
+    - OpticalFilter (bandpass, edge filters)
+    - Photodetector (PMTs, cameras)
+    - DichroicMirror
+    - Indicator (fluorescent proteins, dyes)
 
-.. _quick_start_guide:
+Light Paths
+----------
+- **ExcitationLightPath**: Defines how light reaches the sample
+- **EmissionLightPath**: Defines how emitted light reaches the detector
+- Both can include optical filters, dichroic mirrors, and other metadata
 
-Quick Start
-==========
+Imaging Spaces
+------------
+- **PlanarImagingSpace**: For 2D imaging (single plane)
+- **VolumetricImagingSpace**: For 3D imaging (z-stacks)
+- Includes physical coordinates, grid spacing, and reference frames
 
-Here's a basic example of using ndx-microscopy for two-photon calcium imaging:
+Data Series
+----------
+- **PlanarMicroscopySeries**: 2D time series data
+- **VolumetricMicroscopySeries**: 3D time series data
+- **MultiPlaneMicroscopyContainer**: Multiple imaging planes
+
+Quick Start Example
+================
+
+Here's a minimal example showing how to create a basic microscopy dataset:
 
 .. code-block:: python
 
     from datetime import datetime
     from uuid import uuid4
-    from pynwb import NWBFile, NWBHDF5IO
+    from pynwb import NWBFile
     from ndx_microscopy import (
         Microscope, 
         ExcitationLightPath,
@@ -46,11 +77,12 @@ Here's a basic example of using ndx-microscopy for two-photon calcium imaging:
         PlanarImagingSpace,
         PlanarMicroscopySeries
     )
-    from ndx_ophys_devices import Indicator
+    from ndx_ophys_devices import Indicator, ExcitationSource, BandOpticalFilter, Photodetector
+    import numpy as np
 
     # Create NWB file
     nwbfile = NWBFile(
-        session_description='Two-photon calcium imaging session',
+        session_description='Example microscopy session',
         identifier=str(uuid4()),
         session_start_time=datetime.now()
     )
@@ -66,60 +98,100 @@ Here's a basic example of using ndx-microscopy for two-photon calcium imaging:
     indicator = Indicator(
         name='gcamp6f',
         label='GCaMP6f',
-        description='Calcium indicator',
-        manufacturer='Addgene'
+        description='Calcium indicator'
     )
 
+    # Create example optical components
+    laser = ExcitationSource(
+        name = "Laser.",
+        manufacturer = "laser manufacturer.",
+        model = "laser model",
+        illumination_type = "Laser",
+        excitation_mopde = "two-photon",
+        excitation_wavelength_in_nm = 500.0,
+    )
+    ex_filter = BandOpticalFilter(
+        name='ex_filter',
+        description='Excitation filter',
+        center_wavelength_in_nm = 505.0,
+        bandwidth_in_nm = 30.0,  # 505±15nm
+        filter_type = "Bandpass",
+    )
     # Configure light paths
     excitation = ExcitationLightPath(
         name='2p_excitation',
-        excitation_wavelength_in_nm=920.0,
-        excitation_mode='two-photon',
-        description='Femtosecond pulsed laser'
+        description='Two-photon excitation path'
+        excitation_source=laser,          # from ndx-ophys-devices
+        excitation_filter=ex_filter,      # from ndx-ophys-devices
     )
     nwbfile.add_lab_meta_data(excitation)
 
+    # Create example optical components
+    detector = Photodetector(
+        name = "Photodetector",
+        manufacturer = "Photodetector manufacturer",
+        model = "Photodetector model",    
+        detector_type = "PMT",
+        detected_wavelength_in_nm = 520.0,
+    )
+    em_filter = BandOpticalFilter(
+        name='em_filter',
+        description='Emission filter',
+        center_wavelength_in_nm = 525.0,
+        bandwidth_in_nm = 30.0,  # 525±15nm
+        filter_type = "Bandpass",
+    )
     emission = EmissionLightPath(
         name='gcamp_emission',
-        emission_wavelength_in_nm=510.0,
         description='GCaMP6f emission path',
-        indicator=indicator
+        indicator=indicator,
+        photodetector=detector,           # from ndx-ophys-devices
+        emission_filter=em_filter,        # from ndx-ophys-devices
     )
     nwbfile.add_lab_meta_data(emission)
 
+    # Define imaging space
+    planar_imaging_space = PlanarImagingSpace(
+        name='cortex_plane',
+        description='Layer 2/3 of visual cortex',
+        grid_spacing_in_um=[1.0, 1.0],
+        origin_coordinates=[-1.2, -0.6, -2.0]
+    )
+
+    # Create example imaging data
+    data = np.random.rand(100, 512, 512)  # 100 frames, 512x512 pixels
+
+    # Create imaging series
+    microscopy_series = PlanarMicroscopySeries(
+        name='imaging_data',
+        microscope=microscope,
+        excitation_light_path=excitation,
+        emission_light_path=emission,
+        planar_imaging_space=planar_imaging_space,
+        data=data,
+        unit='a.u.',
+        rate=30.0,
+        starttin_time=0.0,
+    )
+    nwbfile.add_acquisition(microscopy_series)
+
     # Save file
-    with NWBHDF5IO('calcium_imaging.nwb', 'w') as io:
+    from pynwb import NWBHDF5IO
+    with NWBHDF5IO('microscopy_session.nwb', 'w') as io:
         io.write(nwbfile)
-
-.. _key_concepts:
-
-Key Concepts
-===========
-
-The ndx-microscopy extension provides several key components for organizing microscopy data:
-
-1. **Microscope**
-   - Represents the microscope device and its properties
-   - Stores metadata about the microscope model and configuration
-
-2. **Light Paths**
-   - ExcitationLightPath: Defines the illumination pathway
-   - EmissionLightPath: Defines the collection pathway
-   - Includes wavelengths, modes, and optical components
-
-3. **Imaging Spaces**
-   - Defines the physical space being imaged
-   - Supports both 2D (planar) and 3D (volumetric) imaging
-   - Includes coordinate systems and grid spacing
-
-4. **Data Series**
-   - MicroscopySeries: Base type for time series data
-   - Supports various imaging modalities (2D, 3D, variable depth)
-   - Handles multi-channel data
 
 Next Steps
 =========
 
-- Check out the :ref:`user_guide` for detailed usage information
-- See :ref:`examples` for more complex examples
-- Review the :ref:`api` for complete API documentation
+After getting familiar with the basics:
+
+1. Check out the :ref:`examples` section for more detailed examples including:
+   - Volumetric imaging
+   - Multi-plane imaging
+   - ROI segmentation and response series
+
+2. Read the :ref:`user_guide` for best practices and detailed workflows
+
+3. Review the :ref:`api` documentation for complete reference
+
+4. See the :ref:`format` section to understand the underlying data organization
