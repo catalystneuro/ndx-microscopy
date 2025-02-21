@@ -399,7 +399,7 @@ ExcitationLightPath = get_class("ExcitationLightPath", extension_name)
     {"name": "excitation_source", "type": ExcitationSource, "doc": "The excitation source", "default": None},
     allow_extra=True,
 )
-def get_excitation_wavelength(self, **kwargs):
+def get_excitation_wavelength(**kwargs):
     """Get the excitation wavelength from the excitation source."""
     excitation_source = popargs("excitation_source", kwargs)
     return excitation_source.excitation_wavelength_in_nm
@@ -415,7 +415,7 @@ EmissionLightPath = get_class("EmissionLightPath", extension_name)
     {"name": "photodetector", "type": Photodetector, "doc": "The photodetector", "default": None},
     allow_extra=True,
 )
-def get_emission_wavelength(self, **kwargs):
+def get_emission_wavelength(**kwargs):
     """Get the emission wavelength from the photodetector."""
     photodetector = popargs("photodetector", kwargs)
     return photodetector.detected_wavelength_in_nm
@@ -428,7 +428,7 @@ EmissionLightPath.get_emission_wavelength = get_emission_wavelength
     {"name": "indicator", "type": Indicator, "doc": "The indicator", "default": None},
     allow_extra=True,
 )
-def get_indicator_label(self, **kwargs):
+def get_indicator_label(**kwargs):
     """Get the label of the indicator."""
     indicator = popargs("indicator", kwargs)
     return indicator.label
