@@ -4,103 +4,31 @@ A Neurodata Without Borders (NWB) extension for storing microscopy data and asso
 
 ## Features
 
-- **Comprehensive Data Types**
-  - Microscope and optical component metadata
-  - Advanced light path configurations
-  - Imaging space definitions
-  - Time series data with variable depth support
-  - ROI/segmentation storage
-
-- **Multiple Modalities**
-  - One-photon microscopy (widefield)
-  - Two-photon microscopy
-  - Three-photon microscopy
-  - Light sheet microscopy
-
-- **Flexible Organization**
-  - Support for 2D and 3D imaging
-  - Multi-channel data handling
-  - Variable depth imaging
-  - Coordinate system management
-
-## Installation
-
-```bash
-pip install ndx-microscopy
-```
-## Basic Usage
-
-```python
-from datetime import datetime
-from uuid import uuid4
-from pynwb import NWBFile, NWBHDF5IO
-from ndx_microscopy import Microscope, ExcitationLightPath, EmissionLightPath
-from ndx_ophys_devices import Indicator
-
-# Create NWB file
-nwbfile = NWBFile(
-    session_description='Two-photon calcium imaging session',
-    identifier=str(uuid4()),
-    session_start_time=datetime.now()
-)
-
-# Set up microscope
-microscope = Microscope(
-    name='2p-scope',
-    model='Custom two-photon microscope'
-)
-nwbfile.add_device(microscope)
-
-# Create indicator
-indicator = Indicator(
-    name='gcamp6f',
-    label='GCaMP6f',
-    description='Calcium indicator'
-)
-
-# Configure light paths
-excitation = ExcitationLightPath(
-    name='2p_excitation',
-    excitation_wavelength_in_nm=920.0,
-    excitation_mode='two-photon'
-)
-nwbfile.add_lab_meta_data(excitation)
-
-
-emission = EmissionLightPath(
-    name='gcamp_emission',
-    emission_wavelength_in_nm=510.0,
-    indicator=indicator
-)
-nwbfile.add_lab_meta_data(emission)
-
-# Define imaging space
-imaging_space = PlanarImagingSpace(
-    name='cortex_plane1',
-    description='Layer 2/3 of visual cortex',
-    grid_spacing_in_um=[1.0, 1.0],
-    origin_coordinates=[100.0, 200.0, 300.0]
-)
-
-# Create microscopy series
-imaging_series = PlanarMicroscopySeries(
-    name='imaging_data',
-    microscope=microscope,
-    excitation_light_path=excitation,
-    emission_light_path=emission,
-    imaging_space=imaging_space,
-    data=data_array,  # Your imaging data array
-    unit='n.a.',
-    rate=30.0
-)
-
-# Add to file
-nwbfile.add_acquisition(imaging_series)
-
-# Save file
-with NWBHDF5IO('calcium_imaging.nwb', 'w') as io:
-    io.write(nwbfile)
-```
+**Comprehensive Neurodata Types**
+- Microscope and optical component metadata (integration with [ndx-ophys-devices](https://github.com/catalystneuro/ndx-ophys-devices)):
+    - `Microscope`
+    - `ExcitationSource` / `PulsedExcitationSource`
+    - `BandOpticalFilter` / `EdgeOpticalFilter` / 
+    - `DichroicMirror` 
+    - `Photodetector` 
+    - `Indicator`
+- Advanced light path configurations: 
+    - `ExcitationLightPath`
+    - `EmissionLightPath` 
+- Imaging space definitions: 
+    - `PlanarImagingSpace`
+    - `VolumetricImagingSpace`
+- Support for 2D and 3D imaging: 
+    - `PlanarMicroscopySeries`
+    - `VolumetricMicroscopySeries`
+    - `MultiPlaneMicroscopyContainer`
+- ROI/segmentation storage: 
+    - `Segmentation2D`
+    - `Segmentation3D`
+    - `SegmentationContainer`
+    - `MicroscopyResponseSeries`
+    - `MicroscopyResponseSeriesContainer`
+- Abstract Neurodata types: `ImagingSpace`, `MicroscopySeries`,`Segmentation`
 
 ## Entity relationship diagram
 
@@ -402,17 +330,16 @@ classDiagram
 ---
 This extension was created using [ndx-template](https://github.com/nwb-extensions/ndx-template).
 
+## Installation
+
+```bash
+pip install ndx-microscopy
+```
 
 ## Documentation
 
 For detailed documentation, including API reference and additional examples, please visit our [documentation site](https://ndx-microscopy.readthedocs.io/).
 
-The documentation includes:
-- Getting Started Guide
-- User Guide with Best Practices
-- Comprehensive Examples
-- Complete API Reference
-- Data Format Specifications
 
 ## Contributing
 
@@ -424,7 +351,7 @@ From your local copy directory, use the following commands.
 
 If you have not already, you will need to clone the repo:
 ```bash
-$ git clone https://github.com/catalystneuro/neuroconv
+$ git clone https://github.com/catalystneuro/ndx-microscopy
 ```
 
 First create a new branch to work on
