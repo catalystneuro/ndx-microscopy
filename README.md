@@ -126,13 +126,11 @@ classDiagram
         --------------------------------------
         attributes
         --------------------------------------
-        excitation_wavelength_in_nm : numeric
-        excitation_mode : txt
         description : text
         --------------------------------------
         links
         --------------------------------------
-        excitation_source : ExcitationSource, optional
+        excitation_source : ExcitationSource
         excitation_filter : OpticalFilter, optional
         dichroic_mirror : DichroicMirror, optional
     }
@@ -142,7 +140,6 @@ classDiagram
         --------------------------------------
         attributes
         --------------------------------------
-        emission_wavelength_in_nm : numeric
         description : text
         --------------------------------------
         groups
@@ -151,7 +148,7 @@ classDiagram
         --------------------------------------
         links
         --------------------------------------
-        photodetector : Photodetector, optional
+        photodetector : Photodetector
         emission_filter : OpticalFilter, optional
         dichroic_mirror : DichroicMirror, optional
     }
@@ -163,6 +160,7 @@ classDiagram
         --------------------------------------
         illumination_type : text
         excitation_wavelength_in_nm : float
+        excitation_mode: text
         power_in_W : float, optional
         intensity_in_W_per_m2 : float, optional
         exposure_time_in_s : float, optional
@@ -288,12 +286,12 @@ classDiagram
         imaging_space : PlanarImagingSpace
     }
 
-    class VariableDepthMicroscopySeries {
-        <<PlanarMicroscopySeries>>
+    class MultiPlaneMicroscopyContainer {
+        <<NWBDataInterface>>
         --------------------------------------
-        datasets
+        groups
         --------------------------------------
-        depth_per_frame_in_um : numeric, length of frames
+        planar_microscopy_series : PlanarMicroscopySeries, number of depths scanned
     }
 
     class VolumetricMicroscopySeries {
@@ -307,32 +305,7 @@ classDiagram
         --------------------------------------
         imaging_space : VolumetricImagingSpace
     }
-
-    class MultiChannelMicroscopyVolume {
-        <<NWBDataInterface>>
-        --------------------------------------
-        attributes
-        --------------------------------------
-        description : text, optional
-        unit : text
-        conversion : float32, optional, default=1.0
-        offset : float32, optional, default=0.0
-        --------------------------------------
-        datasets
-        --------------------------------------
-        data : numeric, height x width x depth x emission_light_paths
-        excitation_light_paths : ExcitationLightPath[]
-        emission_light_paths : EmissionLightPath[]
-        --------------------------------------
-        groups
-        --------------------------------------
-        imaging_space : VolumetricImagingSpace
-        --------------------------------------
-        links
-        --------------------------------------
-        microscope : Microscope
-    }
-    
+   
     class ImagingSpace {
         <<NWBContainer>>
         --------------------------------------
@@ -416,10 +389,9 @@ classDiagram
 
     PlanarMicroscopySeries *-- MicroscopySeries : extends
     PlanarMicroscopySeries -- PlanarImagingSpace : links
-    VariableDepthMicroscopySeries *-- PlanarMicroscopySeries : extends
+    MultiPlaneMicroscopyContainer ..> PlanarMicroscopySeries : links
     VolumetricMicroscopySeries *-- MicroscopySeries : extends
     VolumetricMicroscopySeries -- VolumetricImagingSpace : links
-    MultiChannelMicroscopyVolume -- VolumetricImagingSpace : links
     PlanarImagingSpace *-- ImagingSpace : extends
     VolumetricImagingSpace *-- ImagingSpace : extends
     MicroscopySeries ..> Microscope : links

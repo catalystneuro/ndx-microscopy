@@ -24,26 +24,29 @@ if not os.path.exists(__spec_path):
 
 load_namespaces(str(__spec_path))
 
-from .ndx_microscopy import MicroscopyPlaneSegmentation, ExcitationLightPath, EmissionLightPath
+from .ndx_microscopy import (
+    ImagingSpace,
+    SegmentationContainer,
+    Segmentation,
+    Segmentation2D,
+    Segmentation3D,
+    ExcitationLightPath,
+    EmissionLightPath,
+)
 
 Microscope = get_class("Microscope", extension_name)
 
-ImagingSpace = get_class("ImagingSpace", extension_name)
 PlanarImagingSpace = get_class("PlanarImagingSpace", extension_name)
 VolumetricImagingSpace = get_class("VolumetricImagingSpace", extension_name)
 
 MicroscopySeries = get_class("MicroscopySeries", extension_name)
 PlanarMicroscopySeries = get_class("PlanarMicroscopySeries", extension_name)
-VariableDepthMicroscopySeries = get_class("VariableDepthMicroscopySeries", extension_name)
 VolumetricMicroscopySeries = get_class("VolumetricMicroscopySeries", extension_name)
-
-MultiChannelMicroscopyVolume = get_class("MultiChannelMicroscopyVolume", extension_name)
-VariableDepthMultiChannelMicroscopyVolume = get_class("VariableDepthMultiChannelMicroscopyVolume", extension_name)
+MultiPlaneMicroscopyContainer = get_class("MultiPlaneMicroscopyContainer", extension_name)
 
 MicroscopyResponseSeries = get_class("MicroscopyResponseSeries", extension_name)
 MicroscopyResponseSeriesContainer = get_class("MicroscopyResponseSeriesContainer", extension_name)
 
-MicroscopySegmentations = get_class("MicroscopySegmentations", extension_name)
 
 __all__ = [
     "OpticalFilter",
@@ -57,14 +60,14 @@ __all__ = [
     "ImagingSpace",
     "PlanarImagingSpace",
     "VolumetricImagingSpace",
-    "MicroscopySegmentations",
-    "MicroscopyPlaneSegmentation",
+    "Segmentation",
+    "SegmentationContainer",
+    "Segmentation2D",
+    "Segmentation3D",
     "MicroscopySeries",
     "PlanarMicroscopySeries",
-    "VariableDepthMicroscopySeries",
     "VolumetricMicroscopySeries",
-    "MultiChannelMicroscopyVolume",
-    "VariableDepthMultiChannelMicroscopyVolume",
+    "MultiPlaneMicroscopyContainer",
     "MicroscopyResponseSeries",
     "MicroscopyResponseSeriesContainer",
 ]
