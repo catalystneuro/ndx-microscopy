@@ -10,6 +10,8 @@ from ndx_microscopy.testing import (
     mock_Segmentation3D,
     mock_SegmentationContainer,
     mock_Segmentation,
+    mock_EmissionLightPath,
+    mock_ExcitationLightPath,
 )
 from ndx_microscopy import (
     Segmentation2D,
@@ -268,6 +270,39 @@ def test_segmentation_inheritance():
     # Test that each has appropriate summary images
     assert len(segmentation_2D.summary_images) == 2
     assert len(segmentation_3D.summary_images) == 2
+
+
+def test_get_excitation_wavelength():
+    """Test getting excitation wavelength from excitation source."""
+    from ndx_ophys_devices.testing import mock_ExcitationSource
+
+    excitation_source = mock_ExcitationSource()
+    light_path = mock_ExcitationLightPath()
+
+    wavelength = light_path.get_excitation_wavelength(excitation_source=excitation_source)
+    assert wavelength == excitation_source.excitation_wavelength_in_nm
+
+
+def test_get_emission_wavelength():
+    """Test getting emission wavelength from photodetector."""
+    from ndx_ophys_devices.testing import mock_Photodetector
+
+    photodetector = mock_Photodetector()
+    light_path = mock_EmissionLightPath()
+
+    wavelength = light_path.get_emission_wavelength(photodetector=photodetector)
+    assert wavelength == photodetector.detected_wavelength_in_nm
+
+
+def test_get_indicator_label():
+    """Test getting label from indicator."""
+    from ndx_ophys_devices.testing import mock_Indicator
+
+    indicator = mock_Indicator()
+    light_path = mock_EmissionLightPath()
+
+    label = light_path.get_indicator_label(indicator=indicator)
+    assert label == indicator.label
 
 
 if __name__ == "__main__":
