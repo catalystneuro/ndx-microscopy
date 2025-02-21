@@ -12,31 +12,17 @@ Initial release of ndx-microscopy extension.
 Features
 --------
 
-- Support for various microscopy techniques:
-  - One-photon microscopy (widefield)
-  - Two-photon microscopy
-  - Three-photon microscopy
-  - Light sheet microscopy
-
-- Comprehensive data types:
-  - Microscope metadata
-  - Light path configurations
-  - Imaging spaces
-  - Time series data
-  - ROI/segmentation storage
-
-- Flexible organization:
-  - 2D and 3D imaging support
-  - Multi-channel data handling
-  - Variable depth imaging
-  - Coordinate system management
-
-- Integration with ndx-ophys-devices for optical component specifications
+* Microscope metadata: `Microscope`
+* Integration with ndx-ophys-devices for optical component specifications: `ExcitationSource`/`PulsedExcitationSource`,`BandOpticalFilter`/`EdgeOpticalFilter`,`DichroicMirror`,`Photodetector`,`Indicator`
+* Advanced light path configurations: `ExcitationLightPath`,`EmissionLightPath` 
+* Imaging space definitions: `PlanarImagingSpace`,`VolumetricImagingSpace`
+* Support for 2D and 3D imaging: `PlanarMicroscopySeries`,`VolumetricMicroscopySeries`,`MultiPlaneMicroscopyContainer`
+* ROI/segmentation storage: `SummaryImages`,`Segmentation2D`,`Segmentation3D`,`SegmentationContainer`,`MicroscopyResponseSeries`,`MicroscopyResponseSeriesContainer`
+* Abstract Neurodata types: `ImagingSpace`, `MicroscopySeries`,`Segmentation`
 
 Changes
 -------
 
-- Initial implementation of all core data types
-- Basic documentation and examples
-- Integration tests and validation
-- Python and MATLAB support
+* Initial implementation of all neurodata data types
+* Basic documentation and examples
+* Integration tests and validation
