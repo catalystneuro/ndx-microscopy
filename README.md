@@ -30,15 +30,14 @@ A Neurodata Without Borders (NWB) extension for storing microscopy data and asso
     - `MicroscopyResponseSeriesContainer`
 - Abstract Neurodata types: `ImagingSpace`, `MicroscopySeries`,`Segmentation`
 
-## Entity relationship diagram
+## Entity Relationship Diagrams
 
-#### Entity relationship diagram for ndx-ophys-devices objects in ndx-microscopy 
+#### Device and Light Path Components
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#ffffff', 'primaryBorderColor': '#144E73', 'lineColor': '#D96F32'}}}%%
 
 classDiagram
-
     direction TB
 
     class DeviceModel {
@@ -54,13 +53,17 @@ classDiagram
         --------------------------------------
         attributes
         --------------------------------------
-        description : text
+        **description** : text
         --------------------------------------
         links
         --------------------------------------
-        excitation_source : ExcitationSource
+        **excitation_source** : ExcitationSource
         excitation_filter : OpticalFilter, optional
         dichroic_mirror : DichroicMirror, optional
+        --------------------------------------
+        methods
+        --------------------------------------
+        get_excitation_wavelength()
     }
 
     class EmissionLightPath {
@@ -68,17 +71,22 @@ classDiagram
         --------------------------------------
         attributes
         --------------------------------------
-        description : text
+        **description** : text
         --------------------------------------
         groups
         --------------------------------------
-        indicator : Indicator
+        **indicator** : Indicator
         --------------------------------------
         links
         --------------------------------------
-        photodetector : Photodetector
+        **photodetector** : Photodetector
         emission_filter : OpticalFilter, optional
         dichroic_mirror : DichroicMirror, optional
+        --------------------------------------
+        methods
+        --------------------------------------
+        get_emission_wavelength()
+        get_indicator_label()
     }
 
     class ExcitationSource {
@@ -86,9 +94,9 @@ classDiagram
         --------------------------------------
         attributes
         --------------------------------------
-        illumination_type : text
-        excitation_wavelength_in_nm : float
-        excitation_mode: text
+        **illumination_type** : text
+        **excitation_wavelength_in_nm** : float
+        **excitation_mode** : text
         power_in_W : float, optional
         intensity_in_W_per_m2 : float, optional
         exposure_time_in_s : float, optional
@@ -109,7 +117,7 @@ classDiagram
         --------------------------------------
         attributes
         --------------------------------------
-        filter_type : text
+        **filter_type** : text
     }
 
     class BandOpticalFilter {
@@ -117,8 +125,8 @@ classDiagram
         --------------------------------------
         attributes
         --------------------------------------
-        center_wavelength_in_nm : float
-        bandwidth_in_nm : float
+        **center_wavelength_in_nm** : float
+        **bandwidth_in_nm** : float
     }
 
     class EdgeOpticalFilter {
@@ -126,13 +134,13 @@ classDiagram
         --------------------------------------
         attributes
         --------------------------------------
-        cut_wavelength_in_nm : float
+        **cut_wavelength_in_nm** : float
         slope_in_percent_cut_wavelength : float, optional
         slope_starting_transmission_in_percent : float, optional
         slope_ending_transmission_in_percent : float, optional
     }
 
-    class DichroicMirror{
+    class DichroicMirror {
         <<DeviceModel>>
         --------------------------------------
         attributes
@@ -149,8 +157,8 @@ classDiagram
         --------------------------------------
         attributes
         --------------------------------------
-        detector_type : text
-        detected_wavelength_in_nm : float
+        **detector_type** : text
+        **detected_wavelength_in_nm** : float
         gain : float, optional
         gain_unit : text, optional
     }
@@ -160,7 +168,7 @@ classDiagram
         --------------------------------------
         attributes
         --------------------------------------
-        label : text
+        **label** : text
         description : text, optional
         manufacturer : text, optional
         injection_brain_region : text, optional
@@ -175,31 +183,31 @@ classDiagram
     OpticalFilter <|-- BandOpticalFilter : extends
     OpticalFilter <|-- EdgeOpticalFilter : extends
 
-    ExcitationLightPath ..> ExcitationSource : links
-    ExcitationLightPath ..> OpticalFilter : links
-    ExcitationLightPath ..> DichroicMirror : links
-    EmissionLightPath ..> Photodetector : links
-    EmissionLightPath ..> OpticalFilter : links
-    EmissionLightPath ..> DichroicMirror : links
+    ExcitationLightPath o--> ExcitationSource : links
+    ExcitationLightPath o--> OpticalFilter : links
+    ExcitationLightPath o--> DichroicMirror : links
+    EmissionLightPath o--> Photodetector : links
+    EmissionLightPath o--> OpticalFilter : links
+    EmissionLightPath o--> DichroicMirror : links
     EmissionLightPath *-- Indicator : contains
 ```
 
-#### Entity relationship diagram for ndx-microscopy 
+#### Microscopy Series and Imaging Space Components
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#ffffff', 'primaryBorderColor': '#144E73', 'lineColor': '#D96F32'}}}%%
 
 classDiagram
-    direction BT
+    direction TB
 
     class MicroscopySeries {
         <<TimeSeries>>
         --------------------------------------
         links
         --------------------------------------
-        microscope : Microscope
-        excitation_light_path : ExcitationLightPath
-        emission_light_path : EmissionLightPath
+        **microscope** : Microscope
+        **excitation_light_path** : ExcitationLightPath
+        **emission_light_path** : EmissionLightPath
     }
 
     class PlanarMicroscopySeries {
@@ -207,19 +215,11 @@ classDiagram
         --------------------------------------
         datasets
         --------------------------------------
-        data : numeric, frame x height x width
+        **data** : numeric[frames, height, width]
         --------------------------------------
         groups
         --------------------------------------
-        imaging_space : PlanarImagingSpace
-    }
-
-    class MultiPlaneMicroscopyContainer {
-        <<NWBDataInterface>>
-        --------------------------------------
-        groups
-        --------------------------------------
-        planar_microscopy_series : PlanarMicroscopySeries, number of depths scanned
+        **imaging_space** : PlanarImagingSpace
     }
 
     class VolumetricMicroscopySeries {
@@ -227,25 +227,35 @@ classDiagram
         --------------------------------------
         datasets
         --------------------------------------
-        data : numeric, frame x height x width x depth
+        **data** : numeric[frames, height, width, depths]
         --------------------------------------
         groups
         --------------------------------------
-        imaging_space : VolumetricImagingSpace
+        **imaging_space** : VolumetricImagingSpace
     }
-   
+
+    class MultiPlaneMicroscopyContainer {
+        <<NWBDataInterface>>
+        --------------------------------------
+        groups
+        --------------------------------------
+        **planar_microscopy_series** : PlanarMicroscopySeries[1..*]
+    }
+
     class ImagingSpace {
         <<NWBContainer>>
         --------------------------------------
         datasets
         --------------------------------------
-        description : text
+        **description** : text
         origin_coordinates : float64[3], optional
-        --> unit : text, default="micrometers"
+        unit : text = "micrometers"
         --------------------------------------
         attributes
         --------------------------------------
         location : text, optional
+        reference_frame : text, optional
+        orientation : text, optional
     }
 
     class PlanarImagingSpace {
@@ -254,10 +264,6 @@ classDiagram
         datasets
         --------------------------------------
         grid_spacing_in_um : float64[2], optional
-        --------------------------------------
-        attributes
-        --------------------------------------
-        reference_frame : text, optional
     }
 
     class VolumetricImagingSpace {
@@ -266,45 +272,6 @@ classDiagram
         datasets
         --------------------------------------
         grid_spacing_in_um : float64[3], optional
-        --------------------------------------
-        attributes
-        --------------------------------------
-        reference_frame : text, optional
-    }
-
-    class ExcitationLightPath {
-        <<LabMetaData>>
-        --------------------------------------
-        attributes
-        --------------------------------------
-        excitation_wavelength_in_nm : numeric
-        excitation_mode : txt
-        description : text
-        --------------------------------------
-        links
-        --------------------------------------
-        excitation_source : ExcitationSource, optional
-        excitation_filter : OpticalFilter, optional
-        dichroic_mirror : DichroicMirror, optional
-    }
-
-    class EmissionLightPath {
-        <<LabMetaData>>
-        --------------------------------------
-        attributes
-        --------------------------------------
-        emission_wavelength_in_nm : numeric
-        description : text
-        --------------------------------------
-        groups
-        --------------------------------------
-        indicator : Indicator
-        --------------------------------------
-        links
-        --------------------------------------
-        photodetector : Photodetector, optional
-        emission_filter : OpticalFilter, optional
-        dichroic_mirror : DichroicMirror, optional
     }
 
     class Microscope {
@@ -315,16 +282,129 @@ classDiagram
         model : text, optional
     }
 
-    PlanarMicroscopySeries *-- MicroscopySeries : extends
-    PlanarMicroscopySeries -- PlanarImagingSpace : links
-    MultiPlaneMicroscopyContainer ..> PlanarMicroscopySeries : links
-    VolumetricMicroscopySeries *-- MicroscopySeries : extends
-    VolumetricMicroscopySeries -- VolumetricImagingSpace : links
-    PlanarImagingSpace *-- ImagingSpace : extends
-    VolumetricImagingSpace *-- ImagingSpace : extends
-    MicroscopySeries ..> Microscope : links
-    MicroscopySeries ..> ExcitationLightPath : links
-    MicroscopySeries ..> EmissionLightPath : links
+    MicroscopySeries <|-- PlanarMicroscopySeries : extends
+    MicroscopySeries <|-- VolumetricMicroscopySeries : extends
+    ImagingSpace <|-- PlanarImagingSpace : extends
+    ImagingSpace <|-- VolumetricImagingSpace : extends
+    
+    PlanarMicroscopySeries *-- PlanarImagingSpace : contains
+    VolumetricMicroscopySeries *-- VolumetricImagingSpace : contains
+    MultiPlaneMicroscopyContainer *-- PlanarMicroscopySeries : contains
+    MicroscopySeries o--> Microscope : links
+    MicroscopySeries o--> ExcitationLightPath : links
+    MicroscopySeries o--> EmissionLightPath : links
+```
+
+#### Segmentation Components
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#ffffff', 'primaryBorderColor': '#144E73', 'lineColor': '#D96F32'}}}%%
+
+classDiagram
+    direction TB
+
+    class Segmentation {
+        <<DynamicTable>>
+        --------------------------------------
+        attributes
+        --------------------------------------
+        **description** : text
+        --------------------------------------
+        groups
+        --------------------------------------
+        summary_images : SummaryImage[0..*]
+    }
+
+    class Segmentation2D {
+        <<Segmentation>>
+        --------------------------------------
+        datasets
+        --------------------------------------
+        image_mask : VectorData[num_roi, num_x, num_y], optional
+        pixel_mask_index : VectorIndex, optional
+        pixel_mask : VectorData, optional
+        --------------------------------------
+        groups
+        --------------------------------------
+        **imaging_space** : PlanarImagingSpace
+        --------------------------------------
+        methods
+        --------------------------------------
+        add_roi()
+        create_roi_table_region()
+        pixel_to_image()
+        image_to_pixel()
+    }
+
+    class Segmentation3D {
+        <<Segmentation>>
+        --------------------------------------
+        datasets
+        --------------------------------------
+        image_mask : VectorData[num_roi, num_x, num_y, num_z], optional
+        voxel_mask_index : VectorIndex, optional
+        voxel_mask : VectorData, optional
+        --------------------------------------
+        groups
+        --------------------------------------
+        **imaging_space** : VolumetricImagingSpace
+        --------------------------------------
+        methods
+        --------------------------------------
+        add_roi()
+        create_roi_table_region()
+        voxel_to_image()
+        image_to_voxel()
+    }
+
+    class SummaryImage {
+        <<NWBContainer>>
+        --------------------------------------
+        datasets
+        --------------------------------------
+        **data** : numeric[height, width] or numeric[height, width, depth]
+        --------------------------------------
+        attributes
+        --------------------------------------
+        **description** : text
+    }
+
+    class SegmentationContainer {
+        <<NWBDataInterface>>
+        --------------------------------------
+        groups
+        --------------------------------------
+        **segmentations** : Segmentation[1..*]
+        --------------------------------------
+        methods
+        --------------------------------------
+        add_segmentation()
+    }
+
+    class MicroscopyResponseSeries {
+        <<TimeSeries>>
+        --------------------------------------
+        datasets
+        --------------------------------------
+        **data** : numeric[number_of_frames, number_of_rois]
+        **rois** : DynamicTableRegion
+    }
+
+    class MicroscopyResponseSeriesContainer {
+        <<NWBDataInterface>>
+        --------------------------------------
+        groups
+        --------------------------------------
+        **microscopy_response_series** : MicroscopyResponseSeries[1..*]
+    }
+
+    Segmentation <|-- Segmentation2D : extends
+    Segmentation <|-- Segmentation3D : extends
+    SegmentationContainer *-- Segmentation : contains
+    Segmentation *-- SummaryImage : contains
+    MicroscopyResponseSeriesContainer *-- MicroscopyResponseSeries : contains
+    Segmentation2D *-- PlanarImagingSpace : contains
+    Segmentation3D *-- VolumetricImagingSpace : contains
 ```
 
 ---
