@@ -107,7 +107,7 @@ Here's a minimal example showing how to create a basic microscopy dataset:
         manufacturer = "laser manufacturer.",
         model = "laser model",
         illumination_type = "Laser",
-        excitation_mopde = "two-photon",
+        excitation_mode = "two-photon",
         excitation_wavelength_in_nm = 500.0,
     )
     ex_filter = BandOpticalFilter(

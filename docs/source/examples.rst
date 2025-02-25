@@ -15,6 +15,7 @@ Complete example of two-photon calcium imaging with full optical path configurat
 
     from datetime import datetime
     from uuid import uuid4
+    import matplotlib.pyplot as plt
     import numpy as np
     from pynwb import NWBFile, NWBHDF5IO
     from ndx_microscopy import (
@@ -55,67 +56,71 @@ Complete example of two-photon calcium imaging with full optical path configurat
     )
     nwbfile.add_device(microscope)
 
-    # Set up optical components
     laser = PulsedExcitationSource(
-        name='chameleon',
-        illumination_type='Laser',
-        manufacturer='Coherent',
-        model='Chameleon Ultra II',
-        excitation_wavelength_in_nm=920.0,
-        power_in_W=1.2,
-        peak_power_in_W=100e3,
-        peak_pulse_energy_in_J=1.25e-9,
-        pulse_rate_in_Hz=80e6
+        name="chameleon",
+        illumination_type="Laser",
+        manufacturer="Coherent",
+        model="Chameleon Ultra II",
+        excitation_mode="two-photon",
+        excitation_wavelength_in_nm=920.0,  # Common for GCaMP6f imaging
+        power_in_W=2.5,  # Average power at sample, typically 1-3W for deep imaging
+        peak_power_in_W=100000.0,  # 100kW peak power
+        peak_pulse_energy_in_J=1.25e-9,  # 1.25 nJ
+        pulse_rate_in_Hz=80.0e6,  # 80MHz typical for Chameleon Ultra II
     )
     nwbfile.add_device(laser)
 
     excitation_filter = BandOpticalFilter(
-        name='excitation_filter',
-        filter_type='Bandpass',
-        manufacturer='Semrock',
-        model='FF01-920/80',
+        name="excitation_filter",
+        filter_type="Bandpass",
+        manufacturer="Semrock",
+        model="FF01-920/80",
         center_wavelength_in_nm=920.0,
-        bandwidth_in_nm=80.0
+        bandwidth_in_nm=80.0,
     )
     nwbfile.add_device(excitation_filter)
 
     dichroic = DichroicMirror(
-        name='primary_dichroic',
-        manufacturer='Semrock',
-        model='FF695-Di02',
-        cut_wavelength_in_nm=695.0
+        name="primary_dichroic",
+        manufacturer="Semrock",
+        model="FF757-Di01",  # Common dichroic for GCaMP imaging
+        cut_on_wavelength_in_nm=757.0,  # Transmits >757nm
+        cut_off_wavelength_in_nm=750.0,  # Reflects <750nm
+        transmission_band_in_nm=[757.0, 1100.0],  # Transmits NIR excitation light
+        reflection_band_in_nm=(400.0, 750.0),  # Reflects emission light (including 510nm GCaMP6f emission)
+        angle_of_incidence_in_degrees=45.0,  # Standard angle for dichroic mirrors in microscopes
     )
     nwbfile.add_device(dichroic)
 
     emission_filter = BandOpticalFilter(
-        name='emission_filter',
-        filter_type='Bandpass',
-        manufacturer='Semrock',
-        model='FF01-510/84',
+        name="emission_filter",
+        filter_type="Bandpass",
+        manufacturer="Semrock",
+        model="FF01-510/84",
         center_wavelength_in_nm=510.0,
-        bandwidth_in_nm=84.0
+        bandwidth_in_nm=84.0,
     )
     nwbfile.add_device(emission_filter)
 
     detector = Photodetector(
-        name='pmt',
-        detector_type='PMT',
-        manufacturer='Hamamatsu',
-        model='R6357',
+        name="pmt",
+        detector_type="PMT",
+        manufacturer="Hamamatsu",
+        model="R6357",
         detected_wavelength_in_nm=510.0,
-        gain=70.0,
-        gain_unit='dB'
+        gain=1000000.0,  # 10^6 typical PMT gain
+        gain_unit="V/A",  # Voltage/Current
     )
     nwbfile.add_device(detector)
 
     # Create indicator
     indicator = Indicator(
-        name='gcamp6f',
-        label='GCaMP6f',
-        description='Calcium indicator for two-photon imaging',
-        manufacturer='Addgene',
-        injection_brain_region='Visual cortex',
-        injection_coordinates_in_mm=[-2.5, 3.2, 0.5]
+        name="gcamp6f",
+        label="GCaMP6f",
+        description="Calcium indicator for two-photon imaging",
+        manufacturer="Addgene",
+        injection_brain_region="Visual cortex",
+        injection_coordinates_in_mm=[-2.5, 3.2, 0.5],
     )
 
     # Configure light paths
@@ -162,7 +167,7 @@ Complete example of two-photon calcium imaging with full optical path configurat
         microscope=microscope,
         excitation_light_path=excitation,
         emission_light_path=emission,
-        imaging_space=imaging_space,
+        planar_imaging_space=imaging_space,
         data=data,
         unit='a.u.',
         rate=30.0,
@@ -202,13 +207,13 @@ Complete example of two-photon calcium imaging with full optical path configurat
     roi_mask[256:266, 256:266] = True  # 10x10 ROI
     segmentation.add_roi(image_mask=roi_mask)
 
-    # Add ROIs using pixel masks
-    pixel_mask = [
-        [100, 100, 1.0],  # x, y, weight
-        [101, 100, 1.0],
-        [102, 100, 1.0]
-    ]
-    segmentation.add_roi(pixel_mask=pixel_mask)
+    # OR Add ROIs using pixel masks
+    # pixel_mask = [
+    #     [100, 100, 1.0],  # x, y, weight
+    #     [101, 100, 1.0],
+    #     [102, 100, 1.0]
+    # ]
+    # segmentation.add_roi(pixel_mask=pixel_mask)
 
     # Create ROI responses
     roi_region = segmentation.create_roi_table_region(
@@ -219,7 +224,7 @@ Complete example of two-photon calcium imaging with full optical path configurat
     # Extract responses (example calculation)
     num_rois = len(segmentation.id)
     responses = np.zeros((frames, num_rois))
-    
+
     for i, roi_mask in enumerate(segmentation.image_mask[:]):
         roi_data = data[:, roi_mask]
         responses[:, i] = np.mean(roi_data, axis=1)
@@ -252,16 +257,16 @@ Complete example of two-photon calcium imaging with full optical path configurat
     # Read file and access data
     with NWBHDF5IO('calcium_imaging.nwb', 'r') as io:
         nwbfile = io.read()
-        
+
         # Access imaging data
         imaging = nwbfile.acquisition['imaging_data']
         raw_data = imaging.data[:]
-        
+
         # Access ROI data
         ophys = nwbfile.processing['ophys']
         rois = ophys['rois']
         roi_masks = rois.image_mask[:]
-        
+
         # Access responses
         responses = ophys['responses']
         roi_data = responses['roi_responses'].data[:]
@@ -321,6 +326,7 @@ Example of volumetric imaging with 3D ROI segmentation:
         illumination_type='Laser',
         manufacturer='Coherent',
         model='Chameleon',
+        excitation_mode = "two-photon",
         excitation_wavelength_in_nm=920.0,
         power_in_W=2.0,
         intensity_in_W_per_m2=1000.0,
