@@ -154,7 +154,7 @@ def mock_Segmentation2D(
     description: str = "A mock instance of a Segmentation2D type to be used for rapid testing.",
     number_of_rois: int = 5,
     image_shape: Tuple[int, int] = (10, 10),
-    summary_images: Optional[List[pynwb.base.Images]] = None,
+    summary_images: Optional[List[ndx_microscopy.SummaryImage]] = None,
 ) -> ndx_microscopy.Segmentation2D:
     """2D segmentation with image_mask/pixel_mask."""
     name = name or name_generator("Segmentation2D")
@@ -190,7 +190,7 @@ def mock_Segmentation3D(
     description: str = "A mock instance of a Segmentation3D type to be used for rapid testing.",
     number_of_rois: int = 5,
     image_shape: Tuple[int, int, int] = (10, 10, 10),
-    summary_images: Optional[List[pynwb.base.Images]] = None,
+    summary_images: Optional[List[ndx_microscopy.SummaryImage]] = None,
 ) -> ndx_microscopy.Segmentation3D:
     """3D segmentation with image_mask/voxel_mask."""
     name = name or name_generator("Segmentation3D")
