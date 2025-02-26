@@ -114,23 +114,32 @@ def mock_VolumetricImagingSpace(
     return volumetric_imaging_space
 
 
+def mock_SummaryImage(
+    *,
+    name: Optional[str] = None,
+    description: str = "A mock instance of a SummaryImage type to be used for rapid testing.",
+    image_shape: Tuple[int, int] = (10, 10),
+    data: Optional[np.ndarray] = None,
+) -> ndx_microscopy.SummaryImage:
+    name = name or name_generator("SummaryImage")
+    data = data if data is not None else np.ones(image_shape)
+    summary_image = ndx_microscopy.SummaryImage(name=name, description=description, data=data)
+    return summary_image
+
+
 def mock_Segmentation(
     *,
     name: Optional[str] = None,
     description: str = "A mock instance of a Segmentation type to be used for rapid testing.",
-    summary_images: Optional[List[pynwb.base.Images]] = None,
+    summary_images: Optional[List[ndx_microscopy.SummaryImage]] = None,
 ) -> ndx_microscopy.Segmentation:
     """Base abstract class with summary images."""
     name = name or name_generator("Segmentation")
 
     # Create default summary images if none provided
     if summary_images is None:
-        mean_image = pynwb.base.Image(
-            name="mean", data=np.ones((10, 10)), description="Mean intensity projection"  # Example shape
-        )
-        max_image = pynwb.base.Image(
-            name="max", data=np.ones((10, 10)), description="Maximum intensity projection"  # Example shape
-        )
+        mean_image = mock_SummaryImage(name="mean", description="Mean intensity projection")
+        max_image = mock_SummaryImage(name="max", description="Maximum intensity projection")
         summary_images = [mean_image, max_image]
 
     segmentation = ndx_microscopy.Segmentation(name=name, description=description, summary_images=summary_images)
@@ -145,15 +154,15 @@ def mock_Segmentation2D(
     description: str = "A mock instance of a Segmentation2D type to be used for rapid testing.",
     number_of_rois: int = 5,
     image_shape: Tuple[int, int] = (10, 10),
-    summary_images: Optional[List[pynwb.base.Images]] = None,
+    summary_images: Optional[List[ndx_microscopy.SummaryImage]] = None,
 ) -> ndx_microscopy.Segmentation2D:
     """2D segmentation with image_mask/pixel_mask."""
     name = name or name_generator("Segmentation2D")
 
     # Create default summary images if none provided
     if summary_images is None:
-        mean_image = pynwb.base.Image(name="mean", data=np.ones(image_shape), description="Mean intensity projection")
-        max_image = pynwb.base.Image(name="max", data=np.ones(image_shape), description="Maximum intensity projection")
+        mean_image = mock_SummaryImage(name="mean", description="Mean intensity projection", image_shape=image_shape)
+        max_image = mock_SummaryImage(name="max", description="Maximum intensity projection", image_shape=image_shape)
         summary_images = [mean_image, max_image]
 
     segmentation_2D = ndx_microscopy.Segmentation2D(
@@ -181,23 +190,15 @@ def mock_Segmentation3D(
     description: str = "A mock instance of a Segmentation3D type to be used for rapid testing.",
     number_of_rois: int = 5,
     image_shape: Tuple[int, int, int] = (10, 10, 10),
-    summary_images: Optional[List[pynwb.base.Images]] = None,
+    summary_images: Optional[List[ndx_microscopy.SummaryImage]] = None,
 ) -> ndx_microscopy.Segmentation3D:
     """3D segmentation with image_mask/voxel_mask."""
     name = name or name_generator("Segmentation3D")
 
     # Create default summary images if none provided
     if summary_images is None:
-        mean_image = pynwb.base.Image(
-            name="mean",
-            data=np.ones((image_shape[0], image_shape[1])),  # Project along Z
-            description="Mean intensity projection",
-        )
-        max_image = pynwb.base.Image(
-            name="max",
-            data=np.ones((image_shape[0], image_shape[1])),  # Project along Z
-            description="Maximum intensity projection",
-        )
+        mean_image = mock_SummaryImage(name="mean", description="Mean intensity projection", image_shape=image_shape)
+        max_image = mock_SummaryImage(name="max", description="Maximum intensity projection", image_shape=image_shape)
         summary_images = [mean_image, max_image]
 
     volumetric_segmentation = ndx_microscopy.Segmentation3D(
