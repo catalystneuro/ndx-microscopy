@@ -3,4 +3,4 @@
 # NOTE: it may be possible to relax these minimum requirements
 pynwb==2.8.0
 hdmf==3.14.1
-ndx-ophys-devices==0.1.0
+ndx-ophys-devices==0.1.1
