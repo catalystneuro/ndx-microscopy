@@ -3,7 +3,7 @@
 Overview
 ========
 
-The ndx-microscopy extension for NWB provides a standardized way to store and organize microscopy data in neuroscience research. This extension integrates with ndx-ophys-devices to provide comprehensive optical component specifications and supports various microscopy techniques while maintaining detailed metadata about the imaging setup, experimental conditions, and acquired data. This extension integrates with [ndx-ophys-devices](https://github.com/catalystneuro/ndx-ophys-devices) to provide comprehensive optical component specifications.
+The ndx-microscopy extension for NWB provides a standardized way to store and organize microscopy data in neuroscience research. This extension integrates with `ndx-ophys-devices <https://github.com/catalystneuro/ndx-ophys-devices>`_ to provide comprehensive optical component specifications and supports various microscopy techniques while maintaining detailed metadata about the imaging setup, experimental conditions, and acquired data.
 
 Supported Microscopy Techniques
 -----------------------------
