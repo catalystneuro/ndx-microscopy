@@ -13,6 +13,13 @@ from ._mock import (
     mock_MultiPlaneMicroscopyContainer,
     mock_VolumetricImagingSpace,
     mock_VolumetricMicroscopySeries,
+    mock_ImagingModality,
+    mock_LineScanning,
+    mock_RasterScanning,
+    mock_ResonantScanning,
+    mock_TemporalFocusing,
+    mock_LightSheet,
+    mock_RandomAccessScanning,
 )
 
 __all__ = [
@@ -30,4 +37,11 @@ __all__ = [
     "mock_VolumetricMicroscopySeries",
     "mock_MicroscopyResponseSeries",
     "mock_MicroscopyResponseSeriesContainer",
+    "mock_ImagingModality",
+    "mock_LineScanning",
+    "mock_RasterScanning",
+    "mock_ResonantScanning",
+    "mock_TemporalFocusing",
+    "mock_LightSheet",
+    "mock_RandomAccessScanning",
 ]

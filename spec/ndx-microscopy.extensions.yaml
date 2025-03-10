@@ -68,7 +68,7 @@ groups:
     attributes:
       - name: scan_direction
         dtype: text
-        doc: Direction of line scanning (horizontal, vertical, or diagonal). # specify fast direction vs slow direction
+        doc: Direction of line scanning (horizontal, vertical, or diagonal).
         required: false
       - name: line_rate
         dtype: float64
@@ -138,7 +138,7 @@ groups:
     doc: Random access scanning method for targeted, high-speed imaging of specific regions.
     attributes:
       - name: max_scan_points
-        dtype: uint32
+        dtype: numeric
         doc: Maximum number of points that can be scanned in a single frame.
         required: false
       - name: dwell_time
