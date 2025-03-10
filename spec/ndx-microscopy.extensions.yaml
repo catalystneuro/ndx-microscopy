@@ -68,13 +68,13 @@ groups:
     attributes:
       - name: scan_direction
         dtype: text
-        doc: Direction of line scanning (horizontal, vertical, or diagonal).
+        doc: Direction of line scanning (horizontal or vertical).
         required: false
-      - name: line_rate
+      - name: line_rate_in_Hz
         dtype: float64
         doc: Rate of line scanning in lines per second.
         required: false
-      - name: dwell_time
+      - name: dwell_time_in_s
         dtype: float64
         doc: Average time spent at each scanned point.
         required: false
@@ -87,7 +87,7 @@ groups:
         dtype: text
         doc: Specific raster scanning pattern (e.g., bidirectional, unidirectional).
         required: false
-      - name: dwell_time
+      - name: dwell_time_in_s
         dtype: float64
         doc: Average time spent at each scanned point.
         required: false
@@ -96,7 +96,7 @@ groups:
     neurodata_type_inc: ImagingModality
     doc: Resonant scanning method using a rapidly oscillating mirror for high-speed imaging.
     attributes:
-      - name: resonant_frequency
+      - name: resonant_frequency_in_Hz
         dtype: float64
         doc: Frequency of the resonant scanner in Hz.
         required: false
@@ -115,7 +115,7 @@ groups:
       - name: axial_point_spread_function_in_um
         dtype: text
         doc: Estimated axial spatial profile or point spread function, expressed as mean [um] ± s.d [um].
-      - name: pulse_duration
+      - name: pulse_duration_in_s
         dtype: float64
         doc: Duration of excitation pulses in seconds.
         required: false
@@ -128,7 +128,7 @@ groups:
         dtype: float64
         doc: Thickness of the light sheet in micrometers.
         required: false
-      - name: illumination_angle
+      - name: illumination_angle_in_degrees
         dtype: float64
         doc: Angle of light sheet illumination in degrees.
         required: false
@@ -141,7 +141,7 @@ groups:
         dtype: numeric
         doc: Maximum number of points that can be scanned in a single frame.
         required: false
-      - name: dwell_time
+      - name: dwell_time_in_s
         dtype: float64
         doc: Average time spent at each scanned point.
         required: false

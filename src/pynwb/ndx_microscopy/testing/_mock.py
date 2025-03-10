@@ -88,16 +88,16 @@ def mock_LineScanning(
     name: Optional[str] = None,
     description: str = "A mock instance of a LineScanning type to be used for rapid testing.",
     scan_direction: Optional[str] = "horizontal",
-    line_rate: Optional[float] = 500.0,
-    dwell_time: Optional[float] = 0.001,
+    line_rate_in_Hz: Optional[float] = 1000.0,
+    dwell_time_in_s: Optional[float] = 1.0e-6,
 ) -> ndx_microscopy.LineScanning:
     """Line scanning method used in microscopy, particularly common in two-photon imaging."""
     line_scanning = ndx_microscopy.LineScanning(
         name=name or name_generator("LineScanning"),
         description=description,
         scan_direction=scan_direction,
-        line_rate=line_rate,
-        dwell_time=dwell_time,
+        line_rate_in_Hz=line_rate_in_Hz,
+        dwell_time_in_s=dwell_time_in_s,
     )
     return line_scanning
 
@@ -107,14 +107,14 @@ def mock_RasterScanning(
     name: Optional[str] = None,
     description: str = "A mock instance of a RasterScanning type to be used for rapid testing.",
     scan_pattern: Optional[str] = "bidirectional",
-    dwell_time: Optional[float] = 0.0005,
+    dwell_time_in_s: Optional[float] = 1.0e-6,
 ) -> ndx_microscopy.RasterScanning:
     """Raster scanning method with grid-like point-by-point or line-by-line acquisition."""
     raster_scanning = ndx_microscopy.RasterScanning(
         name=name or name_generator("RasterScanning"),
         description=description,
         scan_pattern=scan_pattern,
-        dwell_time=dwell_time,
+        dwell_time_in_s=dwell_time_in_s,
     )
     return raster_scanning
 
@@ -123,14 +123,14 @@ def mock_ResonantScanning(
     *,
     name: Optional[str] = None,
     description: str = "A mock instance of a ResonantScanning type to be used for rapid testing.",
-    resonant_frequency: Optional[float] = 8000.0,
+    resonant_frequency_in_Hz: Optional[float] = 8000.0,
     resonant_amplitude: Optional[float] = 1.5,
 ) -> ndx_microscopy.ResonantScanning:
     """Resonant scanning method using a rapidly oscillating mirror for high-speed imaging."""
     resonant_scanning = ndx_microscopy.ResonantScanning(
         name=name or name_generator("ResonantScanning"),
         description=description,
-        resonant_frequency=resonant_frequency,
+        resonant_frequency_in_Hz=resonant_frequency_in_Hz,
         resonant_amplitude=resonant_amplitude,
     )
     return resonant_scanning
@@ -142,7 +142,7 @@ def mock_TemporalFocusing(
     description: str = "A mock instance of a TemporalFocusing type to be used for rapid testing.",
     lateral_point_spread_function_in_um: str = "0.5 ± 0.1",
     axial_point_spread_function_in_um: str = "2.0 ± 0.3",
-    pulse_duration: Optional[float] = 0.0000001,  # 100 nanoseconds
+    pulse_duration_in_s: Optional[float] = 0.0000001,  # 100 nanoseconds
 ) -> ndx_microscopy.TemporalFocusing:
     """Temporal focusing scanning method for depth-resolved imaging."""
     temporal_focusing = ndx_microscopy.TemporalFocusing(
@@ -150,7 +150,7 @@ def mock_TemporalFocusing(
         description=description,
         lateral_point_spread_function_in_um=lateral_point_spread_function_in_um,
         axial_point_spread_function_in_um=axial_point_spread_function_in_um,
-        pulse_duration=pulse_duration,
+        pulse_duration_in_s=pulse_duration_in_s,
     )
     return temporal_focusing
 
@@ -160,14 +160,14 @@ def mock_LightSheet(
     name: Optional[str] = None,
     description: str = "A mock instance of a LightSheet type to be used for rapid testing.",
     sheet_thickness_in_um: Optional[float] = 5.0,
-    illumination_angle: Optional[float] = 45.0,
+    illumination_angle_in_degrees: Optional[float] = 45.0,
 ) -> ndx_microscopy.LightSheet:
     """Light sheet method."""
     light_sheet = ndx_microscopy.LightSheet(
         name=name or name_generator("LightSheet"),
         description=description,
         sheet_thickness_in_um=sheet_thickness_in_um,
-        illumination_angle=illumination_angle,
+        illumination_angle_in_degrees=illumination_angle_in_degrees,
     )
     return light_sheet
 
@@ -177,7 +177,7 @@ def mock_RandomAccessScanning(
     name: Optional[str] = None,
     description: str = "A mock instance of a RandomAccessScanning type to be used for rapid testing.",
     max_scan_points: Optional[int] = 1000,
-    dwell_time: Optional[float] = 0.0001,
+    dwell_time_in_s: Optional[float] = 1.0e-6,
     scanning_pattern: Optional[str] = "spiral",
 ) -> ndx_microscopy.RandomAccessScanning:
     """Random access scanning method for targeted, high-speed imaging of specific regions."""
@@ -185,7 +185,7 @@ def mock_RandomAccessScanning(
         name=name or name_generator("RandomAccessScanning"),
         description=description,
         max_scan_points=max_scan_points,
-        dwell_time=dwell_time,
+        dwell_time_in_s=dwell_time_in_s,
         scanning_pattern=scanning_pattern,
     )
     return random_access_scanning
