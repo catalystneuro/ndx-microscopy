@@ -56,6 +56,56 @@ Light paths define how light travels through the microscope:
            dichroic_mirror=dichroic         # from ndx-ophys-devices
        )
 
+Illumination Pattern Configuration
+^^^^^^^^^^^^^^^^^^^^^
+
+Illumination patterns define how the microscope scans or illuminates the sample:
+
+1. **IlluminationPattern**: Base class for general use cases
+
+   .. code-block:: python
+
+       illumination_pattern = IlluminationPattern(
+           name='custom_pattern',
+           description='Custom illumination pattern'
+       )
+
+2. **LineScan**: For line scanning methods (common in two-photon microscopy)
+
+   .. code-block:: python
+
+       line_scan = LineScan(
+           name='line_scanning',
+           description='Line scanning two-photon microscopy',
+           scan_direction='horizontal',  # or 'vertical'
+           line_rate_in_Hz=1000.0,       # lines per second
+           dwell_time_in_s=1.0e-6        # time spent at each point
+       )
+
+3. **PlaneAcquisition**: For whole plane acquisition (common in light sheet and one-photon)
+
+   .. code-block:: python
+
+       plane_acquisition = PlaneAcquisition(
+           name='plane_acquisition',
+           description='Widefield fluorescence imaging',
+           plane_thickness_in_um=5.0,
+           illumination_angle_in_degrees=45.0,  # for light sheet
+           plane_rate_in_Hz=100.0               # planes per second
+       )
+
+4. **RandomAccessScan**: For targeted, high-speed imaging of specific regions
+
+   .. code-block:: python
+
+       random_access_scan = RandomAccessScan(
+           name='random_access',
+           description='Targeted imaging of specific neurons',
+           max_scan_points=1000,
+           dwell_time_in_s=1.0e-6,
+           scanning_pattern='spiral'  # or other pattern description
+       )
+
 Imaging Space Definition
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -65,6 +115,16 @@ Imaging spaces define the physical region being imaged:
 
    .. code-block:: python
 
+       # First define an illumination pattern
+       line_scan = LineScan(
+           name='line_scanning',
+           description='Line scanning two-photon microscopy',
+           scan_direction='horizontal',
+           line_rate_in_Hz=1000.0,
+           dwell_time_in_s=1.0e-6
+       )
+       
+       # Then create the imaging space with the illumination pattern
        space_2d = PlanarImagingSpace(
            name='cortex_plane',
            description='Layer 2/3 of visual cortex',
@@ -72,13 +132,24 @@ Imaging spaces define the physical region being imaged:
            origin_coordinates=[-1.2, -0.6, -2.0], # relative to bregma
            location='Visual cortex',
            reference_frame='bregma',
-           orientation='RAS'                      # Right-Anterior-Superior
+           orientation='RAS',                    # Right-Anterior-Superior
+           illumination_pattern=line_scan        # Include the illumination pattern
        )
 
 2. **VolumetricImagingSpace**: For 3D imaging
 
    .. code-block:: python
 
+       # First define an illumination pattern
+       plane_acquisition = PlaneAcquisition(
+           name='plane_acquisition',
+           description='Light sheet imaging',
+           plane_thickness_in_um=5.0,
+           illumination_angle_in_degrees=45.0,
+           plane_rate_in_Hz=100.0
+       )
+       
+       # Then create the imaging space with the illumination pattern
        space_3d = VolumetricImagingSpace(
            name='cortex_volume',
            description='Visual cortex volume',
@@ -86,7 +157,8 @@ Imaging spaces define the physical region being imaged:
            origin_coordinates=[-1.2, -0.6, -2.0],
            location='Visual cortex',
            reference_frame='bregma',
-           orientation='RAS'
+           orientation='RAS',
+           illumination_pattern=plane_acquisition
        )
 
 Common Workflows
@@ -99,7 +171,26 @@ Basic workflow for 2D imaging:
 
 .. code-block:: python
 
-    # 1. Set up imaging space
+    # 1. Set up microscope with technique
+    microscope = Microscope(
+        name='2p-scope',
+        description='Custom two-photon microscope',
+        manufacturer='Custom Build',
+        model='2P-Special',
+        technique='mirror scanning',  # Specify the technique
+    )
+    nwbfile.add_device(microscope)
+
+    # 2. Define illumination pattern
+    line_scan = LineScan(
+        name='line_scanning',
+        description='Line scanning two-photon microscopy',
+        scan_direction='horizontal',
+        line_rate_in_Hz=1000.0,
+        dwell_time_in_s=1.0e-6
+    )
+
+    # 3. Set up imaging space with illumination pattern
     planar_imaging_space = PlanarImagingSpace(
         name='cortex_plane',
         description='Layer 2/3 of visual cortex',
@@ -107,10 +198,11 @@ Basic workflow for 2D imaging:
         origin_coordinates=[-1.2, -0.6, -2.0], # relative to bregma
         location='Visual cortex',
         reference_frame='bregma',
-        orientation='RAS'                      # Right-Anterior-Superior
+        orientation='RAS',                    # Right-Anterior-Superior
+        illumination_pattern=line_scan        # Include the illumination pattern
     )
 
-    # 2. Create imaging series
+    # 4. Create imaging series
     microscopy_series = PlanarMicroscopySeries(
         name='microscopy_series',
         description='Two-photon calcium imaging',
@@ -125,14 +217,85 @@ Basic workflow for 2D imaging:
     )
     nwbfile.add_acquisition(microscopy_series)
 
-3D Imaging
+One-Photon Imaging with Plane Acquisition
 ^^^^^^^^^
 
-Workflow for volumetric imaging:
+Workflow for one-photon widefield imaging:
 
 .. code-block:: python
 
-    # 1. Set up volumetric space
+    # 1. Set up microscope with technique
+    microscope = Microscope(
+        name='1p-scope',
+        description='Custom one-photon microscope',
+        manufacturer='Custom Build',
+        model='1P-Special',
+        technique='widefield',  # Specify the technique
+    )
+    nwbfile.add_device(microscope)
+
+    # 2. Define illumination pattern
+    plane_acquisition = PlaneAcquisition(
+        name='plane_acquisition',
+        description='Widefield fluorescence imaging',
+        plane_thickness_in_um=5.0,
+        plane_rate_in_Hz=30.0
+    )
+
+    # 3. Set up imaging space with illumination pattern
+    planar_imaging_space = PlanarImagingSpace(
+        name='hippo_plane',
+        description='CA1 region of hippocampus',
+        grid_spacing_in_um=[1.0, 1.0],
+        origin_coordinates=[-1.8, 2.0, 1.2],
+        location='Hippocampus, CA1 region',
+        reference_frame='bregma',
+        orientation='RAS',
+        illumination_pattern=plane_acquisition
+    )
+
+    # 4. Create imaging series
+    microscopy_series = PlanarMicroscopySeries(
+        name='imaging_data',
+        description='One-photon calcium imaging',
+        microscope=microscope,
+        excitation_light_path=excitation,
+        emission_light_path=emission,
+        planar_imaging_space=planar_imaging_space,
+        data=data,
+        unit='a.u.',
+        rate=30.0,
+        starting_time=0.0
+    )
+    nwbfile.add_acquisition(microscopy_series)
+
+3D Imaging with Random Access Scanning
+^^^^^^^^^
+
+Workflow for volumetric imaging with targeted scanning:
+
+.. code-block:: python
+
+    # 1. Set up microscope with technique
+    microscope = Microscope(
+        name='volume-scope',
+        description='Custom volumetric imaging microscope',
+        manufacturer='Custom Build',
+        model='Volume-Special',
+        technique='acousto-optical deflectors',  # Specify the technique
+    )
+    nwbfile.add_device(microscope)
+
+    # 2. Define illumination pattern
+    random_access_scan = RandomAccessScan(
+        name='random_access',
+        description='Targeted imaging of specific neurons',
+        max_scan_points=1000,
+        dwell_time_in_s=1.0e-6,
+        scanning_pattern='spiral'
+    )
+
+    # 3. Set up volumetric space with illumination pattern
     volumetric_imaging_space = VolumetricImagingSpace(
         name='cortex_volume',
         description='Visual cortex volume',
@@ -140,10 +303,11 @@ Workflow for volumetric imaging:
         origin_coordinates=[-1.2, -0.6, -2.0],
         location='Visual cortex',
         reference_frame='bregma',
-        orientation='RAS'
+        orientation='RAS',
+        illumination_pattern=random_access_scan
     )
 
-    # 2. Create volumetric series
+    # 4. Create volumetric series
     volume_series = VolumetricMicroscopySeries(
         name='volume_data',
         microscope=microscope,
@@ -231,4 +395,3 @@ Data Organization
    - Group related data appropriately
    - Maintain clear relationships between raw and processed data
    - Include all necessary metadata
-   

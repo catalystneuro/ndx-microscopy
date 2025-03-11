@@ -22,6 +22,10 @@ A device for acquiring imaging data.
             dtype: text
             doc: Model identifier of the microscope.
             required: false
+          - name: technique
+            dtype: text
+            doc: Imaging technique used by the microscope (e.g. scan mirrors, light sheet, temporal focusing, acusto-optical modulation, piezo z-scan mirrors).
+            required: false
 
 For other device components (ExcitationSource, OpticalFilter, Photodetector, etc.), please refer to the `ndx-ophys-devices documentation <https://ndx-ophys-devices.readthedocs.io/>`_.
 
@@ -190,6 +194,97 @@ Container for multiple PlanarMicroscopySeries.
             doc: PlanarMicroscopySeries object(s) containing imaging data for a single depth scan.
             quantity: "+"
 
+Illumination Pattern Components
+--------------------------
+
+IlluminationPattern
+^^^^^^^^^^^^^^^
+Base class for describing the illumination pattern used to acquire the image.
+
+.. code-block:: yaml
+
+    groups:
+      - neurodata_type_def: IlluminationPattern
+        neurodata_type_inc: NWBContainer
+        doc: Base class for describing the illumination pattern used to acquired the image. Use this object if the illumination pattern is not one of the specific types (e.g., Line, Plane, RandomAccess).
+        attributes:
+          - name: description
+            dtype: text
+            doc: General description of the illumination pattern used.
+            required: false
+
+LineScan
+^^^^^^^
+Line scanning method for microscopy.
+
+.. code-block:: yaml
+
+    groups:
+      - neurodata_type_def: LineScan
+        neurodata_type_inc: IlluminationPattern
+        doc: Line scanning method.
+        attributes:
+          - name: scan_direction
+            dtype: text
+            doc: Direction of line scanning (horizontal or vertical).
+            required: false
+          - name: line_rate_in_Hz
+            dtype: float64
+            doc: Rate of line scanning in lines per second.
+            required: false
+          - name: dwell_time_in_s
+            dtype: float64
+            doc: Average time spent at each scanned point.
+            required: false
+
+PlaneAcquisition
+^^^^^^^^^^^^^
+Whole plane acquisition method for microscopy.
+
+.. code-block:: yaml
+
+    groups:
+      - neurodata_type_def: PlaneAcquisition
+        neurodata_type_inc: IlluminationPattern
+        doc: Whole plane acquisition, common for light sheet techniques.
+        attributes:
+          - name: plane_thickness_in_um
+            dtype: float64
+            doc: Thickness of the plane in micrometers.
+            required: false
+          - name: illumination_angle_in_degrees
+            dtype: float64
+            doc: Angle of illumination in degrees.
+            required: false
+          - name: plane_rate_in_Hz
+            dtype: float64
+            doc: Rate of plane acquisition in planes per second.
+            required: false
+
+RandomAccessScan
+^^^^^^^^^^^^^
+Random access scanning method for targeted imaging.
+
+.. code-block:: yaml
+
+    groups:
+      - neurodata_type_def: RandomAccessScan
+        neurodata_type_inc: IlluminationPattern
+        doc: Random access method for targeted, high-speed imaging of specific regions.
+        attributes:
+          - name: max_scan_points
+            dtype: numeric
+            doc: Maximum number of points that can be scanned in a single frame.
+            required: false
+          - name: dwell_time_in_s
+            dtype: float64
+            doc: Average time spent at each scanned point.
+            required: false
+          - name: scanning_pattern
+            dtype: text
+            doc: Description of the point selection strategy.
+            required: false
+
 Imaging Space Components
 --------------------
 
@@ -202,7 +297,7 @@ Base type for metadata about the region being imaged.
     groups:
       - neurodata_type_def: ImagingSpace
         neurodata_type_inc: NWBContainer
-        doc: Abstract class to contain metadata about the region of physical space that imaging data was recorded from.
+        doc: Abstract class to contain metadata about the region of physical space that imaging data was recorded from. Extended by PlanarImagingSpace and VolumetricImagingSpace.
         datasets:
           - name: origin_coordinates
             dtype: float64
@@ -210,7 +305,8 @@ Base type for metadata about the region being imaged.
               - - x, y, z
             shape:
               - - 3
-            doc: Physical location in stereotactic coordinates for the first element of the grid.
+            doc:
+              Physical location in stereotactic coordinates for the first element of the grid.
               See reference_frame to determine what the coordinates are relative to (e.g., bregma).
             quantity: "?"
             attributes:
@@ -224,19 +320,30 @@ Base type for metadata about the region being imaged.
             doc: Description of the imaging space.
           - name: location
             dtype: text
-            doc: General estimate of location in the brain being subset by this space.
+            doc:
+              General estimate of location in the brain being subset by this space.
               Specify the area, layer, etc.
               Use standard atlas names for anatomical regions when possible.
               Specify 'whole brain' if the entire brain is strictly contained within the space.
             required: false
           - name: reference_frame
             dtype: text
-            doc: The reference frame for the origin coordinates.
+            doc:
+              The reference frame for the origin coordinates. For example, 'bregma' or 'lambda' for rodent brains.
+              If the origin coordinates are relative to a specific anatomical landmark, specify that here.
             required: false
           - name: orientation
-            doc: A 3-letter string. One of A,P,L,R,S,I for each of x, y, and z.
+            doc:
+              "A 3-letter string. One of A,P,L,R,S,I for each of x, y, and z. For example, the most common
+              orientation is 'RAS', which means x is right, y is anterior, and z is superior (a.k.a. dorsal).
+              For dorsal/ventral use 'S/I' (superior/inferior). In the AnatomicalCoordinatesTable, an orientation of
+              'RAS' corresponds to coordinates in the order of (ML (x), AP (y), DV (z))."
             dtype: text
             required: false
+        groups:
+          - neurodata_type_inc: IlluminationPattern
+            doc: IlluminationPattern object containing metadata about the method used to acquire this imaging data.
+            quantity: 1
 
 PlanarImagingSpace
 ^^^^^^^^^^^^^^^

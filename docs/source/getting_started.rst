@@ -35,6 +35,7 @@ The ndx-microscopy extension provides a standardized way to store and organize m
 Device Components
 ---------------
 - **Microscope**: The primary device used for imaging
+  - Includes technique specification (e.g., scan mirrors, light sheet, widefield)
 - Other optical components (from ndx-ophys-devices):
     - ExcitationSource (lasers, LEDs)
     - OpticalFilter (bandpass, edge filters)
@@ -48,11 +49,19 @@ Light Paths
 - **EmissionLightPath**: Defines how emitted light reaches the detector
 - Both can include optical filters, dichroic mirrors, and other metadata
 
+Illumination Patterns
+-----------------
+- **IlluminationPattern**: Base class for describing how the sample is illuminated
+- **LineScan**: For line scanning methods (common in two-photon microscopy)
+- **PlaneAcquisition**: For whole plane acquisition (common in light sheet and one-photon)
+- **RandomAccessScan**: For targeted, high-speed imaging of specific regions
+
 Imaging Spaces
 ------------
 - **PlanarImagingSpace**: For 2D imaging (single plane)
 - **VolumetricImagingSpace**: For 3D imaging (z-stacks)
 - Includes physical coordinates, grid spacing, and reference frames
+- Requires an illumination pattern to specify how the space was scanned
 
 Data Series
 ----------
@@ -87,10 +96,11 @@ Here's a minimal example showing how to create a basic microscopy dataset:
         session_start_time=datetime.now()
     )
 
-    # Set up microscope
+    # Set up microscope with technique
     microscope = Microscope(
         name='2p-scope',
-        model='Custom two-photon microscope'
+        model='Custom two-photon microscope',
+        technique='mirror scanning'  # Specify the technique used
     )
     nwbfile.add_device(microscope)
 
@@ -150,12 +160,22 @@ Here's a minimal example showing how to create a basic microscopy dataset:
     )
     nwbfile.add_lab_meta_data(emission)
 
-    # Define imaging space
+    # Define illumination pattern
+    line_scan = LineScan(
+        name='line_scanning',
+        description='Line scanning two-photon microscopy',
+        scan_direction='horizontal',
+        line_rate_in_Hz=1000.0,
+        dwell_time_in_s=1.0e-6
+    )
+
+    # Define imaging space with illumination pattern
     planar_imaging_space = PlanarImagingSpace(
         name='cortex_plane',
         description='Layer 2/3 of visual cortex',
         grid_spacing_in_um=[1.0, 1.0],
-        origin_coordinates=[-1.2, -0.6, -2.0]
+        origin_coordinates=[-1.2, -0.6, -2.0],
+        illumination_pattern=line_scan  # Include the illumination pattern
     )
 
     # Create example imaging data

@@ -7,6 +7,10 @@ groups:
         dtype: text
         doc: Model identifier of the microscope.
         required: false
+      - name: technique
+        dtype: text
+        doc: Imaging technique used by the microscope (e.g. scan mirrors, light sheet, temporal focusing, acusto-optical modulation, piezo z-scan mirrors).
+        required: false
 
   - neurodata_type_def: ExcitationLightPath
     neurodata_type_inc: LabMetaData
@@ -54,6 +58,66 @@ groups:
         doc: Link to DichroicMirror object which contains metadata about the dichroic mirror in the emission light path.
         quantity: "?"
 
+  - neurodata_type_def: IlluminationPattern
+    neurodata_type_inc: NWBContainer
+    doc: Base class for describing the illumination pattern used to acquired the image. Use this object if the illumination pattern is not one of the specific types (e.g., Line, Plane, RandomAccess).
+    attributes:
+      - name: description
+        dtype: text
+        doc: General description of the illumination pattern used.
+        required: false
+
+  - neurodata_type_def: LineScan
+    neurodata_type_inc: IlluminationPattern
+    doc: Line scanning method.
+    attributes:
+      - name: scan_direction
+        dtype: text
+        doc: Direction of line scanning (horizontal or vertical).
+        required: false
+      - name: line_rate_in_Hz
+        dtype: float64
+        doc: Rate of line scanning in lines per second.
+        required: false
+      - name: dwell_time_in_s
+        dtype: float64
+        doc: Average time spent at each scanned point.
+        required: false
+
+  - neurodata_type_def: PlaneAcquisition
+    neurodata_type_inc: IlluminationPattern
+    doc: Whole plane acquisition, common for light sheet techniques.
+    attributes:
+      - name: plane_thickness_in_um
+        dtype: float64
+        doc: Thickness of the plane in micrometers.
+        required: false
+      - name: illumination_angle_in_degrees
+        dtype: float64
+        doc: Angle of illumination in degrees.
+        required: false
+      - name: plane_rate_in_Hz
+        dtype: float64
+        doc: Rate of plane acquisition in planes per second.
+        required: false
+
+  - neurodata_type_def: RandomAccessScan
+    neurodata_type_inc: IlluminationPattern
+    doc: Random access method for targeted, high-speed imaging of specific regions.
+    attributes:
+      - name: max_scan_points
+        dtype: numeric
+        doc: Maximum number of points that can be scanned in a single frame.
+        required: false
+      - name: dwell_time_in_s
+        dtype: float64
+        doc: Average time spent at each scanned point.
+        required: false
+      - name: scanning_pattern
+        dtype: text
+        doc: Description of the point selection strategy.
+        required: false
+
   - neurodata_type_def: ImagingSpace
     neurodata_type_inc: NWBContainer
     doc: Abstract class to contain metadata about the region of physical space that imaging data was recorded from. Extended by PlanarImagingSpace and VolumetricImagingSpace.
@@ -99,6 +163,10 @@ groups:
           'RAS' corresponds to coordinates in the order of (ML (x), AP (y), DV (z))."
         dtype: text
         required: false
+    groups:
+      - neurodata_type_inc: IlluminationPattern
+        doc: IlluminationPattern object containing metadata about the method used to acquire this imaging data.
+        quantity: 1
 
   - neurodata_type_def: PlanarImagingSpace
     neurodata_type_inc: ImagingSpace

@@ -17,6 +17,10 @@ from ndx_microscopy.testing import (
     mock_VolumetricMicroscopySeries,
     mock_MicroscopyResponseSeries,
     mock_MicroscopyResponseSeriesContainer,
+    mock_IlluminationPattern,
+    mock_LineScan,
+    mock_PlaneAcquisition,
+    mock_RandomAccessScan,
 )
 from ndx_microscopy import (
     Segmentation,
@@ -24,6 +28,10 @@ from ndx_microscopy import (
     Segmentation3D,
     PlanarImagingSpace,
     VolumetricImagingSpace,
+    IlluminationPattern,
+    LineScan,
+    PlaneAcquisition,
+    RandomAccessScan,
 )
 
 
@@ -45,6 +53,49 @@ def test_constructor_emission_light_path():
     assert (
         emission_light_path.description == "A mock instance of a EmissionLightPath type to be used for rapid testing."
     )
+
+
+def test_constructor_illumination_pattern():
+    """Test constructor for base IlluminationPattern class."""
+    illumination_pattern = mock_IlluminationPattern()
+    assert (
+        illumination_pattern.description
+        == "A mock instance of an IlluminationPattern type to be used for rapid testing."
+    )
+    assert isinstance(illumination_pattern, IlluminationPattern)
+
+
+def test_constructor_line_scan():
+    """Test constructor for LineScan class."""
+    line_scan = mock_LineScan()
+    assert line_scan.description == "A mock instance of a LineScan type to be used for rapid testing."
+    assert line_scan.scan_direction == "horizontal"
+    assert line_scan.line_rate_in_Hz == 1000.0
+    assert line_scan.dwell_time_in_s == 1e-6
+    assert isinstance(line_scan, LineScan)
+    assert isinstance(line_scan, IlluminationPattern)
+
+
+def test_constructor_plane_acquisition():
+    """Test constructor for PlaneAcquisition class."""
+    plane_acquisition = mock_PlaneAcquisition()
+    assert plane_acquisition.description == "A mock instance of a PlaneAcquisition type to be used for rapid testing."
+    assert plane_acquisition.plane_thickness_in_um == 5.0
+    assert plane_acquisition.illumination_angle_in_degrees == 45.0
+    assert plane_acquisition.plane_rate_in_Hz == 100.0
+    assert isinstance(plane_acquisition, PlaneAcquisition)
+    assert isinstance(plane_acquisition, IlluminationPattern)  # Test inheritance
+
+
+def test_constructor_random_access_scan():
+    """Test constructor for RandomAccessScan class."""
+    random_access_scan = mock_RandomAccessScan()
+    assert random_access_scan.description == "A mock instance of a RandomAccessScan type to be used for rapid testing."
+    assert random_access_scan.max_scan_points == 1000
+    assert random_access_scan.dwell_time_in_s == 1.0e-6
+    assert random_access_scan.scanning_pattern == "spiral"
+    assert isinstance(random_access_scan, RandomAccessScan)
+    assert isinstance(random_access_scan, IlluminationPattern)  # Test inheritance
 
 
 def test_constructor_planar_imaging_space():
