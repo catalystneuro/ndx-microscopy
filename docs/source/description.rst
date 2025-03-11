@@ -5,16 +5,6 @@ Overview
 
 The ndx-microscopy extension for NWB provides a standardized way to store and organize microscopy data in neuroscience research. This extension integrates with `ndx-ophys-devices <https://github.com/catalystneuro/ndx-ophys-devices>`_ to provide comprehensive optical component specifications and supports various microscopy techniques while maintaining detailed metadata about the imaging setup, experimental conditions, and acquired data.
 
-Supported Microscopy Techniques
------------------------------
-
-1. One-photon Microscopy (Widefield)
-2. Two-photon Microscopy
-3. Three-photon Microscopy
-4. Light Sheet Microscopy
-
-For support of additional techniques, please open an issue on `GitHub <https://github.com/catalystneuro/ndx-microscopy/issues>`_.
-
 Key Features
 ----------
 
@@ -35,6 +25,14 @@ Light Path Configuration
 - Comprehensive optical component specifications
 - Wavelength and power specifications
 
+Illumination Pattern Support
+^^^^^^^^^^^^^^^^^^^^^
+- Base illumination pattern class for general use cases
+- Line scanning for high-speed XY raster scanning acquisition
+- Plane acquisition for light sheet and widefield techniques
+- Random access scanning for targeted region imaging
+- Detailed scanning parameters (rates, directions, dwell times)
+
 Imaging Space Management
 ^^^^^^^^^^^^^^^^^^^^^
 - 2D planar imaging spaces
@@ -42,6 +40,7 @@ Imaging Space Management
 - Precise coordinate system handling
 - Reference frame management
 - Grid spacing and resolution tracking
+- Integration with illumination patterns
 
 Data Organization
 ^^^^^^^^^^^^^
