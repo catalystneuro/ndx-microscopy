@@ -22,12 +22,14 @@ def mock_Microscope(
     description: str = "A mock instance of a Microscope type to be used for rapid testing.",
     manufacturer: str = "A fake manufacturer of the mock microscope.",
     model: str = "A fake model of the mock microscope.",
+    technique: str = "A fake technique used by the mock microscope.",
 ) -> ndx_microscopy.Microscope:
     microscope = ndx_microscopy.Microscope(
         name=name or name_generator("Microscope"),
         description=description,
         manufacturer=manufacturer,
         model=model,
+        technique=technique,
     )
     return microscope
 
@@ -70,125 +72,74 @@ def mock_EmissionLightPath(
     return emission_light_path
 
 
-def mock_ImagingModality(
+def mock_IlluminationPattern(
     *,
     name: Optional[str] = None,
-    description: str = "A mock instance of an ImagingModality type to be used for rapid testing.",
-) -> ndx_microscopy.ImagingModality:
+    description: str = "A mock instance of an IlluminationPattern type to be used for rapid testing.",
+) -> ndx_microscopy.IlluminationPattern:
     """Base class for describing microscopy imaging modalities."""
-    imaging_modality = ndx_microscopy.ImagingModality(
-        name=name or name_generator("ImagingModality"),
+    illumination_pattern = ndx_microscopy.IlluminationPattern(
+        name=name or name_generator("IlluminationPattern"),
         description=description,
     )
-    return imaging_modality
+    return illumination_pattern
 
 
-def mock_LineScanning(
+def mock_LineScan(
     *,
     name: Optional[str] = None,
-    description: str = "A mock instance of a LineScanning type to be used for rapid testing.",
+    description: str = "A mock instance of a LineScan type to be used for rapid testing.",
     scan_direction: Optional[str] = "horizontal",
     line_rate_in_Hz: Optional[float] = 1000.0,
     dwell_time_in_s: Optional[float] = 1.0e-6,
-) -> ndx_microscopy.LineScanning:
+) -> ndx_microscopy.LineScan:
     """Line scanning method used in microscopy, particularly common in two-photon imaging."""
-    line_scanning = ndx_microscopy.LineScanning(
-        name=name or name_generator("LineScanning"),
+    line_scan = ndx_microscopy.LineScan(
+        name=name or name_generator("LineScan"),
         description=description,
         scan_direction=scan_direction,
         line_rate_in_Hz=line_rate_in_Hz,
         dwell_time_in_s=dwell_time_in_s,
     )
-    return line_scanning
+    return line_scan
 
 
-def mock_RasterScanning(
+def mock_PlaneAcquisition(
     *,
     name: Optional[str] = None,
-    description: str = "A mock instance of a RasterScanning type to be used for rapid testing.",
-    scan_pattern: Optional[str] = "bidirectional",
-    dwell_time_in_s: Optional[float] = 1.0e-6,
-) -> ndx_microscopy.RasterScanning:
-    """Raster scanning method with grid-like point-by-point or line-by-line acquisition."""
-    raster_scanning = ndx_microscopy.RasterScanning(
-        name=name or name_generator("RasterScanning"),
-        description=description,
-        scan_pattern=scan_pattern,
-        dwell_time_in_s=dwell_time_in_s,
-    )
-    return raster_scanning
-
-
-def mock_ResonantScanning(
-    *,
-    name: Optional[str] = None,
-    description: str = "A mock instance of a ResonantScanning type to be used for rapid testing.",
-    resonant_frequency_in_Hz: Optional[float] = 8000.0,
-    resonant_amplitude: Optional[float] = 1.5,
-) -> ndx_microscopy.ResonantScanning:
-    """Resonant scanning method using a rapidly oscillating mirror for high-speed imaging."""
-    resonant_scanning = ndx_microscopy.ResonantScanning(
-        name=name or name_generator("ResonantScanning"),
-        description=description,
-        resonant_frequency_in_Hz=resonant_frequency_in_Hz,
-        resonant_amplitude=resonant_amplitude,
-    )
-    return resonant_scanning
-
-
-def mock_TemporalFocusing(
-    *,
-    name: Optional[str] = None,
-    description: str = "A mock instance of a TemporalFocusing type to be used for rapid testing.",
-    lateral_point_spread_function_in_um: str = "0.5 ± 0.1",
-    axial_point_spread_function_in_um: str = "2.0 ± 0.3",
-    pulse_duration_in_s: Optional[float] = 0.0000001,  # 100 nanoseconds
-) -> ndx_microscopy.TemporalFocusing:
-    """Temporal focusing scanning method for depth-resolved imaging."""
-    temporal_focusing = ndx_microscopy.TemporalFocusing(
-        name=name or name_generator("TemporalFocusing"),
-        description=description,
-        lateral_point_spread_function_in_um=lateral_point_spread_function_in_um,
-        axial_point_spread_function_in_um=axial_point_spread_function_in_um,
-        pulse_duration_in_s=pulse_duration_in_s,
-    )
-    return temporal_focusing
-
-
-def mock_LightSheet(
-    *,
-    name: Optional[str] = None,
-    description: str = "A mock instance of a LightSheet type to be used for rapid testing.",
-    sheet_thickness_in_um: Optional[float] = 5.0,
+    description: str = "A mock instance of a PlaneAcquisition type to be used for rapid testing.",
+    plane_thickness_in_um: Optional[float] = 5.0,
     illumination_angle_in_degrees: Optional[float] = 45.0,
-) -> ndx_microscopy.LightSheet:
+    plane_rate_in_Hz: Optional[float] = 100.0,
+) -> ndx_microscopy.PlaneAcquisition:
     """Light sheet method."""
-    light_sheet = ndx_microscopy.LightSheet(
-        name=name or name_generator("LightSheet"),
+    plane_acquisition = ndx_microscopy.PlaneAcquisition(
+        name=name or name_generator("PlaneAcquisition"),
         description=description,
-        sheet_thickness_in_um=sheet_thickness_in_um,
+        plane_thickness_in_um=plane_thickness_in_um,
         illumination_angle_in_degrees=illumination_angle_in_degrees,
+        plane_rate_in_Hz=plane_rate_in_Hz,
     )
-    return light_sheet
+    return plane_acquisition
 
 
-def mock_RandomAccessScanning(
+def mock_RandomAccessScan(
     *,
     name: Optional[str] = None,
-    description: str = "A mock instance of a RandomAccessScanning type to be used for rapid testing.",
+    description: str = "A mock instance of a RandomAccessScan type to be used for rapid testing.",
     max_scan_points: Optional[int] = 1000,
     dwell_time_in_s: Optional[float] = 1.0e-6,
     scanning_pattern: Optional[str] = "spiral",
-) -> ndx_microscopy.RandomAccessScanning:
+) -> ndx_microscopy.RandomAccessScan:
     """Random access scanning method for targeted, high-speed imaging of specific regions."""
-    random_access_scanning = ndx_microscopy.RandomAccessScanning(
-        name=name or name_generator("RandomAccessScanning"),
+    random_access_scan = ndx_microscopy.RandomAccessScan(
+        name=name or name_generator("RandomAccessScan"),
         description=description,
         max_scan_points=max_scan_points,
         dwell_time_in_s=dwell_time_in_s,
         scanning_pattern=scanning_pattern,
     )
-    return random_access_scanning
+    return random_access_scan
 
 
 def mock_PlanarImagingSpace(
@@ -200,7 +151,7 @@ def mock_PlanarImagingSpace(
     location: str = "The location targeted by the mock imaging space.",
     reference_frame: str = "The reference frame of the mock planar imaging space.",
     orientation: str = "The orientation of the mock planar imaging space.",
-    imaging_modality: ndx_microscopy.ImagingModality = None,
+    illumination_pattern: ndx_microscopy.IlluminationPattern = None,
 ) -> ndx_microscopy.PlanarImagingSpace:
     planar_imaging_space = ndx_microscopy.PlanarImagingSpace(
         name=name or name_generator("PlanarImagingSpace"),
@@ -210,7 +161,7 @@ def mock_PlanarImagingSpace(
         location=location,
         reference_frame=reference_frame,
         orientation=orientation,
-        imaging_modality=imaging_modality or mock_ImagingModality(),
+        illumination_pattern=illumination_pattern or mock_IlluminationPattern(),
     )
     return planar_imaging_space
 
@@ -224,7 +175,7 @@ def mock_VolumetricImagingSpace(
     location: str = "The location targeted by the mock imaging space.",
     reference_frame: str = "The reference frame of the mock volumetric imaging space.",
     orientation: str = "The orientation of the mock planar imaging space.",
-    imaging_modality: ndx_microscopy.ImagingModality = None,
+    illumination_pattern: ndx_microscopy.IlluminationPattern = None,
 ) -> ndx_microscopy.VolumetricImagingSpace:
     volumetric_imaging_space = ndx_microscopy.VolumetricImagingSpace(
         name=name or name_generator("VolumetricImagingSpace"),
@@ -234,7 +185,7 @@ def mock_VolumetricImagingSpace(
         location=location,
         reference_frame=reference_frame,
         orientation=orientation,
-        imaging_modality=imaging_modality or mock_ImagingModality(),
+        illumination_pattern=illumination_pattern or mock_IlluminationPattern(),
     )
     return volumetric_imaging_space
 

@@ -7,6 +7,10 @@ groups:
         dtype: text
         doc: Model identifier of the microscope.
         required: false
+      - name: technique
+        dtype: text
+        doc: Imaging technique used by the microscope (e.g. scan mirrors, light sheet, temporal focusing, acusto-optical modulation, piezo z-scan mirrors).
+        required: false
 
   - neurodata_type_def: ExcitationLightPath
     neurodata_type_inc: LabMetaData
@@ -54,17 +58,18 @@ groups:
         doc: Link to DichroicMirror object which contains metadata about the dichroic mirror in the emission light path.
         quantity: "?"
 
-  - neurodata_type_def: ImagingModality
+  - neurodata_type_def: IlluminationPattern
     neurodata_type_inc: NWBContainer
-    doc: Base class for describing microscopy imaging modalities.
+    doc: Base class for describing the illumination pattern used to acquired the image. Use this object if the illumination pattern is not one of the specific types (e.g., Line, Plane, RandomAccess).
     attributes:
       - name: description
         dtype: text
-        doc: General description of the imaging modality.
+        doc: General description of the illumination pattern used.
+        required: false
 
-  - neurodata_type_def: LineScanning
-    neurodata_type_inc: ImagingModality
-    doc: Line scanning method used in microscopy, particularly common in two-photon imaging.
+  - neurodata_type_def: LineScan
+    neurodata_type_inc: IlluminationPattern
+    doc: Line scanning method.
     attributes:
       - name: scan_direction
         dtype: text
@@ -79,63 +84,26 @@ groups:
         doc: Average time spent at each scanned point.
         required: false
 
-  - neurodata_type_def: RasterScanning
-    neurodata_type_inc: ImagingModality
-    doc: Raster scanning method with grid-like point-by-point or line-by-line acquisition.
+  - neurodata_type_def: PlaneAcquisition
+    neurodata_type_inc: IlluminationPattern
+    doc: Whole plane acquisition, common for light sheet techniques.
     attributes:
-      - name: scan_pattern
-        dtype: text
-        doc: Specific raster scanning pattern (e.g., bidirectional, unidirectional).
-        required: false
-      - name: dwell_time_in_s
+      - name: plane_thickness_in_um
         dtype: float64
-        doc: Average time spent at each scanned point.
-        required: false
-
-  - neurodata_type_def: ResonantScanning
-    neurodata_type_inc: ImagingModality
-    doc: Resonant scanning method using a rapidly oscillating mirror for high-speed imaging.
-    attributes:
-      - name: resonant_frequency_in_Hz
-        dtype: float64
-        doc: Frequency of the resonant scanner in Hz.
-        required: false
-      - name: resonant_amplitude
-        dtype: float64
-        doc: Amplitude of the resonant scanner's oscillation.
-        required: false
-
-  - neurodata_type_def: TemporalFocusing
-    neurodata_type_inc: ImagingModality
-    doc: Temporal focusing scanning method for depth-resolved imaging.
-    attributes:
-      - name: lateral_point_spread_function_in_um
-        dtype: text
-        doc: Estimated lateral spatial profile or point spread function, expressed as mean [um] ± s.d [um].
-      - name: axial_point_spread_function_in_um
-        dtype: text
-        doc: Estimated axial spatial profile or point spread function, expressed as mean [um] ± s.d [um].
-      - name: pulse_duration_in_s
-        dtype: float64
-        doc: Duration of excitation pulses in seconds.
-        required: false
-
-  - neurodata_type_def: LightSheet
-    neurodata_type_inc: ImagingModality
-    doc: Light sheet method.
-    attributes:
-      - name: sheet_thickness_in_um
-        dtype: float64
-        doc: Thickness of the light sheet in micrometers.
+        doc: Thickness of the plane in micrometers.
         required: false
       - name: illumination_angle_in_degrees
         dtype: float64
-        doc: Angle of light sheet illumination in degrees.
+        doc: Angle of illumination in degrees.
+        required: false
+      - name: plane_rate_in_Hz
+        dtype: float64
+        doc: Rate of plane acquisition in planes per second.
         required: false
 
-  - neurodata_type_def: RandomAccessScanning
-    neurodata_type_inc: ImagingModality
-    doc: Random access scanning method for targeted, high-speed imaging of specific regions.
+  - neurodata_type_def: RandomAccessScan
+    neurodata_type_inc: IlluminationPattern
+    doc: Random access method for targeted, high-speed imaging of specific regions.
     attributes:
       - name: max_scan_points
         dtype: numeric
@@ -196,8 +164,8 @@ groups:
         dtype: text
         required: false
     groups:
-      - neurodata_type_inc: ImagingModality
-        doc: ImagingModality object containing metadata about the method used to acquire this imaging data.
+      - neurodata_type_inc: IlluminationPattern
+        doc: IlluminationPattern object containing metadata about the method used to acquire this imaging data.
         quantity: 1
 
   - neurodata_type_def: PlanarImagingSpace

@@ -35,13 +35,10 @@ from .ndx_microscopy import (
 )
 
 Microscope = get_class("Microscope", extension_name)
-ImagingModality = get_class("ImagingModality", extension_name)
-LineScanning = get_class("LineScanning", extension_name)
-RasterScanning = get_class("RasterScanning", extension_name)
-ResonantScanning = get_class("ResonantScanning", extension_name)
-TemporalFocusing = get_class("TemporalFocusing", extension_name)
-LightSheet = get_class("LightSheet", extension_name)
-RandomAccessScanning = get_class("RandomAccessScanning", extension_name)
+IlluminationPattern = get_class("IlluminationPattern", extension_name)
+LineScan = get_class("LineScan", extension_name)
+PlaneAcquisition = get_class("PlaneAcquisition", extension_name)
+RandomAccessScan = get_class("RandomAccessScan", extension_name)
 
 SummaryImage = get_class("SummaryImage", extension_name)
 PlanarImagingSpace = get_class("PlanarImagingSpace", extension_name)
@@ -62,13 +59,10 @@ __all__ = [
     "Photodetector",
     "DichroicMirror",
     "Microscope",
-    "ImagingModality",
-    "LineScanning",
-    "RasterScanning",
-    "ResonantScanning",
-    "TemporalFocusing",
-    "LightSheet",
-    "RandomAccessScanning",
+    "IlluminationPattern",
+    "LineScan",
+    "PlaneAcquisition",
+    "RandomAccessScan",
     "ExcitationLightPath",
     "EmissionLightPath",
     "ImagingSpace",
