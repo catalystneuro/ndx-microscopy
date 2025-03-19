@@ -1,4 +1,4 @@
-# v0.7.1 (March 19, 2025)
+# v0.2.0 (March 19, 2025)
 
 ## Deprecations and Changes
 - Change `grid_spacing_in_um` in `pixel_size_in_um` and `voxel_size_in_um` (and relative doc string) to better represent the physical dimension of the fundamental unit of the image (pixel or voxel).
