@@ -1,7 +1,13 @@
-## v0.2.0 (Upcoming)
+# v0.7.1 (March 19, 2025)
 
-### Added
+## Deprecations and Changes
+- Change `grid_spacing_in_um` in `pixel_size_in_um` and `voxel_size_in_um` (and relative doc string) to better represent the physical dimension of the fundamental unit of the image (pixel or voxel).
 
+## Bug Fixes
+
+## Features
+
+## Improvements
 - New illumination pattern classes to represent different microscopy scanning methods:
   - `IlluminationPattern`: Base class for describing the illumination pattern used to acquire images
   - `LineScan`: Line scanning method commonly used in two-photon microscopy
@@ -16,14 +22,7 @@
 
 - Updated example notebooks to demonstrate the use of different scanning methods
 
-### Changed
-
-- Modified the YAML specification to include new neurodata type definitions and relationships
-- Updated Python implementation files to expose the new classes in the API
-- Enhanced test files to verify the new classes work correctly
-- Change `grid_spacing_in_um` in `pixel_size_in_um` and `voxel_size_in_um` (and relative doc string) to better represent the physical dimension of the fundamental unit of the image (pixel or voxel).
-
-### Notes
+## Notes
 
 - These changes are backward compatible and add new functionality without removing existing features
 - The `illumination_pattern` parameter is now required when creating `ImagingSpace` objects
