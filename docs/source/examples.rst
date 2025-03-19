@@ -27,7 +27,10 @@ Complete example of two-photon calcium imaging with full optical path configurat
         Segmentation2D,
         SummaryImage,
         MicroscopyResponseSeries,
-        MicroscopyResponseSeriesContainer
+        MicroscopyResponseSeriesContainer,
+        LineScan,  
+        PlaneAcquisition, 
+        RandomAccessScan,
     )
     from ndx_ophys_devices import (
         PulsedExcitationSource,
@@ -52,7 +55,8 @@ Complete example of two-photon calcium imaging with full optical path configurat
         name='2p-scope',
         description='Custom two-photon microscope for calcium imaging',
         manufacturer='Custom Build',
-        model='2P-Special'
+        model='2P-Special',
+        technique='mirror scanning'  # Specify the technique used
     )
     nwbfile.add_device(microscope)
 
@@ -143,7 +147,16 @@ Complete example of two-photon calcium imaging with full optical path configurat
     )
     nwbfile.add_lab_meta_data(emission)
 
-    # Define imaging space
+    # Define illumination pattern
+    line_scan = LineScan(
+        name='line_scanning',
+        description='Line scanning two-photon microscopy',
+        scan_direction='horizontal',
+        line_rate_in_Hz=1000.0,
+        dwell_time_in_s=1.0e-6
+    )
+
+    # Define imaging space with illumination pattern
     imaging_space = PlanarImagingSpace(
         name='cortex_plane1',
         description='Layer 2/3 of visual cortex',
@@ -151,7 +164,8 @@ Complete example of two-photon calcium imaging with full optical path configurat
         origin_coordinates=[-1.2, -0.6, -2.0],
         location='Visual cortex, layer 2/3',
         reference_frame='bregma',
-        orientation='RAS'  # Right-Anterior-Superior
+        orientation='RAS',  # Right-Anterior-Superior
+        illumination_pattern=line_scan  # Include the illumination pattern
     )
 
     # Create example imaging data
@@ -291,7 +305,8 @@ Example of volumetric imaging with 3D ROI segmentation:
         Segmentation3D,
         SummaryImage,
         MicroscopyResponseSeries,
-        MicroscopyResponseSeriesContainer
+        MicroscopyResponseSeriesContainer,
+        RandomAccessScan
     )
     from ndx_ophys_devices import (
         ExcitationSource,
@@ -311,12 +326,13 @@ Example of volumetric imaging with 3D ROI segmentation:
         experiment_description='Volumetric imaging in cortex'
     )
 
-    # Set up microscope
+    # Set up microscope with technique
     microscope = Microscope(
         name='volume-scope',
         description='Custom volumetric imaging microscope',
         manufacturer='Custom Build',
-        model='Volume-Special'
+        model='Volume-Special',
+        technique='acousto-optical deflectors'  # Specify the technique used
     )
     nwbfile.add_device(microscope)
 
@@ -403,7 +419,16 @@ Example of volumetric imaging with 3D ROI segmentation:
     )
     nwbfile.add_lab_meta_data(emission)
 
-    # Define volumetric imaging space
+    # Define illumination pattern for volumetric imaging
+    random_access_scan = RandomAccessScan(
+        name='random_access',
+        description='Targeted imaging of specific neurons',
+        max_scan_points=1000,
+        dwell_time_in_s=1.0e-6,
+        scanning_pattern='spiral'
+    )
+
+    # Define volumetric imaging space with illumination pattern
     volume_space = VolumetricImagingSpace(
         name='cortex_volume',
         description='Visual cortex volume',
@@ -411,7 +436,8 @@ Example of volumetric imaging with 3D ROI segmentation:
         origin_coordinates=[-1.2, -0.6, -2.0],
         location='Visual cortex',
         reference_frame='bregma',
-        orientation='RAS'  # Right-Anterior-Superior
+        orientation='RAS',  # Right-Anterior-Superior
+        illumination_pattern=random_access_scan  # Include the illumination pattern
     )
 
     # Create example volumetric data
@@ -554,7 +580,8 @@ Example of multi-plane imaging with an electrically tunable lens:
         SummaryImage,
         MicroscopyResponseSeries,
         MicroscopyResponseSeriesContainer,
-        SegmentationContainer
+        SegmentationContainer,
+        PlaneAcquisition
     )
     from ndx_ophys_devices import (
         ExcitationSource,
@@ -574,12 +601,13 @@ Example of multi-plane imaging with an electrically tunable lens:
         experiment_description='Multi-plane imaging with ETL'
     )
 
-    # Set up microscope with ETL
+    # Set up microscope with ETL and technique
     microscope = Microscope(
         name='etl-scope',
         description='Two-photon microscope with electrically tunable lens',
         manufacturer='Custom Build',
-        model='ETL-Special'
+        model='ETL-Special',
+        technique='electrically tunable lens'  # Specify the technique used
     )
     nwbfile.add_device(microscope)
 
@@ -677,8 +705,15 @@ Example of multi-plane imaging with an electrically tunable lens:
     response_series_list = []
     depths = [-100, -50, 0, 50, 100]  # Depths in µm
 
+    # Create illumination pattern
+    plane_acquisition = PlaneAcquisition(
+        name=f'plane_acquisition',
+        description=f'Plane acquisition',
+        plane_thickness_in_um=2.0
+    )
+
     for depth in depths:
-        # Create imaging space for this depth
+        # Create imaging space for this depth with illumination pattern
         plane_space = PlanarImagingSpace(
             name=f'plane_depth_{depth}',
             description=f'Imaging plane at {depth} µm depth',
@@ -686,7 +721,8 @@ Example of multi-plane imaging with an electrically tunable lens:
             origin_coordinates=[-1.2, -0.6, depth/1000],  # Convert to mm
             location='Visual cortex',
             reference_frame='bregma',
-            orientation='RAS'
+            orientation='RAS',
+            illumination_pattern=plane_acquisition  # Include the illumination pattern
         )
 
         # Create example data for this plane

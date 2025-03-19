@@ -35,6 +35,11 @@ from .ndx_microscopy import (
 )
 
 Microscope = get_class("Microscope", extension_name)
+IlluminationPattern = get_class("IlluminationPattern", extension_name)
+LineScan = get_class("LineScan", extension_name)
+PlaneAcquisition = get_class("PlaneAcquisition", extension_name)
+RandomAccessScan = get_class("RandomAccessScan", extension_name)
+
 SummaryImage = get_class("SummaryImage", extension_name)
 PlanarImagingSpace = get_class("PlanarImagingSpace", extension_name)
 VolumetricImagingSpace = get_class("VolumetricImagingSpace", extension_name)
@@ -47,7 +52,6 @@ MultiPlaneMicroscopyContainer = get_class("MultiPlaneMicroscopyContainer", exten
 MicroscopyResponseSeries = get_class("MicroscopyResponseSeries", extension_name)
 MicroscopyResponseSeriesContainer = get_class("MicroscopyResponseSeriesContainer", extension_name)
 
-
 __all__ = [
     "OpticalFilter",
     "ExcitationSource",
@@ -55,6 +59,10 @@ __all__ = [
     "Photodetector",
     "DichroicMirror",
     "Microscope",
+    "IlluminationPattern",
+    "LineScan",
+    "PlaneAcquisition",
+    "RandomAccessScan",
     "ExcitationLightPath",
     "EmissionLightPath",
     "ImagingSpace",
