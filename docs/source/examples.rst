@@ -160,7 +160,7 @@ Complete example of two-photon calcium imaging with full optical path configurat
     imaging_space = PlanarImagingSpace(
         name='cortex_plane1',
         description='Layer 2/3 of visual cortex',
-        grid_spacing_in_um=[1.0, 1.0],
+        pixel_size_in_um=[1.0, 1.0],
         origin_coordinates=[-1.2, -0.6, -2.0],
         location='Visual cortex, layer 2/3',
         reference_frame='bregma',
@@ -432,7 +432,7 @@ Example of volumetric imaging with 3D ROI segmentation:
     volume_space = VolumetricImagingSpace(
         name='cortex_volume',
         description='Visual cortex volume',
-        grid_spacing_in_um=[1.0, 1.0, 2.0],  # Higher spacing in z
+        voxel_size_in_um=[1.0, 1.0, 2.0],  # Higher spacing in z
         origin_coordinates=[-1.2, -0.6, -2.0],
         location='Visual cortex',
         reference_frame='bregma',
@@ -717,7 +717,7 @@ Example of multi-plane imaging with an electrically tunable lens:
         plane_space = PlanarImagingSpace(
             name=f'plane_depth_{depth}',
             description=f'Imaging plane at {depth} µm depth',
-            grid_spacing_in_um=[1.0, 1.0],
+            pixel_size_in_um=[1.0, 1.0],
             origin_coordinates=[-1.2, -0.6, depth/1000],  # Convert to mm
             location='Visual cortex',
             reference_frame='bregma',

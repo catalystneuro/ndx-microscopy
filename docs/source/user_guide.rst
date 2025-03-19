@@ -128,7 +128,7 @@ Imaging spaces define the physical region being imaged:
        space_2d = PlanarImagingSpace(
            name='cortex_plane',
            description='Layer 2/3 of visual cortex',
-           grid_spacing_in_um=[1.0, 1.0],        # x, y spacing
+           pixel_size_in_um=[1.0, 1.0],        # x, y spacing
            origin_coordinates=[-1.2, -0.6, -2.0], # relative to bregma
            location='Visual cortex',
            reference_frame='bregma',
@@ -153,7 +153,7 @@ Imaging spaces define the physical region being imaged:
        space_3d = VolumetricImagingSpace(
            name='cortex_volume',
            description='Visual cortex volume',
-           grid_spacing_in_um=[1.0, 1.0, 2.0],   # x, y, z spacing
+           voxel_size_in_um=[1.0, 1.0, 2.0],   # x, y, z spacing
            origin_coordinates=[-1.2, -0.6, -2.0],
            location='Visual cortex',
            reference_frame='bregma',
@@ -194,7 +194,7 @@ Basic workflow for 2D imaging:
     planar_imaging_space = PlanarImagingSpace(
         name='cortex_plane',
         description='Layer 2/3 of visual cortex',
-        grid_spacing_in_um=[1.0, 1.0],        # x, y spacing
+        pixel_size_in_um=[1.0, 1.0],        # x, y spacing
         origin_coordinates=[-1.2, -0.6, -2.0], # relative to bregma
         location='Visual cortex',
         reference_frame='bregma',
@@ -246,7 +246,7 @@ Workflow for one-photon widefield imaging:
     planar_imaging_space = PlanarImagingSpace(
         name='hippo_plane',
         description='CA1 region of hippocampus',
-        grid_spacing_in_um=[1.0, 1.0],
+        pixel_size_in_um=[1.0, 1.0],
         origin_coordinates=[-1.8, 2.0, 1.2],
         location='Hippocampus, CA1 region',
         reference_frame='bregma',
@@ -299,7 +299,7 @@ Workflow for volumetric imaging with targeted scanning:
     volumetric_imaging_space = VolumetricImagingSpace(
         name='cortex_volume',
         description='Visual cortex volume',
-        grid_spacing_in_um=[1.0, 1.0, 2.0],   # x, y, z spacing
+        voxel_size_in_um=[1.0, 1.0, 2.0],   # x, y, z spacing
         origin_coordinates=[-1.2, -0.6, -2.0],
         location='Visual cortex',
         reference_frame='bregma',

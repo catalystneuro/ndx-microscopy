@@ -356,13 +356,13 @@ For 2D imaging planes.
         neurodata_type_inc: ImagingSpace
         doc: Metadata about the 2-dimensional slice of physical space that imaging data was recorded from.
         datasets:
-          - name: grid_spacing_in_um
+          - name: pixel_size_in_um
             dtype: float64
             dims:
               - - x, y
             shape:
               - - 2
-            doc: Amount of space between pixels in micrometers.
+            doc: The physical dimensions of the pixel in micrometers.
             quantity: "?"
 
 VolumetricImagingSpace
@@ -376,13 +376,13 @@ For 3D imaging volumes.
         neurodata_type_inc: ImagingSpace
         doc: Metadata about the 3-dimensional region of physical space that imaging data was recorded from.
         datasets:
-          - name: grid_spacing_in_um
+          - name: voxel_size_in_um
             dtype: float64
             dims:
               - - x, y, z
             shape:
               - - 3
-            doc: Amount of space between voxels in micrometers.
+            doc: The physical dimensions of the voxel in micrometers.
             quantity: "?"
 
 Segmentation Components

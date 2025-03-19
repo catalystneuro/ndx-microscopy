@@ -21,6 +21,7 @@
 - Modified the YAML specification to include new neurodata type definitions and relationships
 - Updated Python implementation files to expose the new classes in the API
 - Enhanced test files to verify the new classes work correctly
+- Change `grid_spacing_in_um` in `pixel_size_in_um` and `voxel_size_in_um` (and relative doc string) to better represent the physical dimension of the fundamental unit of the image (pixel or voxel).
 
 ### Notes
 

@@ -344,7 +344,7 @@ classDiagram
         --------------------------------------
         datasets
         --------------------------------------
-        grid_spacing_in_um : float64[2], optional
+        pixel_size_in_um : float64[2], optional
     }
 
     class VolumetricImagingSpace {
@@ -352,7 +352,7 @@ classDiagram
         --------------------------------------
         datasets
         --------------------------------------
-        grid_spacing_in_um : float64[3], optional
+        voxel_size_in_um : float64[3], optional
     }
 
     class Microscope {
