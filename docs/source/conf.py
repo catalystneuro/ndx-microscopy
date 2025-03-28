@@ -10,7 +10,7 @@ project = 'ndx-microscopy'
 copyright = '2024, Alessandra Trapani, Cody Baker'
 author = 'Alessandra Trapani, Cody Baker'
 
-version = '0.1.0'
+version = '0.2.1'
 release = 'alpha'
 
 # -- General configuration ---------------------------------------------------

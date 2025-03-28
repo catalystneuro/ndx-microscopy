@@ -1,3 +1,8 @@
+# v0.2.1 (March 28, 2025)
+
+## Bug Fixes
+- Fixed version in namespace YAML file and docs
+
 # v0.2.0 (March 19, 2025)
 
 ## Deprecations and Changes
