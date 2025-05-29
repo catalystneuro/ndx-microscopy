@@ -18,6 +18,7 @@ from ndx_microscopy.testing import (
     mock_EmissionLightPath,
     mock_ExcitationLightPath,
     mock_Microscope,
+    mock_MicroscopyChannel,
     mock_Segmentation2D,
     mock_SegmentationContainer,
     mock_PlanarImagingSpace,
@@ -81,6 +82,7 @@ class TestPlanarMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
         planar_microscopy_series = mock_PlanarMicroscopySeries(
             name="PlanarMicroscopySeries",
             microscope=microscope,
+            microscopy_channel=mock_MicroscopyChannel(name="MicroscopyChannel"),
             excitation_light_path=excitation_light_path,
             planar_imaging_space=planar_imaging_space,
             emission_light_path=emission_light_path,
@@ -149,6 +151,7 @@ class TestExcitationLightPathWithUntrackedDevice(pynwb_TestCase):
         planar_microscopy_series = mock_PlanarMicroscopySeries(
             name="PlanarMicroscopySeries",
             microscope=microscope,
+            microscopy_channel=mock_MicroscopyChannel(name="MicroscopyChannel"),
             excitation_light_path=excitation_light_path,
             planar_imaging_space=planar_imaging_space,
             emission_light_path=emission_light_path,
@@ -214,6 +217,7 @@ class TestVolumetricMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
         volumetric_microscopy_series = mock_VolumetricMicroscopySeries(
             name="VolumetricMicroscopySeries",
             microscope=microscope,
+            microscopy_channel=mock_MicroscopyChannel(name="MicroscopyChannel"),
             excitation_light_path=excitation_light_path,
             volumetric_imaging_space=volumetric_imaging_space,
             emission_light_path=emission_light_path,
@@ -295,6 +299,7 @@ class TestMultiPlaneMicroscopyContainerSimpleRoundtrip(pynwb_TestCase):
         planar_microscopy_series_1 = mock_PlanarMicroscopySeries(
             name="PlanarMicroscopySeries_1",
             microscope=microscope,
+            microscopy_channel=mock_MicroscopyChannel(name="MicroscopyChannel1"),
             excitation_light_path=excitation_light_path,
             planar_imaging_space=planar_imaging_space_1,
             emission_light_path=emission_light_path,
@@ -303,6 +308,7 @@ class TestMultiPlaneMicroscopyContainerSimpleRoundtrip(pynwb_TestCase):
         planar_microscopy_series_2 = mock_PlanarMicroscopySeries(
             name="PlanarMicroscopySeries_2",
             microscope=microscope,
+            microscopy_channel=mock_MicroscopyChannel(name="MicroscopyChannel2"),
             excitation_light_path=excitation_light_path,
             planar_imaging_space=planar_imaging_space_2,
             emission_light_path=emission_light_path,
