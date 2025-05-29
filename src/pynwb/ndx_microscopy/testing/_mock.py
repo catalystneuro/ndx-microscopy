@@ -3,10 +3,9 @@ from typing import List, Optional, Tuple
 
 import numpy as np
 import pynwb.base
-from ndx_ophys_devices import ExcitationSource, Indicator, OpticalFilter, Photodetector, DichroicMirror
+from ndx_ophys_devices import ExcitationSource, OpticalFilter, Photodetector, DichroicMirror
 from ndx_ophys_devices.testing import (
     mock_ExcitationSource,
-    mock_Indicator,
     mock_OpticalFilter,
     mock_Photodetector,
     mock_DichroicMirror,
