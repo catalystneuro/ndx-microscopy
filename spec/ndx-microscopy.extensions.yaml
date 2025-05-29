@@ -88,9 +88,11 @@ groups:
     neurodata_type_inc: IlluminationPattern
     doc: Whole plane acquisition, common for light sheet techniques.
     attributes:
-      - name: plane_thickness_in_um
-        dtype: float64
-        doc: Thickness of the plane in micrometers.
+      - name: point_spread_function_in_um
+        dtype: text
+        doc:
+          Estimated plane spatial profile or point spread function, expressed as
+          mean [um] ± s.d [um].
         required: false
       - name: illumination_angle_in_degrees
         dtype: float64

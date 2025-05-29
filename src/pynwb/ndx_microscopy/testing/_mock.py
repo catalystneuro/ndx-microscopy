@@ -108,7 +108,7 @@ def mock_PlaneAcquisition(
     *,
     name: Optional[str] = None,
     description: str = "A mock instance of a PlaneAcquisition type to be used for rapid testing.",
-    plane_thickness_in_um: Optional[float] = 5.0,
+    point_spread_function_in_um: Optional[str] = "32 um ± 1.6 um",
     illumination_angle_in_degrees: Optional[float] = 45.0,
     plane_rate_in_Hz: Optional[float] = 100.0,
 ) -> ndx_microscopy.PlaneAcquisition:
@@ -116,7 +116,7 @@ def mock_PlaneAcquisition(
     plane_acquisition = ndx_microscopy.PlaneAcquisition(
         name=name or name_generator("PlaneAcquisition"),
         description=description,
-        plane_thickness_in_um=plane_thickness_in_um,
+        point_spread_function_in_um=point_spread_function_in_um,
         illumination_angle_in_degrees=illumination_angle_in_degrees,
         plane_rate_in_Hz=plane_rate_in_Hz,
     )
