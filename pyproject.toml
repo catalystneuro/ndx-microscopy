@@ -29,7 +29,7 @@ keywords = [
 dependencies = [
     "pynwb>=2.8.0",
     "hdmf>=3.14.1",
-    "ndx-ophys-devices>=0.1.1"
+    "ndx-ophys-devices @ git+https://github.com/catalystneuro/ndx-ophys-devices.git@ophys-devices-inherit-from-device"
 ]
 
 [project.urls]
