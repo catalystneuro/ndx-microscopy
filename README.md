@@ -6,15 +6,14 @@ A Neurodata Without Borders (NWB) extension for storing microscopy data and asso
 
 **Comprehensive Neurodata Types**
 - Microscope and optical component metadata (integration with [ndx-ophys-devices](https://github.com/catalystneuro/ndx-ophys-devices)):
+    - `MicroscopeModel`
     - `Microscope`
+    - `MicroscopyRig`
     - `ExcitationSource` / `PulsedExcitationSource`
     - `BandOpticalFilter` / `EdgeOpticalFilter` / 
     - `DichroicMirror` 
     - `Photodetector` 
     - `Indicator`
-- Advanced light path configurations: 
-    - `ExcitationLightPath`
-    - `EmissionLightPath` 
 - Imaging space definitions: 
     - `PlanarImagingSpace`
     - `VolumetricImagingSpace`
@@ -37,65 +36,66 @@ A Neurodata Without Borders (NWB) extension for storing microscopy data and asso
 
 ## Entity Relationship Diagrams
 
-#### Device and Light Path Components
+#### Device Components
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#ffffff', 'primaryBorderColor': '#144E73', 'lineColor': '#D96F32'}}}%%
 
 classDiagram
     direction TB
-
-    class DeviceModel {
+    
+    class DeviceModel{
         <<Device>>
         --------------------------------------
         attributes
         --------------------------------------
-        model : text, optional
+        manufacturer : text
+        model_number : text, optional
     }
-
-    class ExcitationLightPath {
-        <<LabMetaData>>
+    
+    class DeviceInstance{
+        <<Device>>
         --------------------------------------
         attributes
         --------------------------------------
-        **description** : text
+        serial_number : text, optional
         --------------------------------------
         links
         --------------------------------------
-        **excitation_source** : ExcitationSource
+        model : DeviceModel, optional
+    }
+
+    class MicroscopeModel {
+        <<DeviceModel>>
+    }
+
+    class Microscope {
+        <<DeviceInstance>>
+        --------------------------------------
+        attributes
+        --------------------------------------
+        technique : text, optional
+    }
+
+    class MicroscopyRig {
+        <<NWBContainer>>
+        --------------------------------------
+        attributes
+        --------------------------------------
+        description : text
+        --------------------------------------
+        links
+        --------------------------------------
+        microscope : Microscope
+        excitation_source : ExcitationSource, optional
         excitation_filter : OpticalFilter, optional
         dichroic_mirror : DichroicMirror, optional
-        --------------------------------------
-        methods
-        --------------------------------------
-        get_excitation_wavelength()
-    }
-
-    class EmissionLightPath {
-        <<LabMetaData>>
-        --------------------------------------
-        attributes
-        --------------------------------------
-        **description** : text
-        --------------------------------------
-        groups
-        --------------------------------------
-        **indicator** : Indicator
-        --------------------------------------
-        links
-        --------------------------------------
-        **photodetector** : Photodetector
+        photodetector : Photodetector, optional
         emission_filter : OpticalFilter, optional
-        dichroic_mirror : DichroicMirror, optional
-        --------------------------------------
-        methods
-        --------------------------------------
-        get_emission_wavelength()
-        get_indicator_label()
     }
 
     class ExcitationSource {
-        <<DeviceModel>>
+        <<DeviceInstance>>
         --------------------------------------
         attributes
         --------------------------------------
@@ -118,7 +118,7 @@ classDiagram
     }
 
     class OpticalFilter {
-        <<DeviceModel>>
+        <<DeviceInstance>>
         --------------------------------------
         attributes
         --------------------------------------
@@ -146,7 +146,7 @@ classDiagram
     }
 
     class DichroicMirror {
-        <<DeviceModel>>
+        <<DeviceInstance>>
         --------------------------------------
         attributes
         --------------------------------------
@@ -158,7 +158,7 @@ classDiagram
     }
     
     class Photodetector {
-        <<DeviceModel>>
+        <<DeviceInstance>>
         --------------------------------------
         attributes
         --------------------------------------
@@ -180,21 +180,15 @@ classDiagram
         injection_coordinates_in_mm : float[3], optional
     }
 
-    DeviceModel <|-- ExcitationSource : extends
-    DeviceModel <|-- OpticalFilter : extends
-    DeviceModel <|-- Photodetector : extends
-    DeviceModel <|-- DichroicMirror : extends
-    ExcitationSource <|-- PulsedExcitationSource : extends
-    OpticalFilter <|-- BandOpticalFilter : extends
-    OpticalFilter <|-- EdgeOpticalFilter : extends
+    DeviceModel <|-- MicroscopeModel : extends
+    DeviceInstance <|-- Microscope : extends
 
-    ExcitationLightPath o--> ExcitationSource : links
-    ExcitationLightPath o--> OpticalFilter : links
-    ExcitationLightPath o--> DichroicMirror : links
-    EmissionLightPath o--> Photodetector : links
-    EmissionLightPath o--> OpticalFilter : links
-    EmissionLightPath o--> DichroicMirror : links
-    EmissionLightPath *-- Indicator : contains
+    Microscope o--> MicroscopeModel : links
+    MicroscopyRig o--> Microscope : links
+    MicroscopyRig o--> ExcitationSource : links
+    MicroscopyRig o--> OpticalFilter : links
+    MicroscopyRig o--> DichroicMirror : links
+    MicroscopyRig o--> Photodetector : links
 ```
 
 #### Illumination Pattern Components
@@ -280,11 +274,9 @@ classDiagram
     class MicroscopySeries {
         <<TimeSeries>>
         --------------------------------------
-        links
+        groups
         --------------------------------------
-        **microscope** : Microscope
-        **excitation_light_path** : ExcitationLightPath
-        **emission_light_path** : EmissionLightPath
+        **microscopy_rig** : MicroscopyRig
     }
 
     class PlanarMicroscopySeries {
@@ -355,13 +347,21 @@ classDiagram
         voxel_size_in_um : float64[3], optional
     }
 
-    class Microscope {
-        <<Device>>
+    class MicroscopyRig {
+        <<NWBContainer>>
         --------------------------------------
         attributes
         --------------------------------------
-        model : text, optional
-        technique : text, optional
+        description : text
+        --------------------------------------
+        links
+        --------------------------------------
+        microscope : Microscope
+        excitation_source : ExcitationSource, optional
+        excitation_filter : OpticalFilter, optional
+        dichroic_mirror : DichroicMirror, optional
+        photodetector : Photodetector, optional
+        emission_filter : OpticalFilter, optional
     }
 
     MicroscopySeries <|-- PlanarMicroscopySeries : extends
@@ -372,9 +372,7 @@ classDiagram
     PlanarMicroscopySeries *-- PlanarImagingSpace : contains
     VolumetricMicroscopySeries *-- VolumetricImagingSpace : contains
     MultiPlaneMicroscopyContainer *-- PlanarMicroscopySeries : contains
-    MicroscopySeries o--> Microscope : links
-    MicroscopySeries o--> ExcitationLightPath : links
-    MicroscopySeries o--> EmissionLightPath : links
+    MicroscopySeries *-- MicroscopyRig : contains
 ```
 
 #### Segmentation Components
@@ -507,7 +505,7 @@ For detailed documentation, including API reference and additional examples, ple
 
 To help ensure a smooth Pull Request (PR) process, please always begin by raising an issue on the main repository so we can openly discuss any problems/additions before taking action.
 
-The main branch of ndx-microscopy is protected; you cannot push to it directly. You must upload your changes by pushing a new branch, then submit your changes to the main branch via a Pull Request. This allows us to conduct automated testing of your contribution, and gives us a space for developers to discuss the contribution and request changes. If you decide to tackle an issue, please make yourself an assignee on the issue to communicate this to the team. Don’t worry - this does not commit you to solving this issue. It just lets others know who they should talk to about it.
+The main branch of ndx-microscopy is protected; you cannot push to it directly. You must upload your changes by pushing a new branch, then submit your changes to the main branch via a Pull Request. This allows us to conduct automated testing of your contribution, and gives us a space for developers to discuss the contribution and request changes. If you decide to tackle an issue, please make yourself an assignee on the issue to communicate this to the team. Don't worry - this does not commit you to solving this issue. It just lets others know who they should talk to about it.
 
 From your local copy directory, use the following commands.
 
@@ -523,7 +521,7 @@ $ git checkout -b <new_branch>
 
 Make your changes. Add new objects related to optical experiment or add more attributes on the existing ones. To speed up the process, you can write mock function (see _mock.py) that would be used to test the new neurodata type
 
-We will automatically run tests to ensure that your contributions didn’t break anything and that they follow our style guide. You can speed up the testing cycle by running these tests locally on your own computer by calling pytest from the top-level directory.
+We will automatically run tests to ensure that your contributions didn't break anything and that they follow our style guide. You can speed up the testing cycle by running these tests locally on your own computer by calling pytest from the top-level directory.
 Push your feature branch to origin (i.e. GitHub)
 
 ```bash
@@ -532,9 +530,9 @@ $ git push origin <new_branch>
 
 Once you have tested and finalized your changes, create a pull request (PR) targeting dev as the base branch:
 Ensure the PR description clearly describes the problem and solution.
-Include the relevant issue number if applicable. TIP: Writing e.g. “fix #613” will automatically close issue #613 when this PR is merged.
+Include the relevant issue number if applicable. TIP: Writing e.g. "fix #613" will automatically close issue #613 when this PR is merged.
 Before submitting, please ensure that the code follows the standard coding style of the respective repository.
-If you would like help with your contribution, or would like to communicate contributions that are not ready to merge, submit a PR where the title begins with “[WIP].”
+If you would like help with your contribution, or would like to communicate contributions that are not ready to merge, submit a PR where the title begins with "[WIP]."
 
 Update the CHANGELOG.md regularly to document changes to the extension.
 
