@@ -13,6 +13,7 @@ from ndx_microscopy.testing import (
     mock_PlanarImagingSpace,
     mock_PlanarMicroscopySeries,
     mock_MultiPlaneMicroscopyContainer,
+    mock_MultiChannelMicroscopyContainer,
     mock_VolumetricImagingSpace,
     mock_VolumetricMicroscopySeries,
     mock_MicroscopyResponseSeries,
@@ -193,6 +194,35 @@ def test_constructor_multi_plane_microscopy_container():
         planar_microscopy_series=[planar_microscopy_series]
     )
     assert multi_plane_microscopy_container.name == "MultiPlaneMicroscopyContainer"
+
+
+def test_constructor_multi_channel_microscopy_container():
+
+    microscope = mock_Microscope()
+    excitation_light_path = mock_ExcitationLightPath()
+    planar_imaging_space = mock_PlanarImagingSpace()
+    emission_light_path = mock_EmissionLightPath()
+    planar_microscopy_series = mock_PlanarMicroscopySeries(
+        microscope=microscope,
+        excitation_light_path=excitation_light_path,
+        planar_imaging_space=planar_imaging_space,
+        emission_light_path=emission_light_path,
+    )
+
+    # TODO change to this once MicroscopyRig and MicroscopyChannel are available
+    # microscopy_rig = mock_MicroscopyRig()
+    # microscopy_channel = mock_MicroscopyChannel()
+    # planar_imaging_space = mock_PlanarImagingSpace()
+    # planar_microscopy_series = mock_PlanarMicroscopySeries(
+    # microscopy_rig=microscopy_rig,
+    # microscopy_channel=microscopy_channel,
+    # planar_imaging_space=planar_imaging_space,
+    # )
+
+    multi_channel_microscopy_container = mock_MultiChannelMicroscopyContainer(
+        microscopy_series=[planar_microscopy_series]
+    )
+    assert multi_channel_microscopy_container.name == "MultiChannelMicroscopyContainer"
 
 
 def test_constructor_volumetric_microscopy_series():

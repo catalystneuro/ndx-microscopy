@@ -9,6 +9,7 @@ from pynwb.testing.mock.file import mock_NWBFile
 
 import pynwb
 from ndx_ophys_devices.testing import (
+    mock_Indicator,
     mock_ExcitationSource,
     mock_Photodetector,
     mock_OpticalFilter,
@@ -24,9 +25,11 @@ from ndx_microscopy.testing import (
     mock_VolumetricImagingSpace,
     mock_PlanarMicroscopySeries,
     mock_MultiPlaneMicroscopyContainer,
+    mock_MultiChannelMicroscopyContainer,
     mock_VolumetricMicroscopySeries,
     mock_MicroscopyResponseSeries,
 )
+
 from ndx_microscopy import MicroscopyResponseSeriesContainer
 
 
@@ -328,6 +331,117 @@ class TestMultiPlaneMicroscopyContainerSimpleRoundtrip(pynwb_TestCase):
 
             self.assertContainerEqual(
                 multi_plane_microscopy_container, read_nwbfile.acquisition["MultiPlaneMicroscopyContainer"]
+            )
+
+
+class TestMultiChannelMicroscopyContainerSimpleRoundtrip(pynwb_TestCase):
+    """Simple roundtrip test for MultiChannelMicroscopyContainer."""
+
+    # TODO change to this once MicroscopyRig and MicroscopyChannel are available
+
+    def setUp(self):
+        self.nwbfile_path = "test_multi_channel_microscopy_container_roundtrip.nwb"
+
+    def tearDown(self):
+        pynwb.testing.remove_test_file(self.nwbfile_path)
+
+    def test_roundtrip(self):
+        nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=UTC))
+
+        microscope = mock_Microscope(name="Microscope")
+        nwbfile.add_device(devices=microscope)
+
+        excitation_source_1 = mock_ExcitationSource(name="ExcitationSource_1")
+        nwbfile.add_device(devices=excitation_source_1)
+
+        excitation_source_2 = mock_ExcitationSource(name="ExcitationSource_2")
+        nwbfile.add_device(devices=excitation_source_2)
+
+        excitation_filter = mock_OpticalFilter()
+        nwbfile.add_device(devices=excitation_filter)
+
+        dichroic_mirror = mock_DichroicMirror()
+        nwbfile.add_device(devices=dichroic_mirror)
+
+        excitation_light_path_1 = mock_ExcitationLightPath(
+            name="ExcitationLightPath_1",
+            excitation_source=excitation_source_1,
+            excitation_filter=excitation_filter,
+            dichroic_mirror=dichroic_mirror,
+        )
+        nwbfile.add_lab_meta_data(lab_meta_data=excitation_light_path_1)
+
+        excitation_light_path_2 = mock_ExcitationLightPath(
+            name="ExcitationLightPath_2",
+            excitation_source=excitation_source_2,
+            excitation_filter=excitation_filter,
+            dichroic_mirror=dichroic_mirror,
+        )
+        nwbfile.add_lab_meta_data(lab_meta_data=excitation_light_path_2)
+
+        photodetector = mock_Photodetector()
+        nwbfile.add_device(devices=photodetector)
+
+        emission_filter = mock_OpticalFilter()
+        nwbfile.add_device(devices=emission_filter)
+
+        dichroic_mirror = mock_DichroicMirror()
+        nwbfile.add_device(devices=dichroic_mirror)
+
+        indicator_1 = mock_Indicator(name="Indicator_1")
+
+        emission_light_path_1 = mock_EmissionLightPath(
+            name="EmissionLightPath_1",
+            indicator=indicator_1,
+            emission_filter=emission_filter,
+            photodetector=photodetector,
+            dichroic_mirror=dichroic_mirror,
+        )
+        nwbfile.add_lab_meta_data(lab_meta_data=emission_light_path_1)
+
+        indicator_2 = mock_Indicator(name="Indicator_2")
+        emission_light_path_2 = mock_EmissionLightPath(
+            name="EmissionLightPath_2",
+            indicator=indicator_2,
+            emission_filter=emission_filter,
+            photodetector=photodetector,
+            dichroic_mirror=dichroic_mirror,
+        )
+        nwbfile.add_lab_meta_data(lab_meta_data=emission_light_path_2)
+
+        planar_imaging_space = mock_PlanarImagingSpace(name="PlanarImagingSpace", origin_coordinates=[0.0, 0.0, 0.0])
+
+        planar_microscopy_series_1 = mock_PlanarMicroscopySeries(
+            name="PlanarMicroscopySeries_1",
+            microscope=microscope,
+            excitation_light_path=excitation_light_path_1,
+            planar_imaging_space=planar_imaging_space,
+            emission_light_path=emission_light_path_1,
+        )
+
+        planar_microscopy_series_2 = mock_PlanarMicroscopySeries(
+            name="PlanarMicroscopySeries_2",
+            microscope=microscope,
+            excitation_light_path=excitation_light_path_2,
+            planar_imaging_space=planar_imaging_space,
+            emission_light_path=emission_light_path_2,
+        )
+
+        multi_plane_microscopy_container = mock_MultiChannelMicroscopyContainer(
+            name="MultiChannelMicroscopyContainer",
+            microscopy_series=[planar_microscopy_series_1, planar_microscopy_series_2],
+        )
+
+        nwbfile.add_acquisition(nwbdata=multi_plane_microscopy_container)
+
+        with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="w") as io:
+            io.write(nwbfile)
+
+        with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="r", load_namespaces=True) as io:
+            read_nwbfile = io.read()
+
+            self.assertContainerEqual(
+                multi_plane_microscopy_container, read_nwbfile.acquisition["MultiChannelMicroscopyContainer"]
             )
 
 
