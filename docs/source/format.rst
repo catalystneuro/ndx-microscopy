@@ -364,6 +364,14 @@ For 2D imaging planes.
               - - 2
             doc: The physical dimensions of the pixel in micrometers.
             quantity: "?"
+          - name: dimensions_in_pixels
+            doc: The number of pixels in the x and y dimensions of the imaging space.
+            dtype: uint32
+            dims:
+              - - x, y
+            shape:
+              - - 2
+            quantity: "?"
 
 VolumetricImagingSpace
 ^^^^^^^^^^^^^^^^^^^
@@ -383,6 +391,14 @@ For 3D imaging volumes.
             shape:
               - - 3
             doc: The physical dimensions of the voxel in micrometers.
+            quantity: "?"
+          - name: dimensions_in_voxels
+            doc: The number of voxels in the x, y, and z dimensions of the imaging space.
+            dtype: uint32
+            dims:
+              - - x, y, z
+            shape:
+              - - 3
             quantity: "?"
 
 Segmentation Components
