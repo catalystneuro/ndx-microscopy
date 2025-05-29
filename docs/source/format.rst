@@ -194,6 +194,24 @@ Container for multiple PlanarMicroscopySeries.
             doc: PlanarMicroscopySeries object(s) containing imaging data for a single depth scan.
             quantity: "+"
 
+MultiChannelMicroscopyContainer
+^^^^^^^^^^^^^^^^^^^^^^^^^
+Container for multiple PlanerMicroscopySeries or VolumetricMicroscopySeries acquired from different channels.
+
+.. code-block:: yaml
+
+    groups:
+      - neurodata_type_def: MultiChannelMicroscopyContainer
+        neurodata_type_inc: NWBDataInterface
+        default_name: MultiChannelMicroscopyContainer
+        doc:
+          Imaging data acquired over several channels; for instance, when using multiple excitation wavelengths
+          or multiple indicators. Each channel is stored in a separate PlanarMicroscopySeries or VolumetricMicroscopySeries object.
+        groups:
+          - neurodata_type_inc: MicroscopySeries
+            doc: MicroscopySeries object containing imaging data for a single channel scan.
+            quantity: "+"
+
 Illumination Pattern Components
 --------------------------
 

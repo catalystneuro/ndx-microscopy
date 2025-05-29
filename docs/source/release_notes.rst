@@ -4,6 +4,29 @@
 Release Notes
 *************
 
+Version 0.3.0 (May, 2025)
+==============================
+
+Deprecations and Changes
+-------------------------
+
+Features
+--------
+
+* Added `MultiChannelMicroscopyContainer` class to support multi-channel imaging data.
+  * This class allows for the storage of multiple `MicroscopySeries` objects, each representing a different channel of imaging data.
+  * It provides methods to access and manipulate individual channels, facilitating the analysis of multi-channel datasets.
+
+Improvements
+------------
+
+* Improved organization of multi channel imaging data
+
+
+Notes
+------
+
+
 Version 0.2.0 (March 19, 2025)
 ==============================
 
