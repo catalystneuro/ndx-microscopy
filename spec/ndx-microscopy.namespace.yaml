@@ -21,6 +21,8 @@ namespaces:
           - DynamicTableRegion
       - namespace: ndx-ophys-devices
         neurodata_types:
+          - DeviceModel
+          - DeviceInstance
           - ExcitationSource
           - Indicator
           - OpticalFilter

@@ -10,7 +10,15 @@ except ImportError:
 
 # NOTE: ndx-ophys-devices needs to be imported first because loading the ndx-microscopy namespace depends on
 # having the ndx-ophys-devices namespace loaded into the global type map.
-from ndx_ophys_devices import ExcitationSource, Indicator, OpticalFilter, Photodetector, DichroicMirror
+from ndx_ophys_devices import (
+    DeviceModel,
+    DeviceInstance,
+    ExcitationSource,
+    Indicator,
+    OpticalFilter,
+    Photodetector,
+    DichroicMirror,
+)
 
 extension_name = "ndx-microscopy"
 
@@ -30,11 +38,11 @@ from .ndx_microscopy import (
     Segmentation,
     Segmentation2D,
     Segmentation3D,
-    ExcitationLightPath,
-    EmissionLightPath,
 )
 
+MicroscopeModel = get_class("MicroscopeModel", extension_name)
 Microscope = get_class("Microscope", extension_name)
+MicroscopyRig = get_class("MicroscopyRig", extension_name)
 IlluminationPattern = get_class("IlluminationPattern", extension_name)
 LineScan = get_class("LineScan", extension_name)
 PlaneAcquisition = get_class("PlaneAcquisition", extension_name)
@@ -53,18 +61,20 @@ MicroscopyResponseSeries = get_class("MicroscopyResponseSeries", extension_name)
 MicroscopyResponseSeriesContainer = get_class("MicroscopyResponseSeriesContainer", extension_name)
 
 __all__ = [
+    "DeviceModel",
+    "DeviceInstance",
     "OpticalFilter",
     "ExcitationSource",
     "Indicator",
     "Photodetector",
     "DichroicMirror",
+    "MicroscopeModel",
     "Microscope",
     "IlluminationPattern",
     "LineScan",
     "PlaneAcquisition",
     "RandomAccessScan",
-    "ExcitationLightPath",
-    "EmissionLightPath",
+    "MicroscopyRig",
     "ImagingSpace",
     "PlanarImagingSpace",
     "VolumetricImagingSpace",
