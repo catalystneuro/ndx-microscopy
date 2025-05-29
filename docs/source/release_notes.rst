@@ -4,6 +4,41 @@
 Release Notes
 *************
 
+Version 0.3.0 (May 29, 2025)
+==============================
+
+Deprecations and Changes
+-------------------------
+
+* Removed `ExcitationLightPath` and `EmissionLightPath` classes in favor of a more integrated approach with `MicroscopyRig`
+* Changed `Microscope` to inherit from `DeviceInstance` instead of `Device`
+* Updated `MicroscopySeries` to use `MicroscopyRig` instead of individual `microscope`, `excitation_light_path`, and `emission_light_path` references
+
+Features
+--------
+
+* Added `MicroscopeModel` class to define microscope models (inherits from `DeviceModel`)
+* Added `MicroscopyRig` class to organize all optical components in a single container, including:
+  * `microscope`: Link to the Microscope instance
+  * `excitation_source`: Link to ExcitationSource (optional)
+  * `excitation_filter`: Link to OpticalFilter (optional)
+  * `dichroic_mirror`: Link to DichroicMirror (optional)
+  * `photodetector`: Link to Photodetector (optional)
+  * `emission_filter`: Link to OpticalFilter (optional)
+
+Improvements
+------------
+
+* Simplified the optical path configuration by consolidating components into a single `MicroscopyRig` container
+* Improved organization of device components with the addition of `MicroscopeModel` and clearer inheritance structure
+* Updated all documentation and examples to reflect the new structure
+
+Notes
+------
+
+* These changes are NOT backward compatible and require updating existing code to use the new structure
+* The `MicroscopyRig` approach provides a more flexible and intuitive way to organize optical components
+
 Version 0.2.0 (March 19, 2025)
 ==============================
 
