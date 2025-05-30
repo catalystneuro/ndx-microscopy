@@ -575,6 +575,10 @@ For extracted ROI responses.
             neurodata_type_inc: DynamicTableRegion
             doc: DynamicTableRegion referencing segmentation containing more information about the ROIs
               stored in this series.
+        links:
+          - name: microscopy_series
+            doc: Link to a MicroscopySeries object containing the imaging data this response series is derived from.
+            target_type: MicroscopySeries
 
 MicroscopyResponseSeriesContainer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^

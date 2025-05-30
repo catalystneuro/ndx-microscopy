@@ -3,6 +3,25 @@
 *************
 Release Notes
 *************
+Version 0.3.0 (May, 2025)
+==============================
+
+Deprecations and Changes
+-------------------------
+
+
+Features
+--------
+
+
+Improvements
+------------
+* Added `microscopy_series` link to `MicroscopyResponseSeries` class to point the `MicroscopySeries` this response series is derived from.
+
+
+Notes
+------
+
 
 Version 0.2.0 (March 19, 2025)
 ==============================
