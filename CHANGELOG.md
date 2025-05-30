@@ -1,7 +1,14 @@
-# v0.2.1 (March 28, 2025)
+# v0.3.0 (upcoming)
 
 ## Bug Fixes
-- Fixed version in namespace YAML file and docs
+
+## Deprecations and Changes
+### NWB TAB reviews Issue[#48](https://github.com/catalystneuro/ndx-microscopy/issues/48)
+- Changed `image_to_voxel` in `volume_to_voxel`, `voxel_to_image` in `voxel_to_volume`, and `image_mask` in `volume_mask` in VolumetricSegmentation Sub-Issue[#57](https://github.com/catalystneuro/ndx-microscopy/issues/57)
+
+## Features
+
+## Bug Fixes
 
 # v0.2.0 (March 19, 2025)
 
