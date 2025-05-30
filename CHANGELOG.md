@@ -6,6 +6,7 @@
 ## Features
 ### NWB TAB reviews Issue[#48](https://github.com/catalystneuro/ndx-microscopy/issues/48)
 - Added `dimensions_in_pixels` to `PlanarImagingSpace` and `dimensions_in_voxels` to `VolumetricImagingSpace` object Sub-Issue[#52](https://github.com/catalystneuro/ndx-microscopy/issues/52)
+- Added `get_FOV_size()` method to both `PlanarImagingSpace` and `VolumetricImagingSpace` classes for calculating Field of View size in micrometers Sub-Issue[#53](https://github.com/catalystneuro/ndx-microscopy/issues/53)
 
 # v0.2.1 (March 28, 2025)
 
