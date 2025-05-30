@@ -230,6 +230,43 @@ def test_constructor_microscopy_response_series():
     )
 
 
+def test_constructor_microscopy_response_series_with_microscopy_series():
+    microscope = mock_Microscope()
+    excitation_light_path = mock_ExcitationLightPath()
+    planar_imaging_space = mock_PlanarImagingSpace()
+    emission_light_path = mock_EmissionLightPath()
+
+    microscopy_series = mock_PlanarMicroscopySeries(
+        microscope=microscope,
+        excitation_light_path=excitation_light_path,
+        planar_imaging_space=planar_imaging_space,
+        emission_light_path=emission_light_path,
+    )
+    # TODO: replace code above with comment below when
+    # https://github.com/catalystneuro/ndx-microscopy/pull/61 and
+    # https://github.com/catalystneuro/ndx-microscopy/pull/59 are merged
+    # microscopyrig = mock_MicroscopyRig()
+    # microscopychannel = mock_MicroscopyChannel()
+    # microscopy_series = mock_PlanarMicroscopySeries(
+    #     microscopychannel=microscopychannel,
+    #     microscopyrig=microscopyrig,
+    #     planar_imaging_space=planar_imaging_space,
+    # )
+    number_of_rois = 10
+    planar_imaging_space = mock_PlanarImagingSpace()
+    segmentation = mock_Segmentation2D(planar_imaging_space=planar_imaging_space, number_of_rois=number_of_rois)
+    rois = segmentation.create_roi_table_region(
+        description="test region",
+        region=[x for x in range(number_of_rois)],
+    )
+
+    microscopy_response_series = mock_MicroscopyResponseSeries(rois=rois, microscopy_series=microscopy_series)
+    assert (
+        microscopy_response_series.description
+        == "A mock instance of a MicroscopyResponseSeries type to be used for rapid testing."
+    )
+
+
 def test_constructor_microscopy_response_series_container():
     number_of_rois = 10
     planar_imaging_space = mock_PlanarImagingSpace()
