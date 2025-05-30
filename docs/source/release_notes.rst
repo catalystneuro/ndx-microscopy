@@ -4,6 +4,24 @@
 Release Notes
 *************
 
+Version 0.3.0 (May, 2025)
+==============================
+
+Deprecations and Changes
+-------------------------
+
+* Refactored segmentation classes:
+  * Renamed ``Segmentation2D`` to ``PlanarSegmentation``
+  * Renamed ``Segmentation3D`` to ``VolumetricSegmentation``
+
+Version 0.2.1 (March 28, 2025)
+==============================
+
+Bug Fixes
+---------
+
+* Fixed version in namespace YAML file and docs
+
 Version 0.2.0 (March 19, 2025)
 ==============================
 

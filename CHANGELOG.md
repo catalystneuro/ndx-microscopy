@@ -1,3 +1,11 @@
+# v0.3.0 (May, 2025)
+
+## Deprecations and Changes
+### NWB TAB reviews Issue[#48](https://github.com/catalystneuro/ndx-microscopy/issues/48)
+- Refactored segmentation classes: Sub-Issue[#56](https://github.com/catalystneuro/ndx-microscopy/issues/56)
+  - Renamed `Segmentation2D` to `PlanarSegmentation`
+  - Renamed `Segmentation3D` to `VolumetricSegmentation`
+
 # v0.2.1 (March 28, 2025)
 
 ## Bug Fixes
