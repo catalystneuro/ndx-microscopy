@@ -143,7 +143,7 @@ def test_constructor_volumetric_segmentation():
     segmentation = mock_Segmentation3D(volumetric_imaging_space=volumetric_imaging_space)
     assert segmentation.description == "A mock instance of a Segmentation3D type to be used for rapid testing."
     assert len(segmentation.id) == 5  # Default number_of_rois
-    assert "image_mask" in segmentation.colnames
+    assert "volume_mask" in segmentation.colnames
     assert isinstance(segmentation.volumetric_imaging_space, VolumetricImagingSpace)
     assert isinstance(segmentation, Segmentation3D)
     assert isinstance(segmentation, Segmentation)  # Test inheritance
