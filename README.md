@@ -423,7 +423,7 @@ classDiagram
         --------------------------------------
         datasets
         --------------------------------------
-        image_mask : VectorData[num_roi, num_x, num_y, num_z], optional
+        volume_mask : VectorData[num_roi, num_x, num_y, num_z], optional
         voxel_mask_index : VectorIndex, optional
         voxel_mask : VectorData, optional
         --------------------------------------
@@ -435,8 +435,8 @@ classDiagram
         --------------------------------------
         add_roi()
         create_roi_table_region()
-        voxel_to_image()
-        image_to_voxel()
+        voxel_to_volume()
+        volume_to_voxel()
     }
 
     class SummaryImage {
