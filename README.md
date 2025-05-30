@@ -346,6 +346,10 @@ classDiagram
         --------------------------------------
         pixel_size_in_um : float64[2], optional
         dimensions_in_pixels : float64[2], optional 
+        --------------------------------------
+        methods
+        --------------------------------------
+        get_FOV_size()
     }
 
     class VolumetricImagingSpace {
@@ -355,6 +359,10 @@ classDiagram
         --------------------------------------
         voxel_size_in_um : float64[3], optional
         dimensions_in_voxels : float64[3], optional 
+        --------------------------------------
+        methods
+        --------------------------------------
+        get_FOV_size()
     }
 
     class Microscope {
