@@ -453,6 +453,7 @@ def mock_MicroscopyResponseSeries(
     starting_time: Optional[float] = None,
     rate: Optional[float] = None,
     timestamps: Optional[np.ndarray] = None,
+    microscopy_response_series: Optional[ndx_microscopy.MicroscopyResponseSeries] = None,
 ) -> ndx_microscopy.MicroscopyResponseSeries:
     series_name = name or name_generator("MicroscopyResponseSeries")
 
@@ -489,6 +490,7 @@ def mock_MicroscopyResponseSeries(
         starting_time=series_starting_time,
         rate=series_rate,
         timestamps=series_timestamps,
+        microscopy_response_series=microscopy_response_series,
     )
 
     return microscopy_response_series
