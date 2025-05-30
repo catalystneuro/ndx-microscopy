@@ -184,7 +184,7 @@ Segmentation3D = get_class("Segmentation3D", extension_name)
         "shape": (None, 4),
     },
     {
-        "name": "image_mask",
+        "name": "volume_mask",
         "type": "array_data",
         "default": None,
         "doc": "image with the same size of image where positive values mark this ROI",
@@ -201,7 +201,7 @@ def add_roi(self, **kwargs):
     voxel_mask : array_data, optional
         Voxel mask for 3D ROIs in format [(x1, y1, z1, weight1), (x2, y2, z2, weight2), ...].
         Each row contains x,y,z coordinates and weight value for a voxel.
-    image_mask : array_data, optional
+    volume_mask : array_data, optional
         3D image where positive values mark this ROI.
     id : int, optional
         The ID for the ROI. If not provided, will be auto-generated.
@@ -216,22 +216,22 @@ def add_roi(self, **kwargs):
     Raises
     ------
     ValueError
-        If neither voxel_mask nor image_mask is provided.
+        If neither voxel_mask nor volume_mask is provided.
     """
-    voxel_mask, image_mask = popargs("voxel_mask", "image_mask", kwargs)
-    if image_mask is None and voxel_mask is None:
-        raise ValueError("Must provide 'image_mask' and/or 'voxel_mask'")
+    voxel_mask, volume_mask = popargs("voxel_mask", "volume_mask", kwargs)
+    if volume_mask is None and voxel_mask is None:
+        raise ValueError("Must provide 'volume_mask' and/or 'voxel_mask'")
     rkwargs = dict(kwargs)
-    if image_mask is not None:
-        rkwargs["image_mask"] = image_mask
+    if volume_mask is not None:
+        rkwargs["volume_mask"] = volume_mask
     if voxel_mask is not None:
         rkwargs["voxel_mask"] = voxel_mask
     return super(Segmentation3D, self).add_row(**rkwargs)
 
 
 @staticmethod
-def voxel_to_image(voxel_mask, image_shape=None):
-    """Convert a 3D voxel_mask of a ROI into a 3D image_mask.
+def voxel_to_volume(voxel_mask, volume_shape=None):
+    """Convert a 3D voxel_mask of a ROI into a 3D volume_mask.
 
     Parameters
     ----------
@@ -239,7 +239,7 @@ def voxel_to_image(voxel_mask, image_shape=None):
         Array of shape (N, 4) where each row contains (x, y, z, weight) coordinates.
         The x, y, z coordinates specify the voxel position and weight specifies the value
         to fill in the output image mask.
-    image_shape : tuple, optional
+    volume_shape : tuple, optional
         Shape of the output image (depth, height, width). If not provided, will be determined
         from the maximum x,y,z coordinates in voxel_mask.
 
@@ -263,38 +263,38 @@ def voxel_to_image(voxel_mask, image_shape=None):
     weights = npmask[:, -1]
 
     # Determine dimensions from max coordinates
-    if image_shape is None:
-        image_shape = (np.max(x_coords) + 1, np.max(y_coords) + 1, np.max(z_coords) + 1)
-    image_matrix = np.zeros(image_shape)
+    if volume_shape is None:
+        volume_shape = (np.max(x_coords) + 1, np.max(y_coords) + 1, np.max(z_coords) + 1)
+    image_matrix = np.zeros(volume_shape)
     image_matrix[x_coords, y_coords, z_coords] = weights
 
     return image_matrix
 
 
 @staticmethod
-def image_to_voxel(image_mask):
-    """Convert a 3D image_mask of a ROI into a voxel_mask.
+def volume_to_voxel(volume_mask):
+    """Convert a 3D volume_mask of a ROI into a voxel_mask.
 
     Parameters
     ----------
-    image_mask : numpy.ndarray
+    volume_mask : numpy.ndarray
         3D array where non-zero values indicate ROI voxels.
 
     Returns
     -------
     list
-        List of [x, y, z, weight] coordinates for each non-zero voxel in the image_mask.
-        The weight is the value at that voxel location in the image_mask.
+        List of [x, y, z, weight] coordinates for each non-zero voxel in the volume_mask.
+        The weight is the value at that voxel location in the volume_mask.
 
     Raises
     ------
     ValueError
-        If image_mask is not 3D.
+        If volume_mask is not 3D.
     """
-    if len(image_mask.shape) != 3:
-        raise ValueError("image_mask must be 3D (depth, height, width)")
+    if len(volume_mask.shape) != 3:
+        raise ValueError("volume_mask must be 3D (depth, height, width)")
     voxel_mask = []
-    it = np.nditer(image_mask, flags=["multi_index"])
+    it = np.nditer(volume_mask, flags=["multi_index"])
     while not it.finished:
         weight = it[0][()]
         if weight > 0:
@@ -307,8 +307,8 @@ def image_to_voxel(image_mask):
 
 
 Segmentation3D.add_roi = add_roi
-Segmentation3D.voxel_to_image = voxel_to_image
-Segmentation3D.image_to_voxel = image_to_voxel
+Segmentation3D.voxel_to_volume = voxel_to_volume
+Segmentation3D.volume_to_voxel = volume_to_voxel
 
 
 @docval(
