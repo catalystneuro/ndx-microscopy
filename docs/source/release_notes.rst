@@ -3,6 +3,28 @@
 *************
 Release Notes
 *************
+Version 0.3.0 (May, 2025)
+==============================
+
+Deprecations and Changes
+-------------------------
+
+
+Features
+--------
+
+
+Improvements
+------------
+
+* Added `dimensions_in_pixels` to `PlanarImagingSpace` and `dimensions_in_voxels` to `VolumetricImagingSpace`
+* Added `get_FOV_size()` method to both `PlanarImagingSpace` and `VolumetricImagingSpace` classes for calculating Field of View size in micrometers
+
+Notes
+------
+
+
+
 
 Version 0.2.0 (March 19, 2025)
 ==============================
