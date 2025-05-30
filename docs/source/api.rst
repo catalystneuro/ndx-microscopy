@@ -131,8 +131,8 @@ Segmentation3D
 Methods
 ^^^^^^^
 .. automethod:: ndx_microscopy.Segmentation3D.add_roi
-.. automethod:: ndx_microscopy.Segmentation3D.voxel_to_image
-.. automethod:: ndx_microscopy.Segmentation3D.image_to_voxel
+.. automethod:: ndx_microscopy.Segmentation3D.voxel_to_volume
+.. automethod:: ndx_microscopy.Segmentation3D.volume_to_voxel
 .. automethod:: ndx_microscopy.Segmentation3D.create_roi_table_region
 
 SegmentationContainer

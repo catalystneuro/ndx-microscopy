@@ -3,6 +3,28 @@
 *************
 Release Notes
 *************
+Version 0.3.0 (May 29, 2025)
+==============================
+
+Deprecations and Changes
+-------------------------
+
+* Changed `image_to_voxel` in `volume_to_voxel`
+* Changed `voxel_to_image` in `voxel_to_volume`
+* Changed `image_mask` in `volume_mask` in VolumetricSegmentation
+
+Features
+--------
+
+
+Improvements
+------------
+
+
+Notes
+------
+
+
 
 Version 0.2.0 (March 19, 2025)
 ==============================
