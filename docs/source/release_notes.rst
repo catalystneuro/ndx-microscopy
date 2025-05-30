@@ -48,7 +48,7 @@ Features
 * Advanced light path configurations: ``ExcitationLightPath``, ``EmissionLightPath`` 
 * Imaging space definitions: ``PlanarImagingSpace``, ``VolumetricImagingSpace``
 * Support for 2D and 3D imaging: ``PlanarMicroscopySeries``, ``VolumetricMicroscopySeries``, ``MultiPlaneMicroscopyContainer``
-* ROI/segmentation storage: ``SummaryImages``, ``Segmentation2D``, ``Segmentation3D``, ``SegmentationContainer``, ``MicroscopyResponseSeries``, ``MicroscopyResponseSeriesContainer``
+* ROI/segmentation storage: ``SummaryImages``, ``PlanarSegmentation``, ``VolumetricSegmentation``, ``SegmentationContainer``, ``MicroscopyResponseSeries``, ``MicroscopyResponseSeriesContainer``
 * Abstract Neurodata types: ``ImagingSpace``, ``MicroscopySeries``, ``Segmentation``
 
 Changes

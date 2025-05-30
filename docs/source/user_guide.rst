@@ -336,7 +336,7 @@ Workflow for ROI segmentation:
     )
 
     # 2. Create segmentation
-    segmentation = Segmentation2D(
+    segmentation = PlanarSegmentation(
         name='rois',
         description='Manual ROI segmentation',
         planar_imaging_space=imaging_space,

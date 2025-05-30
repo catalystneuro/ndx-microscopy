@@ -407,14 +407,14 @@ Base type for segmentation data.
             doc: Summary images that are related to the segmentation, e.g., mean, correlation, maximum projection.
             quantity: "*"
 
-Segmentation2D
+PlanarSegmentation
 ^^^^^^^^^^^
 For 2D segmentation data.
 
 .. code-block:: yaml
 
     groups:
-      - neurodata_type_def: Segmentation2D
+      - neurodata_type_def: PlanarSegmentation
         neurodata_type_inc: Segmentation
         doc: Results from image segmentation of a specific planar imaging space.
         datasets:
@@ -453,14 +453,14 @@ For 2D segmentation data.
           - neurodata_type_inc: PlanarImagingSpace
             doc: PlanarImagingSpace object from which this data was generated.
 
-Segmentation3D
+VolumetricSegmentation
 ^^^^^^^^^^^
 For 3D segmentation data.
 
 .. code-block:: yaml
 
     groups:
-      - neurodata_type_def: Segmentation3D
+      - neurodata_type_def: VolumetricSegmentation
         neurodata_type_inc: Segmentation
         doc: Results from image segmentation of a specific volumetric imaging space.
         datasets:

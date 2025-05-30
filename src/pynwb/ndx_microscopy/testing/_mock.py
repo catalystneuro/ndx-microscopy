@@ -223,17 +223,17 @@ def mock_Segmentation(
     return segmentation
 
 
-def mock_Segmentation2D(
+def mock_PlanarSegmentation(
     *,
     planar_imaging_space: ndx_microscopy.PlanarImagingSpace,
     name: Optional[str] = None,
-    description: str = "A mock instance of a Segmentation2D type to be used for rapid testing.",
+    description: str = "A mock instance of a PlanarSegmentation type to be used for rapid testing.",
     number_of_rois: int = 5,
     image_shape: Tuple[int, int] = (10, 10),
     summary_images: Optional[List[ndx_microscopy.SummaryImage]] = None,
-) -> ndx_microscopy.Segmentation2D:
+) -> ndx_microscopy.PlanarSegmentation:
     """2D segmentation with image_mask/pixel_mask."""
-    name = name or name_generator("Segmentation2D")
+    name = name or name_generator("PlanarSegmentation")
 
     # Create default summary images if none provided
     if summary_images is None:
@@ -241,7 +241,7 @@ def mock_Segmentation2D(
         max_image = mock_SummaryImage(name="max", description="Maximum intensity projection", image_shape=image_shape)
         summary_images = [mean_image, max_image]
 
-    segmentation_2D = ndx_microscopy.Segmentation2D(
+    planar_segmentation = ndx_microscopy.PlanarSegmentation(
         name=name,
         description=description,
         planar_imaging_space=planar_imaging_space,
@@ -254,22 +254,22 @@ def mock_Segmentation2D(
     for _ in range(number_of_rois):
         image_masks.append(np.zeros(image_shape, dtype=bool))
 
-    segmentation_2D.add_column(name="image_mask", description="ROI image masks", data=image_masks)
+    planar_segmentation.add_column(name="image_mask", description="ROI image masks", data=image_masks)
 
-    return segmentation_2D
+    return planar_segmentation
 
 
-def mock_Segmentation3D(
+def mock_VolumetricSegmentation(
     *,
     volumetric_imaging_space: ndx_microscopy.VolumetricImagingSpace,
     name: Optional[str] = None,
-    description: str = "A mock instance of a Segmentation3D type to be used for rapid testing.",
+    description: str = "A mock instance of a VolumetricSegmentation type to be used for rapid testing.",
     number_of_rois: int = 5,
     image_shape: Tuple[int, int, int] = (10, 10, 10),
     summary_images: Optional[List[ndx_microscopy.SummaryImage]] = None,
-) -> ndx_microscopy.Segmentation3D:
+) -> ndx_microscopy.VolumetricSegmentation:
     """3D segmentation with image_mask/voxel_mask."""
-    name = name or name_generator("Segmentation3D")
+    name = name or name_generator("VolumetricSegmentation")
 
     # Create default summary images if none provided
     if summary_images is None:
@@ -277,7 +277,7 @@ def mock_Segmentation3D(
         max_image = mock_SummaryImage(name="max", description="Maximum intensity projection", image_shape=image_shape)
         summary_images = [mean_image, max_image]
 
-    volumetric_segmentation = ndx_microscopy.Segmentation3D(
+    volumetric_segmentation = ndx_microscopy.VolumetricSegmentation(
         name=name,
         description=description,
         volumetric_imaging_space=volumetric_imaging_space,
@@ -308,8 +308,8 @@ def mock_SegmentationContainer(
         planar_imaging_space = mock_PlanarImagingSpace()
         volumetric_imaging_space = mock_VolumetricImagingSpace()
         segmentations = [
-            mock_Segmentation2D(planar_imaging_space=planar_imaging_space),
-            mock_Segmentation3D(volumetric_imaging_space=volumetric_imaging_space),
+            mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space),
+            mock_VolumetricSegmentation(volumetric_imaging_space=volumetric_imaging_space),
         ]
 
     container = ndx_microscopy.SegmentationContainer(name=name, segmentations=segmentations)

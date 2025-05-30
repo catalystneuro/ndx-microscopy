@@ -6,16 +6,16 @@ import pytest
 from ndx_microscopy.testing import (
     mock_PlanarImagingSpace,
     mock_VolumetricImagingSpace,
-    mock_Segmentation2D,
-    mock_Segmentation3D,
+    mock_PlanarSegmentation,
+    mock_VolumetricSegmentation,
     mock_SegmentationContainer,
     mock_Segmentation,
     mock_EmissionLightPath,
     mock_ExcitationLightPath,
 )
 from ndx_microscopy import (
-    Segmentation2D,
-    Segmentation3D,
+    PlanarSegmentation,
+    VolumetricSegmentation,
     Segmentation,
 )
 
@@ -23,7 +23,7 @@ from ndx_microscopy import (
 def test_planar_pixel_to_image_conversion():
     """Test conversion from pixel_mask to image_mask for 2D."""
     planar_imaging_space = mock_PlanarImagingSpace()
-    segmentation = mock_Segmentation2D(planar_imaging_space=planar_imaging_space)
+    segmentation = mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space)
 
     pixel_mask = [[0, 0, 1.0], [1, 0, 2.0], [2, 0, 2.0]]
     image_shape = (3, 3)
@@ -34,7 +34,7 @@ def test_planar_pixel_to_image_conversion():
 def test_planar_image_to_pixel_conversion():
     """Test conversion from image_mask to pixel_mask for 2D."""
     planar_imaging_space = mock_PlanarImagingSpace()
-    segmentation = mock_Segmentation2D(planar_imaging_space=planar_imaging_space)
+    segmentation = mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space)
 
     image_mask = np.asarray([[1.0, 0.0, 0.0], [2.0, 0.0, 0.0], [2.0, 0.0, 0.0]])
 
@@ -45,7 +45,7 @@ def test_planar_image_to_pixel_conversion():
 def test_volumetric_voxel_to_image_conversion():
     """Test conversion from voxel_mask to image_mask for 3D."""
     volumetric_imaging_space = mock_VolumetricImagingSpace()
-    segmentation = mock_Segmentation3D(volumetric_imaging_space=volumetric_imaging_space)
+    segmentation = mock_VolumetricSegmentation(volumetric_imaging_space=volumetric_imaging_space)
 
     voxel_mask = [[0, 0, 0, 1.0], [1, 0, 0, 2.0], [2, 0, 0, 2.0]]
     image_shape = (3, 3, 3)
@@ -65,7 +65,7 @@ def test_volumetric_voxel_to_image_conversion():
 def test_volumetric_image_to_voxel_conversion():
     """Test conversion from image_mask to voxel_mask for 3D."""
     volumetric_imaging_space = mock_VolumetricImagingSpace()
-    segmentation = mock_Segmentation3D(volumetric_imaging_space=volumetric_imaging_space)
+    segmentation = mock_VolumetricSegmentation(volumetric_imaging_space=volumetric_imaging_space)
 
     image_mask = np.asarray(
         [
@@ -84,7 +84,7 @@ def test_volumetric_image_to_voxel_conversion():
 def test_pixel_to_image_value_error():
     """Test ValueError for pixel_to_image with invalid pixel mask shape."""
     planar_imaging_space = mock_PlanarImagingSpace()
-    segmentation_2d = mock_Segmentation2D(planar_imaging_space=planar_imaging_space)
+    segmentation_2d = mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space)
 
     invalid_pixel_mask = np.array([[0, 0]])  # Missing weight column
     with pytest.raises(ValueError, match="pixel_mask must have shape \\(N, 3\\) where each row is \\(x, y, weight\\)"):
@@ -94,7 +94,7 @@ def test_pixel_to_image_value_error():
 def test_voxel_to_image_value_error():
     """Test ValueError for voxel_to_image with invalid voxel mask shape."""
     volumetric_imaging_space = mock_VolumetricImagingSpace()
-    segmentation_3d = mock_Segmentation3D(volumetric_imaging_space=volumetric_imaging_space)
+    segmentation_3d = mock_VolumetricSegmentation(volumetric_imaging_space=volumetric_imaging_space)
 
     invalid_voxel_mask = np.array([[0, 0, 0]])  # Missing weight column
     with pytest.raises(
@@ -106,7 +106,7 @@ def test_voxel_to_image_value_error():
 def test_image_to_pixel_value_error():
     """Test ValueError for image_to_pixel with wrong dimensions."""
     planar_imaging_space = mock_PlanarImagingSpace()
-    segmentation_2d = mock_Segmentation2D(planar_imaging_space=planar_imaging_space)
+    segmentation_2d = mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space)
 
     invalid_image = np.ones((3,))  # 1D array
     with pytest.raises(ValueError, match="image_mask must be 2D \\(height, width\\)"):
@@ -116,7 +116,7 @@ def test_image_to_pixel_value_error():
 def test_image_to_voxel_value_error():
     """Test ValueError for image_to_voxel with wrong dimensions."""
     volumetric_imaging_space = mock_VolumetricImagingSpace()
-    segmentation_3d = mock_Segmentation3D(volumetric_imaging_space=volumetric_imaging_space)
+    segmentation_3d = mock_VolumetricSegmentation(volumetric_imaging_space=volumetric_imaging_space)
 
     invalid_image = np.ones((3, 3))  # 2D array
     with pytest.raises(ValueError, match="image_mask must be 3D \\(depth, height, width\\)"):
@@ -126,7 +126,7 @@ def test_image_to_voxel_value_error():
 def test_add_roi_2d_value_error():
     """Test ValueError for add_roi in 2D when no masks are provided."""
     planar_imaging_space = mock_PlanarImagingSpace()
-    segmentation_2d = mock_Segmentation2D(planar_imaging_space=planar_imaging_space)
+    segmentation_2d = mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space)
 
     with pytest.raises(ValueError, match="Must provide 'image_mask' and/or 'pixel_mask'"):
         segmentation_2d.add_roi()  # No masks provided
@@ -135,7 +135,7 @@ def test_add_roi_2d_value_error():
 def test_add_roi_3d_value_error():
     """Test ValueError for add_roi in 3D when no masks are provided."""
     volumetric_imaging_space = mock_VolumetricImagingSpace()
-    segmentation_3d = mock_Segmentation3D(volumetric_imaging_space=volumetric_imaging_space)
+    segmentation_3d = mock_VolumetricSegmentation(volumetric_imaging_space=volumetric_imaging_space)
 
     with pytest.raises(ValueError, match="Must provide 'image_mask' and/or 'voxel_mask'"):
         segmentation_3d.add_roi()  # No masks provided
@@ -147,10 +147,10 @@ def test_planar_add_roi_with_pixel_mask():
 
     planar_imaging_space = mock_PlanarImagingSpace()
 
-    name = "Segmentation2D"
-    description = "A mock instance of a Segmentation2D type to be used for rapid testing."
+    name = "PlanarSegmentation"
+    description = "A mock instance of a PlanarSegmentation type to be used for rapid testing."
 
-    planar_seg = Segmentation2D(name=name, description=description, planar_imaging_space=planar_imaging_space)
+    planar_seg = PlanarSegmentation(name=name, description=description, planar_imaging_space=planar_imaging_space)
 
     planar_seg.add_roi(pixel_mask=pixel_mask)
     assert planar_seg.pixel_mask[:] == pixel_mask
@@ -163,10 +163,10 @@ def test_planar_add_roi_with_image_mask():
 
     planar_imaging_space = mock_PlanarImagingSpace()
 
-    name = "Segmentation2D"
-    description = "A mock instance of a Segmentation2D type to be used for rapid testing."
+    name = "PlanarSegmentation"
+    description = "A mock instance of a PlanarSegmentation type to be used for rapid testing."
 
-    planar_seg = Segmentation2D(name=name, description=description, planar_imaging_space=planar_imaging_space)
+    planar_seg = PlanarSegmentation(name=name, description=description, planar_imaging_space=planar_imaging_space)
 
     planar_seg.add_roi(image_mask=image_mask)
     assert np.array_equal(planar_seg.image_mask[0], image_mask)
@@ -178,15 +178,15 @@ def test_volumetric_add_roi_with_voxel_mask():
 
     volumetric_imaging_space = mock_VolumetricImagingSpace()
 
-    name = "Segmentation3D"
-    description = "A mock instance of a Segmentation3D type to be used for rapid testing."
+    name = "VolumetricSegmentation"
+    description = "A mock instance of a VolumetricSegmentation type to be used for rapid testing."
 
-    segmentation_3D = Segmentation3D(
+    volumetric_segmentation = VolumetricSegmentation(
         name=name, description=description, volumetric_imaging_space=volumetric_imaging_space
     )
 
-    segmentation_3D.add_roi(voxel_mask=voxel_mask)
-    assert segmentation_3D.voxel_mask[:] == voxel_mask
+    volumetric_segmentation.add_roi(voxel_mask=voxel_mask)
+    assert volumetric_segmentation.voxel_mask[:] == voxel_mask
 
 
 def test_volumetric_add_roi_with_image_mask():
@@ -196,21 +196,21 @@ def test_volumetric_add_roi_with_image_mask():
 
     volumetric_imaging_space = mock_VolumetricImagingSpace()
 
-    name = "Segmentation3D"
-    description = "A mock instance of a Segmentation3D type to be used for rapid testing."
+    name = "VolumetricSegmentation"
+    description = "A mock instance of a VolumetricSegmentation type to be used for rapid testing."
 
-    segmentation_3D = Segmentation3D(
+    volumetric_segmentation = VolumetricSegmentation(
         name=name, description=description, volumetric_imaging_space=volumetric_imaging_space
     )
 
-    segmentation_3D.add_roi(image_mask=image_mask)
-    assert np.array_equal(segmentation_3D.image_mask[0], image_mask)
+    volumetric_segmentation.add_roi(image_mask=image_mask)
+    assert np.array_equal(volumetric_segmentation.image_mask[0], image_mask)
 
 
 def test_add_roi_without_masks():
     """Test error when adding ROI without any mask."""
     planar_imaging_space = mock_PlanarImagingSpace()
-    segmentation = mock_Segmentation2D(planar_imaging_space=planar_imaging_space)
+    segmentation = mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space)
 
     with pytest.raises(ValueError, match="Must provide 'image_mask' and/or 'pixel_mask'"):
         segmentation.add_roi(id=len(segmentation.id))
@@ -219,9 +219,9 @@ def test_add_roi_without_masks():
 def test_create_roi_table_region():
     """Test creation of ROI table region."""
     planar_imaging_space = mock_PlanarImagingSpace()
-    segmentation_2D = mock_Segmentation2D(planar_imaging_space=planar_imaging_space)
+    planar_segmentation = mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space)
 
-    region = segmentation_2D.create_roi_table_region(description="test region", region=[0, 2, 4])
+    region = planar_segmentation.create_roi_table_region(description="test region", region=[0, 2, 4])
     assert len(region) == 3
     assert np.array_equal(region.data, [0, 2, 4])
 
@@ -250,7 +250,7 @@ def test_segmentation_container_add():
 
     # Test adding new segmentation
     planar_imaging_space = mock_PlanarImagingSpace()
-    new_segmentation = mock_Segmentation2D(planar_imaging_space=planar_imaging_space)
+    new_segmentation = mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space)
     container.add_segmentation(segmentations=new_segmentation)
     assert len(container.segmentations) == 3
 
@@ -261,15 +261,15 @@ def test_segmentation_inheritance():
     volumetric_imaging_space = mock_VolumetricImagingSpace()
 
     # Test that concrete classes inherit from Segmentation
-    segmentation_2D = mock_Segmentation2D(planar_imaging_space=planar_imaging_space)
-    segmentation_3D = mock_Segmentation3D(volumetric_imaging_space=volumetric_imaging_space)
+    planar_segmentation = mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space)
+    volumetric_segmentation = mock_VolumetricSegmentation(volumetric_imaging_space=volumetric_imaging_space)
 
-    assert isinstance(segmentation_2D, Segmentation)
-    assert isinstance(segmentation_3D, Segmentation)
+    assert isinstance(planar_segmentation, Segmentation)
+    assert isinstance(volumetric_segmentation, Segmentation)
 
     # Test that each has appropriate summary images
-    assert len(segmentation_2D.summary_images) == 2
-    assert len(segmentation_3D.summary_images) == 2
+    assert len(planar_segmentation.summary_images) == 2
+    assert len(volumetric_segmentation.summary_images) == 2
 
 
 def test_get_excitation_wavelength():
