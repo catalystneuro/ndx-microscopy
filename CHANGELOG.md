@@ -1,3 +1,12 @@
+# v0.3.0 (upcoming)
+## Bug Fixes
+
+## Deprecations and Changes
+
+## Features
+### NWB TAB reviews Issue[#48](https://github.com/catalystneuro/ndx-microscopy/issues/48)
+- Added `microscopy_series` link to `MicroscopyResponseSeries` class Sub-Issue[#58](https://github.com/catalystneuro/ndx-microscopy/issues/58)
+
 # v0.2.1 (March 28, 2025)
 
 ## Bug Fixes
