@@ -20,6 +20,56 @@ from ndx_microscopy import (
 )
 
 
+def test_planar_get_fov_size_with_parameters():
+    """Test PlanarImagingSpace.get_FOV_size with explicit parameters."""
+    planar_imaging_space = mock_PlanarImagingSpace()
+
+    # Test with explicit parameters
+    dimensions = (100, 200)  # x, y in pixels
+    pixel_size = (0.5, 0.5)  # x, y in micrometers
+
+    fov_size = planar_imaging_space.get_FOV_size(dimensions_in_pixels=dimensions, pixel_size_in_um=pixel_size)
+
+    expected_fov = (50.0, 100.0)  # 100*0.5, 200*0.5
+    assert fov_size == expected_fov
+
+
+def test_planar_get_fov_size_with_instance_attributes():
+    """Test PlanarImagingSpace.get_FOV_size using instance attributes."""
+    planar_imaging_space = mock_PlanarImagingSpace(dimensions_in_pixels=[150, 300], pixel_size_in_um=[0.2, 0.3])
+
+    fov_size = planar_imaging_space.get_FOV_size()
+
+    expected_fov = (30.0, 90.0)  # 150*0.2, 300*0.3
+    assert fov_size == expected_fov
+
+
+def test_volumetric_get_fov_size_with_parameters():
+    """Test VolumetricImagingSpace.get_FOV_size with explicit parameters."""
+    volumetric_imaging_space = mock_VolumetricImagingSpace()
+
+    # Test with explicit parameters
+    dimensions = (50, 100, 200)  # x, y, z in voxels
+    voxel_size = (0.5, 0.5, 1.0)  # x, y, z in micrometers
+
+    fov_size = volumetric_imaging_space.get_FOV_size(dimensions_in_voxels=dimensions, voxel_size_in_um=voxel_size)
+
+    expected_fov = (25.0, 50.0, 200.0)  # 50*0.5, 100*0.5, 200*1.0
+    assert fov_size == expected_fov
+
+
+def test_volumetric_get_fov_size_with_instance_attributes():
+    """Test VolumetricImagingSpace.get_FOV_size using instance attributes."""
+    volumetric_imaging_space = mock_VolumetricImagingSpace(
+        dimensions_in_voxels=[60, 120, 240], voxel_size_in_um=[0.2, 0.3, 0.5]
+    )
+
+    fov_size = volumetric_imaging_space.get_FOV_size()
+
+    expected_fov = (12.0, 36.0, 120.0)  # 60*0.2, 120*0.3, 240*0.5
+    assert fov_size == expected_fov
+
+
 def test_planar_pixel_to_image_conversion():
     """Test conversion from pixel_mask to image_mask for 2D."""
     planar_imaging_space = mock_PlanarImagingSpace()
