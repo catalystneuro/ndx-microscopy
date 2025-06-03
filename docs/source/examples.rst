@@ -601,7 +601,7 @@ Example of volumetric imaging with 3D ROI segmentation:
     # Add 3D ROIs using image masks
     roi_mask = np.zeros((height, width, depths), dtype=bool)
     roi_mask[256:266, 256:266, 4:6] = True  # 10x10x2 ROI
-    segmentation.add_roi(image_mask=roi_mask)
+    segmentation.add_roi(volume_mask=roi_mask)
 
     # Add ROIs using voxel masks
     voxel_mask = [
@@ -621,7 +621,7 @@ Example of volumetric imaging with 3D ROI segmentation:
     num_rois = len(segmentation.id)
     responses = np.zeros((frames, num_rois))
     
-    for i, roi_mask in enumerate(segmentation.image_mask[:]):
+    for i, roi_mask in enumerate(segmentation.volume_mask[:]):
         roi_data = data[:, roi_mask]
         responses[:, i] = np.mean(roi_data, axis=1)
 
@@ -662,7 +662,7 @@ Example of volumetric imaging with 3D ROI segmentation:
         # Access ROI data
         ophys = nwbfile.processing['ophys']
         rois = ophys['volume_rois']
-        roi_masks = rois.image_mask[:]
+        roi_masks = rois.volume_mask[:]
         
         # Access responses
         responses = ophys['volume_responses']

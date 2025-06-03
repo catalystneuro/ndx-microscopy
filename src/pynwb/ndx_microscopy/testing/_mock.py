@@ -291,7 +291,7 @@ def mock_VolumetricSegmentation(
     name: Optional[str] = None,
     description: str = "A mock instance of a VolumetricSegmentation type to be used for rapid testing.",
     number_of_rois: int = 5,
-    image_shape: Tuple[int, int, int] = (10, 10, 10),
+    volume_shape: Tuple[int, int, int] = (10, 10, 10),
     summary_images: Optional[List[ndx_microscopy.SummaryImage]] = None,
 ) -> ndx_microscopy.VolumetricSegmentation:
     """3D segmentation with image_mask/voxel_mask."""
@@ -299,8 +299,8 @@ def mock_VolumetricSegmentation(
 
     # Create default summary images if none provided
     if summary_images is None:
-        mean_image = mock_SummaryImage(name="mean", description="Mean intensity projection", image_shape=image_shape)
-        max_image = mock_SummaryImage(name="max", description="Maximum intensity projection", image_shape=image_shape)
+        mean_image = mock_SummaryImage(name="mean", description="Mean intensity projection", image_shape=volume_shape)
+        max_image = mock_SummaryImage(name="max", description="Maximum intensity projection", image_shape=volume_shape)
         summary_images = [mean_image, max_image]
 
     volumetric_segmentation = ndx_microscopy.VolumetricSegmentation(
@@ -314,9 +314,9 @@ def mock_VolumetricSegmentation(
     # Add image masks
     image_masks = list()
     for _ in range(number_of_rois):
-        image_masks.append(np.zeros(image_shape, dtype=bool))
+        image_masks.append(np.zeros(volume_shape, dtype=bool))
 
-    volumetric_segmentation.add_column(name="image_mask", description="ROI image masks", data=image_masks)
+    volumetric_segmentation.add_column(name="volume_mask", description="ROI image masks", data=image_masks)
 
     return volumetric_segmentation
 

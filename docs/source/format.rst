@@ -507,7 +507,7 @@ For 3D segmentation data.
         neurodata_type_inc: Segmentation
         doc: Results from image segmentation of a specific volumetric imaging space.
         datasets:
-          - name: image_mask
+          - name: volume_mask
             neurodata_type_inc: VectorData
             dims:
               - - num_roi

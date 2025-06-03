@@ -15,6 +15,9 @@ Deprecations and Changes
 * Refactored segmentation classes:
   * Renamed ``Segmentation2D`` to ``PlanarSegmentation``
   * Renamed ``Segmentation3D`` to ``VolumetricSegmentation``
+* Changed `image_to_voxel` in `volume_to_voxel`
+* Changed `voxel_to_image` in `voxel_to_volume`
+* Changed `image_mask` in `volume_mask` in VolumetricSegmentation
 
 Features
 --------

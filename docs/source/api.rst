@@ -164,8 +164,8 @@ VolumetricSegmentation
 Methods
 ^^^^^^^
 .. automethod:: ndx_microscopy.VolumetricSegmentation.add_roi
-.. automethod:: ndx_microscopy.VolumetricSegmentation.voxel_to_image
-.. automethod:: ndx_microscopy.VolumetricSegmentation.image_to_voxel
+.. automethod:: ndx_microscopy.VolumetricSegmentation.voxel_to_volume
+.. automethod:: ndx_microscopy.VolumetricSegmentation.volume_to_voxel
 .. automethod:: ndx_microscopy.VolumetricSegmentation.create_roi_table_region
 
 SegmentationContainer

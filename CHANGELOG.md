@@ -18,11 +18,11 @@
   - Renamed `Segmentation3D` to `VolumetricSegmentation`
 - Added `get_FOV_size()` method to both `PlanarImagingSpace` and `VolumetricImagingSpace` classes for calculating Field of View size in micrometers Sub-Issue[#53](https://github.com/catalystneuro/ndx-microscopy/issues/53)
 - Added `microscopy_series` link to `MicroscopyResponseSeries` class Sub-Issue[#58](https://github.com/catalystneuro/ndx-microscopy/issues/58)
+- Changed `image_to_voxel` in `volume_to_voxel`, `voxel_to_image` in `voxel_to_volume`, and `image_mask` in `volume_mask` in VolumetricSegmentation Sub-Issue[#57](https://github.com/catalystneuro/ndx-microscopy/issues/57)
 
 # v0.2.1 (March 28, 2025)
 
 ## Bug Fixes
-- Fixed version in namespace YAML file and docs
 
 # v0.2.0 (March 19, 2025)
 

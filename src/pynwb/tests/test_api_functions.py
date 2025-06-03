@@ -90,15 +90,15 @@ def test_planar_image_to_pixel_conversion():
     np.testing.assert_allclose(pixel_mask, np.asarray([[0, 0, 1.0], [1, 0, 2.0], [2, 0, 2.0]]))
 
 
-def test_volumetric_voxel_to_image_conversion():
-    """Test conversion from voxel_mask to image_mask for 3D."""
+def test_volumetric_voxel_to_volume_conversion():
+    """Test conversion from voxel_mask to volume_mask for 3D."""
     volumetric_imaging_space = mock_VolumetricImagingSpace()
     segmentation = mock_VolumetricSegmentation(volumetric_imaging_space=volumetric_imaging_space)
 
     voxel_mask = [[0, 0, 0, 1.0], [1, 0, 0, 2.0], [2, 0, 0, 2.0]]
-    image_shape = (3, 3, 3)
+    volume_shape = (3, 3, 3)
 
-    image_mask = segmentation.voxel_to_image(voxel_mask, image_shape)
+    volume_mask = segmentation.voxel_to_volume(voxel_mask, volume_shape)
 
     expected_image_mask = np.asarray(
         [
@@ -107,15 +107,15 @@ def test_volumetric_voxel_to_image_conversion():
             [[2.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
         ]
     )
-    np.testing.assert_allclose(image_mask, expected_image_mask)
+    np.testing.assert_allclose(volume_mask, expected_image_mask)
 
 
-def test_volumetric_image_to_voxel_conversion():
-    """Test conversion from image_mask to voxel_mask for 3D."""
+def test_volumetric_volume_to_voxel_conversion():
+    """Test conversion from volume_mask to voxel_mask for 3D."""
     volumetric_imaging_space = mock_VolumetricImagingSpace()
     segmentation = mock_VolumetricSegmentation(volumetric_imaging_space=volumetric_imaging_space)
 
-    image_mask = np.asarray(
+    volume_mask = np.asarray(
         [
             [[1.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
             [[2.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
@@ -123,7 +123,7 @@ def test_volumetric_image_to_voxel_conversion():
         ]
     )
 
-    voxel_mask = segmentation.image_to_voxel(image_mask)
+    voxel_mask = segmentation.volume_to_voxel(volume_mask)
 
     expected_voxel_mask = [[0, 0, 0, 1.0], [1, 0, 0, 2.0], [2, 0, 0, 2.0]]
     np.testing.assert_allclose(voxel_mask, expected_voxel_mask)
@@ -139,8 +139,8 @@ def test_pixel_to_image_value_error():
         segmentation_2d.pixel_to_image(invalid_pixel_mask)
 
 
-def test_voxel_to_image_value_error():
-    """Test ValueError for voxel_to_image with invalid voxel mask shape."""
+def test_voxel_to_volume_value_error():
+    """Test ValueError for voxel_to_volume with invalid voxel mask shape."""
     volumetric_imaging_space = mock_VolumetricImagingSpace()
     segmentation_3d = mock_VolumetricSegmentation(volumetric_imaging_space=volumetric_imaging_space)
 
@@ -148,7 +148,7 @@ def test_voxel_to_image_value_error():
     with pytest.raises(
         ValueError, match="voxel_mask must have shape \\(N, 4\\) where each row is \\(x, y, z, weight\\)"
     ):
-        segmentation_3d.voxel_to_image(invalid_voxel_mask)
+        segmentation_3d.voxel_to_volume(invalid_voxel_mask)
 
 
 def test_image_to_pixel_value_error():
@@ -161,14 +161,14 @@ def test_image_to_pixel_value_error():
         segmentation_2d.image_to_pixel(invalid_image)
 
 
-def test_image_to_voxel_value_error():
-    """Test ValueError for image_to_voxel with wrong dimensions."""
+def test_volume_to_voxel_value_error():
+    """Test ValueError for volume_to_voxel with wrong dimensions."""
     volumetric_imaging_space = mock_VolumetricImagingSpace()
     segmentation_3d = mock_VolumetricSegmentation(volumetric_imaging_space=volumetric_imaging_space)
 
     invalid_image = np.ones((3, 3))  # 2D array
-    with pytest.raises(ValueError, match="image_mask must be 3D \\(depth, height, width\\)"):
-        segmentation_3d.image_to_voxel(invalid_image)
+    with pytest.raises(ValueError, match="volume_mask must be 3D \\(depth, height, width\\)"):
+        segmentation_3d.volume_to_voxel(invalid_image)
 
 
 def test_add_roi_2d_value_error():
@@ -185,7 +185,7 @@ def test_add_roi_3d_value_error():
     volumetric_imaging_space = mock_VolumetricImagingSpace()
     segmentation_3d = mock_VolumetricSegmentation(volumetric_imaging_space=volumetric_imaging_space)
 
-    with pytest.raises(ValueError, match="Must provide 'image_mask' and/or 'voxel_mask'"):
+    with pytest.raises(ValueError, match="Must provide 'volume_mask' and/or 'voxel_mask'"):
         segmentation_3d.add_roi()  # No masks provided
 
 
@@ -238,9 +238,9 @@ def test_volumetric_add_roi_with_voxel_mask():
 
 
 def test_volumetric_add_roi_with_image_mask():
-    """Test adding ROI with image_mask."""
-    image_shape = (5, 5, 5)
-    image_mask = np.ones(image_shape, dtype=bool)
+    """Test adding ROI with volume_mask."""
+    volume_shape = (5, 5, 5)
+    volume_mask = np.ones(volume_shape, dtype=bool)
 
     volumetric_imaging_space = mock_VolumetricImagingSpace()
 
@@ -251,8 +251,8 @@ def test_volumetric_add_roi_with_image_mask():
         name=name, description=description, volumetric_imaging_space=volumetric_imaging_space
     )
 
-    volumetric_segmentation.add_roi(image_mask=image_mask)
-    assert np.array_equal(volumetric_segmentation.image_mask[0], image_mask)
+    volumetric_segmentation.add_roi(volume_mask=volume_mask)
+    assert np.array_equal(volumetric_segmentation.volume_mask[0], volume_mask)
 
 
 def test_add_roi_without_masks():
