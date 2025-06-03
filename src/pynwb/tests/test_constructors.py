@@ -3,9 +3,10 @@
 import pytest
 
 from ndx_microscopy.testing import (
-    mock_EmissionLightPath,
-    mock_ExcitationLightPath,
+    mock_MicroscopyRig,
+    mock_MicroscopeModel,
     mock_Microscope,
+    mock_MicroscopyChannel,
     mock_Segmentation,
     mock_PlanarSegmentation,
     mock_VolumetricSegmentation,
@@ -13,6 +14,7 @@ from ndx_microscopy.testing import (
     mock_PlanarImagingSpace,
     mock_PlanarMicroscopySeries,
     mock_MultiPlaneMicroscopyContainer,
+    mock_MultiChannelMicroscopyContainer,
     mock_VolumetricImagingSpace,
     mock_VolumetricMicroscopySeries,
     mock_MicroscopyResponseSeries,
@@ -22,6 +24,7 @@ from ndx_microscopy.testing import (
     mock_PlaneAcquisition,
     mock_RandomAccessScan,
 )
+
 from ndx_microscopy import (
     Segmentation,
     PlanarSegmentation,
@@ -40,19 +43,19 @@ def test_constructor_microscope():
     assert microscope.description == "A mock instance of a Microscope type to be used for rapid testing."
 
 
-def test_constructor_excitation_light_path():
-    excitation_light_path = mock_ExcitationLightPath()
-    assert (
-        excitation_light_path.description
-        == "A mock instance of a ExcitationLightPath type to be used for rapid testing."
-    )
+def test_constructor_microscope_model():
+    microscope_model = mock_MicroscopeModel()
+    assert microscope_model.description == "A mock instance of a MicroscopeModel type to be used for rapid testing."
 
 
-def test_constructor_emission_light_path():
-    emission_light_path = mock_EmissionLightPath()
-    assert (
-        emission_light_path.description == "A mock instance of a EmissionLightPath type to be used for rapid testing."
-    )
+def test_constructor_microscopy_channel():
+    microscopy_channel = mock_MicroscopyChannel()
+    assert microscopy_channel.description == "A mock instance of a MicroscopyChannel type to be used for rapid testing."
+
+
+def test_constructor_microscopy_rig():
+    microscopy_rig = mock_MicroscopyRig()
+    assert microscopy_rig.description == "A mock instance of a MicroscopyRig type to be used for rapid testing."
 
 
 def test_constructor_illumination_pattern():
@@ -80,7 +83,7 @@ def test_constructor_plane_acquisition():
     """Test constructor for PlaneAcquisition class."""
     plane_acquisition = mock_PlaneAcquisition()
     assert plane_acquisition.description == "A mock instance of a PlaneAcquisition type to be used for rapid testing."
-    assert plane_acquisition.plane_thickness_in_um == 5.0
+    assert plane_acquisition.point_spread_function_in_um == "32 um ± 1.6 um"
     assert plane_acquisition.illumination_angle_in_degrees == 45.0
     assert plane_acquisition.plane_rate_in_Hz == 100.0
     assert isinstance(plane_acquisition, PlaneAcquisition)
@@ -159,16 +162,14 @@ def test_constructor_segmentation_container():
 
 
 def test_constructor_planar_microscopy_series():
-    microscope = mock_Microscope()
-    excitation_light_path = mock_ExcitationLightPath()
+    microscopy_rig = mock_MicroscopyRig()
+    microscopy_channel = mock_MicroscopyChannel()
     planar_imaging_space = mock_PlanarImagingSpace()
-    emission_light_path = mock_EmissionLightPath()
 
     planar_microscopy_series = mock_PlanarMicroscopySeries(
-        microscope=microscope,
-        excitation_light_path=excitation_light_path,
+        microscopy_rig=microscopy_rig,
+        microscopy_channel=microscopy_channel,
         planar_imaging_space=planar_imaging_space,
-        emission_light_path=emission_light_path,
     )
     assert (
         planar_microscopy_series.description
@@ -178,15 +179,14 @@ def test_constructor_planar_microscopy_series():
 
 def test_constructor_multi_plane_microscopy_container():
 
-    microscope = mock_Microscope()
-    excitation_light_path = mock_ExcitationLightPath()
+    microscopy_rig = mock_MicroscopyRig()
+    microscopy_channel = mock_MicroscopyChannel()
     planar_imaging_space = mock_PlanarImagingSpace()
-    emission_light_path = mock_EmissionLightPath()
+
     planar_microscopy_series = mock_PlanarMicroscopySeries(
-        microscope=microscope,
-        excitation_light_path=excitation_light_path,
+        microscopy_rig=microscopy_rig,
+        microscopy_channel=microscopy_channel,
         planar_imaging_space=planar_imaging_space,
-        emission_light_path=emission_light_path,
     )
 
     multi_plane_microscopy_container = mock_MultiPlaneMicroscopyContainer(
@@ -195,17 +195,32 @@ def test_constructor_multi_plane_microscopy_container():
     assert multi_plane_microscopy_container.name == "MultiPlaneMicroscopyContainer"
 
 
+def test_constructor_multi_channel_microscopy_container():
+
+    microscopy_rig = mock_MicroscopyRig()
+    microscopy_channel = mock_MicroscopyChannel()
+    planar_imaging_space = mock_PlanarImagingSpace()
+    planar_microscopy_series = mock_PlanarMicroscopySeries(
+        microscopy_rig=microscopy_rig,
+        microscopy_channel=microscopy_channel,
+        planar_imaging_space=planar_imaging_space,
+    )
+
+    multi_channel_microscopy_container = mock_MultiChannelMicroscopyContainer(
+        microscopy_series=[planar_microscopy_series]
+    )
+    assert multi_channel_microscopy_container.name == "MultiChannelMicroscopyContainer"
+
+
 def test_constructor_volumetric_microscopy_series():
-    microscope = mock_Microscope()
-    excitation_light_path = mock_ExcitationLightPath()
+    microscopy_rig = mock_MicroscopyRig()
+    microscopy_channel = mock_MicroscopyChannel()
     volumetric_imaging_space = mock_VolumetricImagingSpace()
-    emission_light_path = mock_EmissionLightPath()
 
     volumetric_microscopy_series = mock_VolumetricMicroscopySeries(
-        microscope=microscope,
-        excitation_light_path=excitation_light_path,
+        microscopy_rig=microscopy_rig,
+        microscopy_channel=microscopy_channel,
         volumetric_imaging_space=volumetric_imaging_space,
-        emission_light_path=emission_light_path,
     )
     assert (
         volumetric_microscopy_series.description

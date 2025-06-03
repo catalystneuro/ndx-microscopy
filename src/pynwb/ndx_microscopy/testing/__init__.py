@@ -1,7 +1,8 @@
 from ._mock import (
-    mock_EmissionLightPath,
-    mock_ExcitationLightPath,
+    mock_MicroscopyRig,
+    mock_MicroscopeModel,
     mock_Microscope,
+    mock_MicroscopyChannel,
     mock_Segmentation,
     mock_PlanarSegmentation,
     mock_VolumetricSegmentation,
@@ -11,6 +12,7 @@ from ._mock import (
     mock_PlanarImagingSpace,
     mock_PlanarMicroscopySeries,
     mock_MultiPlaneMicroscopyContainer,
+    mock_MultiChannelMicroscopyContainer,
     mock_VolumetricImagingSpace,
     mock_VolumetricMicroscopySeries,
     mock_IlluminationPattern,
@@ -21,8 +23,9 @@ from ._mock import (
 
 __all__ = [
     "mock_Microscope",
-    "mock_ExcitationLightPath",
-    "mock_EmissionLightPath",
+    "mock_MicroscopeModel",
+    "mock_MicroscopyChannel",
+    "mock_MicroscopyRig",
     "mock_PlanarImagingSpace",
     "mock_VolumetricImagingSpace",
     "mock_PlanarSegmentation",
@@ -31,6 +34,7 @@ __all__ = [
     "mock_Segmentation",
     "mock_PlanarMicroscopySeries",
     "mock_MultiPlaneMicroscopyContainer",
+    "mock_MultiChannelMicroscopyContainer",
     "mock_VolumetricMicroscopySeries",
     "mock_MicroscopyResponseSeries",
     "mock_MicroscopyResponseSeriesContainer",

@@ -9,6 +9,13 @@ This section provides detailed documentation for all classes and methods in the 
 Device Components
 ===========
 
+MicroscopeModel
+---------------
+.. autoclass:: ndx_microscopy.MicroscopeModel
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Microscope
 ---------
 .. autoclass:: ndx_microscopy.Microscope
@@ -16,31 +23,50 @@ Microscope
    :undoc-members:
    :show-inheritance:
 
-Light Path Components
-===================
-
-ExcitationLightPath
-------------------
-.. autoclass:: ndx_microscopy.ExcitationLightPath
+MicroscopyRig
+-------------
+.. autoclass:: ndx_microscopy.MicroscopyRig
    :members:
    :undoc-members:
    :show-inheritance:
 
-Methods
-^^^^^^^
-.. automethod:: ndx_microscopy.ExcitationLightPath.get_excitation_wavelength
+MicroscopyChannel
+---------------
+.. autoclass:: ndx_microscopy.MicroscopyChannel
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-EmissionLightPath
+Illumination Pattern Components
+==========================
+
+IlluminationPattern
 ----------------
-.. autoclass:: ndx_microscopy.EmissionLightPath
+.. autoclass:: ndx_microscopy.IlluminationPattern
    :members:
    :undoc-members:
    :show-inheritance:
 
-Methods
-^^^^^^^
-.. automethod:: ndx_microscopy.EmissionLightPath.get_emission_wavelength
-.. automethod:: ndx_microscopy.EmissionLightPath.get_indicator_label
+LineScan
+-------
+.. autoclass:: ndx_microscopy.LineScan
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+PlaneAcquisition
+--------------
+.. autoclass:: ndx_microscopy.PlaneAcquisition
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+RandomAccessScan
+--------------
+.. autoclass:: ndx_microscopy.RandomAccessScan
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Imaging Space Components
 =====================
