@@ -3,16 +3,18 @@
 import pytest
 
 from ndx_microscopy.testing import (
-    mock_EmissionLightPath,
-    mock_ExcitationLightPath,
+    mock_MicroscopyRig,
+    mock_MicroscopeModel,
     mock_Microscope,
+    mock_MicroscopyChannel,
     mock_Segmentation,
-    mock_Segmentation2D,
-    mock_Segmentation3D,
+    mock_PlanarSegmentation,
+    mock_VolumetricSegmentation,
     mock_SegmentationContainer,
     mock_PlanarImagingSpace,
     mock_PlanarMicroscopySeries,
     mock_MultiPlaneMicroscopyContainer,
+    mock_MultiChannelMicroscopyContainer,
     mock_VolumetricImagingSpace,
     mock_VolumetricMicroscopySeries,
     mock_MicroscopyResponseSeries,
@@ -22,10 +24,11 @@ from ndx_microscopy.testing import (
     mock_PlaneAcquisition,
     mock_RandomAccessScan,
 )
+
 from ndx_microscopy import (
     Segmentation,
-    Segmentation2D,
-    Segmentation3D,
+    PlanarSegmentation,
+    VolumetricSegmentation,
     PlanarImagingSpace,
     VolumetricImagingSpace,
     IlluminationPattern,
@@ -40,19 +43,19 @@ def test_constructor_microscope():
     assert microscope.description == "A mock instance of a Microscope type to be used for rapid testing."
 
 
-def test_constructor_excitation_light_path():
-    excitation_light_path = mock_ExcitationLightPath()
-    assert (
-        excitation_light_path.description
-        == "A mock instance of a ExcitationLightPath type to be used for rapid testing."
-    )
+def test_constructor_microscope_model():
+    microscope_model = mock_MicroscopeModel()
+    assert microscope_model.description == "A mock instance of a MicroscopeModel type to be used for rapid testing."
 
 
-def test_constructor_emission_light_path():
-    emission_light_path = mock_EmissionLightPath()
-    assert (
-        emission_light_path.description == "A mock instance of a EmissionLightPath type to be used for rapid testing."
-    )
+def test_constructor_microscopy_channel():
+    microscopy_channel = mock_MicroscopyChannel()
+    assert microscopy_channel.description == "A mock instance of a MicroscopyChannel type to be used for rapid testing."
+
+
+def test_constructor_microscopy_rig():
+    microscopy_rig = mock_MicroscopyRig()
+    assert microscopy_rig.description == "A mock instance of a MicroscopyRig type to be used for rapid testing."
 
 
 def test_constructor_illumination_pattern():
@@ -80,7 +83,7 @@ def test_constructor_plane_acquisition():
     """Test constructor for PlaneAcquisition class."""
     plane_acquisition = mock_PlaneAcquisition()
     assert plane_acquisition.description == "A mock instance of a PlaneAcquisition type to be used for rapid testing."
-    assert plane_acquisition.plane_thickness_in_um == 5.0
+    assert plane_acquisition.point_spread_function_in_um == "32 um ± 1.6 um"
     assert plane_acquisition.illumination_angle_in_degrees == 45.0
     assert plane_acquisition.plane_rate_in_Hz == 100.0
     assert isinstance(plane_acquisition, PlaneAcquisition)
@@ -125,27 +128,27 @@ def test_constructor_segmentation():
     assert isinstance(segmentation, Segmentation)
 
 
-def test_constructor_segmentation_2D():
-    """Test constructor for Segmentation2D class."""
+def test_constructor_planar_segmentation():
+    """Test constructor for PlanarSegmentation class."""
     planar_imaging_space = mock_PlanarImagingSpace()
-    segmentation = mock_Segmentation2D(planar_imaging_space=planar_imaging_space)
-    assert segmentation.description == "A mock instance of a Segmentation2D type to be used for rapid testing."
+    segmentation = mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space)
+    assert segmentation.description == "A mock instance of a PlanarSegmentation type to be used for rapid testing."
     assert len(segmentation.id) == 5  # Default number_of_rois
     assert "image_mask" in segmentation.colnames
     assert isinstance(segmentation.planar_imaging_space, PlanarImagingSpace)
-    assert isinstance(segmentation, Segmentation2D)
+    assert isinstance(segmentation, PlanarSegmentation)
     assert isinstance(segmentation, Segmentation)  # Test inheritance
 
 
 def test_constructor_volumetric_segmentation():
-    """Test constructor for Segmentation3D class."""
+    """Test constructor for VolumetricSegmentation class."""
     volumetric_imaging_space = mock_VolumetricImagingSpace()
-    segmentation = mock_Segmentation3D(volumetric_imaging_space=volumetric_imaging_space)
-    assert segmentation.description == "A mock instance of a Segmentation3D type to be used for rapid testing."
+    segmentation = mock_VolumetricSegmentation(volumetric_imaging_space=volumetric_imaging_space)
+    assert segmentation.description == "A mock instance of a VolumetricSegmentation type to be used for rapid testing."
     assert len(segmentation.id) == 5  # Default number_of_rois
     assert "volume_mask" in segmentation.colnames
     assert isinstance(segmentation.volumetric_imaging_space, VolumetricImagingSpace)
-    assert isinstance(segmentation, Segmentation3D)
+    assert isinstance(segmentation, VolumetricSegmentation)
     assert isinstance(segmentation, Segmentation)  # Test inheritance
 
 
@@ -154,21 +157,19 @@ def test_constructor_segmentation_container():
     container = mock_SegmentationContainer()
     assert len(container.segmentations) == 2  # Default includes both planar and volumetric
     segmentation_names = [seg_name for seg_name in container.segmentations]
-    assert isinstance(container.segmentations[segmentation_names[0]], Segmentation2D)
-    assert isinstance(container.segmentations[segmentation_names[1]], Segmentation3D)
+    assert isinstance(container.segmentations[segmentation_names[0]], PlanarSegmentation)
+    assert isinstance(container.segmentations[segmentation_names[1]], VolumetricSegmentation)
 
 
 def test_constructor_planar_microscopy_series():
-    microscope = mock_Microscope()
-    excitation_light_path = mock_ExcitationLightPath()
+    microscopy_rig = mock_MicroscopyRig()
+    microscopy_channel = mock_MicroscopyChannel()
     planar_imaging_space = mock_PlanarImagingSpace()
-    emission_light_path = mock_EmissionLightPath()
 
     planar_microscopy_series = mock_PlanarMicroscopySeries(
-        microscope=microscope,
-        excitation_light_path=excitation_light_path,
+        microscopy_rig=microscopy_rig,
+        microscopy_channel=microscopy_channel,
         planar_imaging_space=planar_imaging_space,
-        emission_light_path=emission_light_path,
     )
     assert (
         planar_microscopy_series.description
@@ -178,15 +179,14 @@ def test_constructor_planar_microscopy_series():
 
 def test_constructor_multi_plane_microscopy_container():
 
-    microscope = mock_Microscope()
-    excitation_light_path = mock_ExcitationLightPath()
+    microscopy_rig = mock_MicroscopyRig()
+    microscopy_channel = mock_MicroscopyChannel()
     planar_imaging_space = mock_PlanarImagingSpace()
-    emission_light_path = mock_EmissionLightPath()
+
     planar_microscopy_series = mock_PlanarMicroscopySeries(
-        microscope=microscope,
-        excitation_light_path=excitation_light_path,
+        microscopy_rig=microscopy_rig,
+        microscopy_channel=microscopy_channel,
         planar_imaging_space=planar_imaging_space,
-        emission_light_path=emission_light_path,
     )
 
     multi_plane_microscopy_container = mock_MultiPlaneMicroscopyContainer(
@@ -195,17 +195,32 @@ def test_constructor_multi_plane_microscopy_container():
     assert multi_plane_microscopy_container.name == "MultiPlaneMicroscopyContainer"
 
 
+def test_constructor_multi_channel_microscopy_container():
+
+    microscopy_rig = mock_MicroscopyRig()
+    microscopy_channel = mock_MicroscopyChannel()
+    planar_imaging_space = mock_PlanarImagingSpace()
+    planar_microscopy_series = mock_PlanarMicroscopySeries(
+        microscopy_rig=microscopy_rig,
+        microscopy_channel=microscopy_channel,
+        planar_imaging_space=planar_imaging_space,
+    )
+
+    multi_channel_microscopy_container = mock_MultiChannelMicroscopyContainer(
+        microscopy_series=[planar_microscopy_series]
+    )
+    assert multi_channel_microscopy_container.name == "MultiChannelMicroscopyContainer"
+
+
 def test_constructor_volumetric_microscopy_series():
-    microscope = mock_Microscope()
-    excitation_light_path = mock_ExcitationLightPath()
+    microscopy_rig = mock_MicroscopyRig()
+    microscopy_channel = mock_MicroscopyChannel()
     volumetric_imaging_space = mock_VolumetricImagingSpace()
-    emission_light_path = mock_EmissionLightPath()
 
     volumetric_microscopy_series = mock_VolumetricMicroscopySeries(
-        microscope=microscope,
-        excitation_light_path=excitation_light_path,
+        microscopy_rig=microscopy_rig,
+        microscopy_channel=microscopy_channel,
         volumetric_imaging_space=volumetric_imaging_space,
-        emission_light_path=emission_light_path,
     )
     assert (
         volumetric_microscopy_series.description
@@ -216,7 +231,7 @@ def test_constructor_volumetric_microscopy_series():
 def test_constructor_microscopy_response_series():
     number_of_rois = 10
     planar_imaging_space = mock_PlanarImagingSpace()
-    segmentation = mock_Segmentation2D(planar_imaging_space=planar_imaging_space, number_of_rois=number_of_rois)
+    segmentation = mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space, number_of_rois=number_of_rois)
 
     rois = segmentation.create_roi_table_region(
         description="test region",
@@ -230,10 +245,34 @@ def test_constructor_microscopy_response_series():
     )
 
 
+def test_constructor_microscopy_response_series_with_microscopy_series():
+
+    microscopyrig = mock_MicroscopyRig()
+    microscopychannel = mock_MicroscopyChannel()
+    number_of_rois = 10
+    planar_imaging_space = mock_PlanarImagingSpace()
+    microscopy_series = mock_PlanarMicroscopySeries(
+        microscopy_channel=microscopychannel,
+        microscopy_rig=microscopyrig,
+        planar_imaging_space=planar_imaging_space,
+    )
+    segmentation = mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space, number_of_rois=number_of_rois)
+    rois = segmentation.create_roi_table_region(
+        description="test region",
+        region=[x for x in range(number_of_rois)],
+    )
+
+    microscopy_response_series = mock_MicroscopyResponseSeries(rois=rois, microscopy_series=microscopy_series)
+    assert (
+        microscopy_response_series.description
+        == "A mock instance of a MicroscopyResponseSeries type to be used for rapid testing."
+    )
+
+
 def test_constructor_microscopy_response_series_container():
     number_of_rois = 10
     planar_imaging_space = mock_PlanarImagingSpace()
-    segmentation = mock_Segmentation2D(planar_imaging_space=planar_imaging_space, number_of_rois=number_of_rois)
+    segmentation = mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space, number_of_rois=number_of_rois)
 
     rois = segmentation.create_roi_table_region(
         description="test region",
