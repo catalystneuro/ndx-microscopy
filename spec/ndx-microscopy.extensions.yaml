@@ -195,6 +195,14 @@ groups:
         shape:
           - - 2
         quantity: "?"
+      - name: dimensions_in_pixels
+        doc: The number of pixels in the x and y dimensions of the imaging space.
+        dtype: uint32
+        dims:
+          - - x, y
+        shape:
+          - - 2
+        quantity: "?"
 
   - neurodata_type_def: VolumetricImagingSpace
     neurodata_type_inc: ImagingSpace
@@ -203,6 +211,14 @@ groups:
       - name: voxel_size_in_um
         doc: The physical dimensions of the voxel in micrometers.
         dtype: float64
+        dims:
+          - - x, y, z
+        shape:
+          - - 3
+        quantity: "?"
+      - name: dimensions_in_voxels
+        doc: The number of voxels in the x, y, and z dimensions of the imaging space.
+        dtype: uint32
         dims:
           - - x, y, z
         shape:

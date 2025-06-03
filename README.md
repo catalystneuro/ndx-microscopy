@@ -356,6 +356,7 @@ classDiagram
         datasets
         --------------------------------------
         pixel_size_in_um : float64[2], optional
+        dimensions_in_pixels : float64[2], optional 
     }
 
     class VolumetricImagingSpace {
@@ -364,6 +365,7 @@ classDiagram
         datasets
         --------------------------------------
         voxel_size_in_um : float64[3], optional
+        dimensions_in_voxels : float64[3], optional 
     }
 
     class MicroscopyRig {

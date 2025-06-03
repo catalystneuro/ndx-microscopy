@@ -248,6 +248,7 @@ Here's a minimal example showing how to create a basic microscopy dataset:
         name='cortex_plane',
         description='Layer 2/3 of visual cortex',
         pixel_size_in_um=[1.0, 1.0],
+        dimensions_in_pixels=[512, 512],
         origin_coordinates=[-1.2, -0.6, -2.0],
         illumination_pattern=line_scan  # Include the illumination pattern
     )

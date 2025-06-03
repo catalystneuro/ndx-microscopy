@@ -11,6 +11,7 @@
 - Changed `Microscope` to inherit from `DeviceInstance` instead of `Device` Sub-Issue[#51](https://github.com/catalystneuro/ndx-microscopy/issues/51)
 - Added `MicroscopeModel` that inherit from `DeviceModel` Sub-Issue[#51](https://github.com/catalystneuro/ndx-microscopy/issues/51)
 - Updated `MicroscopySeries` to use `MicroscopyRig` instead of individual `microscope`, `excitation_light_path`, and `emission_light_path` references Sub-Issue[#51](https://github.com/catalystneuro/ndx-microscopy/issues/51)
+- Added `dimensions_in_pixels` to `PlanarImagingSpace` and `dimensions_in_voxels` to `VolumetricImagingSpace` object Sub-Issue[#52](https://github.com/catalystneuro/ndx-microscopy/issues/52)
 
 # v0.2.1 (March 28, 2025)
 
