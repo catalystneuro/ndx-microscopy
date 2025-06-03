@@ -3,8 +3,8 @@
 import pytest
 
 from ndx_microscopy.testing import (
-    mock_EmissionLightPath,
-    mock_ExcitationLightPath,
+    mock_MicroscopyRig,
+    mock_MicroscopeModel,
     mock_Microscope,
     mock_MicroscopyChannel,
     mock_Segmentation,
@@ -23,6 +23,7 @@ from ndx_microscopy.testing import (
     mock_PlaneAcquisition,
     mock_RandomAccessScan,
 )
+
 from ndx_microscopy import (
     Segmentation,
     Segmentation2D,
@@ -41,24 +42,19 @@ def test_constructor_microscope():
     assert microscope.description == "A mock instance of a Microscope type to be used for rapid testing."
 
 
+def test_constructor_microscope_model():
+    microscope_model = mock_MicroscopeModel()
+    assert microscope_model.description == "A mock instance of a MicroscopeModel type to be used for rapid testing."
+
+
 def test_constructor_microscopy_channel():
     microscopy_channel = mock_MicroscopyChannel()
     assert microscopy_channel.description == "A mock instance of a MicroscopyChannel type to be used for rapid testing."
 
 
-def test_constructor_excitation_light_path():
-    excitation_light_path = mock_ExcitationLightPath()
-    assert (
-        excitation_light_path.description
-        == "A mock instance of a ExcitationLightPath type to be used for rapid testing."
-    )
-
-
-def test_constructor_emission_light_path():
-    emission_light_path = mock_EmissionLightPath()
-    assert (
-        emission_light_path.description == "A mock instance of a EmissionLightPath type to be used for rapid testing."
-    )
+def test_constructor_microscopy_rig():
+    microscopy_rig = mock_MicroscopyRig()
+    assert microscopy_rig.description == "A mock instance of a MicroscopyRig type to be used for rapid testing."
 
 
 def test_constructor_illumination_pattern():
@@ -165,18 +161,14 @@ def test_constructor_segmentation_container():
 
 
 def test_constructor_planar_microscopy_series():
-    microscope = mock_Microscope()
+    microscopy_rig = mock_MicroscopyRig()
     microscopy_channel = mock_MicroscopyChannel()
-    excitation_light_path = mock_ExcitationLightPath()
     planar_imaging_space = mock_PlanarImagingSpace()
-    emission_light_path = mock_EmissionLightPath()
 
     planar_microscopy_series = mock_PlanarMicroscopySeries(
-        microscope=microscope,
+        microscopy_rig=microscopy_rig,
         microscopy_channel=microscopy_channel,
-        excitation_light_path=excitation_light_path,
         planar_imaging_space=planar_imaging_space,
-        emission_light_path=emission_light_path,
     )
     assert (
         planar_microscopy_series.description
@@ -186,17 +178,14 @@ def test_constructor_planar_microscopy_series():
 
 def test_constructor_multi_plane_microscopy_container():
 
-    microscope = mock_Microscope()
+    microscopy_rig = mock_MicroscopyRig()
     microscopy_channel = mock_MicroscopyChannel()
-    excitation_light_path = mock_ExcitationLightPath()
     planar_imaging_space = mock_PlanarImagingSpace()
-    emission_light_path = mock_EmissionLightPath()
+
     planar_microscopy_series = mock_PlanarMicroscopySeries(
-        microscope=microscope,
+        microscopy_rig=microscopy_rig,
         microscopy_channel=microscopy_channel,
-        excitation_light_path=excitation_light_path,
         planar_imaging_space=planar_imaging_space,
-        emission_light_path=emission_light_path,
     )
 
     multi_plane_microscopy_container = mock_MultiPlaneMicroscopyContainer(
@@ -206,18 +195,14 @@ def test_constructor_multi_plane_microscopy_container():
 
 
 def test_constructor_volumetric_microscopy_series():
-    microscope = mock_Microscope()
+    microscopy_rig = mock_MicroscopyRig()
     microscopy_channel = mock_MicroscopyChannel()
-    excitation_light_path = mock_ExcitationLightPath()
     volumetric_imaging_space = mock_VolumetricImagingSpace()
-    emission_light_path = mock_EmissionLightPath()
 
     volumetric_microscopy_series = mock_VolumetricMicroscopySeries(
-        microscope=microscope,
+        microscopy_rig=microscopy_rig,
         microscopy_channel=microscopy_channel,
-        excitation_light_path=excitation_light_path,
         volumetric_imaging_space=volumetric_imaging_space,
-        emission_light_path=emission_light_path,
     )
     assert (
         volumetric_microscopy_series.description

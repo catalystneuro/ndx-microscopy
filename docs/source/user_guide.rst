@@ -12,51 +12,145 @@ Core Concepts
 Device Components
 ^^^^^^^^^^^^^^^
 
-The primary device component is the Microscope class:
+The device components include MicroscopeModel, Microscope, and MicroscopyRig:
 
-.. code-block:: python
+1. **MicroscopeModel**: Defines the model of a microscope
 
-    microscope = Microscope(
-        name='2p-scope',
-        description='Custom two-photon microscope'
-        manufacturer='Company X'
-        model='Model Y'
-    )
-    nwbfile.add_device(microscope)
+   .. code-block:: python
+
+       microscope_model = MicroscopeModel(
+           name='2p-model',
+           description='Two-photon microscope model',
+           model_number='2p-001',
+           manufacturer='ImagingTech'
+       )
+       nwbfile.add_device(microscope_model)
+
+2. **Microscope**: Defines an instance of a microscope
+
+   .. code-block:: python
+
+       microscope = Microscope(
+           name='2p-scope',
+           description='Custom two-photon microscope',
+           serial_number='2p-serial-001',
+           model=microscope_model,
+           technique='mirror scanning'  # Specify the technique used
+       )
+       nwbfile.add_device(microscope)
+
+3. **MicroscopyRig**: Defines a collection of devices that make up the microscopy rig
+
+   .. code-block:: python
+
+       # Create optical component models using ndx-ophys-devices
+       excitation_source_model = ExcitationSourceModel(
+           name="excitation_source_model",
+           manufacturer="Laser Manufacturer",
+           model_number="ES-123",
+           description="Excitation source model",
+           source_type="laser",
+           excitation_mode="two-photon",
+           wavelength_range_in_nm=[800.0, 1000.0]
+       )
+       nwbfile.add_device(excitation_source_model)
+       
+       excitation_filter_model = BandOpticalFilterModel(
+           name="excitation_filter_model",
+           filter_type="Bandpass",
+           manufacturer="Semrock",
+           model_number="FF01-920/80",
+           center_wavelength_in_nm=920.0,
+           bandwidth_in_nm=80.0
+       )
+       nwbfile.add_device(excitation_filter_model)
+       
+       dichroic_mirror_model = DichroicMirrorModel(
+           name="dichroic_mirror_model",
+           manufacturer="Semrock",
+           model_number="FF757-Di01",
+           cut_on_wavelength_in_nm=757.0
+       )
+       nwbfile.add_device(dichroic_mirror_model)
+       
+       photodetector_model = PhotodetectorModel(
+           name="photodetector_model",
+           detector_type="PMT",
+           manufacturer="Hamamatsu",
+           model_number="R6357",
+           gain=70.0,
+           gain_unit="dB"
+       )
+       nwbfile.add_device(photodetector_model)
+       
+       emission_filter_model = BandOpticalFilterModel(
+           name="emission_filter_model",
+           filter_type="Bandpass",
+           manufacturer="Semrock",
+           model_number="FF01-510/84",
+           center_wavelength_in_nm=510.0,
+           bandwidth_in_nm=84.0
+       )
+       nwbfile.add_device(emission_filter_model)
+
+       # Create optical component instances
+       laser = ExcitationSource(
+           name='laser',
+           description='Two-photon excitation laser',
+           serial_number="ES-SN-123456",
+           model=excitation_source_model,
+           intensity_in_W_per_m2=1000.0,
+           exposure_time_in_s=0.001
+       )
+       nwbfile.add_device(laser)
+
+       ex_filter = BandOpticalFilter(
+           name='ex_filter',
+           description='Excitation filter',
+           serial_number="EF-SN-123456",
+           model=excitation_filter_model
+       )
+       nwbfile.add_device(ex_filter)
+
+       dichroic = DichroicMirror(
+           name='dichroic',
+           description='Dichroic mirror',
+           serial_number="DM-SN-123456",
+           model=dichroic_mirror_model
+       )
+       nwbfile.add_device(dichroic)
+
+       detector = Photodetector(
+           name='detector',
+           description='PMT detector',
+           serial_number="PD-SN-123456",
+           model=photodetector_model
+       )
+       nwbfile.add_device(detector)
+
+       em_filter = BandOpticalFilter(
+           name='em_filter',
+           description='Emission filter',
+           serial_number="EF-SN-123456",
+           model=emission_filter_model
+       )
+       nwbfile.add_device(em_filter)
+
+       # Create the microscopy rig
+       microscopy_rig = MicroscopyRig(
+           name='2p_rig',
+           description='Two-photon microscopy rig',
+           microscope=microscope,
+           excitation_source=laser,
+           excitation_filter=ex_filter,
+           dichroic_mirror=dichroic,
+           photodetector=detector,
+           emission_filter=em_filter
+       )
 
 Other optical components (filters, sources, detectors) are provided by the ndx-ophys-devices extension.
 
-Light Path Configuration
-^^^^^^^^^^^^^^^^^^^^^
-
-Light paths define how light travels through the microscope:
-
-1. **ExcitationLightPath**: Defines illumination pathway
-
-   .. code-block:: python
-
-       excitation = ExcitationLightPath(
-           name='2p_excitation',
-           description='Two-photon excitation path',
-           excitation_source=laser,          # from ndx-ophys-devices
-           excitation_filter=ex_filter,      # from ndx-ophys-devices
-           dichroic_mirror=dichroic         # from ndx-ophys-devices
-       )
-
-2. **EmissionLightPath**: Defines collection pathway
-
-   .. code-block:: python
-
-       emission = EmissionLightPath(
-           name='gcamp_emission',
-           description='GCaMP6f emission path',
-           indicator=indicator,              # from ndx-ophys-devices
-           photodetector=detector,           # from ndx-ophys-devices
-           emission_filter=em_filter,        # from ndx-ophys-devices
-           dichroic_mirror=dichroic         # from ndx-ophys-devices
-       )
-
-3. **MicroscopyChannel**: Defines a channel with indicator and wavelength information
+4. **MicroscopyChannel**: Defines a channel with indicator and wavelength information
 
    .. code-block:: python
 
@@ -183,17 +277,60 @@ Basic workflow for 2D imaging:
 
 .. code-block:: python
 
-    # 1. Set up microscope with technique
+    # 1. Set up microscope model and instance
+    microscope_model = MicroscopeModel(
+        name='2p-model',
+        description='Two-photon microscope model',
+        model_number='2p-001',
+        manufacturer='ImagingTech'
+    )
+    nwbfile.add_device(microscope_model)
+
     microscope = Microscope(
         name='2p-scope',
         description='Custom two-photon microscope',
-        manufacturer='Custom Build',
-        model='2P-Special',
-        technique='mirror scanning',  # Specify the technique
+        serial_number='2p-serial-001',
+        model=microscope_model,
+        technique='mirror scanning'  # Specify the technique used
     )
     nwbfile.add_device(microscope)
 
-    # 2. Define illumination pattern
+    # 2. Create optical component models and instances
+    excitation_source_model = ExcitationSourceModel(
+        name="excitation_source_model",
+        manufacturer="Laser Manufacturer",
+        model_number="ES-123",
+        description="Excitation source model",
+        source_type="laser",
+        excitation_mode="two-photon",
+        wavelength_range_in_nm=[800.0, 1000.0]
+    )
+    nwbfile.add_device(excitation_source_model)
+    
+    laser = ExcitationSource(
+        name='laser',
+        description='Two-photon excitation laser',
+        serial_number="ES-SN-123456",
+        model=excitation_source_model,
+        intensity_in_W_per_m2=1000.0,
+        exposure_time_in_s=0.001
+    )
+    nwbfile.add_device(laser)
+
+    # Add other optical components (filters, detectors, etc.)
+    # ...
+
+    # 3. Create the microscopy rig
+    microscopy_rig = MicroscopyRig(
+        name='2p_rig',
+        description='Two-photon microscopy rig',
+        microscope=microscope,
+        excitation_source=laser,
+        # Add other optical components
+        # ...
+    )
+
+    # 4. Define illumination pattern
     line_scan = LineScan(
         name='line_scanning',
         description='Line scanning two-photon microscopy',
@@ -202,7 +339,7 @@ Basic workflow for 2D imaging:
         dwell_time_in_s=1.0e-6
     )
 
-    # 3. Set up imaging space with illumination pattern
+    # 5. Set up imaging space with illumination pattern
     planar_imaging_space = PlanarImagingSpace(
         name='cortex_plane',
         description='Layer 2/3 of visual cortex',
@@ -227,10 +364,8 @@ Basic workflow for 2D imaging:
     microscopy_series = PlanarMicroscopySeries(
         name='microscopy_series',
         description='Two-photon calcium imaging',
-        microscope=microscope,
+        microscopy_rig=microscopy_rig,
         microscopy_channel=microscopy_channel,
-        excitation_light_path=excitation,
-        emission_light_path=emission,
         planar_imaging_space=planar_imaging_space,
         data=data,                # [frames, height, width]
         unit='a.u.',
@@ -246,17 +381,37 @@ Workflow for one-photon widefield imaging:
 
 .. code-block:: python
 
-    # 1. Set up microscope with technique
+    # 1. Set up microscope model and instance
+    microscope_model = MicroscopeModel(
+        name='1p-model',
+        description='One-photon microscope model',
+        model_number='1p-001',
+        manufacturer='ImagingTech'
+    )
+    nwbfile.add_device(microscope_model)
+
     microscope = Microscope(
         name='1p-scope',
         description='Custom one-photon microscope',
-        manufacturer='Custom Build',
-        model='1P-Special',
-        technique='widefield',  # Specify the technique
+        serial_number='1p-serial-001',
+        model=microscope_model,
+        technique='widefield'  # Specify the technique used
     )
     nwbfile.add_device(microscope)
 
-    # 2. Define illumination pattern
+    # 2. Create optical component models and instances
+    # ...
+
+    # 3. Create the microscopy rig
+    microscopy_rig = MicroscopyRig(
+        name='1p_rig',
+        description='One-photon microscopy rig',
+        microscope=microscope,
+        # Add optical components
+        # ...
+    )
+
+    # 4. Define illumination pattern
     plane_acquisition = PlaneAcquisition(
         name='plane_acquisition',
         description='Widefield fluorescence imaging',
@@ -264,7 +419,7 @@ Workflow for one-photon widefield imaging:
         plane_rate_in_Hz=30.0
     )
 
-    # 3. Set up imaging space with illumination pattern
+    # 5. Set up imaging space with illumination pattern
     planar_imaging_space = PlanarImagingSpace(
         name='hippo_plane',
         description='CA1 region of hippocampus',
@@ -276,7 +431,7 @@ Workflow for one-photon widefield imaging:
         illumination_pattern=plane_acquisition
     )
 
-    # 4. Create microscopy channel
+    # 6. Create microscopy channel
     microscopy_channel = MicroscopyChannel(
         name='gcamp_channel',
         description='GCaMP6f channel',
@@ -289,10 +444,8 @@ Workflow for one-photon widefield imaging:
     microscopy_series = PlanarMicroscopySeries(
         name='imaging_data',
         description='One-photon calcium imaging',
-        microscope=microscope,
         microscopy_channel=microscopy_channel,
-        excitation_light_path=excitation,
-        emission_light_path=emission,
+        microscopy_rig=microscopy_rig,
         planar_imaging_space=planar_imaging_space,
         data=data,
         unit='a.u.',
@@ -308,17 +461,37 @@ Workflow for volumetric imaging with targeted scanning:
 
 .. code-block:: python
 
-    # 1. Set up microscope with technique
+    # 1. Set up microscope model and instance
+    microscope_model = MicroscopeModel(
+        name='volume-model',
+        description='Volumetric imaging microscope model',
+        model_number='volume-001',
+        manufacturer='ImagingTech'
+    )
+    nwbfile.add_device(microscope_model)
+
     microscope = Microscope(
         name='volume-scope',
         description='Custom volumetric imaging microscope',
-        manufacturer='Custom Build',
-        model='Volume-Special',
-        technique='acousto-optical deflectors',  # Specify the technique
+        serial_number='volume-serial-001',
+        model=microscope_model,
+        technique='acousto-optical deflectors'  # Specify the technique used
     )
     nwbfile.add_device(microscope)
 
-    # 2. Define illumination pattern
+    # 2. Create optical component models and instances
+    # ...
+
+    # 3. Create the microscopy rig
+    microscopy_rig = MicroscopyRig(
+        name='volume_rig',
+        description='Volumetric microscopy rig',
+        microscope=microscope,
+        # Add optical components
+        # ...
+    )
+
+    # 4. Define illumination pattern
     random_access_scan = RandomAccessScan(
         name='random_access',
         description='Targeted imaging of specific neurons',
@@ -327,7 +500,7 @@ Workflow for volumetric imaging with targeted scanning:
         scanning_pattern='spiral'
     )
 
-    # 3. Set up volumetric space with illumination pattern
+    # 5. Set up volumetric space with illumination pattern
     volumetric_imaging_space = VolumetricImagingSpace(
         name='cortex_volume',
         description='Visual cortex volume',
@@ -339,7 +512,7 @@ Workflow for volumetric imaging with targeted scanning:
         illumination_pattern=random_access_scan
     )
 
-    # 4. Create microscopy channel
+    # 6. Create microscopy channel
     microscopy_channel = MicroscopyChannel(
         name='gcamp_channel',
         description='GCaMP6f channel',
@@ -351,10 +524,8 @@ Workflow for volumetric imaging with targeted scanning:
     # 5. Create volumetric series
     volume_series = VolumetricMicroscopySeries(
         name='volume_data',
-        microscope=microscope,
+        microscopy_rig=microscopy_rig,
         microscopy_channel=microscopy_channel,
-        excitation_light_path=excitation,
-        emission_light_path=emission,
         volumetric_imaging_space=volumetric_imaging_space,
         data=data,                # [frames, height, width, depths]
         unit='a.u.',
