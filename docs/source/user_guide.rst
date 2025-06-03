@@ -56,6 +56,18 @@ Light paths define how light travels through the microscope:
            dichroic_mirror=dichroic         # from ndx-ophys-devices
        )
 
+3. **MicroscopyChannel**: Defines a channel with indicator and wavelength information
+
+   .. code-block:: python
+
+       microscopy_channel = MicroscopyChannel(
+           name='gcamp_channel',
+           description='GCaMP6f channel',
+           excitation_wavelength_in_nm=488.0,
+           emission_wavelength_in_nm=520.0,
+           indicator=indicator               # from ndx-ophys-devices
+       )
+
 Illumination Pattern Configuration
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -202,11 +214,21 @@ Basic workflow for 2D imaging:
         illumination_pattern=line_scan        # Include the illumination pattern
     )
 
-    # 4. Create imaging series
+    # 4. Create microscopy channel
+    microscopy_channel = MicroscopyChannel(
+        name='gcamp_channel',
+        description='GCaMP6f channel',
+        excitation_wavelength_in_nm=488.0,
+        emission_wavelength_in_nm=520.0,
+        indicator=indicator               # from ndx-ophys-devices
+    )
+
+    # 5. Create imaging series
     microscopy_series = PlanarMicroscopySeries(
         name='microscopy_series',
         description='Two-photon calcium imaging',
         microscope=microscope,
+        microscopy_channel=microscopy_channel,
         excitation_light_path=excitation,
         emission_light_path=emission,
         planar_imaging_space=planar_imaging_space,
@@ -254,11 +276,21 @@ Workflow for one-photon widefield imaging:
         illumination_pattern=plane_acquisition
     )
 
-    # 4. Create imaging series
+    # 4. Create microscopy channel
+    microscopy_channel = MicroscopyChannel(
+        name='gcamp_channel',
+        description='GCaMP6f channel',
+        excitation_wavelength_in_nm=470.0,
+        emission_wavelength_in_nm=520.0,
+        indicator=indicator               # from ndx-ophys-devices
+    )
+
+    # 5. Create imaging series
     microscopy_series = PlanarMicroscopySeries(
         name='imaging_data',
         description='One-photon calcium imaging',
         microscope=microscope,
+        microscopy_channel=microscopy_channel,
         excitation_light_path=excitation,
         emission_light_path=emission,
         planar_imaging_space=planar_imaging_space,
@@ -307,10 +339,20 @@ Workflow for volumetric imaging with targeted scanning:
         illumination_pattern=random_access_scan
     )
 
-    # 4. Create volumetric series
+    # 4. Create microscopy channel
+    microscopy_channel = MicroscopyChannel(
+        name='gcamp_channel',
+        description='GCaMP6f channel',
+        excitation_wavelength_in_nm=920.0,
+        emission_wavelength_in_nm=520.0,
+        indicator=indicator               # from ndx-ophys-devices
+    )
+
+    # 5. Create volumetric series
     volume_series = VolumetricMicroscopySeries(
         name='volume_data',
         microscope=microscope,
+        microscopy_channel=microscopy_channel,
         excitation_light_path=excitation,
         emission_light_path=emission,
         volumetric_imaging_space=volumetric_imaging_space,

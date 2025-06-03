@@ -92,6 +92,35 @@ Represents the emission light path from an imaging space. Links to components de
             doc: Link to DichroicMirror object which contains metadata about the dichroic mirror in the emission light path.
             quantity: "?"
 
+MicroscopyChannel
+^^^^^^^^^^^^^^^
+Represents a channel in a microscope with metadata about the indicator and wavelengths.
+
+.. code-block:: yaml
+
+    groups:
+      - neurodata_type_def: MicroscopyChannel
+        neurodata_type_inc: NWBContainer
+        doc: A channel in a microscope that contains metadata about the indicator, the excitation and emission wavelengths.
+        attributes:
+          - name: name
+            dtype: text
+            doc: Name of the channel.
+          - name: description
+            dtype: text
+            doc: Description of the channel.
+            required: false
+          - name: excitation_wavelength_in_nm
+            dtype: float64
+            doc: Wavelength of the excitation light in nanometers.
+          - name: emission_wavelength_in_nm
+            dtype: float64
+            doc: Wavelength of the emission light in nanometers.
+        groups:
+          - neurodata_type_inc: Indicator
+            doc: Indicator object which contains metadata about the indicator used in this light path.
+            quantity: 1
+
 Microscopy Series Components
 ------------------------
 
@@ -117,6 +146,10 @@ Base type for microscopy time series data.
             doc: Link to a EmissionLightPath object containing metadata about the indicator and filters used to collect
               this data.
             target_type: EmissionLightPath
+        groups:
+          - neurodata_type_inc: MicroscopyChannel
+            doc: MicroscopyChannel object containing metadata about the channel used to acquire this imaging data.
+            quantity: 1
 
 PlanarMicroscopySeries
 ^^^^^^^^^^^^^^^^^^^
