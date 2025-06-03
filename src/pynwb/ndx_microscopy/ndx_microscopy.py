@@ -1,7 +1,6 @@
 from hdmf.utils import docval, popargs
 from pynwb import get_class, register_class
 from pynwb.core import MultiContainerInterface
-from ndx_ophys_devices import ExcitationSource, Photodetector, Indicator
 import numpy as np
 
 extension_name = "ndx-microscopy"
@@ -122,9 +121,9 @@ def get_FOV_size(self, **kwargs):
 VolumetricImagingSpace.get_FOV_size = get_FOV_size
 
 
-# Segmentation2D API functions
+# PlanarSegmentation API functions
 
-Segmentation2D = get_class("Segmentation2D", extension_name)
+PlanarSegmentation = get_class("PlanarSegmentation", extension_name)
 
 
 @docval(
@@ -146,7 +145,7 @@ Segmentation2D = get_class("Segmentation2D", extension_name)
     allow_extra=True,
 )
 def add_roi(self, **kwargs):
-    """Add a Region Of Interest (ROI) data to this Segmentation2D.
+    """Add a Region Of Interest (ROI) data to this PlanarSegmentation.
 
     Parameters
     ----------
@@ -174,7 +173,7 @@ def add_roi(self, **kwargs):
         # TODO: should we check that image_masks shape matches the shape of the FOV in the imaging space?
     if pixel_mask is not None:
         rkwargs["pixel_mask"] = pixel_mask
-    return super(Segmentation2D, self).add_row(**rkwargs)
+    return super(PlanarSegmentation, self).add_row(**rkwargs)
 
 
 @staticmethod
@@ -252,9 +251,9 @@ def image_to_pixel(image_mask):
     return pixel_mask
 
 
-Segmentation2D.add_roi = add_roi
-Segmentation2D.pixel_to_image = pixel_to_image
-Segmentation2D.image_to_pixel = image_to_pixel
+PlanarSegmentation.add_roi = add_roi
+PlanarSegmentation.pixel_to_image = pixel_to_image
+PlanarSegmentation.image_to_pixel = image_to_pixel
 
 
 @docval(
@@ -279,15 +278,15 @@ def create_roi_table_region(self, **kwargs):
     DynamicTableRegion
         Table region object for the selected ROIs.
     """
-    return super(Segmentation2D, self).create_region(**kwargs)
+    return super(PlanarSegmentation, self).create_region(**kwargs)
 
 
-Segmentation2D.create_roi_table_region = create_roi_table_region
+PlanarSegmentation.create_roi_table_region = create_roi_table_region
 
 
-# Segmentation3D API functions
+# VolumetricSegmentation API functions
 
-Segmentation3D = get_class("Segmentation3D", extension_name)
+VolumetricSegmentation = get_class("VolumetricSegmentation", extension_name)
 
 
 @docval(
@@ -309,7 +308,7 @@ Segmentation3D = get_class("Segmentation3D", extension_name)
     allow_extra=True,
 )
 def add_roi(self, **kwargs):
-    """Add a Region Of Interest (ROI) data to this Segmentation3D.
+    """Add a Region Of Interest (ROI) data to this VolumetricSegmentation.
 
     Parameters
     ----------
@@ -341,7 +340,7 @@ def add_roi(self, **kwargs):
         rkwargs["image_mask"] = image_mask
     if voxel_mask is not None:
         rkwargs["voxel_mask"] = voxel_mask
-    return super(Segmentation3D, self).add_row(**rkwargs)
+    return super(VolumetricSegmentation, self).add_row(**rkwargs)
 
 
 @staticmethod
@@ -421,9 +420,9 @@ def image_to_voxel(image_mask):
     return voxel_mask
 
 
-Segmentation3D.add_roi = add_roi
-Segmentation3D.voxel_to_image = voxel_to_image
-Segmentation3D.image_to_voxel = image_to_voxel
+VolumetricSegmentation.add_roi = add_roi
+VolumetricSegmentation.voxel_to_image = voxel_to_image
+VolumetricSegmentation.image_to_voxel = image_to_voxel
 
 
 @docval(
@@ -448,10 +447,10 @@ def create_roi_table_region(self, **kwargs):
     DynamicTableRegion
         Table region object for the selected ROIs.
     """
-    return super(Segmentation3D, self).create_region(**kwargs)
+    return super(VolumetricSegmentation, self).create_region(**kwargs)
 
 
-Segmentation3D.create_roi_table_region = create_roi_table_region
+VolumetricSegmentation.create_roi_table_region = create_roi_table_region
 
 
 # SegmentationContainer API functions
@@ -505,48 +504,3 @@ class SegmentationContainer(MultiContainerInterface):
         """
         kwargs.setdefault("description", kwargs["imaging_space"].description)
         return self.create_segmentation(**kwargs)
-
-
-ExcitationLightPath = get_class("ExcitationLightPath", extension_name)
-
-
-@docval(
-    {"name": "excitation_source", "type": ExcitationSource, "doc": "The excitation source", "default": None},
-    allow_extra=True,
-)
-def get_excitation_wavelength(self, **kwargs):
-    """Get the excitation wavelength from the excitation source."""
-    excitation_source = popargs("excitation_source", kwargs)
-    return excitation_source.excitation_wavelength_in_nm
-
-
-ExcitationLightPath.get_excitation_wavelength = get_excitation_wavelength
-
-
-EmissionLightPath = get_class("EmissionLightPath", extension_name)
-
-
-@docval(
-    {"name": "photodetector", "type": Photodetector, "doc": "The photodetector", "default": None},
-    allow_extra=True,
-)
-def get_emission_wavelength(self, **kwargs):
-    """Get the emission wavelength from the photodetector."""
-    photodetector = popargs("photodetector", kwargs)
-    return photodetector.detected_wavelength_in_nm
-
-
-EmissionLightPath.get_emission_wavelength = get_emission_wavelength
-
-
-@docval(
-    {"name": "indicator", "type": Indicator, "doc": "The indicator", "default": None},
-    allow_extra=True,
-)
-def get_indicator_label(self, **kwargs):
-    """Get the label of the indicator."""
-    indicator = popargs("indicator", kwargs)
-    return indicator.label
-
-
-EmissionLightPath.get_indicator_label = get_indicator_label

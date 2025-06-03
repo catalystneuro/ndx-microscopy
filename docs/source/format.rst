@@ -7,90 +7,103 @@ The ndx-microscopy extension defines several neurodata types to represent micros
 Device Components
 ---------------
 
+MicroscopeModel
+^^^^^^^^^^^^^^^
+A microscope model used to acquire imaging data.
+
+.. code-block:: yaml
+
+    groups:
+      - neurodata_type_def: MicroscopeModel
+        neurodata_type_inc: DeviceModel
+        doc: A microscope model used to acquire imaging data.
+
 Microscope
 ^^^^^^^^^
-A device for acquiring imaging data.
+A device instance for acquiring imaging data.
 
 .. code-block:: yaml
 
     groups:
       - neurodata_type_def: Microscope
-        neurodata_type_inc: Device
-        doc: A microscope used to acquire imaging data.
+        neurodata_type_inc: DeviceInstance
+        doc: Instance of a microscope used to acquire imaging data.
         attributes:
-          - name: model
-            dtype: text
-            doc: Model identifier of the microscope.
-            required: false
           - name: technique
             dtype: text
             doc: Imaging technique used by the microscope (e.g. scan mirrors, light sheet, temporal focusing, acusto-optical modulation, piezo z-scan mirrors).
             required: false
 
-For other device components (ExcitationSource, OpticalFilter, Photodetector, etc.), please refer to the `ndx-ophys-devices documentation <https://ndx-ophys-devices.readthedocs.io/>`_.
-
-Light Path Components
-------------------
-
-ExcitationLightPath
-^^^^^^^^^^^^^^^^^
-Represents the excitation light path that illuminates an imaging space. Links to components defined in ndx-ophys-devices.
+MicroscopyRig
+^^^^^^^^^^^^^
+A collection of devices and metadata that make up the microscopy rig.
 
 .. code-block:: yaml
 
     groups:
-      - neurodata_type_def: ExcitationLightPath
-        neurodata_type_inc: LabMetaData
-        doc: Excitation light path that illuminates an imaging space.
+      - neurodata_type_def: MicroscopyRig
+        neurodata_type_inc: NWBContainer
+        doc: A collection of devices and metadata that make up the microscopy rig.
         attributes:
           - name: description
             dtype: text
-            doc: Description of the excitation light path.
+            doc: Description of the microscopy rig.
         links:
+          - name: microscope
+            target_type: Microscope
+            doc: Link to Microscope object which contains metadata about the microscope used to acquire imaging data.
+            quantity: 1
           - name: excitation_source
             target_type: ExcitationSource
             doc: Link to ExcitationSource object which contains metadata about the excitation source device. If it is a pulsed excitation source link a PulsedExcitationSource object.
-            quantity: 1
+            quantity: "?"
           - name: excitation_filter
             target_type: OpticalFilter
-            doc: Link to OpticalFilter object which contains metadata about the optical filter in this excitation light path. It can be either a BandOpticalFilter or a EdgeOpticalFilter.
+            doc: Link to OpticalFilter object which contains metadata about the excitation filter. It can be either a BandOpticalFilter (e.g., 'Bandpass', 'Bandstop', 'Longpass', 'Shortpass') or a EdgeOpticalFilter (Longpass or Shortpass).
             quantity: "?"
           - name: dichroic_mirror
             target_type: DichroicMirror
-            doc: Link to DichroicMirror object which contains metadata about the dichroic mirror in the excitation light path.
+            doc: Link to DichroicMirror object which contains metadata about the dichroic mirror.
+            quantity: "?"
+          - name: photodetector
+            target_type: Photodetector
+            doc: Link to Photodetector object which contains metadata about the photodetector device.
+            quantity: "?"
+          - name: emission_filter
+            target_type: OpticalFilter
+            doc: Link to OpticalFilter object which contains metadata about the emission filter. It can be either a BandOpticalFilter (e.g., 'Bandpass', 'Bandstop', 'Longpass', 'Shortpass') or a EdgeOpticalFilter (Longpass or Shortpass).
             quantity: "?"
 
-EmissionLightPath
+For other device components (ExcitationSource, OpticalFilter, Photodetector, etc.), please refer to the `ndx-ophys-devices documentation <https://ndx-ophys-devices.readthedocs.io/>`_.
+
+MicroscopyChannel
 ^^^^^^^^^^^^^^^
-Represents the emission light path from an imaging space. Links to components defined in ndx-ophys-devices.
+Represents a channel in a microscope with metadata about the indicator and wavelengths.
 
 .. code-block:: yaml
 
     groups:
-      - neurodata_type_def: EmissionLightPath
-        neurodata_type_inc: LabMetaData
-        doc: Emission light path from an imaging space.
+      - neurodata_type_def: MicroscopyChannel
+        neurodata_type_inc: NWBContainer
+        doc: A channel in a microscope that contains metadata about the indicator, the excitation and emission wavelengths.
         attributes:
+          - name: name
+            dtype: text
+            doc: Name of the channel.
           - name: description
             dtype: text
-            doc: Description of the emission light path.
+            doc: Description of the channel.
+            required: false
+          - name: excitation_wavelength_in_nm
+            dtype: float64
+            doc: Wavelength of the excitation light in nanometers.
+          - name: emission_wavelength_in_nm
+            dtype: float64
+            doc: Wavelength of the emission light in nanometers.
         groups:
           - neurodata_type_inc: Indicator
             doc: Indicator object which contains metadata about the indicator used in this light path.
             quantity: 1
-        links:
-          - name: photodetector
-            target_type: Photodetector
-            doc: Link to Photodetector object which contains metadata about the photodetector device.
-            quantity: 1
-          - name: emission_filter
-            target_type: OpticalFilter
-            doc: Link to OpticalFilter object which contains metadata about the optical filter in this emission light path.
-            quantity: "?"
-          - name: dichroic_mirror
-            target_type: DichroicMirror
-            doc: Link to DichroicMirror object which contains metadata about the dichroic mirror in the emission light path.
-            quantity: "?"
 
 Microscopy Series Components
 ------------------------
@@ -106,17 +119,13 @@ Base type for microscopy time series data.
         neurodata_type_inc: TimeSeries
         doc: Imaging data acquired over time from an optical channel in a microscope while a light source illuminates the
           imaging space.
-        links:
-          - name: microscope
-            doc: Link to a Microscope object containing metadata about the device used to acquire this imaging data.
-            target_type: Microscope
-          - name: excitation_light_path
-            doc: Link to a ExcitationLightPath object containing metadata about the device used to illuminate the imaging space.
-            target_type: ExcitationLightPath
-          - name: emission_light_path
-            doc: Link to a EmissionLightPath object containing metadata about the indicator and filters used to collect
-              this data.
-            target_type: EmissionLightPath
+        groups:
+          - neurodata_type_inc: MicroscopyRig
+            doc: MicroscopyRig object containing metadata about the microscopy rig used to acquire this imaging data.
+            quantity: 1
+          - neurodata_type_inc: MicroscopyChannel
+            doc: MicroscopyChannel object containing metadata about the channel used to acquire this imaging data.
+            quantity: 1
 
 PlanarMicroscopySeries
 ^^^^^^^^^^^^^^^^^^^
@@ -194,6 +203,24 @@ Container for multiple PlanarMicroscopySeries.
             doc: PlanarMicroscopySeries object(s) containing imaging data for a single depth scan.
             quantity: "+"
 
+MultiChannelMicroscopyContainer
+^^^^^^^^^^^^^^^^^^^^^^^^^
+Container for multiple PlanerMicroscopySeries or VolumetricMicroscopySeries acquired from different channels.
+
+.. code-block:: yaml
+
+    groups:
+      - neurodata_type_def: MultiChannelMicroscopyContainer
+        neurodata_type_inc: NWBDataInterface
+        default_name: MultiChannelMicroscopyContainer
+        doc:
+          Imaging data acquired over several channels; for instance, when using multiple excitation wavelengths
+          or multiple indicators. Each channel is stored in a separate PlanarMicroscopySeries or VolumetricMicroscopySeries object.
+        groups:
+          - neurodata_type_inc: MicroscopySeries
+            doc: MicroscopySeries object containing imaging data for a single channel scan.
+            quantity: "+"
+
 Illumination Pattern Components
 --------------------------
 
@@ -248,9 +275,9 @@ Whole plane acquisition method for microscopy.
         neurodata_type_inc: IlluminationPattern
         doc: Whole plane acquisition, common for light sheet techniques.
         attributes:
-          - name: plane_thickness_in_um
-            dtype: float64
-            doc: Thickness of the plane in micrometers.
+          - name: point_spread_function_in_um
+            dtype: text
+            doc: Estimated plane spatial profile or point spread function, expressed as mean [um] ± s.d [um].
             required: false
           - name: illumination_angle_in_degrees
             dtype: float64
@@ -423,14 +450,14 @@ Base type for segmentation data.
             doc: Summary images that are related to the segmentation, e.g., mean, correlation, maximum projection.
             quantity: "*"
 
-Segmentation2D
+PlanarSegmentation
 ^^^^^^^^^^^
 For 2D segmentation data.
 
 .. code-block:: yaml
 
     groups:
-      - neurodata_type_def: Segmentation2D
+      - neurodata_type_def: PlanarSegmentation
         neurodata_type_inc: Segmentation
         doc: Results from image segmentation of a specific planar imaging space.
         datasets:
@@ -469,14 +496,14 @@ For 2D segmentation data.
           - neurodata_type_inc: PlanarImagingSpace
             doc: PlanarImagingSpace object from which this data was generated.
 
-Segmentation3D
+VolumetricSegmentation
 ^^^^^^^^^^^
 For 3D segmentation data.
 
 .. code-block:: yaml
 
     groups:
-      - neurodata_type_def: Segmentation3D
+      - neurodata_type_def: VolumetricSegmentation
         neurodata_type_inc: Segmentation
         doc: Results from image segmentation of a specific volumetric imaging space.
         datasets:
