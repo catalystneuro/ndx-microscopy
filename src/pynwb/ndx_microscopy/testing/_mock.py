@@ -169,7 +169,7 @@ def mock_PlanarImagingSpace(
     name: Optional[str] = None,
     description: str = "A mock instance of a PlanarImagingSpace type to be used for rapid testing.",
     origin_coordinates: Tuple[float, float, float] = (-1.2, -0.6, -2),
-    pixel_size_in_um: Tuple[float, float, float] = (20, 20),
+    pixel_size_in_um: Tuple[float, float] = (20, 20),
     dimensions_in_pixels: Tuple[int, int] = (100, 100),
     location: str = "The location targeted by the mock imaging space.",
     reference_frame: str = "The reference frame of the mock planar imaging space.",

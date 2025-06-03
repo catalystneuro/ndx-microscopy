@@ -85,12 +85,19 @@ PlanarImagingSpace
    :undoc-members:
    :show-inheritance:
 
+Methods
+^^^^^^^
+.. automethod:: ndx_microscopy.PlanarImagingSpace.get_FOV_size
 VolumetricImagingSpace
 ---------------------
 .. autoclass:: ndx_microscopy.VolumetricImagingSpace
    :members:
    :undoc-members:
    :show-inheritance:
+   
+Methods
+^^^^^^^
+.. automethod:: ndx_microscopy.VolumetricImagingSpace.get_FOV_size
 
 Microscopy Series Components
 =========================

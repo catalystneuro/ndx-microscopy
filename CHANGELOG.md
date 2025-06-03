@@ -16,6 +16,7 @@
 - Refactored segmentation classes: Sub-Issue[#56](https://github.com/catalystneuro/ndx-microscopy/issues/56)
   - Renamed `Segmentation2D` to `PlanarSegmentation`
   - Renamed `Segmentation3D` to `VolumetricSegmentation`
+- Added `get_FOV_size()` method to both `PlanarImagingSpace` and `VolumetricImagingSpace` classes for calculating Field of View size in micrometers Sub-Issue[#53](https://github.com/catalystneuro/ndx-microscopy/issues/53)
 
 # v0.2.1 (March 28, 2025)
 

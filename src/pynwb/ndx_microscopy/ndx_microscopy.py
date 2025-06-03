@@ -5,6 +5,121 @@ import numpy as np
 
 extension_name = "ndx-microscopy"
 
+# PlanarImagingSpace API functions
+
+PlanarImagingSpace = get_class("PlanarImagingSpace", extension_name)
+
+
+@docval(
+    {
+        "name": "dimensions_in_pixels",
+        "type": (tuple, "array_data"),
+        "doc": "the size of the image in pixels",
+        "default": None,
+    },
+    {
+        "name": "pixel_size_in_um",
+        "type": (tuple, "array_data"),
+        "doc": "the size of a pixel in micrometers",
+        "default": None,
+    },
+    allow_extra=True,
+)
+def get_FOV_size(self, **kwargs):
+    """Get the size of the Field of View (FOV) in micrometers.
+
+    Parameters
+    ----------
+    dimension_in_pixels : int or tuple, optional
+        The size of the image in pixels. If not provided, will use the imaging space's dimension.
+    pixel_size_in_um : float or tuple, optional
+        The size of a pixel in micrometers. If not provided, will use the imaging space's pixel size.
+
+    Returns
+    -------
+    tuple
+        The size of the FOV in micrometers as (height, width).
+    """
+    dimensions_in_pixels, pixel_size_in_um = popargs("dimensions_in_pixels", "pixel_size_in_um", kwargs)
+    # Use instance attributes if parameters not provided
+    if dimensions_in_pixels is None:
+        dimensions_in_pixels = getattr(self, "dimensions_in_pixels", None)
+        if dimensions_in_pixels is None:
+            raise ValueError("dimensions_in_pixels must be provided either as parameter or set on the imaging space")
+
+    if pixel_size_in_um is None:
+        pixel_size_in_um = getattr(self, "pixel_size_in_um", None)
+        if pixel_size_in_um is None:
+            raise ValueError("pixel_size_in_um must be provided either as parameter or set on the imaging space")
+
+    # Convert to numpy arrays for element-wise multiplication
+    dimensions_in_pixels = np.asarray(dimensions_in_pixels)
+    pixel_size_in_um = np.asarray(pixel_size_in_um)
+
+    FOV_size = dimensions_in_pixels * pixel_size_in_um
+    return tuple(FOV_size)
+
+
+PlanarImagingSpace.get_FOV_size = get_FOV_size
+
+
+# VolumetricImagingSpace API functions
+
+VolumetricImagingSpace = get_class("VolumetricImagingSpace", extension_name)
+
+
+@docval(
+    {
+        "name": "dimensions_in_voxels",
+        "type": (tuple, "array_data"),
+        "doc": "the size of the image in voxels",
+        "default": None,
+    },
+    {
+        "name": "voxel_size_in_um",
+        "type": (tuple, "array_data"),
+        "doc": "the size of a voxel in micrometers",
+        "default": None,
+    },
+    allow_extra=True,
+)
+def get_FOV_size(self, **kwargs):
+    """Get the size of the Field of View (FOV) in micrometers.
+
+    Parameters
+    ----------
+    dimension_in_voxels : int or tuple, optional
+        The size of the image in voxels. If not provided, will use the imaging space's dimension.
+    voxel_size_in_um : float or tuple, optional
+        The size of a voxel in micrometers. If not provided, will use the imaging space's voxel size.
+
+    Returns
+    -------
+    tuple
+        The size of the FOV in micrometers as (depth, height, width).
+    """
+    dimensions_in_voxels, voxel_size_in_um = popargs("dimensions_in_voxels", "voxel_size_in_um", kwargs)
+    # Use instance attributes if parameters not provided
+    if dimensions_in_voxels is None:
+        dimensions_in_voxels = getattr(self, "dimensions_in_voxels", None)
+        if dimensions_in_voxels is None:
+            raise ValueError("dimensions_in_voxels must be provided either as parameter or set on the imaging space")
+
+    if voxel_size_in_um is None:
+        voxel_size_in_um = getattr(self, "voxel_size_in_um", None)
+        if voxel_size_in_um is None:
+            raise ValueError("voxel_size_in_um must be provided either as parameter or set on the imaging space")
+
+    # Convert to numpy arrays for element-wise multiplication
+    dimensions_in_voxels = np.asarray(dimensions_in_voxels)
+    voxel_size_in_um = np.asarray(voxel_size_in_um)
+
+    FOV_size = dimensions_in_voxels * voxel_size_in_um
+    return tuple(FOV_size)
+
+
+VolumetricImagingSpace.get_FOV_size = get_FOV_size
+
 
 # PlanarSegmentation API functions
 
