@@ -44,6 +44,10 @@ groups:
         target_type: OpticalFilter
         doc: Link to OpticalFilter object which contains metadata about the emission filter. It can be either a BandOpticalFilter (e.g., 'Bandpass', 'Bandstop', 'Longpass', 'Shortpass') or a EdgeOpticalFilter (Longpass or Shortpass).
         quantity: "?"
+      - name: optical_lens
+        target_type: OpticalLens
+        doc: Link to OpticalLens object which contains metadata about the optical lens used in the microscopy rig.
+        quantity: "?"
 
   - neurodata_type_def: IlluminationPattern
     neurodata_type_inc: NWBContainer
