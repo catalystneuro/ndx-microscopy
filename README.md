@@ -28,6 +28,7 @@ A Neurodata Without Borders (NWB) extension for storing microscopy data and asso
     - `PlanarMicroscopySeries`
     - `VolumetricMicroscopySeries`
     - `MultiPlaneMicroscopyContainer`
+    - `MultiChannelMicroscopyContainer`
 - ROI/segmentation storage: 
     - `Segmentation2D`
     - `Segmentation3D`
@@ -330,6 +331,15 @@ classDiagram
         **planar_microscopy_series** : PlanarMicroscopySeries[1..*]
     }
 
+    
+    class MultiChannelMicroscopyContainer {
+        <<NWBDataInterface>>
+        --------------------------------------
+        groups
+        --------------------------------------
+        **microscopy_series** : MicroscopySeries[1..*]
+    }
+
     class ImagingSpace {
         <<NWBContainer>>
         --------------------------------------
@@ -393,6 +403,7 @@ classDiagram
     PlanarMicroscopySeries *-- PlanarImagingSpace : contains
     VolumetricMicroscopySeries *-- VolumetricImagingSpace : contains
     MultiPlaneMicroscopyContainer *-- PlanarMicroscopySeries : contains
+    MultiChannelMicroscopyContainer *-- MicroscopySeries : contains
     MicroscopySeries *-- MicroscopyRig : contains
     MicroscopyChannel *-- MicroscopySeries : contains    
     MicroscopyChannel --* Indicator : contains

@@ -64,6 +64,7 @@ Data Series
 - **PlanarMicroscopySeries**: 2D time series data
 - **VolumetricMicroscopySeries**: 3D time series data
 - **MultiPlaneMicroscopyContainer**: Multiple imaging planes
+- **MultiChannelMicroscopyContainer**: Multiple channel imaging data
 
 Quick Start Example
 ================

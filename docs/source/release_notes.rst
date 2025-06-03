@@ -29,6 +29,9 @@ Features
   * `excitation_wavelength`: Excitation wavelength for the channel
   * `emission_wavelength`: Emission wavelength for the channel 
   * `indicator`: Link to Indicator
+* Added `MultiChannelMicroscopyContainer` class to support multi-channel imaging data.
+  * This class allows for the storage of multiple `MicroscopySeries` objects, each representing a different channel of imaging data.
+  * It provides methods to access and manipulate individual channels, facilitating the analysis of multi-channel datasets.
 
 
 Improvements
@@ -43,6 +46,7 @@ Notes
 
 * These changes are NOT backward compatible and require updating existing code to use the new structure
 * The `MicroscopyRig` approach provides a more flexible and intuitive way to organize optical components
+* Improved organization of multi channel imaging data
 
 Version 0.2.0 (March 19, 2025)
 ==============================

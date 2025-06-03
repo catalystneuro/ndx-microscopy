@@ -30,6 +30,7 @@ from ndx_microscopy.testing import (
     mock_VolumetricImagingSpace,
     mock_PlanarMicroscopySeries,
     mock_MultiPlaneMicroscopyContainer,
+    mock_MultiChannelMicroscopyContainer,
     mock_VolumetricMicroscopySeries,
     mock_MicroscopyResponseSeries,
 )
@@ -314,17 +315,19 @@ class TestMultiPlaneMicroscopyContainerSimpleRoundtrip(pynwb_TestCase):
             name="PlanarImagingSpace_2", origin_coordinates=[0.0, 0.0, 1.0]
         )
 
+        microscopy_channel = mock_MicroscopyChannel(name="MicroscopyChannel")
+
         planar_microscopy_series_1 = mock_PlanarMicroscopySeries(
             name="PlanarMicroscopySeries_1",
             microscopy_rig=microscopy_rig,
-            microscopy_channel=mock_MicroscopyChannel(name="MicroscopyChannel1"),
+            microscopy_channel=microscopy_channel,
             planar_imaging_space=planar_imaging_space_1,
         )
 
         planar_microscopy_series_2 = mock_PlanarMicroscopySeries(
             name="PlanarMicroscopySeries_2",
             microscopy_rig=microscopy_rig,
-            microscopy_channel=mock_MicroscopyChannel(name="MicroscopyChannel2"),
+            microscopy_channel=microscopy_channel,
             planar_imaging_space=planar_imaging_space_2,
         )
 
@@ -345,6 +348,94 @@ class TestMultiPlaneMicroscopyContainerSimpleRoundtrip(pynwb_TestCase):
 
             self.assertContainerEqual(
                 multi_plane_microscopy_container, read_nwbfile.acquisition["MultiPlaneMicroscopyContainer"]
+            )
+
+
+class TestMultiChannelMicroscopyContainerSimpleRoundtrip(pynwb_TestCase):
+    """Simple roundtrip test for MultiChannelMicroscopyContainer."""
+
+    # TODO change to this once MicroscopyRig and MicroscopyChannel are available
+
+    def setUp(self):
+        self.nwbfile_path = "test_multi_channel_microscopy_container_roundtrip.nwb"
+
+    def tearDown(self):
+        pynwb.testing.remove_test_file(self.nwbfile_path)
+
+    def test_roundtrip(self):
+        nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=UTC))
+
+        microscope_model = mock_MicroscopeModel(name="MicroscopeModel")
+        nwbfile.add_device(devices=microscope_model)
+        microscope = mock_Microscope(name="Microscope", model=microscope_model)
+        nwbfile.add_device(devices=microscope)
+
+        excitation_source_model = mock_ExcitationSourceModel(name="ExcitationSourceModel")
+        nwbfile.add_device(devices=excitation_source_model)
+        excitation_source = mock_ExcitationSource(model=excitation_source_model)
+        nwbfile.add_device(devices=excitation_source)
+
+        excitation_filter_model = mock_OpticalFilterModel(name="OpticalFilterModel")
+        nwbfile.add_device(devices=excitation_filter_model)
+        excitation_filter = mock_OpticalFilter(model=excitation_filter_model)
+        nwbfile.add_device(devices=excitation_filter)
+
+        dichroic_mirror_model = mock_DichroicMirrorModel(name="DichroicMirrorModel")
+        nwbfile.add_device(devices=dichroic_mirror_model)
+        dichroic_mirror = mock_DichroicMirror(model=dichroic_mirror_model)
+        nwbfile.add_device(devices=dichroic_mirror)
+
+        photodetector_model = mock_PhotodetectorModel(name="PhotodetectorModel")
+        nwbfile.add_device(devices=photodetector_model)
+        photodetector = mock_Photodetector(model=photodetector_model)
+        nwbfile.add_device(devices=photodetector)
+
+        emission_filter_model = mock_OpticalFilterModel(name="EmissionFilterModel")
+        nwbfile.add_device(devices=emission_filter_model)
+        emission_filter = mock_OpticalFilter(model=emission_filter_model)
+        nwbfile.add_device(devices=emission_filter)
+
+        microscopy_rig = mock_MicroscopyRig(
+            name="MicroscopyRig",
+            microscope=microscope,
+            excitation_source=excitation_source,
+            excitation_filter=excitation_filter,
+            emission_filter=emission_filter,
+            photodetector=photodetector,
+            dichroic_mirror=dichroic_mirror,
+        )
+
+        planar_imaging_space = mock_PlanarImagingSpace(name="PlanarImagingSpace_1", origin_coordinates=[0.0, 0.0, 0.0])
+
+        planar_microscopy_series_1 = mock_PlanarMicroscopySeries(
+            name="PlanarMicroscopySeries_1",
+            microscopy_rig=microscopy_rig,
+            microscopy_channel=mock_MicroscopyChannel(name="MicroscopyChannel1"),
+            planar_imaging_space=planar_imaging_space,
+        )
+
+        planar_microscopy_series_2 = mock_PlanarMicroscopySeries(
+            name="PlanarMicroscopySeries_2",
+            microscopy_rig=microscopy_rig,
+            microscopy_channel=mock_MicroscopyChannel(name="MicroscopyChannel2"),
+            planar_imaging_space=planar_imaging_space,
+        )
+
+        multi_plane_microscopy_container = mock_MultiChannelMicroscopyContainer(
+            name="MultiChannelMicroscopyContainer",
+            microscopy_series=[planar_microscopy_series_1, planar_microscopy_series_2],
+        )
+
+        nwbfile.add_acquisition(nwbdata=multi_plane_microscopy_container)
+
+        with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="w") as io:
+            io.write(nwbfile)
+
+        with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="r", load_namespaces=True) as io:
+            read_nwbfile = io.read()
+
+            self.assertContainerEqual(
+                multi_plane_microscopy_container, read_nwbfile.acquisition["MultiChannelMicroscopyContainer"]
             )
 
 
