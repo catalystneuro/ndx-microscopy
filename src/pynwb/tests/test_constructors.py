@@ -86,7 +86,7 @@ def test_constructor_plane_acquisition():
     """Test constructor for PlaneAcquisition class."""
     plane_acquisition = mock_PlaneAcquisition()
     assert plane_acquisition.description == "A mock instance of a PlaneAcquisition type to be used for rapid testing."
-    assert plane_acquisition.plane_thickness_in_um == 5.0
+    assert plane_acquisition.point_spread_function_in_um == "32 um ± 1.6 um"
     assert plane_acquisition.illumination_angle_in_degrees == 45.0
     assert plane_acquisition.plane_rate_in_Hz == 100.0
     assert isinstance(plane_acquisition, PlaneAcquisition)

@@ -731,7 +731,7 @@ Example of multi-plane imaging with an electrically tunable lens:
     plane_acquisition = PlaneAcquisition(
         name=f'plane_acquisition',
         description=f'Plane acquisition',
-        plane_thickness_in_um=2.0
+        point_spread_function_in_um="32 um ± 1.6 um"
     )
 
     for depth in depths:

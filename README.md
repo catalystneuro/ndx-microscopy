@@ -229,7 +229,7 @@ classDiagram
         --------------------------------------
         attributes
         --------------------------------------
-        plane_thickness_in_um : float64, optional
+        point_spread_function_in_um : text, optional
         illumination_angle_in_degrees : float64, optional
         plane_rate_in_Hz : float64, optional
     }
