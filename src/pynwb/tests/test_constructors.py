@@ -247,13 +247,13 @@ def test_constructor_microscopy_response_series():
 
 def test_constructor_microscopy_response_series_with_microscopy_series():
 
-    microscopyrig = mock_MicroscopyRig()
-    microscopychannel = mock_MicroscopyChannel()
+    microscopy_rig = mock_MicroscopyRig()
+    microscopy_channel = mock_MicroscopyChannel()
     number_of_rois = 10
     planar_imaging_space = mock_PlanarImagingSpace()
     microscopy_series = mock_PlanarMicroscopySeries(
-        microscopy_channel=microscopychannel,
-        microscopy_rig=microscopyrig,
+        microscopy_channel=microscopy_channel,
+        microscopy_rig=microscopy_rig,
         planar_imaging_space=planar_imaging_space,
     )
     segmentation = mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space, number_of_rois=number_of_rois)

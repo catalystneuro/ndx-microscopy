@@ -98,7 +98,7 @@ class TestPlanarMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
             microscopy_channel=mock_MicroscopyChannel(name="MicroscopyChannel"),
             planar_imaging_space=planar_imaging_space,
         )
-        nwbfile.add_acquisition(nwbdata=planar_microscopy_series)
+        nwbfile.add_acquisition(planar_microscopy_series)
 
         with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="w") as io:
             io.write(nwbfile)
@@ -174,7 +174,7 @@ class TestMicroscopyRigWithUntrackedDevice(pynwb_TestCase):
             microscopy_channel=mock_MicroscopyChannel(name="MicroscopyChannel"),
             planar_imaging_space=planar_imaging_space,
         )
-        nwbfile.add_acquisition(nwbdata=planar_microscopy_series)
+        nwbfile.add_acquisition(planar_microscopy_series)
 
         with pytest.raises(OrphanContainerBuildError):
             with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="w") as io:
@@ -241,7 +241,7 @@ class TestVolumetricMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
             microscopy_channel=mock_MicroscopyChannel(name="MicroscopyChannel"),
             volumetric_imaging_space=volumetric_imaging_space,
         )
-        nwbfile.add_acquisition(nwbdata=volumetric_microscopy_series)
+        nwbfile.add_acquisition(volumetric_microscopy_series)
 
         with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="w") as io:
             io.write(nwbfile)
@@ -336,7 +336,7 @@ class TestMultiPlaneMicroscopyContainerSimpleRoundtrip(pynwb_TestCase):
             planar_microscopy_series=[planar_microscopy_series_1, planar_microscopy_series_2],
         )
 
-        nwbfile.add_acquisition(nwbdata=multi_plane_microscopy_container)
+        nwbfile.add_acquisition(multi_plane_microscopy_container)
 
         with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="w") as io:
             io.write(nwbfile)
@@ -424,7 +424,7 @@ class TestMultiChannelMicroscopyContainerSimpleRoundtrip(pynwb_TestCase):
             microscopy_series=[planar_microscopy_series_1, planar_microscopy_series_2],
         )
 
-        nwbfile.add_acquisition(nwbdata=multi_plane_microscopy_container)
+        nwbfile.add_acquisition(multi_plane_microscopy_container)
 
         with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="w") as io:
             io.write(nwbfile)
