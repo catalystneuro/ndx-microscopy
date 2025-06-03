@@ -4,7 +4,7 @@
 Release Notes
 *************
 
-Version 0.3.0 (May 29, 2025)
+Version 0.3.0 (Jun 3, 2025)
 ==============================
 
 Deprecations and Changes
@@ -25,6 +25,11 @@ Features
   * `dichroic_mirror`: Link to DichroicMirror (optional)
   * `photodetector`: Link to Photodetector (optional)
   * `emission_filter`: Link to OpticalFilter (optional)
+* Added `MicroscopyChannel` class to represent a single channel in a microscopy series, which includes:
+  * `excitation_wavelength`: Excitation wavelength for the channel
+  * `emission_wavelength`: Emission wavelength for the channel 
+  * `indicator`: Link to Indicator
+
 
 Improvements
 ------------
