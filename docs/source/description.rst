@@ -10,20 +10,15 @@ Key Features
 
 Device and Optical Components
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-- Microscope metadata
+- MicroscopeModel for defining microscope models
+- Microscope instances with technique specifications
+- MicroscopyRig for organizing optical components
 - Integration with ndx-ophys-devices for:
     - Excitation sources (continuous and pulsed)
     - Optical filters (band and edge types)
     - Dichroic mirrors
     - Photodetectors
     - Fluorescent indicators
-
-Light Path Configuration
-^^^^^^^^^^^^^^^^^^^^^
-- Excitation light path tracking
-- Emission light path tracking
-- Comprehensive optical component specifications
-- Wavelength and power specifications
 
 Illumination Pattern Support
 ^^^^^^^^^^^^^^^^^^^^^
@@ -58,12 +53,11 @@ The extension organizes microscopy data hierarchically::
 
     nwbfile
     ├── devices
+    │   ├── microscope_model: MicroscopeModel
     │   └── microscope: Microscope
-    ├── lab_meta_data
-    │   ├── excitation_path: ExcitationLightPath
-    │   └── emission_path: EmissionLightPath
     ├── acquisition
     │   └── MicroscopySeries
+    │       └── microscopy_rig: MicroscopyRig
     └── processing
         └── ophys
             ├── MicroscopyResponseSeriesContainer

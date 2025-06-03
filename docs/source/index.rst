@@ -8,8 +8,8 @@ The ndx-microscopy extension provides a standardized way to store and organize m
 Key Features
 -----------
 
-- **Device Components**: Microscope metadata and optical components
-- **Light Paths**: Excitation and emission path configurations
+- **Device Components**: MicroscopeModel, Microscope instances, and MicroscopyRig for organizing optical components
+- **Illumination Patterns**: Support for various scanning and acquisition methods
 - **Imaging Spaces**: Support for 2D/3D imaging with precise coordinate systems
 - **Data Series**: Time series data with multi-plane and variable depth support
 - **ROI Management**: Segmentation and response data storage

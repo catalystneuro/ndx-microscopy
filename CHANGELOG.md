@@ -1,10 +1,17 @@
-# v0.3.0 (upcoming)
+# v0.3.0 (Jun 3, 2025)
 ## Bug Fixes
 
 ## Deprecations and Changes
+- Removed `ExcitationLightPath` and `EmissionLightPath` classes in favor of a more integrated approach with `MicroscopyRig`
 
 ## Features
 ### NWB TAB reviews Issue[#48](https://github.com/catalystneuro/ndx-microscopy/issues/48)
+- Added `MicroscopyChannel` object Sub-Issue[#49](https://github.com/catalystneuro/ndx-microscopy/issues/49)
+- Added `MicroscopyRig` object Sub-Issue[#51](https://github.com/catalystneuro/ndx-microscopy/issues/51)
+- Changed `Microscope` to inherit from `DeviceInstance` instead of `Device` Sub-Issue[#51](https://github.com/catalystneuro/ndx-microscopy/issues/51)
+- Added `MicroscopeModel` that inherit from `DeviceModel` Sub-Issue[#51](https://github.com/catalystneuro/ndx-microscopy/issues/51)
+- Updated `MicroscopySeries` to use `MicroscopyRig` instead of individual `microscope`, `excitation_light_path`, and `emission_light_path` references Sub-Issue[#51](https://github.com/catalystneuro/ndx-microscopy/issues/51)
+- Added `dimensions_in_pixels` to `PlanarImagingSpace` and `dimensions_in_voxels` to `VolumetricImagingSpace` object Sub-Issue[#52](https://github.com/catalystneuro/ndx-microscopy/issues/52)
 - Added `MultiChannelMicroscopyContainer` object Sub-Issue[#53](https://github.com/catalystneuro/ndx-microscopy/issues/53)
 
 # v0.2.1 (March 28, 2025)
