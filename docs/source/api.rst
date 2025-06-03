@@ -42,6 +42,44 @@ Methods
 .. automethod:: ndx_microscopy.EmissionLightPath.get_emission_wavelength
 .. automethod:: ndx_microscopy.EmissionLightPath.get_indicator_label
 
+MicroscopyChannel
+---------------
+.. autoclass:: ndx_microscopy.MicroscopyChannel
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Illumination Pattern Components
+==========================
+
+IlluminationPattern
+----------------
+.. autoclass:: ndx_microscopy.IlluminationPattern
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+LineScan
+-------
+.. autoclass:: ndx_microscopy.LineScan
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+PlaneAcquisition
+--------------
+.. autoclass:: ndx_microscopy.PlaneAcquisition
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+RandomAccessScan
+--------------
+.. autoclass:: ndx_microscopy.RandomAccessScan
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Imaging Space Components
 =====================
 

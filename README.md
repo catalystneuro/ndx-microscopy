@@ -12,7 +12,8 @@ A Neurodata Without Borders (NWB) extension for storing microscopy data and asso
     - `DichroicMirror` 
     - `Photodetector` 
     - `Indicator`
-- Advanced light path configurations: 
+- Microscopy channel configurations: 
+    - `MicroscopyChannel`
     - `ExcitationLightPath`
     - `EmissionLightPath` 
 - Imaging space definitions: 
@@ -51,7 +52,7 @@ classDiagram
         attributes
         --------------------------------------
         model : text, optional
-    }
+    }    
 
     class ExcitationLightPath {
         <<LabMetaData>>
@@ -277,6 +278,21 @@ classDiagram
 classDiagram
     direction TB
 
+    class MicroscopyChannel {
+        <<NWBContainer>>
+        --------------------------------------
+        attributes
+        --------------------------------------
+        **name** : text
+        description : text, optional
+        **excitation_wavelength_in_nm** : float
+        **emission_wavelength_in_nm** : float
+        --------------------------------------
+        groups
+        --------------------------------------
+        indicator
+    }
+
     class MicroscopySeries {
         <<TimeSeries>>
         --------------------------------------
@@ -285,6 +301,11 @@ classDiagram
         **microscope** : Microscope
         **excitation_light_path** : ExcitationLightPath
         **emission_light_path** : EmissionLightPath
+        --------------------------------------
+        groups
+        --------------------------------------
+        **microscopy_channel** : MicroscopyChannel
+
     }
 
     class PlanarMicroscopySeries {
@@ -375,6 +396,8 @@ classDiagram
     MicroscopySeries o--> Microscope : links
     MicroscopySeries o--> ExcitationLightPath : links
     MicroscopySeries o--> EmissionLightPath : links
+    MicroscopyChannel *-- MicroscopySeries : contains    
+    MicroscopyChannel --* Indicator : contains
 ```
 
 #### Segmentation Components

@@ -6,6 +6,7 @@ from ndx_microscopy.testing import (
     mock_EmissionLightPath,
     mock_ExcitationLightPath,
     mock_Microscope,
+    mock_MicroscopyChannel,
     mock_Segmentation,
     mock_Segmentation2D,
     mock_Segmentation3D,
@@ -38,6 +39,11 @@ from ndx_microscopy import (
 def test_constructor_microscope():
     microscope = mock_Microscope()
     assert microscope.description == "A mock instance of a Microscope type to be used for rapid testing."
+
+
+def test_constructor_microscopy_channel():
+    microscopy_channel = mock_MicroscopyChannel()
+    assert microscopy_channel.description == "A mock instance of a MicroscopyChannel type to be used for rapid testing."
 
 
 def test_constructor_excitation_light_path():
@@ -160,12 +166,14 @@ def test_constructor_segmentation_container():
 
 def test_constructor_planar_microscopy_series():
     microscope = mock_Microscope()
+    microscopy_channel = mock_MicroscopyChannel()
     excitation_light_path = mock_ExcitationLightPath()
     planar_imaging_space = mock_PlanarImagingSpace()
     emission_light_path = mock_EmissionLightPath()
 
     planar_microscopy_series = mock_PlanarMicroscopySeries(
         microscope=microscope,
+        microscopy_channel=microscopy_channel,
         excitation_light_path=excitation_light_path,
         planar_imaging_space=planar_imaging_space,
         emission_light_path=emission_light_path,
@@ -179,11 +187,13 @@ def test_constructor_planar_microscopy_series():
 def test_constructor_multi_plane_microscopy_container():
 
     microscope = mock_Microscope()
+    microscopy_channel = mock_MicroscopyChannel()
     excitation_light_path = mock_ExcitationLightPath()
     planar_imaging_space = mock_PlanarImagingSpace()
     emission_light_path = mock_EmissionLightPath()
     planar_microscopy_series = mock_PlanarMicroscopySeries(
         microscope=microscope,
+        microscopy_channel=microscopy_channel,
         excitation_light_path=excitation_light_path,
         planar_imaging_space=planar_imaging_space,
         emission_light_path=emission_light_path,
@@ -197,12 +207,14 @@ def test_constructor_multi_plane_microscopy_container():
 
 def test_constructor_volumetric_microscopy_series():
     microscope = mock_Microscope()
+    microscopy_channel = mock_MicroscopyChannel()
     excitation_light_path = mock_ExcitationLightPath()
     volumetric_imaging_space = mock_VolumetricImagingSpace()
     emission_light_path = mock_EmissionLightPath()
 
     volumetric_microscopy_series = mock_VolumetricMicroscopySeries(
         microscope=microscope,
+        microscopy_channel=microscopy_channel,
         excitation_light_path=excitation_light_path,
         volumetric_imaging_space=volumetric_imaging_space,
         emission_light_path=emission_light_path,

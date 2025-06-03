@@ -34,6 +34,24 @@ def mock_Microscope(
     return microscope
 
 
+def mock_MicroscopyChannel(
+    *,
+    name: Optional[str] = None,
+    description: str = "A mock instance of a MicroscopyChannel type to be used for rapid testing.",
+    excitation_wavelength_in_nm: Optional[float] = 488.0,
+    emission_wavelength_in_nm: Optional[float] = 520.0,
+    indicator: Indicator = None,
+) -> ndx_microscopy.MicroscopyChannel:
+    microscopy_channel = ndx_microscopy.MicroscopyChannel(
+        name=name or name_generator("MicroscopyChannel"),
+        description=description,
+        excitation_wavelength_in_nm=excitation_wavelength_in_nm,
+        emission_wavelength_in_nm=emission_wavelength_in_nm,
+        indicator=indicator or mock_Indicator(),
+    )
+    return microscopy_channel
+
+
 def mock_ExcitationLightPath(
     *,
     name: Optional[str] = None,
@@ -323,6 +341,7 @@ def mock_PlanarMicroscopySeries(
     excitation_light_path: ndx_microscopy.ExcitationLightPath,
     planar_imaging_space: ndx_microscopy.PlanarImagingSpace,
     emission_light_path: ndx_microscopy.EmissionLightPath,
+    microscopy_channel: ndx_microscopy.MicroscopyChannel,
     name: Optional[str] = None,
     description: str = "A mock instance of a PlanarMicroscopySeries type to be used for rapid testing.",
     data: Optional[np.ndarray] = None,
@@ -358,6 +377,7 @@ def mock_PlanarMicroscopySeries(
         name=series_name,
         description=description,
         microscope=microscope,
+        microscopy_channel=microscopy_channel,
         excitation_light_path=excitation_light_path,
         planar_imaging_space=planar_imaging_space,
         emission_light_path=emission_light_path,
@@ -392,6 +412,7 @@ def mock_VolumetricMicroscopySeries(
     excitation_light_path: ndx_microscopy.ExcitationLightPath,
     volumetric_imaging_space: ndx_microscopy.VolumetricImagingSpace,
     emission_light_path: ndx_microscopy.EmissionLightPath,
+    microscopy_channel: ndx_microscopy.MicroscopyChannel,
     name: Optional[str] = None,
     description: str = "A mock instance of a VolumetricMicroscopySeries type to be used for rapid testing.",
     data: Optional[np.ndarray] = None,
@@ -427,6 +448,7 @@ def mock_VolumetricMicroscopySeries(
         name=series_name,
         description=description,
         microscope=microscope,
+        microscopy_channel=microscopy_channel,
         excitation_light_path=excitation_light_path,
         volumetric_imaging_space=volumetric_imaging_space,
         emission_light_path=emission_light_path,
