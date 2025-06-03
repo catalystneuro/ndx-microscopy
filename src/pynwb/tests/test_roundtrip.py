@@ -9,7 +9,6 @@ from pynwb.testing.mock.file import mock_NWBFile
 
 import pynwb
 from ndx_ophys_devices.testing import (
-    mock_Indicator,
     mock_ExcitationSource,
     mock_Photodetector,
     mock_OpticalFilter,
