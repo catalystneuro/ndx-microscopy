@@ -3,73 +3,95 @@ from typing import List, Optional, Tuple
 
 import numpy as np
 import pynwb.base
-from ndx_ophys_devices import ExcitationSource, Indicator, OpticalFilter, Photodetector, DichroicMirror
+from ndx_ophys_devices import ExcitationSource, OpticalFilter, Photodetector, DichroicMirror, Indicator
+
 from ndx_ophys_devices.testing import (
     mock_ExcitationSource,
-    mock_Indicator,
     mock_OpticalFilter,
     mock_Photodetector,
     mock_DichroicMirror,
+    mock_Indicator,
 )
+
 from pynwb.testing.mock.utils import name_generator
 
 import ndx_microscopy
+
+
+def mock_MicroscopeModel(
+    *,
+    name: Optional[str] = None,
+    description: str = "A mock instance of a MicroscopeModel type to be used for rapid testing.",
+    manufacturer: str = "A fake manufacturer of the mock microscope.",
+    model_number: str = "A fake model of the mock microscope.",
+) -> ndx_microscopy.MicroscopeModel:
+    microscope_model = ndx_microscopy.MicroscopeModel(
+        name=name or name_generator("MicroscopeModel"),
+        description=description,
+        manufacturer=manufacturer,
+        model_number=model_number,
+    )
+    return microscope_model
 
 
 def mock_Microscope(
     *,
     name: Optional[str] = None,
     description: str = "A mock instance of a Microscope type to be used for rapid testing.",
-    manufacturer: str = "A fake manufacturer of the mock microscope.",
-    model: str = "A fake model of the mock microscope.",
+    model: ndx_microscopy.MicroscopeModel = None,
+    serial_number: str = "A fake serial number of the mock microscope.",
     technique: str = "A fake technique used by the mock microscope.",
 ) -> ndx_microscopy.Microscope:
     microscope = ndx_microscopy.Microscope(
         name=name or name_generator("Microscope"),
         description=description,
-        manufacturer=manufacturer,
-        model=model,
+        model=model or mock_MicroscopeModel(),
+        serial_number=serial_number,
         technique=technique,
     )
     return microscope
 
 
-def mock_ExcitationLightPath(
+def mock_MicroscopyChannel(
+    *,
+    name: Optional[str] = None,
+    description: str = "A mock instance of a MicroscopyChannel type to be used for rapid testing.",
+    excitation_wavelength_in_nm: Optional[float] = 488.0,
+    emission_wavelength_in_nm: Optional[float] = 520.0,
+    indicator: Indicator = None,
+) -> ndx_microscopy.MicroscopyChannel:
+    microscopy_channel = ndx_microscopy.MicroscopyChannel(
+        name=name or name_generator("MicroscopyChannel"),
+        description=description,
+        excitation_wavelength_in_nm=excitation_wavelength_in_nm,
+        emission_wavelength_in_nm=emission_wavelength_in_nm,
+        indicator=indicator or mock_Indicator(),
+    )
+    return microscopy_channel
+
+
+def mock_MicroscopyRig(
     *,
     name: Optional[str] = None,
     description: str = None,
+    microscope: ndx_microscopy.Microscope = None,
     excitation_source: ExcitationSource = None,
     excitation_filter: OpticalFilter = None,
     dichroic_mirror: DichroicMirror = None,
-) -> ndx_microscopy.ExcitationLightPath:
-    excitation_light_path = ndx_microscopy.ExcitationLightPath(
-        name=name or name_generator("ExcitationLightPath"),
-        description=description or "A mock instance of a ExcitationLightPath type to be used for rapid testing.",
+    photodetector: Photodetector = None,
+    emission_filter: OpticalFilter = None,
+) -> ndx_microscopy.MicroscopyRig:
+    microscopy_rig = ndx_microscopy.MicroscopyRig(
+        name=name or name_generator("MicroscopyRig"),
+        description=description or "A mock instance of a MicroscopyRig type to be used for rapid testing.",
+        microscope=microscope or mock_Microscope(),
         excitation_source=excitation_source or mock_ExcitationSource(),
         excitation_filter=excitation_filter or mock_OpticalFilter(),
         dichroic_mirror=dichroic_mirror or mock_DichroicMirror(),
-    )
-    return excitation_light_path
-
-
-def mock_EmissionLightPath(
-    *,
-    name: Optional[str] = None,
-    description: Optional[str] = None,
-    indicator: Indicator = None,
-    photodetector: Photodetector = None,
-    emission_filter: OpticalFilter = None,
-    dichroic_mirror: DichroicMirror = None,
-) -> ndx_microscopy.EmissionLightPath:
-    emission_light_path = ndx_microscopy.EmissionLightPath(
-        name=name or name_generator("EmissionLightPath"),
-        description=description or "A mock instance of a EmissionLightPath type to be used for rapid testing.",
-        indicator=indicator or mock_Indicator(),
         photodetector=photodetector or mock_Photodetector(),
         emission_filter=emission_filter or mock_OpticalFilter(),
-        dichroic_mirror=dichroic_mirror or mock_DichroicMirror(),
     )
-    return emission_light_path
+    return microscopy_rig
 
 
 def mock_IlluminationPattern(
@@ -108,7 +130,7 @@ def mock_PlaneAcquisition(
     *,
     name: Optional[str] = None,
     description: str = "A mock instance of a PlaneAcquisition type to be used for rapid testing.",
-    plane_thickness_in_um: Optional[float] = 5.0,
+    point_spread_function_in_um: Optional[str] = "32 um ± 1.6 um",
     illumination_angle_in_degrees: Optional[float] = 45.0,
     plane_rate_in_Hz: Optional[float] = 100.0,
 ) -> ndx_microscopy.PlaneAcquisition:
@@ -116,7 +138,7 @@ def mock_PlaneAcquisition(
     plane_acquisition = ndx_microscopy.PlaneAcquisition(
         name=name or name_generator("PlaneAcquisition"),
         description=description,
-        plane_thickness_in_um=plane_thickness_in_um,
+        point_spread_function_in_um=point_spread_function_in_um,
         illumination_angle_in_degrees=illumination_angle_in_degrees,
         plane_rate_in_Hz=plane_rate_in_Hz,
     )
@@ -147,7 +169,8 @@ def mock_PlanarImagingSpace(
     name: Optional[str] = None,
     description: str = "A mock instance of a PlanarImagingSpace type to be used for rapid testing.",
     origin_coordinates: Tuple[float, float, float] = (-1.2, -0.6, -2),
-    pixel_size_in_um: Tuple[float, float, float] = (20, 20),
+    pixel_size_in_um: Tuple[float, float] = (20, 20),
+    dimensions_in_pixels: Tuple[int, int] = (100, 100),
     location: str = "The location targeted by the mock imaging space.",
     reference_frame: str = "The reference frame of the mock planar imaging space.",
     orientation: str = "The orientation of the mock planar imaging space.",
@@ -158,6 +181,7 @@ def mock_PlanarImagingSpace(
         description=description,
         origin_coordinates=origin_coordinates,
         pixel_size_in_um=pixel_size_in_um,
+        dimensions_in_pixels=dimensions_in_pixels,
         location=location,
         reference_frame=reference_frame,
         orientation=orientation,
@@ -172,6 +196,7 @@ def mock_VolumetricImagingSpace(
     description: str = "A mock instance of a VolumetricImagingSpace type to be used for rapid testing.",
     origin_coordinates: Tuple[float, float, float] = (-1.2, -0.6, -2),
     voxel_size_in_um: Tuple[float, float, float] = (20, 20, 50),
+    dimensions_in_voxels: Tuple[int, int] = (100, 100, 100),
     location: str = "The location targeted by the mock imaging space.",
     reference_frame: str = "The reference frame of the mock volumetric imaging space.",
     orientation: str = "The orientation of the mock planar imaging space.",
@@ -182,6 +207,7 @@ def mock_VolumetricImagingSpace(
         description=description,
         origin_coordinates=origin_coordinates,
         voxel_size_in_um=voxel_size_in_um,
+        dimensions_in_voxels=dimensions_in_voxels,
         location=location,
         reference_frame=reference_frame,
         orientation=orientation,
@@ -223,17 +249,17 @@ def mock_Segmentation(
     return segmentation
 
 
-def mock_Segmentation2D(
+def mock_PlanarSegmentation(
     *,
     planar_imaging_space: ndx_microscopy.PlanarImagingSpace,
     name: Optional[str] = None,
-    description: str = "A mock instance of a Segmentation2D type to be used for rapid testing.",
+    description: str = "A mock instance of a PlanarSegmentation type to be used for rapid testing.",
     number_of_rois: int = 5,
     image_shape: Tuple[int, int] = (10, 10),
     summary_images: Optional[List[ndx_microscopy.SummaryImage]] = None,
-) -> ndx_microscopy.Segmentation2D:
+) -> ndx_microscopy.PlanarSegmentation:
     """2D segmentation with image_mask/pixel_mask."""
-    name = name or name_generator("Segmentation2D")
+    name = name or name_generator("PlanarSegmentation")
 
     # Create default summary images if none provided
     if summary_images is None:
@@ -241,7 +267,7 @@ def mock_Segmentation2D(
         max_image = mock_SummaryImage(name="max", description="Maximum intensity projection", image_shape=image_shape)
         summary_images = [mean_image, max_image]
 
-    segmentation_2D = ndx_microscopy.Segmentation2D(
+    planar_segmentation = ndx_microscopy.PlanarSegmentation(
         name=name,
         description=description,
         planar_imaging_space=planar_imaging_space,
@@ -254,30 +280,30 @@ def mock_Segmentation2D(
     for _ in range(number_of_rois):
         image_masks.append(np.zeros(image_shape, dtype=bool))
 
-    segmentation_2D.add_column(name="image_mask", description="ROI image masks", data=image_masks)
+    planar_segmentation.add_column(name="image_mask", description="ROI image masks", data=image_masks)
 
-    return segmentation_2D
+    return planar_segmentation
 
 
-def mock_Segmentation3D(
+def mock_VolumetricSegmentation(
     *,
     volumetric_imaging_space: ndx_microscopy.VolumetricImagingSpace,
     name: Optional[str] = None,
-    description: str = "A mock instance of a Segmentation3D type to be used for rapid testing.",
+    description: str = "A mock instance of a VolumetricSegmentation type to be used for rapid testing.",
     number_of_rois: int = 5,
-    image_shape: Tuple[int, int, int] = (10, 10, 10),
+    volume_shape: Tuple[int, int, int] = (10, 10, 10),
     summary_images: Optional[List[ndx_microscopy.SummaryImage]] = None,
-) -> ndx_microscopy.Segmentation3D:
+) -> ndx_microscopy.VolumetricSegmentation:
     """3D segmentation with image_mask/voxel_mask."""
-    name = name or name_generator("Segmentation3D")
+    name = name or name_generator("VolumetricSegmentation")
 
     # Create default summary images if none provided
     if summary_images is None:
-        mean_image = mock_SummaryImage(name="mean", description="Mean intensity projection", image_shape=image_shape)
-        max_image = mock_SummaryImage(name="max", description="Maximum intensity projection", image_shape=image_shape)
+        mean_image = mock_SummaryImage(name="mean", description="Mean intensity projection", image_shape=volume_shape)
+        max_image = mock_SummaryImage(name="max", description="Maximum intensity projection", image_shape=volume_shape)
         summary_images = [mean_image, max_image]
 
-    volumetric_segmentation = ndx_microscopy.Segmentation3D(
+    volumetric_segmentation = ndx_microscopy.VolumetricSegmentation(
         name=name,
         description=description,
         volumetric_imaging_space=volumetric_imaging_space,
@@ -288,9 +314,9 @@ def mock_Segmentation3D(
     # Add image masks
     image_masks = list()
     for _ in range(number_of_rois):
-        image_masks.append(np.zeros(image_shape, dtype=bool))
+        image_masks.append(np.zeros(volume_shape, dtype=bool))
 
-    volumetric_segmentation.add_column(name="image_mask", description="ROI image masks", data=image_masks)
+    volumetric_segmentation.add_column(name="volume_mask", description="ROI image masks", data=image_masks)
 
     return volumetric_segmentation
 
@@ -308,8 +334,8 @@ def mock_SegmentationContainer(
         planar_imaging_space = mock_PlanarImagingSpace()
         volumetric_imaging_space = mock_VolumetricImagingSpace()
         segmentations = [
-            mock_Segmentation2D(planar_imaging_space=planar_imaging_space),
-            mock_Segmentation3D(volumetric_imaging_space=volumetric_imaging_space),
+            mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space),
+            mock_VolumetricSegmentation(volumetric_imaging_space=volumetric_imaging_space),
         ]
 
     container = ndx_microscopy.SegmentationContainer(name=name, segmentations=segmentations)
@@ -319,10 +345,9 @@ def mock_SegmentationContainer(
 
 def mock_PlanarMicroscopySeries(
     *,
-    microscope: ndx_microscopy.Microscope,
-    excitation_light_path: ndx_microscopy.ExcitationLightPath,
+    microscopy_rig: ndx_microscopy.MicroscopyRig,
     planar_imaging_space: ndx_microscopy.PlanarImagingSpace,
-    emission_light_path: ndx_microscopy.EmissionLightPath,
+    microscopy_channel: ndx_microscopy.MicroscopyChannel,
     name: Optional[str] = None,
     description: str = "A mock instance of a PlanarMicroscopySeries type to be used for rapid testing.",
     data: Optional[np.ndarray] = None,
@@ -357,10 +382,9 @@ def mock_PlanarMicroscopySeries(
     planar_microscopy_series = ndx_microscopy.PlanarMicroscopySeries(
         name=series_name,
         description=description,
-        microscope=microscope,
-        excitation_light_path=excitation_light_path,
+        microscopy_rig=microscopy_rig,
+        microscopy_channel=microscopy_channel,
         planar_imaging_space=planar_imaging_space,
-        emission_light_path=emission_light_path,
         data=series_data,
         unit=unit,
         conversion=conversion,
@@ -386,12 +410,25 @@ def mock_MultiPlaneMicroscopyContainer(
     return multi_plane_microscopy_container
 
 
+def mock_MultiChannelMicroscopyContainer(
+    *,
+    microscopy_series: List[ndx_microscopy.MicroscopySeries],
+    name: Optional[str] = None,
+) -> ndx_microscopy.MultiChannelMicroscopyContainer:
+    container_name = name or name_generator("MultiChannelMicroscopyContainer")
+
+    multi_channel_microscopy_container = ndx_microscopy.MultiChannelMicroscopyContainer(
+        name=container_name, microscopy_series=microscopy_series
+    )
+
+    return multi_channel_microscopy_container
+
+
 def mock_VolumetricMicroscopySeries(
     *,
-    microscope: ndx_microscopy.Microscope,
-    excitation_light_path: ndx_microscopy.ExcitationLightPath,
+    microscopy_rig: ndx_microscopy.MicroscopyRig,
     volumetric_imaging_space: ndx_microscopy.VolumetricImagingSpace,
-    emission_light_path: ndx_microscopy.EmissionLightPath,
+    microscopy_channel: ndx_microscopy.MicroscopyChannel,
     name: Optional[str] = None,
     description: str = "A mock instance of a VolumetricMicroscopySeries type to be used for rapid testing.",
     data: Optional[np.ndarray] = None,
@@ -426,10 +463,9 @@ def mock_VolumetricMicroscopySeries(
     volumetric_microscopy_series = ndx_microscopy.VolumetricMicroscopySeries(
         name=series_name,
         description=description,
-        microscope=microscope,
-        excitation_light_path=excitation_light_path,
+        microscopy_channel=microscopy_channel,
+        microscopy_rig=microscopy_rig,
         volumetric_imaging_space=volumetric_imaging_space,
-        emission_light_path=emission_light_path,
         data=series_data,
         unit=unit,
         conversion=conversion,
@@ -453,6 +489,7 @@ def mock_MicroscopyResponseSeries(
     starting_time: Optional[float] = None,
     rate: Optional[float] = None,
     timestamps: Optional[np.ndarray] = None,
+    microscopy_series: Optional[ndx_microscopy.MicroscopyResponseSeries] = None,
 ) -> ndx_microscopy.MicroscopyResponseSeries:
     series_name = name or name_generator("MicroscopyResponseSeries")
 
@@ -489,6 +526,7 @@ def mock_MicroscopyResponseSeries(
         starting_time=series_starting_time,
         rate=series_rate,
         timestamps=series_timestamps,
+        microscopy_series=microscopy_series,
     )
 
     return microscopy_response_series

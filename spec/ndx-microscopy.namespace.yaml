@@ -21,10 +21,13 @@ namespaces:
           - DynamicTableRegion
       - namespace: ndx-ophys-devices
         neurodata_types:
+          - DeviceModel
+          - DeviceInstance
           - ExcitationSource
           - Indicator
           - OpticalFilter
           - Photodetector
           - DichroicMirror
+          - OpticalLens
       - source: ndx-microscopy.extensions.yaml
-    version: 0.2.1
+    version: 0.3.0
