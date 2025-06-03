@@ -354,8 +354,6 @@ class TestMultiPlaneMicroscopyContainerSimpleRoundtrip(pynwb_TestCase):
 class TestMultiChannelMicroscopyContainerSimpleRoundtrip(pynwb_TestCase):
     """Simple roundtrip test for MultiChannelMicroscopyContainer."""
 
-    # TODO change to this once MicroscopyRig and MicroscopyChannel are available
-
     def setUp(self):
         self.nwbfile_path = "test_multi_channel_microscopy_container_roundtrip.nwb"
 

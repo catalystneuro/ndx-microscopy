@@ -245,6 +245,30 @@ def test_constructor_microscopy_response_series():
     )
 
 
+def test_constructor_microscopy_response_series_with_microscopy_series():
+
+    microscopyrig = mock_MicroscopyRig()
+    microscopychannel = mock_MicroscopyChannel()
+    number_of_rois = 10
+    planar_imaging_space = mock_PlanarImagingSpace()
+    microscopy_series = mock_PlanarMicroscopySeries(
+        microscopy_channel=microscopychannel,
+        microscopy_rig=microscopyrig,
+        planar_imaging_space=planar_imaging_space,
+    )
+    segmentation = mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space, number_of_rois=number_of_rois)
+    rois = segmentation.create_roi_table_region(
+        description="test region",
+        region=[x for x in range(number_of_rois)],
+    )
+
+    microscopy_response_series = mock_MicroscopyResponseSeries(rois=rois, microscopy_series=microscopy_series)
+    assert (
+        microscopy_response_series.description
+        == "A mock instance of a MicroscopyResponseSeries type to be used for rapid testing."
+    )
+
+
 def test_constructor_microscopy_response_series_container():
     number_of_rois = 10
     planar_imaging_space = mock_PlanarImagingSpace()

@@ -510,6 +510,10 @@ classDiagram
         --------------------------------------
         **data** : numeric[number_of_frames, number_of_rois]
         **rois** : DynamicTableRegion
+        --------------------------------------
+        links
+        --------------------------------------
+        microscopy_saeries : MicroscopySeries, optional
     }
 
     class MicroscopyResponseSeriesContainer {
@@ -524,6 +528,7 @@ classDiagram
     Segmentation <|-- VolumetricSegmentation : extends
     SegmentationContainer *-- Segmentation : contains
     Segmentation *-- SummaryImage : contains
+    MicroscopyResponseSeries o--> MicroscopySeries : links
     MicroscopyResponseSeriesContainer *-- MicroscopyResponseSeries : contains
     PlanarSegmentation *-- PlanarImagingSpace : contains
     VolumetricSegmentation *-- VolumetricImagingSpace : contains

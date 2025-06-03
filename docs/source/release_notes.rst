@@ -3,29 +3,6 @@
 *************
 Release Notes
 *************
-Version 0.3.0 (May, 2025)
-==============================
-
-Deprecations and Changes
--------------------------
-
-
-Features
---------
-
-
-Improvements
-------------
-
-* Added `dimensions_in_pixels` to `PlanarImagingSpace` and `dimensions_in_voxels` to `VolumetricImagingSpace`
-* Added `get_FOV_size()` method to both `PlanarImagingSpace` and `VolumetricImagingSpace` classes for calculating Field of View size in micrometers
-
-Notes
-------
-
-
-
-
 Version 0.3.0 (Jun 3, 2025)
 ==============================
 
@@ -57,6 +34,9 @@ Features
 * Added `MultiChannelMicroscopyContainer` class to support multi-channel imaging data.
   * This class allows for the storage of multiple `MicroscopySeries` objects, each representing a different channel of imaging data.
   * It provides methods to access and manipulate individual channels, facilitating the analysis of multi-channel datasets.
+* Added `dimensions_in_pixels` to `PlanarImagingSpace` and `dimensions_in_voxels` to `VolumetricImagingSpace`
+* Added `get_FOV_size()` method to both `PlanarImagingSpace` and `VolumetricImagingSpace` classes for calculating Field of View size in micrometers
+* Added `microscopy_series` link to `MicroscopyResponseSeries` class to point the `MicroscopySeries` this response series is derived from.
 
 
 Improvements

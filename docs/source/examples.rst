@@ -307,6 +307,7 @@ Complete example of two-photon calcium imaging with full optical path configurat
         unit='n.a.',
         rate=30.0,
         starting_time=0.0
+        microscopy_series=imaging_series 
     )
 
     # Create container for response series
@@ -633,6 +634,7 @@ Example of volumetric imaging with 3D ROI segmentation:
         unit='n.a.',
         rate=5.0,
         starting_time=0.0
+        microscopy_series=volume_series 
     )
 
     # Create container for response series
@@ -963,6 +965,7 @@ Example of multi-plane imaging with an electrically tunable lens:
             unit='n.a.',
             rate=30.0,
             starting_time=0.0
+            microscopy_series=plane_series
         )
         response_series_list.append(response_series)
 
