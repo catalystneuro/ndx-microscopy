@@ -361,7 +361,7 @@ groups:
         doc: Summary images that are related to the segmentation, e.g., mean, correlation, maximum projection.
         quantity: "*"
 
-  - neurodata_type_def: Segmentation2D
+  - neurodata_type_def: PlanarSegmentation
     neurodata_type_inc: Segmentation
     doc: Results from image segmentation of a specific planar imaging space.
     datasets:
@@ -397,13 +397,13 @@ groups:
             doc: Weight of the pixel.
         doc:
           "Pixel masks for each ROI: a list of indices and weights for the ROI. Pixel
-          masks are concatenated and parsing of this dataset is maintained by the Segmentation2D"
+          masks are concatenated and parsing of this dataset is maintained by the PlanarSegmentation"
         quantity: "?"
     groups:
       - neurodata_type_inc: PlanarImagingSpace
         doc: PlanarImagingSpace object from which this data was generated.
 
-  - neurodata_type_def: Segmentation3D
+  - neurodata_type_def: VolumetricSegmentation
     neurodata_type_inc: Segmentation
     doc: Results from image segmentation of a specific volumetric imaging space.
     datasets:
@@ -444,7 +444,7 @@ groups:
             doc: Weight of the voxel.
         doc:
           "Voxel masks for each ROI: a list of indices and weights for the ROI. Voxel
-          masks are concatenated and parsing of this dataset is maintained by the Segmentation2D"
+          masks are concatenated and parsing of this dataset is maintained by the PlanarSegmentation"
         quantity: "?"
     groups:
       - neurodata_type_inc: VolumetricImagingSpace

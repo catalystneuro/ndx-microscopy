@@ -25,7 +25,7 @@ Complete example of two-photon calcium imaging with full optical path configurat
         MicroscopyChannel,
         PlanarImagingSpace,
         PlanarMicroscopySeries,
-        Segmentation2D,
+        PlanarSegmentation,
         SummaryImage,
         MicroscopyResponseSeries,
         MicroscopyResponseSeriesContainer,
@@ -264,7 +264,7 @@ Complete example of two-photon calcium imaging with full optical path configurat
     )
 
     # Create segmentation
-    segmentation = Segmentation2D(
+    segmentation = PlanarSegmentation(
         name='rois',
         description='Manual ROI segmentation',
         planar_imaging_space=imaging_space,
@@ -357,7 +357,7 @@ Example of volumetric imaging with 3D ROI segmentation:
         MicroscopyRig,
         VolumetricImagingSpace,
         VolumetricMicroscopySeries,
-        Segmentation3D,
+        VolumetricSegmentation,
         SummaryImage,
         MicroscopyResponseSeries,
         MicroscopyResponseSeriesContainer,
@@ -590,7 +590,7 @@ Example of volumetric imaging with 3D ROI segmentation:
     )
 
     # Create 3D segmentation
-    segmentation = Segmentation3D(
+    segmentation = VolumetricSegmentation(
         name='volume_rois',
         description='3D ROI segmentation',
         volumetric_imaging_space=volume_space,
@@ -685,7 +685,7 @@ Example of multi-plane imaging with an electrically tunable lens:
         PlanarImagingSpace,
         PlanarMicroscopySeries,
         MultiPlaneMicroscopyContainer,
-        Segmentation2D,
+        PlanarSegmentation,
         SummaryImage,
         MicroscopyResponseSeries,
         MicroscopyResponseSeriesContainer,
@@ -926,7 +926,7 @@ Example of multi-plane imaging with an electrically tunable lens:
         )
 
         # Create segmentation for this plane
-        segmentation = Segmentation2D(
+        segmentation = PlanarSegmentation(
             name=f'rois_{depth}',
             description=f'ROI segmentation at {depth} µm',
             planar_imaging_space=plane_space,

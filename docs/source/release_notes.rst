@@ -13,6 +13,9 @@ Deprecations and Changes
 * Removed `ExcitationLightPath` and `EmissionLightPath` classes in favor of a more integrated approach with `MicroscopyRig`
 * Changed `Microscope` to inherit from `DeviceInstance` instead of `Device`
 * Updated `MicroscopySeries` to use `MicroscopyRig` instead of individual `microscope`, `excitation_light_path`, and `emission_light_path` references
+* Refactored segmentation classes:
+  * Renamed ``Segmentation2D`` to ``PlanarSegmentation``
+  * Renamed ``Segmentation3D`` to ``VolumetricSegmentation``
 
 Features
 --------
@@ -92,7 +95,7 @@ Features
 * Advanced light path configurations: ``ExcitationLightPath``, ``EmissionLightPath`` 
 * Imaging space definitions: ``PlanarImagingSpace``, ``VolumetricImagingSpace``
 * Support for 2D and 3D imaging: ``PlanarMicroscopySeries``, ``VolumetricMicroscopySeries``, ``MultiPlaneMicroscopyContainer``
-* ROI/segmentation storage: ``SummaryImages``, ``Segmentation2D``, ``Segmentation3D``, ``SegmentationContainer``, ``MicroscopyResponseSeries``, ``MicroscopyResponseSeriesContainer``
+* ROI/segmentation storage: ``SummaryImages``, ``PlanarSegmentation``, ``VolumetricSegmentation``, ``SegmentationContainer``, ``MicroscopyResponseSeries``, ``MicroscopyResponseSeriesContainer``
 * Abstract Neurodata types: ``ImagingSpace``, ``MicroscopySeries``, ``Segmentation``
 
 Changes

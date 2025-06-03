@@ -6,9 +6,9 @@ import numpy as np
 extension_name = "ndx-microscopy"
 
 
-# Segmentation2D API functions
+# PlanarSegmentation API functions
 
-Segmentation2D = get_class("Segmentation2D", extension_name)
+PlanarSegmentation = get_class("PlanarSegmentation", extension_name)
 
 
 @docval(
@@ -30,7 +30,7 @@ Segmentation2D = get_class("Segmentation2D", extension_name)
     allow_extra=True,
 )
 def add_roi(self, **kwargs):
-    """Add a Region Of Interest (ROI) data to this Segmentation2D.
+    """Add a Region Of Interest (ROI) data to this PlanarSegmentation.
 
     Parameters
     ----------
@@ -58,7 +58,7 @@ def add_roi(self, **kwargs):
         # TODO: should we check that image_masks shape matches the shape of the FOV in the imaging space?
     if pixel_mask is not None:
         rkwargs["pixel_mask"] = pixel_mask
-    return super(Segmentation2D, self).add_row(**rkwargs)
+    return super(PlanarSegmentation, self).add_row(**rkwargs)
 
 
 @staticmethod
@@ -136,9 +136,9 @@ def image_to_pixel(image_mask):
     return pixel_mask
 
 
-Segmentation2D.add_roi = add_roi
-Segmentation2D.pixel_to_image = pixel_to_image
-Segmentation2D.image_to_pixel = image_to_pixel
+PlanarSegmentation.add_roi = add_roi
+PlanarSegmentation.pixel_to_image = pixel_to_image
+PlanarSegmentation.image_to_pixel = image_to_pixel
 
 
 @docval(
@@ -163,15 +163,15 @@ def create_roi_table_region(self, **kwargs):
     DynamicTableRegion
         Table region object for the selected ROIs.
     """
-    return super(Segmentation2D, self).create_region(**kwargs)
+    return super(PlanarSegmentation, self).create_region(**kwargs)
 
 
-Segmentation2D.create_roi_table_region = create_roi_table_region
+PlanarSegmentation.create_roi_table_region = create_roi_table_region
 
 
-# Segmentation3D API functions
+# VolumetricSegmentation API functions
 
-Segmentation3D = get_class("Segmentation3D", extension_name)
+VolumetricSegmentation = get_class("VolumetricSegmentation", extension_name)
 
 
 @docval(
@@ -193,7 +193,7 @@ Segmentation3D = get_class("Segmentation3D", extension_name)
     allow_extra=True,
 )
 def add_roi(self, **kwargs):
-    """Add a Region Of Interest (ROI) data to this Segmentation3D.
+    """Add a Region Of Interest (ROI) data to this VolumetricSegmentation.
 
     Parameters
     ----------
@@ -225,7 +225,7 @@ def add_roi(self, **kwargs):
         rkwargs["image_mask"] = image_mask
     if voxel_mask is not None:
         rkwargs["voxel_mask"] = voxel_mask
-    return super(Segmentation3D, self).add_row(**rkwargs)
+    return super(VolumetricSegmentation, self).add_row(**rkwargs)
 
 
 @staticmethod
@@ -305,9 +305,9 @@ def image_to_voxel(image_mask):
     return voxel_mask
 
 
-Segmentation3D.add_roi = add_roi
-Segmentation3D.voxel_to_image = voxel_to_image
-Segmentation3D.image_to_voxel = image_to_voxel
+VolumetricSegmentation.add_roi = add_roi
+VolumetricSegmentation.voxel_to_image = voxel_to_image
+VolumetricSegmentation.image_to_voxel = image_to_voxel
 
 
 @docval(
@@ -332,10 +332,10 @@ def create_roi_table_region(self, **kwargs):
     DynamicTableRegion
         Table region object for the selected ROIs.
     """
-    return super(Segmentation3D, self).create_region(**kwargs)
+    return super(VolumetricSegmentation, self).create_region(**kwargs)
 
 
-Segmentation3D.create_roi_table_region = create_roi_table_region
+VolumetricSegmentation.create_roi_table_region = create_roi_table_region
 
 
 # SegmentationContainer API functions

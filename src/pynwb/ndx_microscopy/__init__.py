@@ -37,8 +37,8 @@ from .ndx_microscopy import (
     ImagingSpace,
     SegmentationContainer,
     Segmentation,
-    Segmentation2D,
-    Segmentation3D,
+    PlanarSegmentation,
+    VolumetricSegmentation,
 )
 
 MicroscopeModel = get_class("MicroscopeModel", extension_name)
@@ -84,8 +84,8 @@ __all__ = [
     "VolumetricImagingSpace",
     "Segmentation",
     "SegmentationContainer",
-    "Segmentation2D",
-    "Segmentation3D",
+    "PlanarSegmentation",
+    "VolumetricSegmentation",
     "MicroscopySeries",
     "PlanarMicroscopySeries",
     "VolumetricMicroscopySeries",

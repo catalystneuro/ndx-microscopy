@@ -133,33 +133,33 @@ Segmentation
    :undoc-members:
    :show-inheritance:
 
-Segmentation2D
+PlanarSegmentation
 -------------
-.. autoclass:: ndx_microscopy.Segmentation2D
+.. autoclass:: ndx_microscopy.PlanarSegmentation
    :members:
    :undoc-members:
    :show-inheritance:
 
 Methods
 ^^^^^^^
-.. automethod:: ndx_microscopy.Segmentation2D.add_roi
-.. automethod:: ndx_microscopy.Segmentation2D.pixel_to_image
-.. automethod:: ndx_microscopy.Segmentation2D.image_to_pixel
-.. automethod:: ndx_microscopy.Segmentation2D.create_roi_table_region
+.. automethod:: ndx_microscopy.PlanarSegmentation.add_roi
+.. automethod:: ndx_microscopy.PlanarSegmentation.pixel_to_image
+.. automethod:: ndx_microscopy.PlanarSegmentation.image_to_pixel
+.. automethod:: ndx_microscopy.PlanarSegmentation.create_roi_table_region
 
-Segmentation3D
+VolumetricSegmentation
 -------------
-.. autoclass:: ndx_microscopy.Segmentation3D
+.. autoclass:: ndx_microscopy.VolumetricSegmentation
    :members:
    :undoc-members:
    :show-inheritance:
 
 Methods
 ^^^^^^^
-.. automethod:: ndx_microscopy.Segmentation3D.add_roi
-.. automethod:: ndx_microscopy.Segmentation3D.voxel_to_image
-.. automethod:: ndx_microscopy.Segmentation3D.image_to_voxel
-.. automethod:: ndx_microscopy.Segmentation3D.create_roi_table_region
+.. automethod:: ndx_microscopy.VolumetricSegmentation.add_roi
+.. automethod:: ndx_microscopy.VolumetricSegmentation.voxel_to_image
+.. automethod:: ndx_microscopy.VolumetricSegmentation.image_to_voxel
+.. automethod:: ndx_microscopy.VolumetricSegmentation.create_roi_table_region
 
 SegmentationContainer
 -------------------

@@ -24,7 +24,7 @@ from ndx_microscopy.testing import (
     mock_Microscope,
     mock_MicroscopeModel,
     mock_MicroscopyChannel,
-    mock_Segmentation2D,
+    mock_PlanarSegmentation,
     mock_SegmentationContainer,
     mock_PlanarImagingSpace,
     mock_VolumetricImagingSpace,
@@ -483,10 +483,12 @@ class TestMicroscopyResponseSeriesSimpleRoundtrip(pynwb_TestCase):
 
         planar_imaging_space = mock_PlanarImagingSpace(name="PlanarImagingSpace")
 
-        segmentation_2D = mock_Segmentation2D(name="Segmentation2D", planar_imaging_space=planar_imaging_space)
+        planar_segmentation = mock_PlanarSegmentation(
+            name="PlanarSegmentation", planar_imaging_space=planar_imaging_space
+        )
 
         segmentation_container = mock_SegmentationContainer(
-            name="SegmentationContainer", segmentations=[segmentation_2D]
+            name="SegmentationContainer", segmentations=[planar_segmentation]
         )
         ophys_module = nwbfile.create_processing_module(name="ophys", description="")
         ophys_module.add(segmentation_container)
@@ -496,7 +498,7 @@ class TestMicroscopyResponseSeriesSimpleRoundtrip(pynwb_TestCase):
             name="rois",  # Name must be exactly this
             description="",
             data=[x for x in range(number_of_rois)],
-            table=segmentation_2D,
+            table=planar_segmentation,
         )
         microscopy_response_series = mock_MicroscopyResponseSeries(
             name="MicroscopyResponseSeries",

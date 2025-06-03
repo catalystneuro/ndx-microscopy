@@ -13,6 +13,9 @@
 - Updated `MicroscopySeries` to use `MicroscopyRig` instead of individual `microscope`, `excitation_light_path`, and `emission_light_path` references Sub-Issue[#51](https://github.com/catalystneuro/ndx-microscopy/issues/51)
 - Added `dimensions_in_pixels` to `PlanarImagingSpace` and `dimensions_in_voxels` to `VolumetricImagingSpace` object Sub-Issue[#52](https://github.com/catalystneuro/ndx-microscopy/issues/52)
 - Added `MultiChannelMicroscopyContainer` object Sub-Issue[#53](https://github.com/catalystneuro/ndx-microscopy/issues/53)
+- Refactored segmentation classes: Sub-Issue[#56](https://github.com/catalystneuro/ndx-microscopy/issues/56)
+  - Renamed `Segmentation2D` to `PlanarSegmentation`
+  - Renamed `Segmentation3D` to `VolumetricSegmentation`
 
 # v0.2.1 (March 28, 2025)
 
