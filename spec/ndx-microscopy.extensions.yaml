@@ -49,6 +49,28 @@ groups:
         doc: Link to OpticalLens object which contains metadata about the optical lens used in the microscopy rig.
         quantity: "?"
 
+  - neurodata_type_def: MicroscopyChannel
+    neurodata_type_inc: NWBContainer
+    doc: A channel in a microscope that contains metadata about the indicator, the excitation and emission wavelengths.
+    attributes:
+      - name: name
+        dtype: text
+        doc: Name of the channel.
+      - name: description
+        dtype: text
+        doc: Description of the channel.
+        required: false
+      - name: excitation_wavelength_in_nm
+        dtype: float64
+        doc: Wavelength of the excitation light in nanometers.
+      - name: emission_wavelength_in_nm
+        dtype: float64
+        doc: Wavelength of the emission light in nanometers.
+    groups:
+      - neurodata_type_inc: Indicator
+        doc: Indicator object which contains metadata about the indicator used in this light path.
+        quantity: 1
+
   - neurodata_type_def: IlluminationPattern
     neurodata_type_inc: NWBContainer
     doc: Base class for describing the illumination pattern used to acquired the image. Use this object if the illumination pattern is not one of the specific types (e.g., Line, Plane, RandomAccess).
@@ -79,9 +101,11 @@ groups:
     neurodata_type_inc: IlluminationPattern
     doc: Whole plane acquisition, common for light sheet techniques.
     attributes:
-      - name: plane_thickness_in_um
-        dtype: float64
-        doc: Thickness of the plane in micrometers.
+      - name: point_spread_function_in_um
+        dtype: text
+        doc:
+          Estimated plane spatial profile or point spread function, expressed as
+          mean [um] ± s.d [um].
         required: false
       - name: illumination_angle_in_degrees
         dtype: float64
@@ -193,6 +217,9 @@ groups:
     groups:
       - neurodata_type_inc: MicroscopyRig
         doc: MicroscopyRig object containing metadata about the microscopy rig used to acquire this imaging data.
+        quantity: 1
+      - neurodata_type_inc: MicroscopyChannel
+        doc: MicroscopyChannel object containing metadata about the channel used to acquire this imaging data.
         quantity: 1
 
   - neurodata_type_def: PlanarMicroscopySeries

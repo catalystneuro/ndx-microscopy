@@ -6,6 +6,7 @@
 
 ## Features
 ### NWB TAB reviews Issue[#48](https://github.com/catalystneuro/ndx-microscopy/issues/48)
+- Added MicroscopyChannel object Sub-Issue[#49](https://github.com/catalystneuro/ndx-microscopy/issues/49)
 - Added `MicroscopyRig` object Sub-Issue[#51](https://github.com/catalystneuro/ndx-microscopy/issues/51)
 - Changed `Microscope` to inherit from `DeviceInstance` instead of `Device` Sub-Issue[#51](https://github.com/catalystneuro/ndx-microscopy/issues/51)
 - Added `MicroscopeModel` that inherit from `DeviceModel` Sub-Issue[#51](https://github.com/catalystneuro/ndx-microscopy/issues/51)

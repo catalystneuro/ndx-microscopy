@@ -22,6 +22,7 @@ Complete example of two-photon calcium imaging with full optical path configurat
         MicroscopeModel,
         Microscope, 
         MicroscopyRig,
+        MicroscopyChannel,
         PlanarImagingSpace,
         PlanarMicroscopySeries,
         Segmentation2D,
@@ -219,10 +220,20 @@ Complete example of two-photon calcium imaging with full optical path configurat
     width = 512
     data = np.random.rand(frames, height, width)
 
+    # Create microscopy channel
+    microscopy_channel = MicroscopyChannel(
+        name='gcamp_channel',
+        description='GCaMP6f channel',
+        excitation_wavelength_in_nm=920.0,
+        emission_wavelength_in_nm=510.0,
+        indicator=indicator
+    )
+
     # Create imaging series
     imaging_series = PlanarMicroscopySeries(
         name='imaging_data',
         description='Two-photon calcium imaging',
+        microscopy_channel=microscopy_channel,
         microscopy_rig=microscopy_rig,
         planar_imaging_space=imaging_space,
         data=data,
@@ -534,10 +545,20 @@ Example of volumetric imaging with 3D ROI segmentation:
     depths = 10
     data = np.random.rand(frames, height, width, depths)
 
+    # Create microscopy channel
+    microscopy_channel = MicroscopyChannel(
+        name='gcamp_channel',
+        description='GCaMP6f channel',
+        excitation_wavelength_in_nm=920.0,
+        emission_wavelength_in_nm=510.0,
+        indicator=indicator
+    )
+
     # Create volumetric series
     volume_series = VolumetricMicroscopySeries(
         name='volume_data',
         description='Volumetric imaging series',
+        microscopy_channel=microscopy_channel,
         microscopy_rig=microscopy_rig,
         volumetric_imaging_space=volume_space,
         data=data,
@@ -658,6 +679,7 @@ Example of multi-plane imaging with an electrically tunable lens:
         MicroscopeModel,
         Microscope,
         MicroscopyRig,
+        MicroscopyChannel,
         PlanarImagingSpace,
         PlanarMicroscopySeries,
         MultiPlaneMicroscopyContainer,
@@ -839,7 +861,7 @@ Example of multi-plane imaging with an electrically tunable lens:
     plane_acquisition = PlaneAcquisition(
         name=f'plane_acquisition',
         description=f'Plane acquisition',
-        plane_thickness_in_um=2.0
+        point_spread_function_in_um="32 um ± 1.6 um"
     )
 
     for depth in depths:
@@ -861,12 +883,22 @@ Example of multi-plane imaging with an electrically tunable lens:
         width = 512
         data = np.random.rand(frames, height, width)
 
+        # Create microscopy channel for this plane
+        microscopy_channel = MicroscopyChannel(
+            name=f'gcamp_channel_{depth}',
+            description=f'GCaMP6f channel at {depth} µm depth',
+            excitation_wavelength_in_nm=920.0,
+            emission_wavelength_in_nm=510.0,
+            indicator=indicator
+        )
+
         # Create imaging series for this plane
         plane_series = PlanarMicroscopySeries(
             name=f'imaging_depth_{depth}',
             description=f'Imaging data at {depth} µm depth',
+            microscopy_channel=microscopy_channel,
             microscopy_rig=microscopy_rig,
-            imaging_space=plane_space,
+            planar_imaging_space=plane_space,
             data=data,
             unit='a.u.',
             conversion=1.0,

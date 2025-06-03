@@ -23,6 +23,7 @@ from ndx_microscopy.testing import (
     mock_MicroscopyRig,
     mock_Microscope,
     mock_MicroscopeModel,
+    mock_MicroscopyChannel,
     mock_Segmentation2D,
     mock_SegmentationContainer,
     mock_PlanarImagingSpace,
@@ -93,6 +94,7 @@ class TestPlanarMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
         planar_microscopy_series = mock_PlanarMicroscopySeries(
             name="PlanarMicroscopySeries",
             microscopy_rig=microscopy_rig,
+            microscopy_channel=mock_MicroscopyChannel(name="MicroscopyChannel"),
             planar_imaging_space=planar_imaging_space,
         )
         nwbfile.add_acquisition(nwbdata=planar_microscopy_series)
@@ -168,6 +170,7 @@ class TestMicroscopyRigWithUntrackedDevice(pynwb_TestCase):
         planar_microscopy_series = mock_PlanarMicroscopySeries(
             name="PlanarMicroscopySeries",
             microscopy_rig=microscopy_rig,
+            microscopy_channel=mock_MicroscopyChannel(name="MicroscopyChannel"),
             planar_imaging_space=planar_imaging_space,
         )
         nwbfile.add_acquisition(nwbdata=planar_microscopy_series)
@@ -234,6 +237,7 @@ class TestVolumetricMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
         volumetric_microscopy_series = mock_VolumetricMicroscopySeries(
             name="VolumetricMicroscopySeries",
             microscopy_rig=microscopy_rig,
+            microscopy_channel=mock_MicroscopyChannel(name="MicroscopyChannel"),
             volumetric_imaging_space=volumetric_imaging_space,
         )
         nwbfile.add_acquisition(nwbdata=volumetric_microscopy_series)
@@ -313,12 +317,14 @@ class TestMultiPlaneMicroscopyContainerSimpleRoundtrip(pynwb_TestCase):
         planar_microscopy_series_1 = mock_PlanarMicroscopySeries(
             name="PlanarMicroscopySeries_1",
             microscopy_rig=microscopy_rig,
+            microscopy_channel=mock_MicroscopyChannel(name="MicroscopyChannel1"),
             planar_imaging_space=planar_imaging_space_1,
         )
 
         planar_microscopy_series_2 = mock_PlanarMicroscopySeries(
             name="PlanarMicroscopySeries_2",
             microscopy_rig=microscopy_rig,
+            microscopy_channel=mock_MicroscopyChannel(name="MicroscopyChannel2"),
             planar_imaging_space=planar_imaging_space_2,
         )
 

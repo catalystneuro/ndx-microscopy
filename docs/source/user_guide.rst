@@ -150,6 +150,18 @@ The device components include MicroscopeModel, Microscope, and MicroscopyRig:
 
 Other optical components (filters, sources, detectors) are provided by the ndx-ophys-devices extension.
 
+4. **MicroscopyChannel**: Defines a channel with indicator and wavelength information
+
+   .. code-block:: python
+
+       microscopy_channel = MicroscopyChannel(
+           name='gcamp_channel',
+           description='GCaMP6f channel',
+           excitation_wavelength_in_nm=488.0,
+           emission_wavelength_in_nm=520.0,
+           indicator=indicator               # from ndx-ophys-devices
+       )
+
 Illumination Pattern Configuration
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -183,7 +195,7 @@ Illumination patterns define how the microscope scans or illuminates the sample:
        plane_acquisition = PlaneAcquisition(
            name='plane_acquisition',
            description='Widefield fluorescence imaging',
-           plane_thickness_in_um=5.0,
+           point_spread_function_in_um="32 um ± 1.6 um",
            illumination_angle_in_degrees=45.0,  # for light sheet
            plane_rate_in_Hz=100.0               # planes per second
        )
@@ -238,7 +250,7 @@ Imaging spaces define the physical region being imaged:
        plane_acquisition = PlaneAcquisition(
            name='plane_acquisition',
            description='Light sheet imaging',
-           plane_thickness_in_um=5.0,
+           point_spread_function_in_um="32 um ± 1.6 um",
            illumination_angle_in_degrees=45.0,
            plane_rate_in_Hz=100.0
        )
@@ -339,11 +351,21 @@ Basic workflow for 2D imaging:
         illumination_pattern=line_scan        # Include the illumination pattern
     )
 
-    # 6. Create imaging series
+    # 4. Create microscopy channel
+    microscopy_channel = MicroscopyChannel(
+        name='gcamp_channel',
+        description='GCaMP6f channel',
+        excitation_wavelength_in_nm=488.0,
+        emission_wavelength_in_nm=520.0,
+        indicator=indicator               # from ndx-ophys-devices
+    )
+
+    # 5. Create imaging series
     microscopy_series = PlanarMicroscopySeries(
         name='microscopy_series',
         description='Two-photon calcium imaging',
         microscopy_rig=microscopy_rig,
+        microscopy_channel=microscopy_channel,
         planar_imaging_space=planar_imaging_space,
         data=data,                # [frames, height, width]
         unit='a.u.',
@@ -393,7 +415,7 @@ Workflow for one-photon widefield imaging:
     plane_acquisition = PlaneAcquisition(
         name='plane_acquisition',
         description='Widefield fluorescence imaging',
-        plane_thickness_in_um=5.0,
+        point_spread_function_in_um="32 um ± 1.6 um",
         plane_rate_in_Hz=30.0
     )
 
@@ -409,10 +431,20 @@ Workflow for one-photon widefield imaging:
         illumination_pattern=plane_acquisition
     )
 
-    # 6. Create imaging series
+    # 6. Create microscopy channel
+    microscopy_channel = MicroscopyChannel(
+        name='gcamp_channel',
+        description='GCaMP6f channel',
+        excitation_wavelength_in_nm=470.0,
+        emission_wavelength_in_nm=520.0,
+        indicator=indicator               # from ndx-ophys-devices
+    )
+
+    # 5. Create imaging series
     microscopy_series = PlanarMicroscopySeries(
         name='imaging_data',
         description='One-photon calcium imaging',
+        microscopy_channel=microscopy_channel,
         microscopy_rig=microscopy_rig,
         planar_imaging_space=planar_imaging_space,
         data=data,
@@ -480,10 +512,20 @@ Workflow for volumetric imaging with targeted scanning:
         illumination_pattern=random_access_scan
     )
 
-    # 6. Create volumetric series
+    # 6. Create microscopy channel
+    microscopy_channel = MicroscopyChannel(
+        name='gcamp_channel',
+        description='GCaMP6f channel',
+        excitation_wavelength_in_nm=920.0,
+        emission_wavelength_in_nm=520.0,
+        indicator=indicator               # from ndx-ophys-devices
+    )
+
+    # 5. Create volumetric series
     volume_series = VolumetricMicroscopySeries(
         name='volume_data',
         microscopy_rig=microscopy_rig,
+        microscopy_channel=microscopy_channel,
         volumetric_imaging_space=volumetric_imaging_space,
         data=data,                # [frames, height, width, depths]
         unit='a.u.',

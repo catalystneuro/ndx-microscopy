@@ -44,6 +44,7 @@ from .ndx_microscopy import (
 MicroscopeModel = get_class("MicroscopeModel", extension_name)
 Microscope = get_class("Microscope", extension_name)
 MicroscopyRig = get_class("MicroscopyRig", extension_name)
+MicroscopyChannel = get_class("MicroscopyChannel", extension_name)
 IlluminationPattern = get_class("IlluminationPattern", extension_name)
 LineScan = get_class("LineScan", extension_name)
 PlaneAcquisition = get_class("PlaneAcquisition", extension_name)

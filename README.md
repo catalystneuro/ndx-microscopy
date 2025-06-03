@@ -14,6 +14,8 @@ A Neurodata Without Borders (NWB) extension for storing microscopy data and asso
     - `DichroicMirror` 
     - `Photodetector` 
     - `Indicator`
+- Microscopy channel configurations: 
+    - `MicroscopyChannel`
 - Imaging space definitions: 
     - `PlanarImagingSpace`
     - `VolumetricImagingSpace`
@@ -222,7 +224,7 @@ classDiagram
         --------------------------------------
         attributes
         --------------------------------------
-        plane_thickness_in_um : float64, optional
+        point_spread_function_in_um : text, optional
         illumination_angle_in_degrees : float64, optional
         plane_rate_in_Hz : float64, optional
     }
@@ -271,12 +273,29 @@ classDiagram
 classDiagram
     direction TB
 
+    class MicroscopyChannel {
+        <<NWBContainer>>
+        --------------------------------------
+        attributes
+        --------------------------------------
+        **name** : text
+        description : text, optional
+        **excitation_wavelength_in_nm** : float
+        **emission_wavelength_in_nm** : float
+        --------------------------------------
+        groups
+        --------------------------------------
+        indicator
+    }
+
     class MicroscopySeries {
         <<TimeSeries>>
         --------------------------------------
         groups
         --------------------------------------
         **microscopy_rig** : MicroscopyRig
+        **microscopy_channel** : MicroscopyChannel
+
     }
 
     class PlanarMicroscopySeries {
@@ -373,6 +392,8 @@ classDiagram
     VolumetricMicroscopySeries *-- VolumetricImagingSpace : contains
     MultiPlaneMicroscopyContainer *-- PlanarMicroscopySeries : contains
     MicroscopySeries *-- MicroscopyRig : contains
+    MicroscopyChannel *-- MicroscopySeries : contains    
+    MicroscopyChannel --* Indicator : contains
 ```
 
 #### Segmentation Components

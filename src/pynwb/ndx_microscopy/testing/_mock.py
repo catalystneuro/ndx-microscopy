@@ -3,13 +3,16 @@ from typing import List, Optional, Tuple
 
 import numpy as np
 import pynwb.base
-from ndx_ophys_devices import ExcitationSource, OpticalFilter, Photodetector, DichroicMirror
+from ndx_ophys_devices import ExcitationSource, OpticalFilter, Photodetector, DichroicMirror, Indicator
+
 from ndx_ophys_devices.testing import (
     mock_ExcitationSource,
     mock_OpticalFilter,
     mock_Photodetector,
     mock_DichroicMirror,
+    mock_Indicator,
 )
+
 from pynwb.testing.mock.utils import name_generator
 
 import ndx_microscopy
@@ -47,6 +50,24 @@ def mock_Microscope(
         technique=technique,
     )
     return microscope
+
+
+def mock_MicroscopyChannel(
+    *,
+    name: Optional[str] = None,
+    description: str = "A mock instance of a MicroscopyChannel type to be used for rapid testing.",
+    excitation_wavelength_in_nm: Optional[float] = 488.0,
+    emission_wavelength_in_nm: Optional[float] = 520.0,
+    indicator: Indicator = None,
+) -> ndx_microscopy.MicroscopyChannel:
+    microscopy_channel = ndx_microscopy.MicroscopyChannel(
+        name=name or name_generator("MicroscopyChannel"),
+        description=description,
+        excitation_wavelength_in_nm=excitation_wavelength_in_nm,
+        emission_wavelength_in_nm=emission_wavelength_in_nm,
+        indicator=indicator or mock_Indicator(),
+    )
+    return microscopy_channel
 
 
 def mock_MicroscopyRig(
@@ -109,7 +130,7 @@ def mock_PlaneAcquisition(
     *,
     name: Optional[str] = None,
     description: str = "A mock instance of a PlaneAcquisition type to be used for rapid testing.",
-    plane_thickness_in_um: Optional[float] = 5.0,
+    point_spread_function_in_um: Optional[str] = "32 um ± 1.6 um",
     illumination_angle_in_degrees: Optional[float] = 45.0,
     plane_rate_in_Hz: Optional[float] = 100.0,
 ) -> ndx_microscopy.PlaneAcquisition:
@@ -117,7 +138,7 @@ def mock_PlaneAcquisition(
     plane_acquisition = ndx_microscopy.PlaneAcquisition(
         name=name or name_generator("PlaneAcquisition"),
         description=description,
-        plane_thickness_in_um=plane_thickness_in_um,
+        point_spread_function_in_um=point_spread_function_in_um,
         illumination_angle_in_degrees=illumination_angle_in_degrees,
         plane_rate_in_Hz=plane_rate_in_Hz,
     )
@@ -322,6 +343,7 @@ def mock_PlanarMicroscopySeries(
     *,
     microscopy_rig: ndx_microscopy.MicroscopyRig,
     planar_imaging_space: ndx_microscopy.PlanarImagingSpace,
+    microscopy_channel: ndx_microscopy.MicroscopyChannel,
     name: Optional[str] = None,
     description: str = "A mock instance of a PlanarMicroscopySeries type to be used for rapid testing.",
     data: Optional[np.ndarray] = None,
@@ -357,6 +379,7 @@ def mock_PlanarMicroscopySeries(
         name=series_name,
         description=description,
         microscopy_rig=microscopy_rig,
+        microscopy_channel=microscopy_channel,
         planar_imaging_space=planar_imaging_space,
         data=series_data,
         unit=unit,
@@ -387,6 +410,7 @@ def mock_VolumetricMicroscopySeries(
     *,
     microscopy_rig: ndx_microscopy.MicroscopyRig,
     volumetric_imaging_space: ndx_microscopy.VolumetricImagingSpace,
+    microscopy_channel: ndx_microscopy.MicroscopyChannel,
     name: Optional[str] = None,
     description: str = "A mock instance of a VolumetricMicroscopySeries type to be used for rapid testing.",
     data: Optional[np.ndarray] = None,
@@ -421,6 +445,7 @@ def mock_VolumetricMicroscopySeries(
     volumetric_microscopy_series = ndx_microscopy.VolumetricMicroscopySeries(
         name=series_name,
         description=description,
+        microscopy_channel=microscopy_channel,
         microscopy_rig=microscopy_rig,
         volumetric_imaging_space=volumetric_imaging_space,
         data=series_data,

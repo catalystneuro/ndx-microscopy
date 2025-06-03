@@ -76,6 +76,35 @@ A collection of devices and metadata that make up the microscopy rig.
 
 For other device components (ExcitationSource, OpticalFilter, Photodetector, etc.), please refer to the `ndx-ophys-devices documentation <https://ndx-ophys-devices.readthedocs.io/>`_.
 
+MicroscopyChannel
+^^^^^^^^^^^^^^^
+Represents a channel in a microscope with metadata about the indicator and wavelengths.
+
+.. code-block:: yaml
+
+    groups:
+      - neurodata_type_def: MicroscopyChannel
+        neurodata_type_inc: NWBContainer
+        doc: A channel in a microscope that contains metadata about the indicator, the excitation and emission wavelengths.
+        attributes:
+          - name: name
+            dtype: text
+            doc: Name of the channel.
+          - name: description
+            dtype: text
+            doc: Description of the channel.
+            required: false
+          - name: excitation_wavelength_in_nm
+            dtype: float64
+            doc: Wavelength of the excitation light in nanometers.
+          - name: emission_wavelength_in_nm
+            dtype: float64
+            doc: Wavelength of the emission light in nanometers.
+        groups:
+          - neurodata_type_inc: Indicator
+            doc: Indicator object which contains metadata about the indicator used in this light path.
+            quantity: 1
+
 Microscopy Series Components
 ------------------------
 
@@ -93,6 +122,9 @@ Base type for microscopy time series data.
         groups:
           - neurodata_type_inc: MicroscopyRig
             doc: MicroscopyRig object containing metadata about the microscopy rig used to acquire this imaging data.
+            quantity: 1
+          - neurodata_type_inc: MicroscopyChannel
+            doc: MicroscopyChannel object containing metadata about the channel used to acquire this imaging data.
             quantity: 1
 
 PlanarMicroscopySeries
@@ -225,9 +257,9 @@ Whole plane acquisition method for microscopy.
         neurodata_type_inc: IlluminationPattern
         doc: Whole plane acquisition, common for light sheet techniques.
         attributes:
-          - name: plane_thickness_in_um
-            dtype: float64
-            doc: Thickness of the plane in micrometers.
+          - name: point_spread_function_in_um
+            dtype: text
+            doc: Estimated plane spatial profile or point spread function, expressed as mean [um] ± s.d [um].
             required: false
           - name: illumination_angle_in_degrees
             dtype: float64

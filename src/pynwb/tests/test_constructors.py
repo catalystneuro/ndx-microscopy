@@ -6,6 +6,7 @@ from ndx_microscopy.testing import (
     mock_MicroscopyRig,
     mock_MicroscopeModel,
     mock_Microscope,
+    mock_MicroscopyChannel,
     mock_Segmentation,
     mock_Segmentation2D,
     mock_Segmentation3D,
@@ -41,14 +42,19 @@ def test_constructor_microscope():
     assert microscope.description == "A mock instance of a Microscope type to be used for rapid testing."
 
 
-def test_constructor_microscopy_rig():
-    microscopy_rig = mock_MicroscopyRig()
-    assert microscopy_rig.description == "A mock instance of a MicroscopyRig type to be used for rapid testing."
-
-
 def test_constructor_microscope_model():
     microscope_model = mock_MicroscopeModel()
     assert microscope_model.description == "A mock instance of a MicroscopeModel type to be used for rapid testing."
+
+
+def test_constructor_microscopy_channel():
+    microscopy_channel = mock_MicroscopyChannel()
+    assert microscopy_channel.description == "A mock instance of a MicroscopyChannel type to be used for rapid testing."
+
+
+def test_constructor_microscopy_rig():
+    microscopy_rig = mock_MicroscopyRig()
+    assert microscopy_rig.description == "A mock instance of a MicroscopyRig type to be used for rapid testing."
 
 
 def test_constructor_illumination_pattern():
@@ -76,7 +82,7 @@ def test_constructor_plane_acquisition():
     """Test constructor for PlaneAcquisition class."""
     plane_acquisition = mock_PlaneAcquisition()
     assert plane_acquisition.description == "A mock instance of a PlaneAcquisition type to be used for rapid testing."
-    assert plane_acquisition.plane_thickness_in_um == 5.0
+    assert plane_acquisition.point_spread_function_in_um == "32 um ± 1.6 um"
     assert plane_acquisition.illumination_angle_in_degrees == 45.0
     assert plane_acquisition.plane_rate_in_Hz == 100.0
     assert isinstance(plane_acquisition, PlaneAcquisition)
@@ -156,10 +162,12 @@ def test_constructor_segmentation_container():
 
 def test_constructor_planar_microscopy_series():
     microscopy_rig = mock_MicroscopyRig()
+    microscopy_channel = mock_MicroscopyChannel()
     planar_imaging_space = mock_PlanarImagingSpace()
 
     planar_microscopy_series = mock_PlanarMicroscopySeries(
         microscopy_rig=microscopy_rig,
+        microscopy_channel=microscopy_channel,
         planar_imaging_space=planar_imaging_space,
     )
     assert (
@@ -171,10 +179,12 @@ def test_constructor_planar_microscopy_series():
 def test_constructor_multi_plane_microscopy_container():
 
     microscopy_rig = mock_MicroscopyRig()
+    microscopy_channel = mock_MicroscopyChannel()
     planar_imaging_space = mock_PlanarImagingSpace()
 
     planar_microscopy_series = mock_PlanarMicroscopySeries(
         microscopy_rig=microscopy_rig,
+        microscopy_channel=microscopy_channel,
         planar_imaging_space=planar_imaging_space,
     )
 
@@ -186,10 +196,12 @@ def test_constructor_multi_plane_microscopy_container():
 
 def test_constructor_volumetric_microscopy_series():
     microscopy_rig = mock_MicroscopyRig()
+    microscopy_channel = mock_MicroscopyChannel()
     volumetric_imaging_space = mock_VolumetricImagingSpace()
 
     volumetric_microscopy_series = mock_VolumetricMicroscopySeries(
         microscopy_rig=microscopy_rig,
+        microscopy_channel=microscopy_channel,
         volumetric_imaging_space=volumetric_imaging_space,
     )
     assert (
