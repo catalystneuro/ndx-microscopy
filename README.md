@@ -5,6 +5,8 @@ A Neurodata Without Borders (NWB) extension for storing microscopy data and asso
 ## Features
 
 **Comprehensive Neurodata Types**
+- Experiment metadata container:
+    - `MicroscopyExperimentMetadata`
 - Microscope and optical component metadata (integration with [ndx-ophys-devices](https://github.com/catalystneuro/ndx-ophys-devices)):
     - `MicroscopeModel`
     - `Microscope`
@@ -14,6 +16,8 @@ A Neurodata Without Borders (NWB) extension for storing microscopy data and asso
     - `DichroicMirror` 
     - `Photodetector` 
     - `Indicator`
+    - `ViralVector`
+    - `ViralVectorInjection`
 - Microscopy channel configurations: 
     - `MicroscopyChannel`
 - Imaging space definitions: 
@@ -266,6 +270,90 @@ classDiagram
     ImagingSpace *-- IlluminationPattern : contains
 ```
 
+#### Experiment Metadata Components
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#ffffff', 'primaryBorderColor': '#144E73', 'lineColor': '#D96F32'}}}%%
+
+classDiagram
+    direction TB
+
+    class MicroscopyExperimentMetadata {
+        <<LabMetaData>>
+        --------------------------------------
+        groups
+        --------------------------------------
+        **microscopy_rigs** : MicroscopyRig[0..*]
+        **viral_vectors** : ViralVector[0..*]
+        **viral_vector_injections** : ViralVectorInjection[0..*]
+        **indicators** : Indicator[0..*]
+    }
+
+    class MicroscopyRig {
+        <<NWBContainer>>
+        --------------------------------------
+        attributes
+        --------------------------------------
+        description : text
+        --------------------------------------
+        links
+        --------------------------------------
+        microscope : Microscope
+        excitation_source : ExcitationSource, optional
+        excitation_filter : OpticalFilter, optional
+        dichroic_mirror : DichroicMirror, optional
+        photodetector : Photodetector, optional
+        emission_filter : OpticalFilter, optional
+    }
+
+    class ViralVector {
+        <<NWBContainer>>
+        --------------------------------------
+        attributes
+        --------------------------------------
+        **construct_name** : text
+        titer_in_vg_per_ml : numeric, optional
+        manufacturer : text, optional
+        description : text, optional
+    }
+    class ViralVectorInjection {
+        <<NWBContainer>>
+        --------------------------------------
+        attributes
+        --------------------------------------
+        location : text, optional
+        hemisphere : text, optional
+        ap_in_mm : numeric, optional
+        ml_in_mm : numeric, optional
+        dv_in_mm : numeric, optional
+        pitch_in_deg : numeric, optional
+        yaw_in_deg : numeric, optional
+        roll_in_deg : numeric, optional
+        stereotactic_rotation_in_deg : numeric, optional
+        stereotactic_tilt_in_deg : numeric, optional
+        volume_in_uL : numeric, optional
+        injection_date : text, optional
+        **viral_vector** : ViralVector
+        }
+    class Indicator {
+        <<NWBContainer>>
+        --------------------------------------
+        attributes
+        --------------------------------------
+        **label** : text
+        description : text, optional
+        manufacturer : text, optional
+        **viral_vector_injection** : ViralVectorInjection, optional
+    }
+
+    MicroscopyExperimentMetadata *-- MicroscopyRig : contains
+    MicroscopyExperimentMetadata *-- ViralVector : contains
+    MicroscopyExperimentMetadata *-- ViralVectorInjection : contains
+    MicroscopyExperimentMetadata *-- Indicator : contains
+    ViralVectorInjection o--> ViralVector : links
+    Indicator o--> ViralVectorInjection : links
+```
+
 #### Microscopy Series and Imaging Space Components
 
 ```mermaid
@@ -284,17 +372,20 @@ classDiagram
         **excitation_wavelength_in_nm** : float
         **emission_wavelength_in_nm** : float
         --------------------------------------
-        groups
+        links
         --------------------------------------
-        indicator
+        **indicator** : Indicator
     }
 
     class MicroscopySeries {
         <<TimeSeries>>
         --------------------------------------
-        groups
+        links
         --------------------------------------
         **microscopy_rig** : MicroscopyRig
+        --------------------------------------
+        groups
+        --------------------------------------
         **microscopy_channel** : MicroscopyChannel
 
     }
@@ -412,9 +503,9 @@ classDiagram
     VolumetricMicroscopySeries *-- VolumetricImagingSpace : contains
     MultiPlaneMicroscopyContainer *-- PlanarMicroscopySeries : contains
     MultiChannelMicroscopyContainer *-- MicroscopySeries : contains
-    MicroscopySeries *-- MicroscopyRig : contains
-    MicroscopyChannel *-- MicroscopySeries : contains    
-    MicroscopyChannel --* Indicator : contains
+    MicroscopySeries o--> MicroscopyRig : links
+    MicroscopySeries *-- MicroscopyChannel : contains    
+    MicroscopyChannel o--> Indicator : links
 ```
 
 #### Segmentation Components

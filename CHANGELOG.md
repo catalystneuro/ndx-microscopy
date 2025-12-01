@@ -1,3 +1,24 @@
+# v0.4.0 (Upcoming)
+
+## Deprecations and Changes
+- **Breaking Change**: `OpticalLens`changed in `ObjectiveLens`
+- **Breaking Change**: `MicroscopyChannel.indicator` changed from a nested group to a link reference
+- **Breaking Change**: `MicroscopySeries.microscopy_rig` changed from a nested group to a link reference
+- Updated `ndx-ophys-devices` dependency from v0.2.0 to v0.4.0
+
+## Features
+- Added `MicroscopyExperimentMetadata` (extends `LabMetaData`) as a centralized container for experiment metadata, including:
+  - `MicroscopyRig` objects
+  - `ViralVector` objects (from ndx-ophys-devices)
+  - `ViralVectorInjection` objects (from ndx-ophys-devices)
+  - `Indicator` objects (from ndx-ophys-devices)
+- Added support for `ViralVector` and `ViralVectorInjection` imports from ndx-ophys-devices
+
+## Notes
+- These changes improve metadata organization by centralizing all experiment-related objects in `MicroscopyExperimentMetadata`
+- The use of links instead of nested groups provides better data reusability and reduces duplication
+- Users should add `MicroscopyExperimentMetadata` to NWBFile using `nwbfile.add_lab_meta_data()`
+
 # v0.3.0 (Jun 3, 2025)
 ## Bug Fixes
 
