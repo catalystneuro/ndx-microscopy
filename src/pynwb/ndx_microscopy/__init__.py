@@ -16,7 +16,7 @@ from ndx_ophys_devices import (
     OpticalFilter,
     Photodetector,
     DichroicMirror,
-    OpticalLens,
+    ObjectiveLens,
 )
 
 extension_name = "ndx-microscopy"
@@ -62,9 +62,7 @@ MicroscopyResponseSeries = get_class("MicroscopyResponseSeries", extension_name)
 MicroscopyResponseSeriesContainer = get_class("MicroscopyResponseSeriesContainer", extension_name)
 
 __all__ = [
-    "DeviceModel",
-    "DeviceInstance",
-    "OpticalLens",
+    "ObjectiveLens",
     "OpticalFilter",
     "ExcitationSource",
     "Indicator",
