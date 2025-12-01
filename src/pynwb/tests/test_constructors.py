@@ -26,6 +26,7 @@ from ndx_microscopy.testing import (
 )
 
 from ndx_microscopy import (
+    MicroscopyExperimentMetadata,
     Segmentation,
     PlanarSegmentation,
     VolumetricSegmentation,
@@ -49,13 +50,34 @@ def test_constructor_microscope_model():
 
 
 def test_constructor_microscopy_channel():
-    microscopy_channel = mock_MicroscopyChannel()
+    from ndx_ophys_devices.testing import mock_Indicator
+
+    microscopy_channel = mock_MicroscopyChannel(indicator=mock_Indicator(name="Indicator1"))
     assert microscopy_channel.description == "A mock instance of a MicroscopyChannel type to be used for rapid testing."
 
 
 def test_constructor_microscopy_rig():
     microscopy_rig = mock_MicroscopyRig()
     assert microscopy_rig.description == "A mock instance of a MicroscopyRig type to be used for rapid testing."
+
+
+def test_constructor_microscopy_experiment_metadata():
+    from ndx_ophys_devices.testing import mock_Indicator, mock_ViralVector, mock_ViralVectorInjection
+
+    viral_vector = mock_ViralVector(name="ViralVector1")
+    viral_vector_injection = mock_ViralVectorInjection(
+        name="ViralVectorInjection1",
+        viral_vector=viral_vector,
+    )
+    indicator = mock_Indicator(name="Indicator1", viral_vector_injection=viral_vector_injection)
+    microscopy_rig = mock_MicroscopyRig()
+
+    microscopy_experiment_metadata = MicroscopyExperimentMetadata(
+        viral_vectors=[viral_vector],
+        viral_vector_injections=[viral_vector_injection],
+        indicators=[indicator],
+        microscopy_rigs=[microscopy_rig],
+    )
 
 
 def test_constructor_illumination_pattern():
@@ -162,8 +184,10 @@ def test_constructor_segmentation_container():
 
 
 def test_constructor_planar_microscopy_series():
+    from ndx_ophys_devices.testing import mock_Indicator
+
+    microscopy_channel = mock_MicroscopyChannel(indicator=mock_Indicator(name="Indicator1"))
     microscopy_rig = mock_MicroscopyRig()
-    microscopy_channel = mock_MicroscopyChannel()
     planar_imaging_space = mock_PlanarImagingSpace()
 
     planar_microscopy_series = mock_PlanarMicroscopySeries(
@@ -178,9 +202,10 @@ def test_constructor_planar_microscopy_series():
 
 
 def test_constructor_multi_plane_microscopy_container():
+    from ndx_ophys_devices.testing import mock_Indicator
 
+    microscopy_channel = mock_MicroscopyChannel(indicator=mock_Indicator(name="Indicator1"))
     microscopy_rig = mock_MicroscopyRig()
-    microscopy_channel = mock_MicroscopyChannel()
     planar_imaging_space = mock_PlanarImagingSpace()
 
     planar_microscopy_series = mock_PlanarMicroscopySeries(
@@ -196,9 +221,10 @@ def test_constructor_multi_plane_microscopy_container():
 
 
 def test_constructor_multi_channel_microscopy_container():
+    from ndx_ophys_devices.testing import mock_Indicator
 
+    microscopy_channel = mock_MicroscopyChannel(indicator=mock_Indicator(name="Indicator1"))
     microscopy_rig = mock_MicroscopyRig()
-    microscopy_channel = mock_MicroscopyChannel()
     planar_imaging_space = mock_PlanarImagingSpace()
     planar_microscopy_series = mock_PlanarMicroscopySeries(
         microscopy_rig=microscopy_rig,
@@ -213,8 +239,10 @@ def test_constructor_multi_channel_microscopy_container():
 
 
 def test_constructor_volumetric_microscopy_series():
+    from ndx_ophys_devices.testing import mock_Indicator
+
+    microscopy_channel = mock_MicroscopyChannel(indicator=mock_Indicator(name="Indicator1"))
     microscopy_rig = mock_MicroscopyRig()
-    microscopy_channel = mock_MicroscopyChannel()
     volumetric_imaging_space = mock_VolumetricImagingSpace()
 
     volumetric_microscopy_series = mock_VolumetricMicroscopySeries(
@@ -246,9 +274,10 @@ def test_constructor_microscopy_response_series():
 
 
 def test_constructor_microscopy_response_series_with_microscopy_series():
+    from ndx_ophys_devices.testing import mock_Indicator
 
+    microscopy_channel = mock_MicroscopyChannel(indicator=mock_Indicator(name="Indicator1"))
     microscopy_rig = mock_MicroscopyRig()
-    microscopy_channel = mock_MicroscopyChannel()
     number_of_rois = 10
     planar_imaging_space = mock_PlanarImagingSpace()
     microscopy_series = mock_PlanarMicroscopySeries(

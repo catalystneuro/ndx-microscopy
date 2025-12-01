@@ -13,6 +13,8 @@ except ImportError:
 from ndx_ophys_devices import (
     ExcitationSource,
     Indicator,
+    ViralVector,
+    ViralVectorInjection,
     OpticalFilter,
     Photodetector,
     DichroicMirror,
@@ -43,6 +45,7 @@ MicroscopeModel = get_class("MicroscopeModel", extension_name)
 Microscope = get_class("Microscope", extension_name)
 MicroscopyRig = get_class("MicroscopyRig", extension_name)
 MicroscopyChannel = get_class("MicroscopyChannel", extension_name)
+MicroscopyExperimentMetadata = get_class("MicroscopyExperimentMetadata", extension_name)
 IlluminationPattern = get_class("IlluminationPattern", extension_name)
 LineScan = get_class("LineScan", extension_name)
 PlaneAcquisition = get_class("PlaneAcquisition", extension_name)
@@ -66,6 +69,8 @@ __all__ = [
     "OpticalFilter",
     "ExcitationSource",
     "Indicator",
+    "ViralVector",
+    "ViralVectorInjection",
     "Photodetector",
     "DichroicMirror",
     "MicroscopeModel",
@@ -75,6 +80,7 @@ __all__ = [
     "PlaneAcquisition",
     "RandomAccessScan",
     "MicroscopyRig",
+    "MicroscopyExperimentMetadata",
     "ImagingSpace",
     "PlanarImagingSpace",
     "VolumetricImagingSpace",

@@ -17,6 +17,9 @@ from ndx_ophys_devices.testing import (
     mock_PhotodetectorModel,
     mock_OpticalFilterModel,
     mock_DichroicMirrorModel,
+    mock_ViralVector,
+    mock_ViralVectorInjection,
+    mock_Indicator,
 )
 
 from ndx_microscopy.testing import (
@@ -35,7 +38,7 @@ from ndx_microscopy.testing import (
     mock_MicroscopyResponseSeries,
 )
 
-from ndx_microscopy import MicroscopyResponseSeriesContainer
+from ndx_microscopy import MicroscopyExperimentMetadata, MicroscopyResponseSeriesContainer
 
 
 class TestPlanarMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
@@ -89,13 +92,27 @@ class TestPlanarMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
             photodetector=photodetector,
             dichroic_mirror=dichroic_mirror,
         )
+        viral_vector = mock_ViralVector(name="ViralVector1")
+        viral_vector_injection = mock_ViralVectorInjection(
+            name="ViralVectorInjection1",
+            viral_vector=viral_vector,
+        )
+        indicator = mock_Indicator(name="Indicator1", viral_vector_injection=viral_vector_injection)
+
+        microscopy_experiment_metadata = MicroscopyExperimentMetadata(
+            viral_vectors=[viral_vector],
+            viral_vector_injections=[viral_vector_injection],
+            indicators=[indicator],
+            microscopy_rigs=[microscopy_rig],
+        )
+        nwbfile.add_lab_meta_data(microscopy_experiment_metadata)
 
         planar_imaging_space = mock_PlanarImagingSpace(name="PlanarImagingSpace")
 
         planar_microscopy_series = mock_PlanarMicroscopySeries(
             name="PlanarMicroscopySeries",
             microscopy_rig=microscopy_rig,
-            microscopy_channel=mock_MicroscopyChannel(name="MicroscopyChannel"),
+            microscopy_channel=mock_MicroscopyChannel(name="MicroscopyChannel", indicator=indicator),
             planar_imaging_space=planar_imaging_space,
         )
         nwbfile.add_acquisition(planar_microscopy_series)
@@ -165,13 +182,28 @@ class TestMicroscopyRigWithUntrackedDevice(pynwb_TestCase):
             dichroic_mirror=dichroic_mirror,
         )
 
+        viral_vector = mock_ViralVector(name="ViralVector1")
+        viral_vector_injection = mock_ViralVectorInjection(
+            name="ViralVectorInjection1",
+            viral_vector=viral_vector,
+        )
+        indicator = mock_Indicator(name="Indicator1", viral_vector_injection=viral_vector_injection)
+
+        microscopy_experiment_metadata = MicroscopyExperimentMetadata(
+            viral_vectors=[viral_vector],
+            viral_vector_injections=[viral_vector_injection],
+            indicators=[indicator],
+            microscopy_rigs=[microscopy_rig],
+        )
+        nwbfile.add_lab_meta_data(microscopy_experiment_metadata)
+
         # Create imaging space
         planar_imaging_space = mock_PlanarImagingSpace(name="PlanarImagingSpace")
 
         planar_microscopy_series = mock_PlanarMicroscopySeries(
             name="PlanarMicroscopySeries",
             microscopy_rig=microscopy_rig,
-            microscopy_channel=mock_MicroscopyChannel(name="MicroscopyChannel"),
+            microscopy_channel=mock_MicroscopyChannel(name="MicroscopyChannel", indicator=indicator),
             planar_imaging_space=planar_imaging_space,
         )
         nwbfile.add_acquisition(planar_microscopy_series)
@@ -233,12 +265,27 @@ class TestVolumetricMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
             dichroic_mirror=dichroic_mirror,
         )
 
+        viral_vector = mock_ViralVector(name="ViralVector1")
+        viral_vector_injection = mock_ViralVectorInjection(
+            name="ViralVectorInjection1",
+            viral_vector=viral_vector,
+        )
+        indicator = mock_Indicator(name="Indicator1", viral_vector_injection=viral_vector_injection)
+
+        microscopy_experiment_metadata = MicroscopyExperimentMetadata(
+            viral_vectors=[viral_vector],
+            viral_vector_injections=[viral_vector_injection],
+            indicators=[indicator],
+            microscopy_rigs=[microscopy_rig],
+        )
+        nwbfile.add_lab_meta_data(microscopy_experiment_metadata)
+
         volumetric_imaging_space = mock_VolumetricImagingSpace(name="VolumetricImagingSpace")
 
         volumetric_microscopy_series = mock_VolumetricMicroscopySeries(
             name="VolumetricMicroscopySeries",
             microscopy_rig=microscopy_rig,
-            microscopy_channel=mock_MicroscopyChannel(name="MicroscopyChannel"),
+            microscopy_channel=mock_MicroscopyChannel(name="MicroscopyChannel", indicator=indicator),
             volumetric_imaging_space=volumetric_imaging_space,
         )
         nwbfile.add_acquisition(volumetric_microscopy_series)
@@ -307,6 +354,20 @@ class TestMultiPlaneMicroscopyContainerSimpleRoundtrip(pynwb_TestCase):
             photodetector=photodetector,
             dichroic_mirror=dichroic_mirror,
         )
+        viral_vector = mock_ViralVector(name="ViralVector1")
+        viral_vector_injection = mock_ViralVectorInjection(
+            name="ViralVectorInjection1",
+            viral_vector=viral_vector,
+        )
+        indicator = mock_Indicator(name="Indicator1", viral_vector_injection=viral_vector_injection)
+
+        microscopy_experiment_metadata = MicroscopyExperimentMetadata(
+            viral_vectors=[viral_vector],
+            viral_vector_injections=[viral_vector_injection],
+            indicators=[indicator],
+            microscopy_rigs=[microscopy_rig],
+        )
+        nwbfile.add_lab_meta_data(microscopy_experiment_metadata)
 
         planar_imaging_space_1 = mock_PlanarImagingSpace(
             name="PlanarImagingSpace_1", origin_coordinates=[0.0, 0.0, 0.0]
@@ -315,7 +376,7 @@ class TestMultiPlaneMicroscopyContainerSimpleRoundtrip(pynwb_TestCase):
             name="PlanarImagingSpace_2", origin_coordinates=[0.0, 0.0, 1.0]
         )
 
-        microscopy_channel = mock_MicroscopyChannel(name="MicroscopyChannel")
+        microscopy_channel = mock_MicroscopyChannel(name="MicroscopyChannel", indicator=indicator)
 
         planar_microscopy_series_1 = mock_PlanarMicroscopySeries(
             name="PlanarMicroscopySeries_1",
@@ -405,17 +466,33 @@ class TestMultiChannelMicroscopyContainerSimpleRoundtrip(pynwb_TestCase):
 
         planar_imaging_space = mock_PlanarImagingSpace(name="PlanarImagingSpace_1", origin_coordinates=[0.0, 0.0, 0.0])
 
+        viral_vector = mock_ViralVector(name="ViralVector1")
+        viral_vector_injection = mock_ViralVectorInjection(
+            name="ViralVectorInjection1",
+            viral_vector=viral_vector,
+        )
+        indicator_1 = mock_Indicator(name="Indicator1", viral_vector_injection=viral_vector_injection)
+        indicator_2 = mock_Indicator(name="Indicator2", viral_vector_injection=viral_vector_injection)
+
+        microscopy_experiment_metadata = MicroscopyExperimentMetadata(
+            viral_vectors=[viral_vector],
+            viral_vector_injections=[viral_vector_injection],
+            indicators=[indicator_1, indicator_2],
+            microscopy_rigs=[microscopy_rig],
+        )
+        nwbfile.add_lab_meta_data(microscopy_experiment_metadata)
+
         planar_microscopy_series_1 = mock_PlanarMicroscopySeries(
             name="PlanarMicroscopySeries_1",
             microscopy_rig=microscopy_rig,
-            microscopy_channel=mock_MicroscopyChannel(name="MicroscopyChannel1"),
+            microscopy_channel=mock_MicroscopyChannel(name="MicroscopyChannel1", indicator=indicator_1),
             planar_imaging_space=planar_imaging_space,
         )
 
         planar_microscopy_series_2 = mock_PlanarMicroscopySeries(
             name="PlanarMicroscopySeries_2",
             microscopy_rig=microscopy_rig,
-            microscopy_channel=mock_MicroscopyChannel(name="MicroscopyChannel2"),
+            microscopy_channel=mock_MicroscopyChannel(name="MicroscopyChannel2", indicator=indicator_2),
             planar_imaging_space=planar_imaging_space,
         )
 
