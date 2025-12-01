@@ -26,7 +26,7 @@ A device instance for acquiring imaging data.
 
     groups:
       - neurodata_type_def: Microscope
-        neurodata_type_inc: DeviceInstance
+        neurodata_type_inc: Device
         doc: Instance of a microscope used to acquire imaging data.
         attributes:
           - name: technique

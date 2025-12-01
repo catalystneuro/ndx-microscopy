@@ -11,8 +11,6 @@ except ImportError:
 # NOTE: ndx-ophys-devices needs to be imported first because loading the ndx-microscopy namespace depends on
 # having the ndx-ophys-devices namespace loaded into the global type map.
 from ndx_ophys_devices import (
-    DeviceModel,
-    DeviceInstance,
     ExcitationSource,
     Indicator,
     OpticalFilter,

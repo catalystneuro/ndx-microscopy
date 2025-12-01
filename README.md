@@ -56,7 +56,7 @@ classDiagram
         model_number : text, optional
     }
     
-    class DeviceInstance{
+    class Device{
         <<Device>>
         --------------------------------------
         attributes
@@ -73,7 +73,7 @@ classDiagram
     }
 
     class Microscope {
-        <<DeviceInstance>>
+        <<Device>>
         --------------------------------------
         attributes
         --------------------------------------
@@ -98,7 +98,7 @@ classDiagram
     }
 
     class ExcitationSource {
-        <<DeviceInstance>>
+        <<Device>>
         --------------------------------------
         attributes
         --------------------------------------
@@ -121,7 +121,7 @@ classDiagram
     }
 
     class OpticalFilter {
-        <<DeviceInstance>>
+        <<Device>>
         --------------------------------------
         attributes
         --------------------------------------
@@ -149,7 +149,7 @@ classDiagram
     }
 
     class DichroicMirror {
-        <<DeviceInstance>>
+        <<Device>>
         --------------------------------------
         attributes
         --------------------------------------
@@ -161,7 +161,7 @@ classDiagram
     }
     
     class Photodetector {
-        <<DeviceInstance>>
+        <<Device>>
         --------------------------------------
         attributes
         --------------------------------------
@@ -184,7 +184,7 @@ classDiagram
     }
 
     DeviceModel <|-- MicroscopeModel : extends
-    DeviceInstance <|-- Microscope : extends
+    Device <|-- Microscope : extends
 
     Microscope o--> MicroscopeModel : links
     MicroscopyRig o--> Microscope : links

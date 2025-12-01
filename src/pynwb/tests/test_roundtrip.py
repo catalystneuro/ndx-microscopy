@@ -51,32 +51,32 @@ class TestPlanarMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
         nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=UTC))
 
         microscope_model = mock_MicroscopeModel(name="MicroscopeModel")
-        nwbfile.add_device(devices=microscope_model)
+        nwbfile.add_device_model(device_models=microscope_model)
         microscope = mock_Microscope(name="Microscope", model=microscope_model)
         nwbfile.add_device(devices=microscope)
 
         excitation_source_model = mock_ExcitationSourceModel(name="ExcitationSourceModel")
-        nwbfile.add_device(devices=excitation_source_model)
+        nwbfile.add_device_model(device_models=excitation_source_model)
         excitation_source = mock_ExcitationSource(model=excitation_source_model)
         nwbfile.add_device(devices=excitation_source)
 
         excitation_filter_model = mock_OpticalFilterModel(name="OpticalFilterModel")
-        nwbfile.add_device(devices=excitation_filter_model)
+        nwbfile.add_device_model(device_models=excitation_filter_model)
         excitation_filter = mock_OpticalFilter(model=excitation_filter_model)
         nwbfile.add_device(devices=excitation_filter)
 
         dichroic_mirror_model = mock_DichroicMirrorModel(name="DichroicMirrorModel")
-        nwbfile.add_device(devices=dichroic_mirror_model)
+        nwbfile.add_device_model(device_models=dichroic_mirror_model)
         dichroic_mirror = mock_DichroicMirror(model=dichroic_mirror_model)
         nwbfile.add_device(devices=dichroic_mirror)
 
         photodetector_model = mock_PhotodetectorModel(name="PhotodetectorModel")
-        nwbfile.add_device(devices=photodetector_model)
+        nwbfile.add_device_model(device_models=photodetector_model)
         photodetector = mock_Photodetector(model=photodetector_model)
         nwbfile.add_device(devices=photodetector)
 
         emission_filter_model = mock_OpticalFilterModel(name="EmissionFilterModel")
-        nwbfile.add_device(devices=emission_filter_model)
+        nwbfile.add_device_model(device_models=emission_filter_model)
         emission_filter = mock_OpticalFilter(model=emission_filter_model)
         nwbfile.add_device(devices=emission_filter)
 
@@ -126,32 +126,32 @@ class TestMicroscopyRigWithUntrackedDevice(pynwb_TestCase):
         nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=UTC))
 
         microscope_model = mock_MicroscopeModel(name="MicroscopeModel")
-        nwbfile.add_device(devices=microscope_model)
+        nwbfile.add_device_model(device_models=microscope_model)
         microscope = mock_Microscope(name="Microscope", model=microscope_model)
         # nwbfile.add_device(devices=microscope) Skipping this line to simulate an untracked device
 
         excitation_source_model = mock_ExcitationSourceModel(name="ExcitationSourceModel")
-        nwbfile.add_device(devices=excitation_source_model)
+        nwbfile.add_device_model(device_models=excitation_source_model)
         excitation_source = mock_ExcitationSource(model=excitation_source_model)
         nwbfile.add_device(devices=excitation_source)
 
         excitation_filter_model = mock_OpticalFilterModel(name="OpticalFilterModel")
-        nwbfile.add_device(devices=excitation_filter_model)
+        nwbfile.add_device_model(device_models=excitation_filter_model)
         excitation_filter = mock_OpticalFilter(model=excitation_filter_model)
         nwbfile.add_device(devices=excitation_filter)
 
         dichroic_mirror_model = mock_DichroicMirrorModel(name="DichroicMirrorModel")
-        nwbfile.add_device(devices=dichroic_mirror_model)
+        nwbfile.add_device_model(device_models=dichroic_mirror_model)
         dichroic_mirror = mock_DichroicMirror(model=dichroic_mirror_model)
         nwbfile.add_device(devices=dichroic_mirror)
 
         photodetector_model = mock_PhotodetectorModel(name="PhotodetectorModel")
-        nwbfile.add_device(devices=photodetector_model)
+        nwbfile.add_device_model(device_models=photodetector_model)
         photodetector = mock_Photodetector(model=photodetector_model)
         nwbfile.add_device(devices=photodetector)
 
         emission_filter_model = mock_OpticalFilterModel(name="EmissionFilterModel")
-        nwbfile.add_device(devices=emission_filter_model)
+        nwbfile.add_device_model(device_models=emission_filter_model)
         emission_filter = mock_OpticalFilter(model=emission_filter_model)
         nwbfile.add_device(devices=emission_filter)
 
@@ -194,32 +194,32 @@ class TestVolumetricMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
         nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=UTC))
 
         microscope_model = mock_MicroscopeModel(name="MicroscopeModel")
-        nwbfile.add_device(devices=microscope_model)
+        nwbfile.add_device_model(device_models=microscope_model)
         microscope = mock_Microscope(name="Microscope", model=microscope_model)
         nwbfile.add_device(devices=microscope)
 
         excitation_source_model = mock_ExcitationSourceModel(name="ExcitationSourceModel")
-        nwbfile.add_device(devices=excitation_source_model)
+        nwbfile.add_device_model(device_models=excitation_source_model)
         excitation_source = mock_ExcitationSource(model=excitation_source_model)
         nwbfile.add_device(devices=excitation_source)
 
         excitation_filter_model = mock_OpticalFilterModel(name="OpticalFilterModel")
-        nwbfile.add_device(devices=excitation_filter_model)
+        nwbfile.add_device_model(device_models=excitation_filter_model)
         excitation_filter = mock_OpticalFilter(model=excitation_filter_model)
         nwbfile.add_device(devices=excitation_filter)
 
         dichroic_mirror_model = mock_DichroicMirrorModel(name="DichroicMirrorModel")
-        nwbfile.add_device(devices=dichroic_mirror_model)
+        nwbfile.add_device_model(device_models=dichroic_mirror_model)
         dichroic_mirror = mock_DichroicMirror(model=dichroic_mirror_model)
         nwbfile.add_device(devices=dichroic_mirror)
 
         photodetector_model = mock_PhotodetectorModel(name="PhotodetectorModel")
-        nwbfile.add_device(devices=photodetector_model)
+        nwbfile.add_device_model(device_models=photodetector_model)
         photodetector = mock_Photodetector(model=photodetector_model)
         nwbfile.add_device(devices=photodetector)
 
         emission_filter_model = mock_OpticalFilterModel(name="EmissionFilterModel")
-        nwbfile.add_device(devices=emission_filter_model)
+        nwbfile.add_device_model(device_models=emission_filter_model)
         emission_filter = mock_OpticalFilter(model=emission_filter_model)
         nwbfile.add_device(devices=emission_filter)
 
@@ -269,32 +269,32 @@ class TestMultiPlaneMicroscopyContainerSimpleRoundtrip(pynwb_TestCase):
         nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=UTC))
 
         microscope_model = mock_MicroscopeModel(name="MicroscopeModel")
-        nwbfile.add_device(devices=microscope_model)
+        nwbfile.add_device_model(device_models=microscope_model)
         microscope = mock_Microscope(name="Microscope", model=microscope_model)
         nwbfile.add_device(devices=microscope)
 
         excitation_source_model = mock_ExcitationSourceModel(name="ExcitationSourceModel")
-        nwbfile.add_device(devices=excitation_source_model)
+        nwbfile.add_device_model(device_models=excitation_source_model)
         excitation_source = mock_ExcitationSource(model=excitation_source_model)
         nwbfile.add_device(devices=excitation_source)
 
         excitation_filter_model = mock_OpticalFilterModel(name="OpticalFilterModel")
-        nwbfile.add_device(devices=excitation_filter_model)
+        nwbfile.add_device_model(device_models=excitation_filter_model)
         excitation_filter = mock_OpticalFilter(model=excitation_filter_model)
         nwbfile.add_device(devices=excitation_filter)
 
         dichroic_mirror_model = mock_DichroicMirrorModel(name="DichroicMirrorModel")
-        nwbfile.add_device(devices=dichroic_mirror_model)
+        nwbfile.add_device_model(device_models=dichroic_mirror_model)
         dichroic_mirror = mock_DichroicMirror(model=dichroic_mirror_model)
         nwbfile.add_device(devices=dichroic_mirror)
 
         photodetector_model = mock_PhotodetectorModel(name="PhotodetectorModel")
-        nwbfile.add_device(devices=photodetector_model)
+        nwbfile.add_device_model(device_models=photodetector_model)
         photodetector = mock_Photodetector(model=photodetector_model)
         nwbfile.add_device(devices=photodetector)
 
         emission_filter_model = mock_OpticalFilterModel(name="EmissionFilterModel")
-        nwbfile.add_device(devices=emission_filter_model)
+        nwbfile.add_device_model(device_models=emission_filter_model)
         emission_filter = mock_OpticalFilter(model=emission_filter_model)
         nwbfile.add_device(devices=emission_filter)
 
@@ -364,32 +364,32 @@ class TestMultiChannelMicroscopyContainerSimpleRoundtrip(pynwb_TestCase):
         nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=UTC))
 
         microscope_model = mock_MicroscopeModel(name="MicroscopeModel")
-        nwbfile.add_device(devices=microscope_model)
+        nwbfile.add_device_model(device_models=microscope_model)
         microscope = mock_Microscope(name="Microscope", model=microscope_model)
         nwbfile.add_device(devices=microscope)
 
         excitation_source_model = mock_ExcitationSourceModel(name="ExcitationSourceModel")
-        nwbfile.add_device(devices=excitation_source_model)
+        nwbfile.add_device_model(device_models=excitation_source_model)
         excitation_source = mock_ExcitationSource(model=excitation_source_model)
         nwbfile.add_device(devices=excitation_source)
 
         excitation_filter_model = mock_OpticalFilterModel(name="OpticalFilterModel")
-        nwbfile.add_device(devices=excitation_filter_model)
+        nwbfile.add_device_model(device_models=excitation_filter_model)
         excitation_filter = mock_OpticalFilter(model=excitation_filter_model)
         nwbfile.add_device(devices=excitation_filter)
 
         dichroic_mirror_model = mock_DichroicMirrorModel(name="DichroicMirrorModel")
-        nwbfile.add_device(devices=dichroic_mirror_model)
+        nwbfile.add_device_model(device_models=dichroic_mirror_model)
         dichroic_mirror = mock_DichroicMirror(model=dichroic_mirror_model)
         nwbfile.add_device(devices=dichroic_mirror)
 
         photodetector_model = mock_PhotodetectorModel(name="PhotodetectorModel")
-        nwbfile.add_device(devices=photodetector_model)
+        nwbfile.add_device_model(device_models=photodetector_model)
         photodetector = mock_Photodetector(model=photodetector_model)
         nwbfile.add_device(devices=photodetector)
 
         emission_filter_model = mock_OpticalFilterModel(name="EmissionFilterModel")
-        nwbfile.add_device(devices=emission_filter_model)
+        nwbfile.add_device_model(device_models=emission_filter_model)
         emission_filter = mock_OpticalFilter(model=emission_filter_model)
         nwbfile.add_device(devices=emission_filter)
 
@@ -475,7 +475,7 @@ class TestMicroscopyResponseSeriesSimpleRoundtrip(pynwb_TestCase):
         nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=UTC))
 
         microscope_model = mock_MicroscopeModel(name="MicroscopeModel")
-        nwbfile.add_device(devices=microscope_model)
+        nwbfile.add_device_model(device_models=microscope_model)
         microscope = mock_Microscope(name="Microscope", model=microscope_model)
         nwbfile.add_device(devices=microscope)
 
