@@ -20,6 +20,7 @@ namespaces:
           - VectorData
           - VectorIndex
           - DynamicTableRegion
+          - ImageSeries
       - namespace: ndx-ophys-devices
         neurodata_types:
           - ExcitationSource

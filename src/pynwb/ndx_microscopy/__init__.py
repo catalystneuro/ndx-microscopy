@@ -55,6 +55,9 @@ SummaryImage = get_class("SummaryImage", extension_name)
 PlanarImagingSpace = get_class("PlanarImagingSpace", extension_name)
 VolumetricImagingSpace = get_class("VolumetricImagingSpace", extension_name)
 
+MicroscopyStaticImage = get_class("MicroscopyStaticImage", extension_name)
+PlanarMicroscopyStaticImage = get_class("PlanarMicroscopyStaticImage", extension_name)
+VolumetricMicroscopyStaticImage = get_class("VolumetricMicroscopyStaticImage", extension_name)
 MicroscopySeries = get_class("MicroscopySeries", extension_name)
 PlanarMicroscopySeries = get_class("PlanarMicroscopySeries", extension_name)
 VolumetricMicroscopySeries = get_class("VolumetricMicroscopySeries", extension_name)
@@ -91,6 +94,9 @@ __all__ = [
     "MicroscopySeries",
     "PlanarMicroscopySeries",
     "VolumetricMicroscopySeries",
+    "MicroscopyStaticImage",
+    "PlanarMicroscopyStaticImage",
+    "VolumetricMicroscopyStaticImage",
     "MultiPlaneMicroscopyContainer",
     "MultiChannelMicroscopyContainer",
     "MicroscopyResponseSeries",
