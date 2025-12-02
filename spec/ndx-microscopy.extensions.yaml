@@ -342,7 +342,7 @@ groups:
       ROI names should remain consistent between them.
     groups:
       - neurodata_type_inc: Segmentation
-        doc: Results from image segmentation of a specific imaging space.
+        doc: Results from image segmentation.
         quantity: "+"
 
   - neurodata_type_def: SummaryImage

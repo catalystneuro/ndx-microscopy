@@ -587,7 +587,7 @@ Container for multiple segmentations.
         doc: A container of many Segmentation objects.
         groups:
           - neurodata_type_inc: Segmentation
-            doc: Results from image segmentation of a specific imaging space.
+            doc: Results from image segmentation.
             quantity: "+"
 
 SummaryImage
