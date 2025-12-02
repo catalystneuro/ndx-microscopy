@@ -1,3 +1,5 @@
+# v0.4.0 (upcoming)
+
 # v0.3.0 (Jun 3, 2025)
 ## Bug Fixes
 
