@@ -151,7 +151,7 @@ groups:
         dtype: text
         doc: Description of the point selection strategy.
         required: false
-
+  #TODO refactor ImagingSpace to include CoordinateSystem and Position objects
   - neurodata_type_def: ImagingSpace
     neurodata_type_inc: NWBContainer
     doc: Abstract class to contain metadata about the region of physical space that imaging data was recorded from. Extended by PlanarImagingSpace and VolumetricImagingSpace.
