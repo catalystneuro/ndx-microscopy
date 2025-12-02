@@ -72,7 +72,7 @@ def test_constructor_microscopy_experiment_metadata():
     indicator = mock_Indicator(name="Indicator1", viral_vector_injection=viral_vector_injection)
     microscopy_rig = mock_MicroscopyRig()
 
-    microscopy_experiment_metadata = MicroscopyExperimentMetadata(
+    _ = MicroscopyExperimentMetadata(
         viral_vectors=[viral_vector],
         viral_vector_injections=[viral_vector_injection],
         indicators=[indicator],
