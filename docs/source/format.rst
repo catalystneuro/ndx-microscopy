@@ -467,7 +467,7 @@ Base type for segmentation data.
     groups:
       - neurodata_type_def: Segmentation
         neurodata_type_inc: DynamicTable
-        doc: Abstract class to contain the results from image segmentation of a specific imaging space.
+        doc: Abstract class to contain the spatial components resulting from image segmentation of a specific imaging space.
         attributes:
           - name: description
             dtype: text
@@ -486,7 +486,7 @@ For 2D segmentation data.
     groups:
       - neurodata_type_def: PlanarSegmentation
         neurodata_type_inc: Segmentation
-        doc: Results from image segmentation of a specific planar imaging space.
+        doc: ROI spatial components resulting from image segmentation of a specific planar imaging space.
         datasets:
           - name: image_mask
             neurodata_type_inc: VectorData
@@ -532,7 +532,7 @@ For 3D segmentation data.
     groups:
       - neurodata_type_def: VolumetricSegmentation
         neurodata_type_inc: Segmentation
-        doc: Results from image segmentation of a specific volumetric imaging space.
+        doc: ROI spatial components resulting from image segmentation of a specific volumetric imaging space.
         datasets:
           - name: volume_mask
             neurodata_type_inc: VectorData
@@ -630,7 +630,10 @@ For extracted ROI responses.
     groups:
       - neurodata_type_def: MicroscopyResponseSeries
         neurodata_type_inc: TimeSeries
-        doc: ROI responses extracted from optical imaging.
+        doc:       
+          ROI responses extracted from imaging data, linked in the microscopy_series field.
+          This object contains the temporal components from multiple ROIs,
+          that can result from different processing steps, e.g., raw, deconvolved, or denoised fluorescence traces.
         datasets:
           - name: data
             dtype: numeric
@@ -643,8 +646,9 @@ For extracted ROI responses.
             doc: Signals from ROIs.
           - name: rois
             neurodata_type_inc: DynamicTableRegion
-            doc: DynamicTableRegion referencing segmentation containing more information about the ROIs
-              stored in this series.
+            doc: 
+              DynamicTableRegion referencing Segmentation table containing information about the ROIs
+              spatial components.
         links:
           - name: microscopy_series
             doc: Link to a MicroscopySeries object containing the imaging data this response series is derived from.

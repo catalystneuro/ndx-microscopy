@@ -332,14 +332,7 @@ groups:
   - neurodata_type_def: SegmentationContainer
     neurodata_type_inc: NWBDataInterface
     default_name: SegmentationContainer
-    doc:
-      Stores pixels in an image that represent different regions of interest (ROIs)
-      or masks. All segmentation for a given imaging space is stored together, with
-      storage for multiple imaging space (masks) supported. Each ROI is stored in its
-      own subgroup, with the ROI group containing a 2D mask or a list of pixels
-      that make up this mask. Segments can also be used for masking neuropil. If segmentation
-      is allowed to change with time, a new imaging plane (or module) is required and
-      ROI names should remain consistent between them.
+    doc: A container for many Segmentation objects.
     groups:
       - neurodata_type_inc: Segmentation
         doc: Results from image segmentation.
@@ -371,7 +364,7 @@ groups:
 
   - neurodata_type_def: Segmentation
     neurodata_type_inc: DynamicTable
-    doc: Abstract class to contain the results from image segmentation of a specific imaging space.
+    doc: Abstract class to contain the spatial components resulting from image segmentation of a specific imaging space.
     attributes:
       - name: description
         dtype: text
@@ -383,7 +376,7 @@ groups:
 
   - neurodata_type_def: PlanarSegmentation
     neurodata_type_inc: Segmentation
-    doc: Results from image segmentation of a specific planar imaging space.
+    doc: ROI spatial components resulting from image segmentation of a specific planar imaging space.
     datasets:
       - name: image_mask
         neurodata_type_inc: VectorData
@@ -425,7 +418,7 @@ groups:
 
   - neurodata_type_def: VolumetricSegmentation
     neurodata_type_inc: Segmentation
-    doc: Results from image segmentation of a specific volumetric imaging space.
+    doc: ROI spatial components resulting from image segmentation of a specific volumetric imaging space.
     datasets:
       - name: volume_mask
         neurodata_type_inc: VectorData
@@ -472,7 +465,10 @@ groups:
 
   - neurodata_type_def: MicroscopyResponseSeries
     neurodata_type_inc: TimeSeries
-    doc: ROI responses extracted from optical imaging.
+    doc:
+      ROI responses extracted from imaging data, linked in the microscopy_series field.
+      This object contains the temporal components from multiple ROIs,
+      that can result from different processing steps, e.g., raw, deconvolved, or denoised fluorescence traces.
     datasets:
       - name: data
         dtype: numeric
@@ -486,8 +482,8 @@ groups:
       - name: rois
         neurodata_type_inc: DynamicTableRegion
         doc:
-          DynamicTableRegion referencing segmentation containing more information about the ROIs
-          stored in this series.
+          DynamicTableRegion referencing Segmentation table containing information about the ROIs
+          spatial components.
     links:
       - name: microscopy_series
         doc: Link to a MicroscopySeries object containing the imaging data this response series is derived from.
