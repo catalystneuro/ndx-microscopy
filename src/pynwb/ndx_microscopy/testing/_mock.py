@@ -13,7 +13,7 @@ from ndx_ophys_devices.testing import (
 )
 
 from pynwb.testing.mock.utils import name_generator
-
+from pynwb.core import DynamicTableRegion
 import ndx_microscopy
 
 
@@ -478,7 +478,7 @@ def mock_VolumetricMicroscopySeries(
 
 def mock_MicroscopyResponseSeries(
     *,
-    rois: pynwb.core.DynamicTableRegion,
+    rois: DynamicTableRegion,
     name: Optional[str] = None,
     description: str = "A mock instance of a MicroscopyResponseSeries type to be used for rapid testing.",
     data: Optional[np.ndarray] = None,
