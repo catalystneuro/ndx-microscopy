@@ -498,3 +498,4 @@ groups:
       - neurodata_type_inc: MicroscopyResponseSeries
         doc: MicroscopyResponseSeries object(s) containing fluorescence data for a ROI.
         quantity: "+"
+#TODO add static images
