@@ -1,6 +1,7 @@
 import warnings
 from typing import List, Optional, Tuple
 
+import pynwb
 import ndx_ophys_devices
 import numpy as np
 from ndx_ophys_devices import ExcitationSource, OpticalFilter, Photodetector, DichroicMirror

@@ -235,9 +235,9 @@ def test_constructor_multi_plane_microscopy_container_with_series():
     )
 
     multi_plane_microscopy_container = mock_MultiPlaneMicroscopyContainer(
-        planar_microscopy_series=[planar_microscopy_series]
+        name="MultiPlaneMicroscopySeriesContainer", planar_microscopy_series=[planar_microscopy_series]
     )
-    assert multi_plane_microscopy_container.name == "MultiPlaneMicroscopyContainer"
+    assert multi_plane_microscopy_container.name == "MultiPlaneMicroscopySeriesContainer"
 
 
 def test_constructor_multi_plane_microscopy_container_with_static_images():
@@ -254,9 +254,10 @@ def test_constructor_multi_plane_microscopy_container_with_static_images():
     )
 
     multi_plane_microscopy_container = mock_MultiPlaneMicroscopyContainer(
-        planar_microscopy_static_images=[planar_microscopy_static_image]
+        name="MultiPlaneMicroscopyStaticImageContainer",
+        planar_microscopy_static_images=[planar_microscopy_static_image],
     )
-    assert multi_plane_microscopy_container.name == "MultiPlaneMicroscopyContainer"
+    assert multi_plane_microscopy_container.name == "MultiPlaneMicroscopyStaticImageContainer"
 
 
 def test_constructor_multi_channel_microscopy_container_with_series():
@@ -272,9 +273,9 @@ def test_constructor_multi_channel_microscopy_container_with_series():
     )
 
     multi_channel_microscopy_container = mock_MultiChannelMicroscopyContainer(
-        microscopy_series=[planar_microscopy_series]
+        name="MultiChannelPlanarMicroscopySeriesContainer", microscopy_series=[planar_microscopy_series]
     )
-    assert multi_channel_microscopy_container.name == "MultiChannelMicroscopyContainer"
+    assert multi_channel_microscopy_container.name == "MultiChannelPlanarMicroscopySeriesContainer"
 
 
 def test_constructor_multi_channel_microscopy_container_with_static_images():
@@ -290,9 +291,10 @@ def test_constructor_multi_channel_microscopy_container_with_static_images():
     )
 
     multi_channel_microscopy_container = mock_MultiChannelMicroscopyContainer(
-        microscopy_static_images=[planar_microscopy_static_image]
+        name="MultiChannelPlanarMicroscopyStaticImageContainer",
+        microscopy_static_images=[planar_microscopy_static_image],
     )
-    assert multi_channel_microscopy_container.name == "MultiChannelMicroscopyContainer"
+    assert multi_channel_microscopy_container.name == "MultiChannelPlanarMicroscopyStaticImageContainer"
 
 
 def test_constructor_volumetric_microscopy_series():
