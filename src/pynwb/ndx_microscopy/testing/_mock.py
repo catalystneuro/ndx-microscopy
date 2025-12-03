@@ -419,17 +419,29 @@ def mock_PlanarMicroscopyStaticImage(
     return planar_microscopy_static_image
 
 
+def mock_MicroscopyStaticImageContainer(
+    *,
+    microscopy_static_images: Optional[List[ndx_microscopy.MicroscopyStaticImage]] = None,
+    name: Optional[str] = None,
+) -> ndx_microscopy.MicroscopyStaticImageContainer:
+    container_name = name or name_generator("MicroscopyStaticImageContainer")
+
+    microscopy_static_image_container = ndx_microscopy.MicroscopyStaticImageContainer(
+        name=container_name,
+        microscopy_static_images=microscopy_static_images,
+    )
+    return microscopy_static_image_container
+
+
 def mock_MultiPlaneMicroscopyContainer(
     *,
     planar_microscopy_series: Optional[List[ndx_microscopy.PlanarMicroscopySeries]] = None,
-    planar_microscopy_static_images: Optional[List[ndx_microscopy.PlanarMicroscopyStaticImage]] = None,
     name: Optional[str] = None,
 ) -> ndx_microscopy.MultiPlaneMicroscopyContainer:
     container_name = name or name_generator("MultiPlaneMicroscopyContainer")
     multi_plane_microscopy_container = ndx_microscopy.MultiPlaneMicroscopyContainer(
         name=container_name,
         planar_microscopy_series=planar_microscopy_series,
-        planar_microscopy_static_images=planar_microscopy_static_images,
     )
 
     return multi_plane_microscopy_container
@@ -438,7 +450,6 @@ def mock_MultiPlaneMicroscopyContainer(
 def mock_MultiChannelMicroscopyContainer(
     *,
     microscopy_series: Optional[List[ndx_microscopy.MicroscopySeries]] = None,
-    microscopy_static_images: Optional[List[ndx_microscopy.MicroscopyStaticImage]] = None,
     name: Optional[str] = None,
 ) -> ndx_microscopy.MultiChannelMicroscopyContainer:
     container_name = name or name_generator("MultiChannelMicroscopyContainer")
@@ -446,7 +457,6 @@ def mock_MultiChannelMicroscopyContainer(
     multi_channel_microscopy_container = ndx_microscopy.MultiChannelMicroscopyContainer(
         name=container_name,
         microscopy_series=microscopy_series,
-        microscopy_static_images=microscopy_static_images,
     )
     return multi_channel_microscopy_container
 
