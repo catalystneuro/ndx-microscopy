@@ -382,7 +382,10 @@ groups:
     groups:
       - neurodata_type_inc: PlanarMicroscopySeries
         doc: PlanarMicroscopySeries object(s) containing imaging data for a single depth scan.
-        quantity: "+"
+        quantity: "*"
+      - neurodata_type_inc: PlanarMicroscopyStaticImage
+        doc: PlanarMicroscopyStaticImage object(s) containing imaging data for a single depth scan.
+        quantity: "*"
 
   - neurodata_type_def: MultiChannelMicroscopyContainer
     neurodata_type_inc: NWBDataInterface
@@ -393,7 +396,10 @@ groups:
     groups:
       - neurodata_type_inc: MicroscopySeries
         doc: MicroscopySeries object containing imaging data for a single channel scan.
-        quantity: "+"
+        quantity: "*"
+      - neurodata_type_inc: MicroscopyStaticImage
+        doc: MicroscopyStaticImage object containing imaging data for a single channel scan.
+        quantity: "*"
 
   - neurodata_type_def: SegmentationContainer
     neurodata_type_inc: NWBDataInterface
