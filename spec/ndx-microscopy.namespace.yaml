@@ -24,9 +24,11 @@ namespaces:
         neurodata_types:
           - ExcitationSource
           - Indicator
+          - ViralVectorInjection
+          - ViralVector
           - OpticalFilter
           - Photodetector
           - DichroicMirror
           - ObjectiveLens
       - source: ndx-microscopy.extensions.yaml
-    version: 0.3.0
+    version: 0.4.0

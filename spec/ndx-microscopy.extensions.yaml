@@ -244,6 +244,72 @@ groups:
           - - 3
         quantity: "?"
 
+  - neurodata_type_def: MicroscopyStaticImage
+    neurodata_type_inc: NWBDataInterface
+    doc:
+      Abstract class to contain static imaging data acquired from an optical channel in a microscope while a light source illuminates the
+      imaging space.
+    attributes:
+      - name: name
+        dtype: text
+        doc: Name of the static image.
+      - name: description
+        dtype: text
+        doc: Description of the static image.
+    links:
+      - name: microscopy_rig
+        doc: Link to a MicroscopyRig object containing metadata about the microscopy rig used to acquire this imaging data.
+        target_type: MicroscopyRig
+    groups:
+      - neurodata_type_inc: MicroscopyChannel
+        doc: MicroscopyChannel object containing metadata about the channel used to acquire this imaging data.
+        quantity: 1
+
+  - neurodata_type_def: PlanarMicroscopyStaticImage
+    neurodata_type_inc: MicroscopyStaticImage
+    doc:
+      Static imaging data acquired from an optical channel in a microscope while a light source illuminates a
+      planar imaging space.
+    datasets:
+      - name: data
+        doc: Recorded imaging data, shaped by (frame height, frame width).
+        dtype: numeric
+        dims:
+          - height
+          - width
+        shape:
+          - null
+          - null
+    groups:
+      - neurodata_type_inc: PlanarImagingSpace
+        doc:
+          PlanarImagingSpace object containing metadata about the region of physical space this imaging data
+          was recorded from.
+
+  - neurodata_type_def: VolumetricMicroscopyStaticImage
+    neurodata_type_inc: MicroscopyStaticImage
+    doc:
+      Static volumetric imaging data acquired from an optical channel in a microscope while a light source
+      illuminates a volumetric imaging space.
+      Assumes the number of depth scans used to construct the volume is regular.
+    datasets:
+      - name: data
+        doc: Recorded imaging data, shaped by (frame height, frame width, number of depth planes).
+        dtype: numeric
+        dims:
+          - height
+          - width
+          - depths
+        shape:
+          - null
+          - null
+          - null
+    groups:
+      - neurodata_type_inc: VolumetricImagingSpace
+        doc:
+          VolumetricImagingSpace object containing metadata about the region of physical space this imaging data
+          was recorded from.
+
   - neurodata_type_def: MicroscopySeries
     neurodata_type_inc: TimeSeries
     doc:
@@ -316,18 +382,24 @@ groups:
     groups:
       - neurodata_type_inc: PlanarMicroscopySeries
         doc: PlanarMicroscopySeries object(s) containing imaging data for a single depth scan.
-        quantity: "+"
+        quantity: "*"
+      - neurodata_type_inc: PlanarMicroscopyStaticImage
+        doc: PlanarMicroscopyStaticImage object(s) containing imaging data for a single depth scan.
+        quantity: "*"
 
   - neurodata_type_def: MultiChannelMicroscopyContainer
     neurodata_type_inc: NWBDataInterface
     default_name: MultiChannelMicroscopyContainer
     doc:
       Imaging data acquired over several channels; for instance, when using multiple excitation wavelengths
-      or multiple indicators. Each channel is stored in a separate PlanarMicroscopySeries or VolumetricMicroscopySeries object.
+      or multiple indicators. Each channel is stored in a separate PlanarMicroscopySeries or VolumetricMicroscopySeries.
     groups:
       - neurodata_type_inc: MicroscopySeries
         doc: MicroscopySeries object containing imaging data for a single channel scan.
-        quantity: "+"
+        quantity: "*"
+      - neurodata_type_inc: MicroscopyStaticImage
+        doc: MicroscopyStaticImage object containing imaging data for a single channel scan.
+        quantity: "*"
 
   - neurodata_type_def: SegmentationContainer
     neurodata_type_inc: NWBDataInterface

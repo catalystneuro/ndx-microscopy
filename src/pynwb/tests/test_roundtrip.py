@@ -2,6 +2,7 @@
 
 from datetime import datetime
 
+from ndx_microscopy.testing._mock import mock_PlanarMicroscopyStaticImage, mock_VolumetricMicroscopyStaticImage
 from pytz import UTC
 import pytest
 from pynwb.testing import TestCase as pynwb_TestCase
@@ -39,6 +40,182 @@ from ndx_microscopy.testing import (
 )
 
 from ndx_microscopy import MicroscopyExperimentMetadata, MicroscopyResponseSeriesContainer
+
+
+class TestPlanarMicroscopyStaticImageSimpleRoundtrip(pynwb_TestCase):
+    """Simple roundtrip test for PlanarMicroscopyStaticImage."""
+
+    def setUp(self):
+        self.nwbfile_path = "test_planar_microscopy_static_image_roundtrip.nwb"
+
+    def tearDown(self):
+        pynwb.testing.remove_test_file(self.nwbfile_path)
+
+    def test_roundtrip(self):
+        nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=UTC))
+
+        microscope_model = mock_MicroscopeModel(name="MicroscopeModel")
+        nwbfile.add_device_model(device_models=microscope_model)
+        microscope = mock_Microscope(name="Microscope", model=microscope_model)
+        nwbfile.add_device(devices=microscope)
+
+        excitation_source_model = mock_ExcitationSourceModel(name="ExcitationSourceModel")
+        nwbfile.add_device_model(device_models=excitation_source_model)
+        excitation_source = mock_ExcitationSource(model=excitation_source_model)
+        nwbfile.add_device(devices=excitation_source)
+
+        excitation_filter_model = mock_OpticalFilterModel(name="OpticalFilterModel")
+        nwbfile.add_device_model(device_models=excitation_filter_model)
+        excitation_filter = mock_OpticalFilter(model=excitation_filter_model)
+        nwbfile.add_device(devices=excitation_filter)
+
+        dichroic_mirror_model = mock_DichroicMirrorModel(name="DichroicMirrorModel")
+        nwbfile.add_device_model(device_models=dichroic_mirror_model)
+        dichroic_mirror = mock_DichroicMirror(model=dichroic_mirror_model)
+        nwbfile.add_device(devices=dichroic_mirror)
+
+        photodetector_model = mock_PhotodetectorModel(name="PhotodetectorModel")
+        nwbfile.add_device_model(device_models=photodetector_model)
+        photodetector = mock_Photodetector(model=photodetector_model)
+        nwbfile.add_device(devices=photodetector)
+
+        emission_filter_model = mock_OpticalFilterModel(name="EmissionFilterModel")
+        nwbfile.add_device_model(device_models=emission_filter_model)
+        emission_filter = mock_OpticalFilter(model=emission_filter_model)
+        nwbfile.add_device(devices=emission_filter)
+
+        microscopy_rig = mock_MicroscopyRig(
+            name="MicroscopyRig",
+            microscope=microscope,
+            excitation_source=excitation_source,
+            excitation_filter=excitation_filter,
+            emission_filter=emission_filter,
+            photodetector=photodetector,
+            dichroic_mirror=dichroic_mirror,
+        )
+        viral_vector = mock_ViralVector(name="ViralVector1")
+        viral_vector_injection = mock_ViralVectorInjection(
+            name="ViralVectorInjection1",
+            viral_vector=viral_vector,
+        )
+        indicator = mock_Indicator(name="Indicator1", viral_vector_injection=viral_vector_injection)
+
+        microscopy_experiment_metadata = MicroscopyExperimentMetadata(
+            viral_vectors=[viral_vector],
+            viral_vector_injections=[viral_vector_injection],
+            indicators=[indicator],
+            microscopy_rigs=[microscopy_rig],
+        )
+        nwbfile.add_lab_meta_data(microscopy_experiment_metadata)
+
+        planar_imaging_space = mock_PlanarImagingSpace(name="PlanarImagingSpace")
+
+        planar_microscopy_static_image = mock_PlanarMicroscopyStaticImage(
+            name="PlanarMicroscopyStaticImage",
+            microscopy_rig=microscopy_rig,
+            microscopy_channel=mock_MicroscopyChannel(name="MicroscopyChannel", indicator=indicator),
+            planar_imaging_space=planar_imaging_space,
+        )
+
+        nwbfile.add_acquisition(planar_microscopy_static_image)
+
+        with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="w") as io:
+            io.write(nwbfile)
+
+        with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="r", load_namespaces=True) as io:
+            read_nwbfile = io.read()
+
+            self.assertContainerEqual(
+                planar_microscopy_static_image, read_nwbfile.acquisition["PlanarMicroscopyStaticImage"]
+            )
+
+
+class TestVolumetricMicroscopyStaticImageSimpleRoundtrip(pynwb_TestCase):
+    """Simple roundtrip test for VolumetricMicroscopyStaticImage."""
+
+    def setUp(self):
+        self.nwbfile_path = "test_volumetric_microscopy_static_image_roundtrip.nwb"
+
+    def tearDown(self):
+        pynwb.testing.remove_test_file(self.nwbfile_path)
+
+    def test_roundtrip(self):
+        nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=UTC))
+
+        microscope_model = mock_MicroscopeModel(name="MicroscopeModel")
+        nwbfile.add_device_model(device_models=microscope_model)
+        microscope = mock_Microscope(name="Microscope", model=microscope_model)
+        nwbfile.add_device(devices=microscope)
+
+        excitation_source_model = mock_ExcitationSourceModel(name="ExcitationSourceModel")
+        nwbfile.add_device_model(device_models=excitation_source_model)
+        excitation_source = mock_ExcitationSource(model=excitation_source_model)
+        nwbfile.add_device(devices=excitation_source)
+
+        excitation_filter_model = mock_OpticalFilterModel(name="OpticalFilterModel")
+        nwbfile.add_device_model(device_models=excitation_filter_model)
+        excitation_filter = mock_OpticalFilter(model=excitation_filter_model)
+        nwbfile.add_device(devices=excitation_filter)
+
+        dichroic_mirror_model = mock_DichroicMirrorModel(name="DichroicMirrorModel")
+        nwbfile.add_device_model(device_models=dichroic_mirror_model)
+        dichroic_mirror = mock_DichroicMirror(model=dichroic_mirror_model)
+        nwbfile.add_device(devices=dichroic_mirror)
+
+        photodetector_model = mock_PhotodetectorModel(name="PhotodetectorModel")
+        nwbfile.add_device_model(device_models=photodetector_model)
+        photodetector = mock_Photodetector(model=photodetector_model)
+        nwbfile.add_device(devices=photodetector)
+
+        emission_filter_model = mock_OpticalFilterModel(name="EmissionFilterModel")
+        nwbfile.add_device_model(device_models=emission_filter_model)
+        emission_filter = mock_OpticalFilter(model=emission_filter_model)
+        nwbfile.add_device(devices=emission_filter)
+
+        microscopy_rig = mock_MicroscopyRig(
+            name="MicroscopyRig",
+            microscope=microscope,
+            excitation_source=excitation_source,
+            excitation_filter=excitation_filter,
+            emission_filter=emission_filter,
+            photodetector=photodetector,
+            dichroic_mirror=dichroic_mirror,
+        )
+
+        viral_vector = mock_ViralVector(name="ViralVector1")
+        viral_vector_injection = mock_ViralVectorInjection(
+            name="ViralVectorInjection1",
+            viral_vector=viral_vector,
+        )
+        indicator = mock_Indicator(name="Indicator1", viral_vector_injection=viral_vector_injection)
+
+        microscopy_experiment_metadata = MicroscopyExperimentMetadata(
+            viral_vectors=[viral_vector],
+            viral_vector_injections=[viral_vector_injection],
+            indicators=[indicator],
+            microscopy_rigs=[microscopy_rig],
+        )
+        nwbfile.add_lab_meta_data(microscopy_experiment_metadata)
+
+        volumetric_imaging_space = mock_VolumetricImagingSpace(name="VolumetricImagingSpace")
+        volumetric_microscopy_static_image = mock_VolumetricMicroscopyStaticImage(
+            name="VolumetricMicroscopyStaticImage",
+            volumetric_imaging_space=volumetric_imaging_space,
+            microscopy_rig=microscopy_rig,
+            microscopy_channel=mock_MicroscopyChannel(name="MicroscopyChannel", indicator=indicator),
+        )
+
+        nwbfile.add_acquisition(volumetric_microscopy_static_image)
+
+        with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="w") as io:
+            io.write(nwbfile)
+
+        with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="r", load_namespaces=True) as io:
+            read_nwbfile = io.read()
+
+            self.assertContainerEqual(
+                volumetric_microscopy_static_image, read_nwbfile.acquisition["VolumetricMicroscopyStaticImage"]
+            )
 
 
 class TestPlanarMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
