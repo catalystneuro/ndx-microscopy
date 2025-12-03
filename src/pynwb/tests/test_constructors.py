@@ -221,7 +221,7 @@ def test_constructor_planar_microscopy_static_image():
     )
 
 
-def test_constructor_multi_plane_microscopy_container_with_series():
+def test_constructor_multi_plane_microscopy_container():
     from ndx_ophys_devices.testing import mock_Indicator
 
     microscopy_channel = mock_MicroscopyChannel(indicator=mock_Indicator(name="Indicator1"))
@@ -278,7 +278,7 @@ def test_constructor_multi_channel_microscopy_container_with_series():
     assert multi_channel_microscopy_container.name == "MultiChannelPlanarMicroscopySeriesContainer"
 
 
-def test_constructor_multi_channel_microscopy_container_with_static_images():
+def test_constructor_microscopy_static_images_container():
     from ndx_ophys_devices.testing import mock_Indicator
 
     microscopy_channel = mock_MicroscopyChannel(indicator=mock_Indicator(name="Indicator1"))
