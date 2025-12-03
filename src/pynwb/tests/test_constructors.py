@@ -1,6 +1,5 @@
 """Test in-memory Python API constructors for the ndx-microscopy extension."""
 
-from ndx_microscopy.testing._mock import mock_PlanarMicroscopyStaticImage, mock_VolumetricMicroscopyStaticImage
 import pytest
 
 from ndx_microscopy.testing import (
@@ -14,6 +13,8 @@ from ndx_microscopy.testing import (
     mock_SegmentationContainer,
     mock_PlanarImagingSpace,
     mock_PlanarMicroscopySeries,
+    mock_PlanarMicroscopyStaticImage,
+    mock_VolumetricMicroscopyStaticImage,
     mock_MultiPlaneMicroscopyContainer,
     mock_MultiChannelMicroscopyContainer,
     mock_VolumetricImagingSpace,
@@ -73,7 +74,7 @@ def test_constructor_microscopy_experiment_metadata():
     indicator = mock_Indicator(name="Indicator1", viral_vector_injection=viral_vector_injection)
     microscopy_rig = mock_MicroscopyRig()
 
-    microscopy_experiment_metadata = MicroscopyExperimentMetadata(
+    _ = MicroscopyExperimentMetadata(
         viral_vectors=[viral_vector],
         viral_vector_injections=[viral_vector_injection],
         indicators=[indicator],

@@ -3,8 +3,7 @@ from typing import List, Optional, Tuple
 
 import ndx_ophys_devices
 import numpy as np
-import pynwb.base
-from ndx_ophys_devices import ExcitationSource, OpticalFilter, Photodetector, DichroicMirror, Indicator
+from ndx_ophys_devices import ExcitationSource, OpticalFilter, Photodetector, DichroicMirror
 
 from ndx_ophys_devices.testing import (
     mock_ExcitationSource,

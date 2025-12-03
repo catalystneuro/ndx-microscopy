@@ -245,10 +245,17 @@ groups:
         quantity: "?"
 
   - neurodata_type_def: MicroscopyStaticImage
-    neurodata_type_inc: Image --> bisogna usare per forza container
+    neurodata_type_inc: NWBDataInterface
     doc:
       Abstract class to contain static imaging data acquired from an optical channel in a microscope while a light source illuminates the
       imaging space.
+    attributes:
+      - name: name
+        dtype: text
+        doc: Name of the static image.
+      - name: description
+        dtype: text
+        doc: Description of the static image.
     links:
       - name: microscopy_rig
         doc: Link to a MicroscopyRig object containing metadata about the microscopy rig used to acquire this imaging data.
@@ -564,4 +571,3 @@ groups:
       - neurodata_type_inc: MicroscopyResponseSeries
         doc: MicroscopyResponseSeries object(s) containing fluorescence data for a ROI.
         quantity: "+"
-#TODO add static images

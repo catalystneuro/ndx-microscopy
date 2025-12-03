@@ -20,11 +20,12 @@ namespaces:
           - VectorData
           - VectorIndex
           - DynamicTableRegion
-          - ImageSeries
       - namespace: ndx-ophys-devices
         neurodata_types:
           - ExcitationSource
           - Indicator
+          - ViralVectorInjection
+          - ViralVector
           - OpticalFilter
           - Photodetector
           - DichroicMirror
