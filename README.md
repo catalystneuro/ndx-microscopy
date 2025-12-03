@@ -247,17 +247,10 @@ classDiagram
     class ImagingSpace {
         <<NWBContainer>>
         --------------------------------------
-        datasets
-        --------------------------------------
-        **description** : text
-        origin_coordinates : float64[3], optional
-        unit : text = "micrometers"
-        --------------------------------------
         attributes
         --------------------------------------
-        location : text, optional
-        reference_frame : text, optional
-        orientation : text, optional
+        **description** : text
+        **anatomical_target** : text
         --------------------------------------
         groups
         --------------------------------------
@@ -434,17 +427,10 @@ classDiagram
     class ImagingSpace {
         <<NWBContainer>>
         --------------------------------------
-        datasets
-        --------------------------------------
-        **description** : text
-        origin_coordinates : float64[3], optional
-        unit : text = "micrometers"
-        --------------------------------------
         attributes
         --------------------------------------
-        location : text, optional
-        reference_frame : text, optional
-        orientation : text, optional
+        **description** : text
+        **anatomical_target** : text
         --------------------------------------
         groups
         --------------------------------------
