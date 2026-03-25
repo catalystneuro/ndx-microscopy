@@ -429,6 +429,7 @@ def mock_MultiChannelMicroscopyContainer(
     *,
     microscopy_static_images: Optional[List[ndx_microscopy.MicroscopyStaticImage]] = None,
     microscopy_series: Optional[List[ndx_microscopy.MicroscopySeries]] = None,
+    multi_plane_microscopy_containers: Optional[List[ndx_microscopy.MultiPlaneMicroscopyContainer]] = None,
     name: Optional[str] = None,
 ) -> ndx_microscopy.MultiChannelMicroscopyContainer:
     container_name = name or name_generator("MultiChannelMicroscopyContainer")
@@ -437,6 +438,7 @@ def mock_MultiChannelMicroscopyContainer(
         name=container_name,
         microscopy_static_images=microscopy_static_images,
         microscopy_series=microscopy_series,
+        multi_plane_microscopy_containers=multi_plane_microscopy_containers,
     )
     return multi_channel_microscopy_container
 

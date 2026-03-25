@@ -429,7 +429,9 @@ classDiagram
         --------------------------------------
         groups
         --------------------------------------
-        **microscopy_series** : MicroscopySeries[1..*]
+        microscopy_series : MicroscopySeries[0..*]
+        microscopy_static_images : MicroscopyStaticImage[0..*]
+        multi_plane_microscopy_containers : MultiPlaneMicroscopyContainer[0..*]
     }
 
     class ImagingSpace {

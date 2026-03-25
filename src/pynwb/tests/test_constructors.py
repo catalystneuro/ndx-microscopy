@@ -297,6 +297,59 @@ def test_constructor_microscopy_static_images_container():
     assert multi_channel_microscopy_container.name == "MultiChannelPlanarMicroscopyStaticImageContainer"
 
 
+def test_constructor_multi_channel_microscopy_container_with_multi_plane_containers():
+    from ndx_ophys_devices.testing import mock_Indicator
+
+    microscopy_rig = mock_MicroscopyRig()
+
+    # Channel 1: functional indicator (GCaMP)
+    channel_1 = mock_MicroscopyChannel(indicator=mock_Indicator(name="Indicator_GCaMP"), name="GCaMPChannel")
+    plane_space_1 = mock_PlanarImagingSpace(name="PlanarImagingSpace_depth1")
+    plane_space_2 = mock_PlanarImagingSpace(name="PlanarImagingSpace_depth2")
+    series_1 = mock_PlanarMicroscopySeries(
+        name="GCaMP_depth1",
+        microscopy_rig=microscopy_rig,
+        microscopy_channel=channel_1,
+        planar_imaging_space=plane_space_1,
+    )
+    series_2 = mock_PlanarMicroscopySeries(
+        name="GCaMP_depth2",
+        microscopy_rig=microscopy_rig,
+        microscopy_channel=channel_1,
+        planar_imaging_space=plane_space_2,
+    )
+    multi_plane_gcamp = mock_MultiPlaneMicroscopyContainer(
+        name="GCaMP_planes",
+        planar_microscopy_series=[series_1, series_2],
+    )
+
+    # Channel 2: anatomical marker (mCherry static images)
+    channel_2 = mock_MicroscopyChannel(indicator=mock_Indicator(name="Indicator_mCherry"), name="mCherryChannel")
+    static_image_1 = mock_PlanarMicroscopyStaticImage(
+        name="mCherry_depth1",
+        microscopy_rig=microscopy_rig,
+        microscopy_channel=channel_2,
+        planar_imaging_space=plane_space_1,
+    )
+    static_image_2 = mock_PlanarMicroscopyStaticImage(
+        name="mCherry_depth2",
+        microscopy_rig=microscopy_rig,
+        microscopy_channel=channel_2,
+        planar_imaging_space=plane_space_2,
+    )
+    multi_plane_mcherry = mock_MultiPlaneMicroscopyContainer(
+        name="mCherry_planes",
+        planar_microscopy_static_images=[static_image_1, static_image_2],
+    )
+
+    multi_channel_container = mock_MultiChannelMicroscopyContainer(
+        name="MultiPlaneMultiChannelContainer",
+        multi_plane_microscopy_containers=[multi_plane_gcamp, multi_plane_mcherry],
+    )
+    assert multi_channel_container.name == "MultiPlaneMultiChannelContainer"
+    assert len(multi_channel_container.multi_plane_microscopy_containers) == 2
+
+
 def test_constructor_volumetric_microscopy_series():
     from ndx_ophys_devices.testing import mock_Indicator
 

@@ -375,6 +375,9 @@ groups:
       - neurodata_type_inc: MicroscopyStaticImage
         doc: MicroscopyStaticImage object containing imaging data for a single channel scan.
         quantity: "*"
+      - neurodata_type_inc: MultiPlaneMicroscopyContainer
+        doc: MultiPlaneMicroscopyContainer object containing imaging data acquired over several depths
+        quantity: "*"
 
   - neurodata_type_def: SegmentationContainer
     neurodata_type_inc: NWBDataInterface

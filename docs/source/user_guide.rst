@@ -720,6 +720,162 @@ Workflow for volumetric imaging with targeted scanning:
     )
     nwbfile.add_acquisition(volume_series)
 
+Multi-Plane Multi-Channel Acquisition
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For experiments combining multi-plane imaging (several depths) with multi-channel imaging (several indicators or markers),
+use ``MultiChannelMicroscopyContainer`` to nest ``MultiPlaneMicroscopyContainer`` objects — one per channel.
+This is typical when recording neuronal activity with a functional indicator (e.g., GCaMP) while simultaneously
+acquiring anatomical reference images at multiple depths with structural markers (e.g., mCherry, DAPI).
+
+.. code-block:: python
+
+    from ndx_microscopy import (
+        MicroscopyChannel,
+        PlanarImagingSpace,
+        PlanarMicroscopySeries,
+        PlanarMicroscopyStaticImage,
+        MultiPlaneMicroscopyContainer,
+        MultiChannelMicroscopyContainer,
+        LineScan,
+    )
+
+    depths_in_um = [-50, 0, 50]  # three imaging depths
+
+    # --- Channel 1: functional indicator (GCaMP6f, pan-neuronal activity) ---
+    gcamp_channel = MicroscopyChannel(
+        name='gcamp_channel',
+        description='Pan-neuronal GCaMP6f for activity imaging',
+        excitation_wavelength_in_nm=920.0,
+        emission_wavelength_in_nm=510.0,
+        indicator=gcamp_indicator,  # Link to Indicator in MicroscopyExperimentMetadata
+    )
+
+    illumination_pattern = LineScan(name='line_scan', description='Line scanning two-photon')
+
+    gcamp_series_list = []
+    for depth in depths_in_um:
+        plane_space = PlanarImagingSpace(
+            name=f'plane_gcamp_{depth}um',
+            description=f'GCaMP imaging plane at {depth} µm',
+            pixel_size_in_um=[1.0, 1.0],
+            dimensions_in_pixels=[512, 512],
+            anatomical_target='Visual cortex',
+            illumination_pattern=illumination_pattern,
+        )
+        gcamp_series_list.append(
+            PlanarMicroscopySeries(
+                name=f'gcamp_{depth}um',
+                description=f'GCaMP6f calcium imaging at {depth} µm',
+                microscopy_rig=microscopy_rig,
+                microscopy_channel=gcamp_channel,
+                planar_imaging_space=plane_space,
+                data=np.random.rand(1000, 512, 512),
+                unit='a.u.',
+                rate=30.0,
+                starting_time=0.0,
+            )
+        )
+
+    multi_plane_gcamp = MultiPlaneMicroscopyContainer(
+        name='gcamp_planes',
+        planar_microscopy_series=gcamp_series_list,
+    )
+
+    # --- Channel 2: anatomical marker 1 (mCherry, excitatory subpopulation) ---
+    mcherry_channel = MicroscopyChannel(
+        name='mcherry_channel',
+        description='mCherry label for excitatory neuron subpopulation',
+        excitation_wavelength_in_nm=561.0,
+        emission_wavelength_in_nm=610.0,
+        indicator=mcherry_indicator,  # Link to Indicator in MicroscopyExperimentMetadata
+    )
+
+    mcherry_images_list = []
+    for depth in depths_in_um:
+        plane_space = PlanarImagingSpace(
+            name=f'plane_mcherry_{depth}um',
+            description=f'mCherry imaging plane at {depth} µm',
+            pixel_size_in_um=[1.0, 1.0],
+            dimensions_in_pixels=[512, 512],
+            anatomical_target='Visual cortex',
+            illumination_pattern=illumination_pattern,
+        )
+        mcherry_images_list.append(
+            PlanarMicroscopyStaticImage(
+                name=f'mcherry_{depth}um',
+                description=f'mCherry anatomical image at {depth} µm',
+                microscopy_rig=microscopy_rig,
+                microscopy_channel=mcherry_channel,
+                planar_imaging_space=plane_space,
+                data=np.random.rand(512, 512),
+            )
+        )
+
+    multi_plane_mcherry = MultiPlaneMicroscopyContainer(
+        name='mcherry_planes',
+        planar_microscopy_static_images=mcherry_images_list,
+    )
+
+    # --- Channel 3: anatomical marker 2 (tdTomato, inhibitory subpopulation) ---
+    tdtomato_channel = MicroscopyChannel(
+        name='tdtomato_channel',
+        description='tdTomato label for inhibitory neuron subpopulation',
+        excitation_wavelength_in_nm=554.0,
+        emission_wavelength_in_nm=581.0,
+        indicator=tdtomato_indicator,  # Link to Indicator in MicroscopyExperimentMetadata
+    )
+
+    tdtomato_images_list = []
+    for depth in depths_in_um:
+        plane_space = PlanarImagingSpace(
+            name=f'plane_tdtomato_{depth}um',
+            description=f'tdTomato imaging plane at {depth} µm',
+            pixel_size_in_um=[1.0, 1.0],
+            dimensions_in_pixels=[512, 512],
+            anatomical_target='Visual cortex',
+            illumination_pattern=illumination_pattern,
+        )
+        tdtomato_images_list.append(
+            PlanarMicroscopyStaticImage(
+                name=f'tdtomato_{depth}um',
+                description=f'tdTomato anatomical image at {depth} µm',
+                microscopy_rig=microscopy_rig,
+                microscopy_channel=tdtomato_channel,
+                planar_imaging_space=plane_space,
+                data=np.random.rand(512, 512),
+            )
+        )
+
+    multi_plane_tdtomato = MultiPlaneMicroscopyContainer(
+        name='tdtomato_planes',
+        planar_microscopy_static_images=tdtomato_images_list,
+    )
+
+    # --- Wrap all channels in a MultiChannelMicroscopyContainer ---
+    multi_channel_container = MultiChannelMicroscopyContainer(
+        name='multi_plane_multi_channel_data',
+        multi_plane_microscopy_containers=[multi_plane_gcamp, multi_plane_mcherry, multi_plane_tdtomato],
+    )
+    nwbfile.add_acquisition(multi_channel_container)
+
+The data hierarchy within the NWB file is::
+
+    acquisition/
+    └── multi_plane_multi_channel_data/          # MultiChannelMicroscopyContainer
+        ├── gcamp_planes/                         # MultiPlaneMicroscopyContainer (Channel 1)
+        │   ├── gcamp_-50um/                      # PlanarMicroscopySeries
+        │   ├── gcamp_0um/
+        │   └── gcamp_50um/
+        ├── mcherry_planes/                       # MultiPlaneMicroscopyContainer (Channel 2)
+        │   ├── mcherry_-50um/                    # PlanarMicroscopyStaticImage
+        │   ├── mcherry_0um/
+        │   └── mcherry_50um/
+        └── tdtomato_planes/                      # MultiPlaneMicroscopyContainer (Channel 3)
+            ├── tdtomato_-50um/                   # PlanarMicroscopyStaticImage
+            ├── tdtomato_0um/
+            └── tdtomato_50um/
+
 ROI Segmentation
 ^^^^^^^^^^^^^
 

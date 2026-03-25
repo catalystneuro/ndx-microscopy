@@ -12,6 +12,7 @@
 - Updated `ndx-ophys-devices` dependency from v0.2.0 to v0.4.0
 
 ## Features
+- Extended `MultiChannelMicroscopyContainer` to support nesting `MultiPlaneMicroscopyContainer` objects, enabling combined multi-plane and multi-channel acquisition workflows (e.g., a functional indicator imaged at several depths alongside anatomical markers)
 - Added static image support for microscopy experiments:
   - `MicroscopyStaticImage`: Base class for static images
   - `PlanarMicroscopyStaticImage`: For 2D static images
