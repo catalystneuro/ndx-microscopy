@@ -48,6 +48,11 @@ groups:
         target_type: ObjectiveLens
         doc: Link to ObjectiveLens object which contains metadata about the objective lens used in the microscopy rig.
         quantity: "?"
+    groups:
+      - name: optical_path_scheme
+        neurodata_type_inc: Image
+        doc: optional link to Images object that provide an annotated scheme of the microscope and / or optical path.
+        quantity: "?"
 
   - neurodata_type_def: MicroscopyChannel
     neurodata_type_inc: NWBContainer

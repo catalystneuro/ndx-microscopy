@@ -99,6 +99,10 @@ classDiagram
         dichroic_mirror : DichroicMirror, optional
         photodetector : Photodetector, optional
         emission_filter : OpticalFilter, optional
+        --------------------------------------
+        groups
+        --------------------------------------
+        optical_path_scheme : Image, optional
     }
 
     class ExcitationSource {
@@ -297,6 +301,10 @@ classDiagram
         dichroic_mirror : DichroicMirror, optional
         photodetector : Photodetector, optional
         emission_filter : OpticalFilter, optional
+        --------------------------------------
+        groups
+        --------------------------------------
+        optical_path_scheme : Image, optional
     }
 
     class ViralVector {
@@ -478,6 +486,10 @@ classDiagram
         dichroic_mirror : DichroicMirror, optional
         photodetector : Photodetector, optional
         emission_filter : OpticalFilter, optional
+        --------------------------------------
+        groups
+        --------------------------------------
+        optical_path_scheme : Image, optional
     }
 
     MicroscopySeries <|-- PlanarMicroscopySeries : extends

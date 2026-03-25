@@ -145,8 +145,17 @@ The device components include MicroscopeModel, Microscope, and MicroscopyRig:
            excitation_filter=ex_filter,
            dichroic_mirror=dichroic,
            photodetector=detector,
-           emission_filter=em_filter
+           emission_filter=em_filter,
+           # Optionally, attach a scheme image of the optical path
+           # optical_path_scheme=Image(
+           #     name="optical_path_scheme",
+           #     data=optical_path_image_data,  # numpy array, e.g. (H, W, 3) uint8
+           #     description="Annotated scheme of the two-photon optical path.",
+           # )
        )
+
+   The ``optical_path_scheme`` parameter is optional and accepts a ``pynwb.image.Image`` object. 
+   This can be used to store an annotated diagram or picture of the microscope's optical path layout.
 
 Other optical components (filters, sources, detectors) are provided by the ndx-ophys-devices extension.
 

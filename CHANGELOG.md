@@ -22,6 +22,7 @@
   - `ViralVectorInjection` objects (from ndx-ophys-devices)
   - `Indicator` objects (from ndx-ophys-devices)
 - Added support for `ViralVector` and `ViralVectorInjection` imports from ndx-ophys-devices
+- Added optional `optical_path_scheme` field to `MicroscopyRig` (an `Image` group) for storing an annotated diagram or picture of the microscope's optical path layout
 
 ## Notes
 - These changes improve metadata organization by centralizing all experiment-related objects in `MicroscopyExperimentMetadata`

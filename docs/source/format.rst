@@ -73,6 +73,15 @@ A collection of devices and metadata that make up the microscopy rig.
             target_type: OpticalFilter
             doc: Link to OpticalFilter object which contains metadata about the emission filter. It can be either a BandOpticalFilter (e.g., 'Bandpass', 'Bandstop', 'Longpass', 'Shortpass') or a EdgeOpticalFilter (Longpass or Shortpass).
             quantity: "?"
+          - name: objective_lens
+            target_type: ObjectiveLens
+            doc: Link to ObjectiveLens object which contains metadata about the objective lens used in the microscopy rig.
+            quantity: "?"
+        groups:
+          - name: optical_path_scheme
+            neurodata_type_inc: Image
+            doc: optional link to Images object that provide an annotated scheme of the microscope and / or optical path.
+            quantity: "?"
 
 For other device components (ExcitationSource, OpticalFilter, Photodetector, etc.), please refer to the `ndx-ophys-devices documentation <https://ndx-ophys-devices.readthedocs.io/>`_.
 

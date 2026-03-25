@@ -12,6 +12,7 @@ from ndx_ophys_devices.testing import (
     mock_DichroicMirror,
 )
 
+from pynwb.image import Image
 from pynwb.testing.mock.utils import name_generator
 from pynwb.core import DynamicTableRegion
 import ndx_microscopy
@@ -79,6 +80,7 @@ def mock_MicroscopyRig(
     dichroic_mirror: DichroicMirror = None,
     photodetector: Photodetector = None,
     emission_filter: OpticalFilter = None,
+    optical_path_scheme: Optional[Image] = None,
 ) -> ndx_microscopy.MicroscopyRig:
     microscopy_rig = ndx_microscopy.MicroscopyRig(
         name=name or name_generator("MicroscopyRig"),
@@ -89,6 +91,7 @@ def mock_MicroscopyRig(
         dichroic_mirror=dichroic_mirror or mock_DichroicMirror(),
         photodetector=photodetector or mock_Photodetector(),
         emission_filter=emission_filter or mock_OpticalFilter(),
+        optical_path_scheme=optical_path_scheme,
     )
     return microscopy_rig
 
