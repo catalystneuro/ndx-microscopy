@@ -1,20 +1,19 @@
 import warnings
 from typing import List, Optional, Tuple
 
+import ndx_ophys_devices
 import numpy as np
-import pynwb.base
-from ndx_ophys_devices import ExcitationSource, OpticalFilter, Photodetector, DichroicMirror, Indicator
+from ndx_ophys_devices import ExcitationSource, OpticalFilter, Photodetector, DichroicMirror
 
 from ndx_ophys_devices.testing import (
     mock_ExcitationSource,
     mock_OpticalFilter,
     mock_Photodetector,
     mock_DichroicMirror,
-    mock_Indicator,
 )
 
 from pynwb.testing.mock.utils import name_generator
-
+from pynwb.core import DynamicTableRegion
 import ndx_microscopy
 
 
@@ -58,14 +57,14 @@ def mock_MicroscopyChannel(
     description: str = "A mock instance of a MicroscopyChannel type to be used for rapid testing.",
     excitation_wavelength_in_nm: Optional[float] = 488.0,
     emission_wavelength_in_nm: Optional[float] = 520.0,
-    indicator: Indicator = None,
+    indicator: ndx_ophys_devices.Indicator,
 ) -> ndx_microscopy.MicroscopyChannel:
     microscopy_channel = ndx_microscopy.MicroscopyChannel(
         name=name or name_generator("MicroscopyChannel"),
         description=description,
         excitation_wavelength_in_nm=excitation_wavelength_in_nm,
         emission_wavelength_in_nm=emission_wavelength_in_nm,
-        indicator=indicator or mock_Indicator(),
+        indicator=indicator,
     )
     return microscopy_channel
 
@@ -479,7 +478,7 @@ def mock_VolumetricMicroscopySeries(
 
 def mock_MicroscopyResponseSeries(
     *,
-    rois: pynwb.core.DynamicTableRegion,
+    rois: DynamicTableRegion,
     name: Optional[str] = None,
     description: str = "A mock instance of a MicroscopyResponseSeries type to be used for rapid testing.",
     data: Optional[np.ndarray] = None,

@@ -26,7 +26,7 @@ A device instance for acquiring imaging data.
 
     groups:
       - neurodata_type_def: Microscope
-        neurodata_type_inc: DeviceInstance
+        neurodata_type_inc: Device
         doc: Instance of a microscope used to acquire imaging data.
         attributes:
           - name: technique
@@ -100,10 +100,36 @@ Represents a channel in a microscope with metadata about the indicator and wavel
           - name: emission_wavelength_in_nm
             dtype: float64
             doc: Wavelength of the emission light in nanometers.
-        groups:
-          - neurodata_type_inc: Indicator
-            doc: Indicator object which contains metadata about the indicator used in this light path.
+        links:
+          - name: indicator
+            target_type: Indicator
+            doc: Link to Indicator object which contains metadata about the indicator used in this light path.
             quantity: 1
+
+MicroscopyExperimentMetadata
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+Container for centralizing all microscopy experiment metadata.
+
+.. code-block:: yaml
+
+    groups:
+      - neurodata_type_def: MicroscopyExperimentMetadata
+        neurodata_type_inc: LabMetaData
+        doc: Metadata about the microscopy experiment.
+        name: microscopy_experiment_metadata
+        groups:
+          - neurodata_type_inc: MicroscopyRig
+            doc: Group containing of one or more MicroscopyRig objects.
+            quantity: "*"
+          - neurodata_type_inc: ViralVector
+            doc: Group containing of one or more ViralVector objects.
+            quantity: "*"
+          - neurodata_type_inc: ViralVectorInjection
+            doc: Group containing one or more ViralVectorInjection objects.
+            quantity: "*"
+          - neurodata_type_inc: Indicator
+            doc: Group containing one or more Indicator objects.
+            quantity: "*"
 
 Microscopy Series Components
 ------------------------
@@ -119,10 +145,11 @@ Base type for microscopy time series data.
         neurodata_type_inc: TimeSeries
         doc: Imaging data acquired over time from an optical channel in a microscope while a light source illuminates the
           imaging space.
+        links:
+          - name: microscopy_rig
+            doc: Link to a MicroscopyRig object containing metadata about the microscopy rig used to acquire this imaging data.
+            target_type: MicroscopyRig
         groups:
-          - neurodata_type_inc: MicroscopyRig
-            doc: MicroscopyRig object containing metadata about the microscopy rig used to acquire this imaging data.
-            quantity: 1
           - neurodata_type_inc: MicroscopyChannel
             doc: MicroscopyChannel object containing metadata about the channel used to acquire this imaging data.
             quantity: 1
@@ -440,7 +467,7 @@ Base type for segmentation data.
     groups:
       - neurodata_type_def: Segmentation
         neurodata_type_inc: DynamicTable
-        doc: Abstract class to contain the results from image segmentation of a specific imaging space.
+        doc: Abstract class to contain the spatial components resulting from image segmentation of a specific imaging space.
         attributes:
           - name: description
             dtype: text
@@ -459,7 +486,7 @@ For 2D segmentation data.
     groups:
       - neurodata_type_def: PlanarSegmentation
         neurodata_type_inc: Segmentation
-        doc: Results from image segmentation of a specific planar imaging space.
+        doc: ROI spatial components resulting from image segmentation of a specific planar imaging space.
         datasets:
           - name: image_mask
             neurodata_type_inc: VectorData
@@ -505,7 +532,7 @@ For 3D segmentation data.
     groups:
       - neurodata_type_def: VolumetricSegmentation
         neurodata_type_inc: Segmentation
-        doc: Results from image segmentation of a specific volumetric imaging space.
+        doc: ROI spatial components resulting from image segmentation of a specific volumetric imaging space.
         datasets:
           - name: volume_mask
             neurodata_type_inc: VectorData
@@ -560,7 +587,7 @@ Container for multiple segmentations.
         doc: A container of many Segmentation objects.
         groups:
           - neurodata_type_inc: Segmentation
-            doc: Results from image segmentation of a specific imaging space.
+            doc: Results from image segmentation.
             quantity: "+"
 
 SummaryImage
@@ -603,7 +630,10 @@ For extracted ROI responses.
     groups:
       - neurodata_type_def: MicroscopyResponseSeries
         neurodata_type_inc: TimeSeries
-        doc: ROI responses extracted from optical imaging.
+        doc:       
+          ROI responses extracted from imaging data, linked in the microscopy_series field.
+          This object contains the temporal components from multiple ROIs,
+          that can result from different processing steps, e.g., raw, deconvolved, or denoised fluorescence traces.
         datasets:
           - name: data
             dtype: numeric
@@ -616,8 +646,9 @@ For extracted ROI responses.
             doc: Signals from ROIs.
           - name: rois
             neurodata_type_inc: DynamicTableRegion
-            doc: DynamicTableRegion referencing segmentation containing more information about the ROIs
-              stored in this series.
+            doc: 
+              DynamicTableRegion referencing Segmentation table containing information about the ROIs
+              spatial components.
         links:
           - name: microscopy_series
             doc: Link to a MicroscopySeries object containing the imaging data this response series is derived from.

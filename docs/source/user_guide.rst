@@ -150,7 +150,59 @@ The device components include MicroscopeModel, Microscope, and MicroscopyRig:
 
 Other optical components (filters, sources, detectors) are provided by the ndx-ophys-devices extension.
 
-4. **MicroscopyChannel**: Defines a channel with indicator and wavelength information
+4. **MicroscopyExperimentMetadata**: Container for centralizing all experiment metadata
+
+   .. code-block:: python
+
+       from ndx_ophys_devices import Indicator, ViralVector, ViralVectorInjection
+
+       # Create viral vector and injection metadata
+        viral_vector = ViralVector(
+            name="viral_vector",
+            description="AAV viral vector for optogenetic stimulation",
+            construct_name="AAV-EF1a-DIO-hChR2(H134R)-EYFP",
+            manufacturer="Vector Manufacturer",
+            titer_in_vg_per_ml=1.0e12,
+        )
+
+        viral_vector_injection = ViralVectorInjection(
+            name="viral_vector_injection",
+            description="Viral vector injection for optogenetic stimulation",
+            location="Hippocampus",
+            hemisphere="right",
+            reference="Bregma at the cortical surface",
+            ap_in_mm=2.0,
+            ml_in_mm=1.5,
+            dv_in_mm=-3.0,
+            pitch_in_deg=0.0,
+            yaw_in_deg=0.0,
+            roll_in_deg=0.0,
+            stereotactic_rotation_in_deg=0.0,
+            stereotactic_tilt_in_deg=0.0,
+            volume_in_uL=0.45,
+            injection_date="1970-01-01T00:00:00+00:00",
+            viral_vector=viral_vector,
+        )
+
+        indicator = Indicator(
+            name="indicator",
+            description="Green indicator",
+            label="GCamp6f",
+            viral_vector_injection=viral_vector_injection,
+        )
+
+       # Create the experiment metadata container
+       microscopy_experiment_metadata = MicroscopyExperimentMetadata(
+           viral_vectors=[viral_vector],
+           viral_vector_injections=[viral_vector_injection],
+           indicators=[indicator],
+           microscopy_rigs=[microscopy_rig]
+       )
+       
+       # Add to NWB file
+       nwbfile.add_lab_meta_data(microscopy_experiment_metadata)
+
+5. **MicroscopyChannel**: Defines a channel with indicator and wavelength information
 
    .. code-block:: python
 
@@ -159,7 +211,7 @@ Other optical components (filters, sources, detectors) are provided by the ndx-o
            description='GCaMP6f channel',
            excitation_wavelength_in_nm=488.0,
            emission_wavelength_in_nm=520.0,
-           indicator=indicator               # from ndx-ophys-devices
+           indicator=indicator  # Link to indicator from MicroscopyExperimentMetadata
        )
 
 Illumination Pattern Configuration
@@ -332,7 +384,52 @@ Basic workflow for 2D imaging:
         # ...
     )
 
-    # 4. Define illumination pattern
+    # 4. Create experiment metadata with indicators and rig
+    from ndx_ophys_devices import Indicator, ViralVector, ViralVectorInjection
+
+    viral_vector = ViralVector(
+        name="viral_vector",
+        description="AAV viral vector for optogenetic stimulation",
+        construct_name="AAV-EF1a-DIO-hChR2(H134R)-EYFP",
+        manufacturer="Vector Manufacturer",
+        titer_in_vg_per_ml=1.0e12,
+    )
+
+    viral_vector_injection = ViralVectorInjection(
+        name="viral_vector_injection",
+        description="Viral vector injection for optogenetic stimulation",
+        location="Hippocampus",
+        hemisphere="right",
+        reference="Bregma at the cortical surface",
+        ap_in_mm=2.0,
+        ml_in_mm=1.5,
+        dv_in_mm=-3.0,
+        pitch_in_deg=0.0,
+        yaw_in_deg=0.0,
+        roll_in_deg=0.0,
+        stereotactic_rotation_in_deg=0.0,
+        stereotactic_tilt_in_deg=0.0,
+        volume_in_uL=0.45,
+        injection_date="1970-01-01T00:00:00+00:00",
+        viral_vector=viral_vector,
+    )
+
+    indicator = Indicator(
+        name="indicator",
+        description="Green indicator",
+        label="GCamp6f",
+        viral_vector_injection=viral_vector_injection,
+    )
+
+    microscopy_experiment_metadata = MicroscopyExperimentMetadata(
+        viral_vectors=[viral_vector],
+        viral_vector_injections=[viral_vector_injection],
+        indicators=[indicator],
+        microscopy_rigs=[microscopy_rig]
+    )
+    nwbfile.add_lab_meta_data(microscopy_experiment_metadata)
+
+    # 5. Define illumination pattern
     line_scan = LineScan(
         name='line_scanning',
         description='Line scanning two-photon microscopy',
@@ -341,7 +438,7 @@ Basic workflow for 2D imaging:
         dwell_time_in_s=1.0e-6
     )
 
-    # 5. Set up imaging space with illumination pattern
+    # 6. Set up imaging space with illumination pattern
     planar_imaging_space = PlanarImagingSpace(
         name='cortex_plane',
         description='Layer 2/3 of visual cortex',
@@ -354,16 +451,16 @@ Basic workflow for 2D imaging:
         illumination_pattern=line_scan        # Include the illumination pattern
     )
 
-    # 4. Create microscopy channel
+    # 7. Create microscopy channel
     microscopy_channel = MicroscopyChannel(
         name='gcamp_channel',
         description='GCaMP6f channel',
         excitation_wavelength_in_nm=488.0,
         emission_wavelength_in_nm=520.0,
-        indicator=indicator               # from ndx-ophys-devices
+        indicator=indicator  # Link to indicator from MicroscopyExperimentMetadata
     )
 
-    # 5. Create imaging series
+    # 8. Create imaging series
     microscopy_series = PlanarMicroscopySeries(
         name='microscopy_series',
         description='Two-photon calcium imaging',
@@ -414,7 +511,52 @@ Workflow for one-photon widefield imaging:
         # ...
     )
 
-    # 4. Define illumination pattern
+    # 4. Create experiment metadata with indicators and rig
+    from ndx_ophys_devices import Indicator, ViralVector, ViralVectorInjection
+
+    viral_vector = ViralVector(
+        name="viral_vector",
+        description="AAV viral vector for optogenetic stimulation",
+        construct_name="AAV-EF1a-DIO-hChR2(H134R)-EYFP",
+        manufacturer="Vector Manufacturer",
+        titer_in_vg_per_ml=1.0e12,
+    )
+
+    viral_vector_injection = ViralVectorInjection(
+        name="viral_vector_injection",
+        description="Viral vector injection for optogenetic stimulation",
+        location="Hippocampus",
+        hemisphere="right",
+        reference="Bregma at the cortical surface",
+        ap_in_mm=2.0,
+        ml_in_mm=1.5,
+        dv_in_mm=-3.0,
+        pitch_in_deg=0.0,
+        yaw_in_deg=0.0,
+        roll_in_deg=0.0,
+        stereotactic_rotation_in_deg=0.0,
+        stereotactic_tilt_in_deg=0.0,
+        volume_in_uL=0.45,
+        injection_date="1970-01-01T00:00:00+00:00",
+        viral_vector=viral_vector,
+    )
+
+    indicator = Indicator(
+        name="indicator",
+        description="Green indicator",
+        label="GCamp6f",
+        viral_vector_injection=viral_vector_injection,
+    )
+
+    microscopy_experiment_metadata = MicroscopyExperimentMetadata(
+        viral_vectors=[viral_vector],
+        viral_vector_injections=[viral_vector_injection],
+        indicators=[indicator],
+        microscopy_rigs=[microscopy_rig]
+    )
+    nwbfile.add_lab_meta_data(microscopy_experiment_metadata)
+
+    # 5. Define illumination pattern
     plane_acquisition = PlaneAcquisition(
         name='plane_acquisition',
         description='Widefield fluorescence imaging',
@@ -422,7 +564,7 @@ Workflow for one-photon widefield imaging:
         plane_rate_in_Hz=30.0
     )
 
-    # 5. Set up imaging space with illumination pattern
+    # 6. Set up imaging space with illumination pattern
     planar_imaging_space = PlanarImagingSpace(
         name='hippo_plane',
         description='CA1 region of hippocampus',
@@ -435,16 +577,16 @@ Workflow for one-photon widefield imaging:
         illumination_pattern=plane_acquisition
     )
 
-    # 6. Create microscopy channel
+    # 7. Create microscopy channel
     microscopy_channel = MicroscopyChannel(
         name='gcamp_channel',
         description='GCaMP6f channel',
         excitation_wavelength_in_nm=470.0,
         emission_wavelength_in_nm=520.0,
-        indicator=indicator               # from ndx-ophys-devices
+        indicator=indicator  # Link to indicator from MicroscopyExperimentMetadata
     )
 
-    # 5. Create imaging series
+    # 8. Create imaging series
     microscopy_series = PlanarMicroscopySeries(
         name='imaging_data',
         description='One-photon calcium imaging',
@@ -495,7 +637,52 @@ Workflow for volumetric imaging with targeted scanning:
         # ...
     )
 
-    # 4. Define illumination pattern
+    # 4. Create experiment metadata with indicators and rig
+    from ndx_ophys_devices import Indicator, ViralVector, ViralVectorInjection
+
+    viral_vector = ViralVector(
+        name="viral_vector",
+        description="AAV viral vector for optogenetic stimulation",
+        construct_name="AAV-EF1a-DIO-hChR2(H134R)-EYFP",
+        manufacturer="Vector Manufacturer",
+        titer_in_vg_per_ml=1.0e12,
+    )
+
+    viral_vector_injection = ViralVectorInjection(
+        name="viral_vector_injection",
+        description="Viral vector injection for optogenetic stimulation",
+        location="Hippocampus",
+        hemisphere="right",
+        reference="Bregma at the cortical surface",
+        ap_in_mm=2.0,
+        ml_in_mm=1.5,
+        dv_in_mm=-3.0,
+        pitch_in_deg=0.0,
+        yaw_in_deg=0.0,
+        roll_in_deg=0.0,
+        stereotactic_rotation_in_deg=0.0,
+        stereotactic_tilt_in_deg=0.0,
+        volume_in_uL=0.45,
+        injection_date="1970-01-01T00:00:00+00:00",
+        viral_vector=viral_vector,
+    )
+
+    indicator = Indicator(
+        name="indicator",
+        description="Green indicator",
+        label="GCamp6f",
+        viral_vector_injection=viral_vector_injection,
+    )
+
+    microscopy_experiment_metadata = MicroscopyExperimentMetadata(
+        viral_vectors=[viral_vector],
+        viral_vector_injections=[viral_vector_injection],
+        indicators=[indicator],
+        microscopy_rigs=[microscopy_rig]
+    )
+    nwbfile.add_lab_meta_data(microscopy_experiment_metadata)
+
+    # 5. Define illumination pattern
     random_access_scan = RandomAccessScan(
         name='random_access',
         description='Targeted imaging of specific neurons',
@@ -504,7 +691,7 @@ Workflow for volumetric imaging with targeted scanning:
         scanning_pattern='spiral'
     )
 
-    # 5. Set up volumetric space with illumination pattern
+    # 6. Set up volumetric space with illumination pattern
     volumetric_imaging_space = VolumetricImagingSpace(
         name='cortex_volume',
         description='Visual cortex volume',
@@ -517,16 +704,16 @@ Workflow for volumetric imaging with targeted scanning:
         illumination_pattern=random_access_scan
     )
 
-    # 6. Create microscopy channel
+    # 7. Create microscopy channel
     microscopy_channel = MicroscopyChannel(
         name='gcamp_channel',
         description='GCaMP6f channel',
         excitation_wavelength_in_nm=920.0,
         emission_wavelength_in_nm=520.0,
-        indicator=indicator               # from ndx-ophys-devices
+        indicator=indicator  # Link to indicator from MicroscopyExperimentMetadata
     )
 
-    # 5. Create volumetric series
+    # 8. Create volumetric series
     volume_series = VolumetricMicroscopySeries(
         name='volume_data',
         microscopy_rig=microscopy_rig,
