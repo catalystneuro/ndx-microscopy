@@ -360,52 +360,22 @@ Base type for metadata about the region being imaged.
       - neurodata_type_def: ImagingSpace
         neurodata_type_inc: NWBContainer
         doc: Abstract class to contain metadata about the region of physical space that imaging data was recorded from. Extended by PlanarImagingSpace and VolumetricImagingSpace.
-        datasets:
-          - name: origin_coordinates
-            dtype: float64
-            dims:
-              - - x, y, z
-            shape:
-              - - 3
-            doc:
-              Physical location in stereotactic coordinates for the first element of the grid.
-              See reference_frame to determine what the coordinates are relative to (e.g., bregma).
-            quantity: "?"
-            attributes:
-              - name: unit
-                dtype: text
-                default_value: micrometers
-                doc: Measurement units for origin coordinates. The default value is 'micrometers'.
         attributes:
-          - name: description
-            dtype: text
-            doc: Description of the imaging space.
-          - name: location
-            dtype: text
-            doc:
-              General estimate of location in the brain being subset by this space.
-              Specify the area, layer, etc.
-              Use standard atlas names for anatomical regions when possible.
-              Specify 'whole brain' if the entire brain is strictly contained within the space.
-            required: false
-          - name: reference_frame
-            dtype: text
-            doc:
-              The reference frame for the origin coordinates. For example, 'bregma' or 'lambda' for rodent brains.
-              If the origin coordinates are relative to a specific anatomical landmark, specify that here.
-            required: false
-          - name: orientation
-            doc:
-              "A 3-letter string. One of A,P,L,R,S,I for each of x, y, and z. For example, the most common
-              orientation is 'RAS', which means x is right, y is anterior, and z is superior (a.k.a. dorsal).
-              For dorsal/ventral use 'S/I' (superior/inferior). In the AnatomicalCoordinatesTable, an orientation of
-              'RAS' corresponds to coordinates in the order of (ML (x), AP (y), DV (z))."
-            dtype: text
-            required: false
-        groups:
-          - neurodata_type_inc: IlluminationPattern
-            doc: IlluminationPattern object containing metadata about the method used to acquire this imaging data.
-            quantity: 1
+      - name: description
+        dtype: text
+        doc: Description of the imaging space.
+        required: false
+      - name: anatomical_target
+        dtype: text
+        doc:
+          Name of the targeted anatomical location being subset by this space.
+          Specify the area, layer, etc. Use standard atlas names for anatomical regions when possible.
+          Specify 'whole brain' if the entire brain is strictly contained within the space.
+        required: true
+    groups:
+      - neurodata_type_inc: IlluminationPattern
+        doc: IlluminationPattern object containing metadata about the method used to acquire this imaging data.
+        quantity: 1
 
 PlanarImagingSpace
 ^^^^^^^^^^^^^^^

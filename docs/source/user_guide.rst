@@ -283,17 +283,14 @@ Imaging spaces define the physical region being imaged:
        )
        
        # Then create the imaging space with the illumination pattern
-       space_2d = PlanarImagingSpace(
-           name='cortex_plane',
-           description='Layer 2/3 of visual cortex',
-           pixel_size_in_um=[1.0, 1.0],        # x, y spacing
-           dimensions_in_pixels=[512, 512],    # width, height in pixels
-           origin_coordinates=[-1.2, -0.6, -2.0], # relative to bregma
-           location='Visual cortex',
-           reference_frame='bregma',
-           orientation='RAS',                    # Right-Anterior-Superior
-           illumination_pattern=line_scan        # Include the illumination pattern
-       )
+        planar_imaging_space = PlanarImagingSpace(
+            name='PlanarImagingSpace',
+            description='Imaging plane of layer 2/3 of visual cortex',
+            pixel_size_in_um=[1.0, 1.0],
+            dimensions_in_pixels=[512, 512],
+            anatomical_target='Visual cortex, layer 2/3',
+            illumination_pattern=line_scan  # Include the illumination pattern
+        )
 
 2. **VolumetricImagingSpace**: For 3D imaging
 
@@ -314,10 +311,7 @@ Imaging spaces define the physical region being imaged:
            description='Visual cortex volume',
            voxel_size_in_um=[1.0, 1.0, 2.0],   # x, y, z spacing
            dimensions_in_voxels=[512, 512, 100], # width, height, depth in voxels
-           origin_coordinates=[-1.2, -0.6, -2.0],
-           location='Visual cortex',
-           reference_frame='bregma',
-           orientation='RAS',
+           anatomical_target='Visual cortex',
            illumination_pattern=plane_acquisition
        )
 
@@ -440,15 +434,12 @@ Basic workflow for 2D imaging:
 
     # 6. Set up imaging space with illumination pattern
     planar_imaging_space = PlanarImagingSpace(
-        name='cortex_plane',
-        description='Layer 2/3 of visual cortex',
-        pixel_size_in_um=[1.0, 1.0],        # x, y spacing
-        dimensions_in_pixels=[512, 512],    # width, height in pixels
-        origin_coordinates=[-1.2, -0.6, -2.0], # relative to bregma
-        location='Visual cortex',
-        reference_frame='bregma',
-        orientation='RAS',                    # Right-Anterior-Superior
-        illumination_pattern=line_scan        # Include the illumination pattern
+        name='PlanarImagingSpace',
+        description='Imaging plane of layer 2/3 of visual cortex',
+        pixel_size_in_um=[1.0, 1.0],
+        dimensions_in_pixels=[512, 512],
+        anatomical_target='Visual cortex, layer 2/3',
+        illumination_pattern=line_scan  # Include the illumination pattern
     )
 
     # 7. Create microscopy channel
@@ -566,15 +557,12 @@ Workflow for one-photon widefield imaging:
 
     # 6. Set up imaging space with illumination pattern
     planar_imaging_space = PlanarImagingSpace(
-        name='hippo_plane',
-        description='CA1 region of hippocampus',
+        name='PlanarImagingSpace',
+        description='Imaging plane of layer 2/3 of visual cortex',
         pixel_size_in_um=[1.0, 1.0],
-        dimensions_in_pixels=[512, 512],  # width, height in pixels
-        origin_coordinates=[-1.8, 2.0, 1.2],
-        location='Hippocampus, CA1 region',
-        reference_frame='bregma',
-        orientation='RAS',
-        illumination_pattern=plane_acquisition
+        dimensions_in_pixels=[512, 512],
+        anatomical_target='Visual cortex, layer 2/3',
+        illumination_pattern=plane_acquisition  # Include the illumination pattern
     )
 
     # 7. Create microscopy channel
@@ -697,10 +685,7 @@ Workflow for volumetric imaging with targeted scanning:
         description='Visual cortex volume',
         voxel_size_in_um=[1.0, 1.0, 2.0],   # x, y, z spacing
         dimensions_in_voxels=[512, 512, 100], # width, height, depth in voxels
-        origin_coordinates=[-1.2, -0.6, -2.0],
-        location='Visual cortex',
-        reference_frame='bregma',
-        orientation='RAS',
+        anatomical_target='Visual cortex',
         illumination_pattern=random_access_scan
     )
 

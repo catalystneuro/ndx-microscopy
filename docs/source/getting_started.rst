@@ -246,11 +246,11 @@ Here's a minimal example showing how to create a basic microscopy dataset:
 
     # Define imaging space with illumination pattern
     planar_imaging_space = PlanarImagingSpace(
-        name='cortex_plane',
-        description='Layer 2/3 of visual cortex',
+        name='PlanarImagingSpace',
+        description='Imaging plane of layer 2/3 of visual cortex',
         pixel_size_in_um=[1.0, 1.0],
         dimensions_in_pixels=[512, 512],
-        origin_coordinates=[-1.2, -0.6, -2.0],
+        anatomical_target='Visual cortex, layer 2/3',
         illumination_pattern=line_scan  # Include the illumination pattern
     )
 

@@ -214,10 +214,7 @@ Complete example of two-photon calcium imaging with full optical path configurat
         description='Layer 2/3 of visual cortex',
         pixel_size_in_um=[1.0, 1.0],
         dimensions_in_pixels=[height, width],
-        origin_coordinates=[-1.2, -0.6, -2.0],
-        location='Visual cortex, layer 2/3',
-        reference_frame='bregma',
-        orientation='RAS',  # Right-Anterior-Superior
+        anatomical_target='Visual cortex, layer 2/3',
         illumination_pattern=line_scan  # Include the illumination pattern
     )
 
@@ -541,10 +538,7 @@ Example of volumetric imaging with 3D ROI segmentation:
         description='Visual cortex volume',
         voxel_size_in_um=[1.0, 1.0, 2.0],  # Higher spacing in z
         dimensions_in_voxels=[height, width, depths],
-        origin_coordinates=[-1.2, -0.6, -2.0],
-        location='Visual cortex',
-        reference_frame='bregma',
-        orientation='RAS',  # Right-Anterior-Superior
+        anatomical_target='Visual cortex, layer 2/3',
         illumination_pattern=random_access_scan  # Include the illumination pattern
     )
 
@@ -882,10 +876,7 @@ Example of multi-plane imaging with an electrically tunable lens:
             description=f'Imaging plane at {depth} µm depth',
             pixel_size_in_um=[1.0, 1.0],
             dimensions_in_pixels=[height, width],
-            origin_coordinates=[-1.2, -0.6, depth/1000],  # Convert to mm
-            location='Visual cortex',
-            reference_frame='bregma',
-            orientation='RAS',
+            anatomical_target='Visual cortex',
             illumination_pattern=plane_acquisition  # Include the illumination pattern
         )
 

@@ -167,23 +167,17 @@ def mock_PlanarImagingSpace(
     *,
     name: Optional[str] = None,
     description: str = "A mock instance of a PlanarImagingSpace type to be used for rapid testing.",
-    origin_coordinates: Tuple[float, float, float] = (-1.2, -0.6, -2),
     pixel_size_in_um: Tuple[float, float] = (20, 20),
     dimensions_in_pixels: Tuple[int, int] = (100, 100),
-    location: str = "The location targeted by the mock imaging space.",
-    reference_frame: str = "The reference frame of the mock planar imaging space.",
-    orientation: str = "The orientation of the mock planar imaging space.",
+    anatomical_target: str = "The anatomical target of the mock imaging space.",
     illumination_pattern: ndx_microscopy.IlluminationPattern = None,
 ) -> ndx_microscopy.PlanarImagingSpace:
     planar_imaging_space = ndx_microscopy.PlanarImagingSpace(
         name=name or name_generator("PlanarImagingSpace"),
         description=description,
-        origin_coordinates=origin_coordinates,
         pixel_size_in_um=pixel_size_in_um,
         dimensions_in_pixels=dimensions_in_pixels,
-        location=location,
-        reference_frame=reference_frame,
-        orientation=orientation,
+        anatomical_target=anatomical_target,
         illumination_pattern=illumination_pattern or mock_IlluminationPattern(),
     )
     return planar_imaging_space
@@ -193,23 +187,17 @@ def mock_VolumetricImagingSpace(
     *,
     name: Optional[str] = None,
     description: str = "A mock instance of a VolumetricImagingSpace type to be used for rapid testing.",
-    origin_coordinates: Tuple[float, float, float] = (-1.2, -0.6, -2),
     voxel_size_in_um: Tuple[float, float, float] = (20, 20, 50),
     dimensions_in_voxels: Tuple[int, int] = (100, 100, 100),
-    location: str = "The location targeted by the mock imaging space.",
-    reference_frame: str = "The reference frame of the mock volumetric imaging space.",
-    orientation: str = "The orientation of the mock planar imaging space.",
+    anatomical_target: str = "The location targeted by the mock imaging space.",
     illumination_pattern: ndx_microscopy.IlluminationPattern = None,
 ) -> ndx_microscopy.VolumetricImagingSpace:
     volumetric_imaging_space = ndx_microscopy.VolumetricImagingSpace(
         name=name or name_generator("VolumetricImagingSpace"),
         description=description,
-        origin_coordinates=origin_coordinates,
         voxel_size_in_um=voxel_size_in_um,
         dimensions_in_voxels=dimensions_in_voxels,
-        location=location,
-        reference_frame=reference_frame,
-        orientation=orientation,
+        anatomical_target=anatomical_target,
         illumination_pattern=illumination_pattern or mock_IlluminationPattern(),
     )
     return volumetric_imaging_space

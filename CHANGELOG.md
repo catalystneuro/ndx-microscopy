@@ -4,7 +4,12 @@
 - **Breaking Change**: `OpticalLens`changed in `ObjectiveLens`
 - **Breaking Change**: `MicroscopyChannel.indicator` changed from a nested group to a link reference
 - **Breaking Change**: `MicroscopySeries.microscopy_rig` changed from a nested group to a link reference
-- Updated `ndx-ophys-devices` dependency from v0.2.0 to < v0.5.0
+- **Breaking Change**: Simplified `ImagingSpace` class by removing coordinate system metadata:
+  - Removed `origin_coordinates` dataset and its `unit` attribute
+  - Renamed `location` attribute to `anatomical_target` for clearer semantics
+  - Removed `reference_frame` attribute
+  - Removed `orientation` attribute
+- Updated `ndx-ophys-devices` dependency from v0.2.0 to v0.4.0
 
 ## Features
 - Added static image support for microscopy experiments:
