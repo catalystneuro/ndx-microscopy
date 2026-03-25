@@ -4,7 +4,7 @@
 - **Breaking Change**: `OpticalLens`changed in `ObjectiveLens`
 - **Breaking Change**: `MicroscopyChannel.indicator` changed from a nested group to a link reference
 - **Breaking Change**: `MicroscopySeries.microscopy_rig` changed from a nested group to a link reference
-- Updated `ndx-ophys-devices` dependency from v0.2.0 to v0.4.0
+- Updated `ndx-ophys-devices` dependency from v0.2.0 to < v0.5.0
 
 ## Features
 - Added static image support for microscopy experiments:
