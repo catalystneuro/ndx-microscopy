@@ -546,8 +546,12 @@ class TestMultiPlaneMicroscopyContainerSimpleRoundtrip(pynwb_TestCase):
         )
         nwbfile.add_lab_meta_data(microscopy_experiment_metadata)
 
-        planar_imaging_space_1 = mock_PlanarImagingSpace(name="PlanarImagingSpace_1")
-        planar_imaging_space_2 = mock_PlanarImagingSpace(name="PlanarImagingSpace_2")
+        planar_imaging_space_1 = mock_PlanarImagingSpace(
+            name="PlanarImagingSpace_1", origin_coordinates=[0.0, 0.0, 0.0]
+        )
+        planar_imaging_space_2 = mock_PlanarImagingSpace(
+            name="PlanarImagingSpace_2", origin_coordinates=[0.0, 0.0, 1.0]
+        )
 
         microscopy_channel = mock_MicroscopyChannel(name="MicroscopyChannel", indicator=indicator)
 
