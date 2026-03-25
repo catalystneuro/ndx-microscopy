@@ -4,9 +4,13 @@
 - **Breaking Change**: `OpticalLens`changed in `ObjectiveLens`
 - **Breaking Change**: `MicroscopyChannel.indicator` changed from a nested group to a link reference
 - **Breaking Change**: `MicroscopySeries.microscopy_rig` changed from a nested group to a link reference
-- Updated `ndx-ophys-devices` dependency from v0.2.0 to v0.4.0
+- Updated `ndx-ophys-devices` dependency from v0.2.0 to < v0.5.0
 
 ## Features
+- Added static image support for microscopy experiments:
+  - `MicroscopyStaticImage`: Base class for static images
+  - `PlanarMicroscopyStaticImage`: For 2D static images
+  - `VolumetricMicroscopyStaticImage`: For 3D static images
 - Added `MicroscopyExperimentMetadata` (extends `LabMetaData`) as a centralized container for experiment metadata, including:
   - `MicroscopyRig` objects
   - `ViralVector` objects (from ndx-ophys-devices)

@@ -223,12 +223,16 @@ Container for multiple PlanarMicroscopySeries.
       - neurodata_type_def: MultiPlaneMicroscopyContainer
         neurodata_type_inc: NWBDataInterface
         default_name: MultiPlaneMicroscopyContainer
-        doc: Imaging data acquired over several depths, regularly or irregularly spaced; for instance, when using an
-          electrically tunable lens. Each depth scan is stored in a separate PlanarMicroscopySeries object.
+        doc:
+          Imaging data acquired over several depths, regularly or irregularly spaced; for instance, when using an
+          electrically tunable lens. Each depth scan is stored in a separate PlanarMicroscopySeries or PlanarMicroscopyStaticImage object.
         groups:
           - neurodata_type_inc: PlanarMicroscopySeries
             doc: PlanarMicroscopySeries object(s) containing imaging data for a single depth scan.
-            quantity: "+"
+            quantity: "*"
+          - neurodata_type_inc: PlanarMicroscopyStaticImage
+            doc: PlanarMicroscopyStaticImage object(s) containing imaging data for a single depth scan.
+            quantity: "*"
 
 MultiChannelMicroscopyContainer
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -242,11 +246,15 @@ Container for multiple PlanerMicroscopySeries or VolumetricMicroscopySeries acqu
         default_name: MultiChannelMicroscopyContainer
         doc:
           Imaging data acquired over several channels; for instance, when using multiple excitation wavelengths
-          or multiple indicators. Each channel is stored in a separate PlanarMicroscopySeries or VolumetricMicroscopySeries object.
+          or multiple indicators. Each channel is stored in a separate PlanarMicroscopySeries, VolumetricMicroscopySeries,
+          PlanarMicroscopyStaticImage or VolumetricMicroscopyStaticImage.
         groups:
           - neurodata_type_inc: MicroscopySeries
             doc: MicroscopySeries object containing imaging data for a single channel scan.
-            quantity: "+"
+            quantity: "*"
+          - neurodata_type_inc: MicroscopyStaticImage
+            doc: MicroscopyStaticImage object containing imaging data for a single channel scan.
+            quantity: "*"
 
 Illumination Pattern Components
 --------------------------

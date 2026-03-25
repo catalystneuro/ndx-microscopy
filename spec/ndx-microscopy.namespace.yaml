@@ -24,6 +24,8 @@ namespaces:
         neurodata_types:
           - ExcitationSource
           - Indicator
+          - ViralVectorInjection
+          - ViralVector
           - OpticalFilter
           - Photodetector
           - DichroicMirror

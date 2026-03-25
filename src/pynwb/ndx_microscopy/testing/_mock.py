@@ -395,15 +395,40 @@ def mock_PlanarMicroscopySeries(
     return planar_microscopy_series
 
 
+def mock_PlanarMicroscopyStaticImage(
+    *,
+    microscopy_rig: ndx_microscopy.MicroscopyRig,
+    planar_imaging_space: ndx_microscopy.PlanarImagingSpace,
+    microscopy_channel: ndx_microscopy.MicroscopyChannel,
+    name: Optional[str] = None,
+    description: str = "A mock instance of a PlanarMicroscopyStaticImage type to be used for rapid testing.",
+    data: Optional[np.ndarray] = None,
+) -> ndx_microscopy.PlanarMicroscopyStaticImage:
+    image_name = name or name_generator("PlanarMicroscopyStaticImage")
+    image_data = data if data is not None else np.ones(shape=(5, 5))
+
+    planar_microscopy_static_image = ndx_microscopy.PlanarMicroscopyStaticImage(
+        name=image_name,
+        description=description,
+        microscopy_rig=microscopy_rig,
+        microscopy_channel=microscopy_channel,
+        planar_imaging_space=planar_imaging_space,
+        data=image_data,
+    )
+    return planar_microscopy_static_image
+
+
 def mock_MultiPlaneMicroscopyContainer(
     *,
-    planar_microscopy_series: List[ndx_microscopy.PlanarMicroscopySeries],
+    planar_microscopy_static_images: Optional[List[ndx_microscopy.PlanarMicroscopyStaticImage]] = None,
+    planar_microscopy_series: Optional[List[ndx_microscopy.PlanarMicroscopySeries]] = None,
     name: Optional[str] = None,
 ) -> ndx_microscopy.MultiPlaneMicroscopyContainer:
     container_name = name or name_generator("MultiPlaneMicroscopyContainer")
-
     multi_plane_microscopy_container = ndx_microscopy.MultiPlaneMicroscopyContainer(
-        name=container_name, planar_microscopy_series=planar_microscopy_series
+        name=container_name,
+        planar_microscopy_static_images=planar_microscopy_static_images,
+        planar_microscopy_series=planar_microscopy_series,
     )
 
     return multi_plane_microscopy_container
@@ -411,15 +436,17 @@ def mock_MultiPlaneMicroscopyContainer(
 
 def mock_MultiChannelMicroscopyContainer(
     *,
-    microscopy_series: List[ndx_microscopy.MicroscopySeries],
+    microscopy_static_images: Optional[List[ndx_microscopy.MicroscopyStaticImage]] = None,
+    microscopy_series: Optional[List[ndx_microscopy.MicroscopySeries]] = None,
     name: Optional[str] = None,
 ) -> ndx_microscopy.MultiChannelMicroscopyContainer:
     container_name = name or name_generator("MultiChannelMicroscopyContainer")
 
     multi_channel_microscopy_container = ndx_microscopy.MultiChannelMicroscopyContainer(
-        name=container_name, microscopy_series=microscopy_series
+        name=container_name,
+        microscopy_static_images=microscopy_static_images,
+        microscopy_series=microscopy_series,
     )
-
     return multi_channel_microscopy_container
 
 
@@ -474,6 +501,29 @@ def mock_VolumetricMicroscopySeries(
         timestamps=series_timestamps,
     )
     return volumetric_microscopy_series
+
+
+def mock_VolumetricMicroscopyStaticImage(
+    *,
+    microscopy_rig: ndx_microscopy.MicroscopyRig,
+    volumetric_imaging_space: ndx_microscopy.VolumetricImagingSpace,
+    microscopy_channel: ndx_microscopy.MicroscopyChannel,
+    name: Optional[str] = None,
+    description: str = "A mock instance of a VolumetricMicroscopyStaticImage type to be used for rapid testing.",
+    data: Optional[np.ndarray] = None,
+) -> ndx_microscopy.VolumetricMicroscopyStaticImage:
+    image_name = name or name_generator("VolumetricMicroscopyStaticImage")
+    image_data = data if data is not None else np.ones(shape=(5, 5, 5))
+
+    volumetric_microscopy_static_image = ndx_microscopy.VolumetricMicroscopyStaticImage(
+        name=image_name,
+        description=description,
+        microscopy_rig=microscopy_rig,
+        microscopy_channel=microscopy_channel,
+        volumetric_imaging_space=volumetric_imaging_space,
+        data=image_data,
+    )
+    return volumetric_microscopy_static_image
 
 
 def mock_MicroscopyResponseSeries(
