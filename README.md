@@ -28,9 +28,11 @@ A Neurodata Without Borders (NWB) extension for storing microscopy data and asso
     - `LineScan`
     - `PlaneAcquisition`
     - `RandomAccessScan`
-- Support for 2D and 3D imaging: 
+- Support for 2D and 3D imaging:
     - `PlanarMicroscopySeries`
     - `VolumetricMicroscopySeries`
+    - `PlanarMicroscopyStaticImage`
+    - `VolumetricMicroscopyStaticImage`
     - `MultiPlaneMicroscopyContainer`
     - `MultiChannelMicroscopyContainer`
 - ROI/segmentation storage: 
@@ -483,7 +485,7 @@ classDiagram
         --------------------------------------
         links
         --------------------------------------
-        microscopy_saeries : MicroscopySeries, optional
+        microscopy_series : MicroscopySeries, optional
     }
 
     class MicroscopyResponseSeriesContainer {

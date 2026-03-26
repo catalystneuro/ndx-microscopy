@@ -20,18 +20,17 @@ Complete example of two-photon calcium imaging with full optical path configurat
     from pynwb import NWBFile, NWBHDF5IO
     from ndx_microscopy import (
         MicroscopeModel,
-        Microscope, 
+        Microscope,
         MicroscopyRig,
         MicroscopyChannel,
+        MicroscopyExperimentMetadata,
         PlanarImagingSpace,
         PlanarMicroscopySeries,
         PlanarSegmentation,
         SummaryImage,
         MicroscopyResponseSeries,
         MicroscopyResponseSeriesContainer,
-        LineScan,  
-        PlaneAcquisition, 
-        RandomAccessScan,
+        LineScan,
     )
     from ndx_ophys_devices import (
         ExcitationSourceModel,
@@ -42,7 +41,7 @@ Complete example of two-photon calcium imaging with full optical path configurat
         DichroicMirror,
         PhotodetectorModel,
         Photodetector,
-        Indicator
+        Indicator,
     )
 
     # Create NWB file
@@ -59,17 +58,17 @@ Complete example of two-photon calcium imaging with full optical path configurat
     microscope_model = MicroscopeModel(
         name='2p-model',
         description='Two-photon microscope model for calcium imaging',
-        model_number='2p-001',  # Example model number
-        manufacturer='ImagingTech'
+        model_number='2p-001',
+        manufacturer='ImagingTech',
     )
-    nwbfile.add_device(microscope_model)
+    nwbfile.add_device_model(microscope_model)
 
     # Set up microscope with technique
     microscope = Microscope(
         name='2p-scope',
-        serial_number='2p-serial-001',  # Example serial number
+        serial_number='2p-serial-001',
         model=microscope_model,
-        technique='mirror scanning'  # Specify the technique used
+        technique='mirror scanning',
     )
     nwbfile.add_device(microscope)
 
@@ -81,10 +80,10 @@ Complete example of two-photon calcium imaging with full optical path configurat
         description="Excitation source model for green indicator",
         source_type="laser",
         excitation_mode="two-photon",
-        wavelength_range_in_nm=[800.0, 1000.0]
+        wavelength_range_in_nm=[800.0, 1000.0],
     )
-    nwbfile.add_device(excitation_source_model)
-    
+    nwbfile.add_device_model(excitation_source_model)
+
     pulsed_excitation_source = PulsedExcitationSource(
         name="pulsed_excitation_source",
         description="Pulsed excitation source for red indicator",
@@ -104,34 +103,34 @@ Complete example of two-photon calcium imaging with full optical path configurat
         manufacturer="Semrock",
         model_number="FF01-920/80",
         center_wavelength_in_nm=920.0,
-        bandwidth_in_nm=80.0
+        bandwidth_in_nm=80.0,
     )
-    nwbfile.add_device(excitation_filter_model)
-    
+    nwbfile.add_device_model(excitation_filter_model)
+
     excitation_filter = BandOpticalFilter(
         name="excitation_filter",
         model=excitation_filter_model,
-        serial_number="EF-SN-123456"
+        serial_number="EF-SN-123456",
     )
     nwbfile.add_device(excitation_filter)
 
     dichroic_mirror_model = DichroicMirrorModel(
         name="primary_dichroic_model",
         manufacturer="Semrock",
-        model_number="FF757-Di01",  # Common dichroic for GCaMP imaging
-        cut_on_wavelength_in_nm=757.0,  # Transmits >757nm
-        cut_off_wavelength_in_nm=750.0,  # Reflects <750nm
-        transmission_band_in_nm=[757.0, 1100.0],  # Transmits NIR excitation light
-        reflection_band_in_nm=(400.0, 750.0),  # Reflects emission light (including 510nm GCaMP6f emission)
-        angle_of_incidence_in_degrees=45.0  # Standard angle for dichroic mirrors in microscopes
+        model_number="FF757-Di01",
+        cut_on_wavelength_in_nm=757.0,
+        cut_off_wavelength_in_nm=750.0,
+        transmission_band_in_nm=[757.0, 1100.0],
+        reflection_band_in_nm=(400.0, 750.0),
+        angle_of_incidence_in_degrees=45.0,
     )
-    nwbfile.add_device(dichroic_mirror_model)
-    
+    nwbfile.add_device_model(dichroic_mirror_model)
+
     dichroic_mirror = DichroicMirror(
         name="dichroic_mirror",
         description="Dichroic mirror for green indicator",
         serial_number="DM-SN-123456",
-        model=dichroic_mirror_model
+        model=dichroic_mirror_model,
     )
     nwbfile.add_device(dichroic_mirror)
 
@@ -141,15 +140,15 @@ Complete example of two-photon calcium imaging with full optical path configurat
         manufacturer="Semrock",
         model_number="FF01-510/84",
         center_wavelength_in_nm=510.0,
-        bandwidth_in_nm=84.0
+        bandwidth_in_nm=84.0,
     )
-    nwbfile.add_device(emission_filter_model)
-    
+    nwbfile.add_device_model(emission_filter_model)
+
     emission_filter = BandOpticalFilter(
         name="emission_filter",
         description="Band optical filter for green indicator",
         serial_number="BOF-SN-123456",
-        model=emission_filter_model
+        model=emission_filter_model,
     )
     nwbfile.add_device(emission_filter)
 
@@ -158,16 +157,16 @@ Complete example of two-photon calcium imaging with full optical path configurat
         detector_type="PMT",
         manufacturer="Hamamatsu",
         model_number="R6357",
-        gain=1000000.0,  # 10^6 typical PMT gain
-        gain_unit="V/A"  # Voltage/Current
+        gain=1000000.0,
+        gain_unit="V/A",
     )
-    nwbfile.add_device(photodetector_model)
-    
+    nwbfile.add_device_model(photodetector_model)
+
     photodetector = Photodetector(
         name="photodetector",
         description="Photodetector for green emission",
         serial_number="PD-SN-123456",
-        model=photodetector_model
+        model=photodetector_model,
     )
     nwbfile.add_device(photodetector)
 
@@ -177,8 +176,6 @@ Complete example of two-photon calcium imaging with full optical path configurat
         label="GCaMP6f",
         description="Calcium indicator for two-photon imaging",
         manufacturer="Addgene",
-        injection_brain_region="Visual cortex",
-        injection_coordinates_in_mm=[-2.5, 3.2, 0.5]
     )
 
     # Create microscopy rig
@@ -190,8 +187,15 @@ Complete example of two-photon calcium imaging with full optical path configurat
         excitation_filter=excitation_filter,
         dichroic_mirror=dichroic_mirror,
         photodetector=photodetector,
-        emission_filter=emission_filter
+        emission_filter=emission_filter,
     )
+
+    # Store rig and indicator in the experiment metadata container
+    microscopy_experiment_metadata = MicroscopyExperimentMetadata(
+        indicators=[indicator],
+        microscopy_rigs=[microscopy_rig],
+    )
+    nwbfile.add_lab_meta_data(microscopy_experiment_metadata)
 
     # Define illumination pattern
     line_scan = LineScan(
@@ -303,8 +307,8 @@ Complete example of two-photon calcium imaging with full optical path configurat
         rois=roi_region,
         unit='n.a.',
         rate=30.0,
-        starting_time=0.0
-        microscopy_series=imaging_series 
+        starting_time=0.0,
+        microscopy_series=imaging_series,
     )
 
     # Create container for response series
@@ -353,13 +357,15 @@ Example of volumetric imaging with 3D ROI segmentation:
         MicroscopeModel,
         Microscope,
         MicroscopyRig,
+        MicroscopyChannel,
+        MicroscopyExperimentMetadata,
         VolumetricImagingSpace,
         VolumetricMicroscopySeries,
         VolumetricSegmentation,
         SummaryImage,
         MicroscopyResponseSeries,
         MicroscopyResponseSeriesContainer,
-        RandomAccessScan
+        RandomAccessScan,
     )
     from ndx_ophys_devices import (
         ExcitationSourceModel,
@@ -370,7 +376,7 @@ Example of volumetric imaging with 3D ROI segmentation:
         DichroicMirror,
         PhotodetectorModel,
         Photodetector,
-        Indicator
+        Indicator,
     )
 
     # Create NWB file
@@ -388,9 +394,9 @@ Example of volumetric imaging with 3D ROI segmentation:
         name='volume-model',
         description='Volumetric imaging microscope model',
         model_number='volume-001',
-        manufacturer='ImagingTech'
+        manufacturer='ImagingTech',
     )
-    nwbfile.add_device(microscope_model)
+    nwbfile.add_device_model(microscope_model)
 
     # Set up microscope with technique
     microscope = Microscope(
@@ -398,7 +404,7 @@ Example of volumetric imaging with 3D ROI segmentation:
         description='Custom volumetric imaging microscope',
         serial_number='volume-serial-001',
         model=microscope_model,
-        technique='acousto-optical deflectors'  # Specify the technique used
+        technique='acousto-optical deflectors',
     )
     nwbfile.add_device(microscope)
 
@@ -410,17 +416,17 @@ Example of volumetric imaging with 3D ROI segmentation:
         description="Excitation source model for volumetric imaging",
         source_type="laser",
         excitation_mode="two-photon",
-        wavelength_range_in_nm=[800.0, 1000.0]
+        wavelength_range_in_nm=[800.0, 1000.0],
     )
-    nwbfile.add_device(excitation_source_model)
-    
+    nwbfile.add_device_model(excitation_source_model)
+
     laser = ExcitationSource(
         name='laser',
         description="Excitation source for volumetric imaging",
         serial_number="ES-SN-123456",
         model=excitation_source_model,
         intensity_in_W_per_m2=1000.0,
-        exposure_time_in_s=0.001
+        exposure_time_in_s=0.001,
     )
     nwbfile.add_device(laser)
 
@@ -430,15 +436,15 @@ Example of volumetric imaging with 3D ROI segmentation:
         manufacturer="Semrock",
         model_number="FF01-920/80",
         center_wavelength_in_nm=920.0,
-        bandwidth_in_nm=80.0
+        bandwidth_in_nm=80.0,
     )
-    nwbfile.add_device(excitation_filter_model)
-    
+    nwbfile.add_device_model(excitation_filter_model)
+
     excitation_filter = BandOpticalFilter(
         name='excitation_filter',
         description="Excitation filter for volumetric imaging",
         serial_number="EF-SN-123456",
-        model=excitation_filter_model
+        model=excitation_filter_model,
     )
     nwbfile.add_device(excitation_filter)
 
@@ -446,15 +452,15 @@ Example of volumetric imaging with 3D ROI segmentation:
         name="dichroic_mirror_model",
         manufacturer="Semrock",
         model_number="FF695-Di02",
-        cut_on_wavelength_in_nm=695.0
+        cut_on_wavelength_in_nm=695.0,
     )
-    nwbfile.add_device(dichroic_mirror_model)
-    
+    nwbfile.add_device_model(dichroic_mirror_model)
+
     dichroic = DichroicMirror(
         name='primary_dichroic',
         description="Dichroic mirror for volumetric imaging",
         serial_number="DM-SN-123456",
-        model=dichroic_mirror_model
+        model=dichroic_mirror_model,
     )
     nwbfile.add_device(dichroic)
 
@@ -464,15 +470,15 @@ Example of volumetric imaging with 3D ROI segmentation:
         manufacturer="Semrock",
         model_number="FF01-510/84",
         center_wavelength_in_nm=510.0,
-        bandwidth_in_nm=84.0
+        bandwidth_in_nm=84.0,
     )
-    nwbfile.add_device(emission_filter_model)
-    
+    nwbfile.add_device_model(emission_filter_model)
+
     emission_filter = BandOpticalFilter(
         name='emission_filter',
         description="Emission filter for volumetric imaging",
         serial_number="EF-SN-123456",
-        model=emission_filter_model
+        model=emission_filter_model,
     )
     nwbfile.add_device(emission_filter)
 
@@ -482,15 +488,15 @@ Example of volumetric imaging with 3D ROI segmentation:
         manufacturer="Hamamatsu",
         model_number="R6357",
         gain=70.0,
-        gain_unit="dB"
+        gain_unit="dB",
     )
-    nwbfile.add_device(photodetector_model)
-    
+    nwbfile.add_device_model(photodetector_model)
+
     detector = Photodetector(
         name='pmt',
         description="Photodetector for volumetric imaging",
         serial_number="PD-SN-123456",
-        model=photodetector_model
+        model=photodetector_model,
     )
     nwbfile.add_device(detector)
 
@@ -500,8 +506,6 @@ Example of volumetric imaging with 3D ROI segmentation:
         label='GCaMP6f',
         description='Calcium indicator for volumetric imaging',
         manufacturer='Addgene',
-        injection_brain_region='Visual cortex',
-        injection_coordinates_in_mm=[-2.5, 3.2, 0.5]
     )
 
     # Create microscopy rig
@@ -513,8 +517,15 @@ Example of volumetric imaging with 3D ROI segmentation:
         excitation_filter=excitation_filter,
         dichroic_mirror=dichroic,
         photodetector=detector,
-        emission_filter=emission_filter
+        emission_filter=emission_filter,
     )
+
+    # Store rig and indicator in the experiment metadata container
+    microscopy_experiment_metadata = MicroscopyExperimentMetadata(
+        indicators=[indicator],
+        microscopy_rigs=[microscopy_rig],
+    )
+    nwbfile.add_lab_meta_data(microscopy_experiment_metadata)
 
     # Define illumination pattern for volumetric imaging
     random_access_scan = RandomAccessScan(
@@ -627,8 +638,8 @@ Example of volumetric imaging with 3D ROI segmentation:
         rois=roi_region,
         unit='n.a.',
         rate=5.0,
-        starting_time=0.0
-        microscopy_series=volume_series 
+        starting_time=0.0,
+        microscopy_series=volume_series,
     )
 
     # Create container for response series
@@ -678,6 +689,7 @@ Example of multi-plane imaging with an electrically tunable lens:
         Microscope,
         MicroscopyRig,
         MicroscopyChannel,
+        MicroscopyExperimentMetadata,
         PlanarImagingSpace,
         PlanarMicroscopySeries,
         MultiPlaneMicroscopyContainer,
@@ -686,7 +698,7 @@ Example of multi-plane imaging with an electrically tunable lens:
         MicroscopyResponseSeries,
         MicroscopyResponseSeriesContainer,
         SegmentationContainer,
-        PlaneAcquisition
+        PlaneAcquisition,
     )
     from ndx_ophys_devices import (
         ExcitationSourceModel,
@@ -697,7 +709,7 @@ Example of multi-plane imaging with an electrically tunable lens:
         DichroicMirror,
         PhotodetectorModel,
         Photodetector,
-        Indicator
+        Indicator,
     )
 
     # Create NWB file
@@ -714,18 +726,18 @@ Example of multi-plane imaging with an electrically tunable lens:
     microscope_model = MicroscopeModel(
         name='etl-model',
         description='Two-photon microscope model with electrically tunable lens',
-        model_number='etl-001',  # Example model number
-        manufacturer='ImagingTech'
+        model_number='etl-001',
+        manufacturer='ImagingTech',
     )
-    nwbfile.add_device(microscope_model)
+    nwbfile.add_device_model(microscope_model)
 
     # Set up microscope with ETL and technique
     microscope = Microscope(
         name='etl-scope',
         description='Two-photon microscope with electrically tunable lens',
-        serial_number='etl-serial-001',  # Example serial number
+        serial_number='etl-serial-001',
         model=microscope_model,
-        technique='electrically tunable lens'  # Specify the technique used
+        technique='electrically tunable lens',
     )
     nwbfile.add_device(microscope)
 
@@ -737,17 +749,17 @@ Example of multi-plane imaging with an electrically tunable lens:
         description="Excitation source model for multi-plane imaging",
         source_type="laser",
         excitation_mode="two-photon",
-        wavelength_range_in_nm=[800.0, 1000.0]
+        wavelength_range_in_nm=[800.0, 1000.0],
     )
-    nwbfile.add_device(excitation_source_model)
-    
+    nwbfile.add_device_model(excitation_source_model)
+
     laser = ExcitationSource(
         name='laser',
         description="Excitation source for multi-plane imaging",
         serial_number="ES-SN-123456",
         model=excitation_source_model,
         intensity_in_W_per_m2=1000.0,
-        exposure_time_in_s=0.001
+        exposure_time_in_s=0.001,
     )
     nwbfile.add_device(laser)
 
@@ -757,15 +769,15 @@ Example of multi-plane imaging with an electrically tunable lens:
         manufacturer="Semrock",
         model_number="FF01-920/80",
         center_wavelength_in_nm=920.0,
-        bandwidth_in_nm=80.0
+        bandwidth_in_nm=80.0,
     )
-    nwbfile.add_device(excitation_filter_model)
-    
+    nwbfile.add_device_model(excitation_filter_model)
+
     excitation_filter = BandOpticalFilter(
         name='excitation_filter',
         description="Excitation filter for multi-plane imaging",
         serial_number="EF-SN-123456",
-        model=excitation_filter_model
+        model=excitation_filter_model,
     )
     nwbfile.add_device(excitation_filter)
 
@@ -773,15 +785,15 @@ Example of multi-plane imaging with an electrically tunable lens:
         name="dichroic_mirror_model",
         manufacturer="Semrock",
         model_number="FF695-Di02",
-        cut_on_wavelength_in_nm=695.0
+        cut_on_wavelength_in_nm=695.0,
     )
-    nwbfile.add_device(dichroic_mirror_model)
-    
+    nwbfile.add_device_model(dichroic_mirror_model)
+
     dichroic = DichroicMirror(
         name='primary_dichroic',
         description="Dichroic mirror for multi-plane imaging",
         serial_number="DM-SN-123456",
-        model=dichroic_mirror_model
+        model=dichroic_mirror_model,
     )
     nwbfile.add_device(dichroic)
 
@@ -791,15 +803,15 @@ Example of multi-plane imaging with an electrically tunable lens:
         manufacturer="Semrock",
         model_number="FF01-510/84",
         center_wavelength_in_nm=510.0,
-        bandwidth_in_nm=84.0
+        bandwidth_in_nm=84.0,
     )
-    nwbfile.add_device(emission_filter_model)
-    
+    nwbfile.add_device_model(emission_filter_model)
+
     emission_filter = BandOpticalFilter(
         name='emission_filter',
         description="Emission filter for multi-plane imaging",
         serial_number="EF-SN-123456",
-        model=emission_filter_model
+        model=emission_filter_model,
     )
     nwbfile.add_device(emission_filter)
 
@@ -809,15 +821,15 @@ Example of multi-plane imaging with an electrically tunable lens:
         manufacturer="Hamamatsu",
         model_number="R6357",
         gain=70.0,
-        gain_unit="dB"
+        gain_unit="dB",
     )
-    nwbfile.add_device(photodetector_model)
-    
+    nwbfile.add_device_model(photodetector_model)
+
     detector = Photodetector(
         name='pmt',
         description="Photodetector for multi-plane imaging",
         serial_number="PD-SN-123456",
-        model=photodetector_model
+        model=photodetector_model,
     )
     nwbfile.add_device(detector)
 
@@ -827,8 +839,6 @@ Example of multi-plane imaging with an electrically tunable lens:
         label='GCaMP6f',
         description='Calcium indicator for multi-plane imaging',
         manufacturer='Addgene',
-        injection_brain_region='Visual cortex',
-        injection_coordinates_in_mm=[-2.5, 3.2, 0.5]
     )
 
     # Create microscopy rig
@@ -840,8 +850,15 @@ Example of multi-plane imaging with an electrically tunable lens:
         excitation_filter=excitation_filter,
         dichroic_mirror=dichroic,
         photodetector=detector,
-        emission_filter=emission_filter
+        emission_filter=emission_filter,
     )
+
+    # Store rig and indicator in the experiment metadata container
+    microscopy_experiment_metadata = MicroscopyExperimentMetadata(
+        indicators=[indicator],
+        microscopy_rigs=[microscopy_rig],
+    )
+    nwbfile.add_lab_meta_data(microscopy_experiment_metadata)
 
     # Create ophys processing module
     ophys_module = nwbfile.create_processing_module(
@@ -955,8 +972,8 @@ Example of multi-plane imaging with an electrically tunable lens:
             rois=roi_region,
             unit='n.a.',
             rate=30.0,
-            starting_time=0.0
-            microscopy_series=plane_series
+            starting_time=0.0,
+            microscopy_series=plane_series,
         )
         response_series_list.append(response_series)
 

@@ -24,7 +24,7 @@ The device components include MicroscopeModel, Microscope, and MicroscopyRig:
            model_number='2p-001',
            manufacturer='ImagingTech'
        )
-       nwbfile.add_device(microscope_model)
+       nwbfile.add_device_model(microscope_model)
 
 2. **Microscope**: Defines an instance of a microscope
 
@@ -53,8 +53,8 @@ The device components include MicroscopeModel, Microscope, and MicroscopyRig:
            excitation_mode="two-photon",
            wavelength_range_in_nm=[800.0, 1000.0]
        )
-       nwbfile.add_device(excitation_source_model)
-       
+       nwbfile.add_device_model(excitation_source_model)
+
        excitation_filter_model = BandOpticalFilterModel(
            name="excitation_filter_model",
            filter_type="Bandpass",
@@ -63,16 +63,16 @@ The device components include MicroscopeModel, Microscope, and MicroscopyRig:
            center_wavelength_in_nm=920.0,
            bandwidth_in_nm=80.0
        )
-       nwbfile.add_device(excitation_filter_model)
-       
+       nwbfile.add_device_model(excitation_filter_model)
+
        dichroic_mirror_model = DichroicMirrorModel(
            name="dichroic_mirror_model",
            manufacturer="Semrock",
            model_number="FF757-Di01",
            cut_on_wavelength_in_nm=757.0
        )
-       nwbfile.add_device(dichroic_mirror_model)
-       
+       nwbfile.add_device_model(dichroic_mirror_model)
+
        photodetector_model = PhotodetectorModel(
            name="photodetector_model",
            detector_type="PMT",
@@ -81,8 +81,8 @@ The device components include MicroscopeModel, Microscope, and MicroscopyRig:
            gain=70.0,
            gain_unit="dB"
        )
-       nwbfile.add_device(photodetector_model)
-       
+       nwbfile.add_device_model(photodetector_model)
+
        emission_filter_model = BandOpticalFilterModel(
            name="emission_filter_model",
            filter_type="Bandpass",
@@ -91,7 +91,7 @@ The device components include MicroscopeModel, Microscope, and MicroscopyRig:
            center_wavelength_in_nm=510.0,
            bandwidth_in_nm=84.0
        )
-       nwbfile.add_device(emission_filter_model)
+       nwbfile.add_device_model(emission_filter_model)
 
        # Create optical component instances
        laser = ExcitationSource(
@@ -166,39 +166,39 @@ Other optical components (filters, sources, detectors) are provided by the ndx-o
        from ndx_ophys_devices import Indicator, ViralVector, ViralVectorInjection
 
        # Create viral vector and injection metadata
-        viral_vector = ViralVector(
-            name="viral_vector",
-            description="AAV viral vector for optogenetic stimulation",
-            construct_name="AAV-EF1a-DIO-hChR2(H134R)-EYFP",
-            manufacturer="Vector Manufacturer",
-            titer_in_vg_per_ml=1.0e12,
-        )
+       viral_vector = ViralVector(
+           name="viral_vector",
+           description="AAV viral vector for optogenetic stimulation",
+           construct_name="AAV-EF1a-DIO-hChR2(H134R)-EYFP",
+           manufacturer="Vector Manufacturer",
+           titer_in_vg_per_ml=1.0e12,
+       )
 
-        viral_vector_injection = ViralVectorInjection(
-            name="viral_vector_injection",
-            description="Viral vector injection for optogenetic stimulation",
-            location="Hippocampus",
-            hemisphere="right",
-            reference="Bregma at the cortical surface",
-            ap_in_mm=2.0,
-            ml_in_mm=1.5,
-            dv_in_mm=-3.0,
-            pitch_in_deg=0.0,
-            yaw_in_deg=0.0,
-            roll_in_deg=0.0,
-            stereotactic_rotation_in_deg=0.0,
-            stereotactic_tilt_in_deg=0.0,
-            volume_in_uL=0.45,
-            injection_date="1970-01-01T00:00:00+00:00",
-            viral_vector=viral_vector,
-        )
+       viral_vector_injection = ViralVectorInjection(
+           name="viral_vector_injection",
+           description="Viral vector injection for optogenetic stimulation",
+           location="Hippocampus",
+           hemisphere="right",
+           reference="Bregma at the cortical surface",
+           ap_in_mm=2.0,
+           ml_in_mm=1.5,
+           dv_in_mm=-3.0,
+           pitch_in_deg=0.0,
+           yaw_in_deg=0.0,
+           roll_in_deg=0.0,
+           stereotactic_rotation_in_deg=0.0,
+           stereotactic_tilt_in_deg=0.0,
+           volume_in_uL=0.45,
+           injection_date="1970-01-01T00:00:00+00:00",
+           viral_vector=viral_vector,
+       )
 
-        indicator = Indicator(
-            name="indicator",
-            description="Green indicator",
-            label="GCamp6f",
-            viral_vector_injection=viral_vector_injection,
-        )
+       indicator = Indicator(
+           name="indicator",
+           description="Green indicator",
+           label="GCamp6f",
+           viral_vector_injection=viral_vector_injection,
+       )
 
        # Create the experiment metadata container
        microscopy_experiment_metadata = MicroscopyExperimentMetadata(
@@ -292,14 +292,14 @@ Imaging spaces define the physical region being imaged:
        )
        
        # Then create the imaging space with the illumination pattern
-        planar_imaging_space = PlanarImagingSpace(
-            name='PlanarImagingSpace',
-            description='Imaging plane of layer 2/3 of visual cortex',
-            pixel_size_in_um=[1.0, 1.0],
-            dimensions_in_pixels=[512, 512],
-            anatomical_target='Visual cortex, layer 2/3',
-            illumination_pattern=line_scan  # Include the illumination pattern
-        )
+       planar_imaging_space = PlanarImagingSpace(
+           name='PlanarImagingSpace',
+           description='Imaging plane of layer 2/3 of visual cortex',
+           pixel_size_in_um=[1.0, 1.0],
+           dimensions_in_pixels=[512, 512],
+           anatomical_target='Visual cortex, layer 2/3',
+           illumination_pattern=line_scan  # Include the illumination pattern
+       )
 
 2. **VolumetricImagingSpace**: For 3D imaging
 
@@ -341,7 +341,7 @@ Basic workflow for 2D imaging:
         model_number='2p-001',
         manufacturer='ImagingTech'
     )
-    nwbfile.add_device(microscope_model)
+    nwbfile.add_device_model(microscope_model)
 
     microscope = Microscope(
         name='2p-scope',
@@ -362,8 +362,8 @@ Basic workflow for 2D imaging:
         excitation_mode="two-photon",
         wavelength_range_in_nm=[800.0, 1000.0]
     )
-    nwbfile.add_device(excitation_source_model)
-    
+    nwbfile.add_device_model(excitation_source_model)
+
     laser = ExcitationSource(
         name='laser',
         description='Two-photon excitation laser',
@@ -488,7 +488,7 @@ Workflow for one-photon widefield imaging:
         model_number='1p-001',
         manufacturer='ImagingTech'
     )
-    nwbfile.add_device(microscope_model)
+    nwbfile.add_device_model(microscope_model)
 
     microscope = Microscope(
         name='1p-scope',
@@ -611,7 +611,7 @@ Workflow for volumetric imaging with targeted scanning:
         model_number='volume-001',
         manufacturer='ImagingTech'
     )
-    nwbfile.add_device(microscope_model)
+    nwbfile.add_device_model(microscope_model)
 
     microscope = Microscope(
         name='volume-scope',
