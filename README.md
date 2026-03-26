@@ -41,7 +41,7 @@ A Neurodata Without Borders (NWB) extension for storing microscopy data and asso
     - `SegmentationContainer`
     - `MicroscopyResponseSeries`
     - `MicroscopyResponseSeriesContainer`
-- Abstract Neurodata types: `ImagingSpace`, `MicroscopySeries`,`Segmentation`
+- Abstract Neurodata types: `ImagingSpace`, `MicroscopySeries`, `MicroscopyStaticImage`, `Segmentation`
 
 ## Entity Relationship Diagrams
 
@@ -334,7 +334,7 @@ classDiagram
         datasets
         --------------------------------------
         pixel_size_in_um : float64[2], optional
-        dimensions_in_pixels : float64[2], optional 
+        dimensions_in_pixels : uint32[2], optional
         --------------------------------------
         methods
         --------------------------------------
@@ -347,7 +347,7 @@ classDiagram
         datasets
         --------------------------------------
         voxel_size_in_um : float64[3], optional
-        dimensions_in_voxels : float64[3], optional 
+        dimensions_in_voxels : uint32[3], optional
         --------------------------------------
         methods
         --------------------------------------

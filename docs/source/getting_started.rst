@@ -63,8 +63,10 @@ Data Series
 ----------
 - **PlanarMicroscopySeries**: 2D time series data
 - **VolumetricMicroscopySeries**: 3D time series data
-- **MultiPlaneMicroscopyContainer**: Multiple imaging planes
-- **MultiChannelMicroscopyContainer**: Multiple channel imaging data
+- **PlanarMicroscopyStaticImage**: Single 2D static image (e.g. anatomical reference)
+- **VolumetricMicroscopyStaticImage**: Single 3D static image
+- **MultiPlaneMicroscopyContainer**: Multiple imaging planes (time series or static images)
+- **MultiChannelMicroscopyContainer**: Multiple channel imaging data, optionally nesting ``MultiPlaneMicroscopyContainer``
 
 Quick Start Example
 ================

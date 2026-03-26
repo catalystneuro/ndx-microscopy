@@ -196,7 +196,7 @@ Other optical components (filters, sources, detectors) are provided by the ndx-o
        indicator = Indicator(
            name="indicator",
            description="Green indicator",
-           label="GCamp6f",
+           label="GCaMP6f",
            viral_vector_injection=viral_vector_injection,
        )
 
@@ -218,8 +218,8 @@ Other optical components (filters, sources, detectors) are provided by the ndx-o
        microscopy_channel = MicroscopyChannel(
            name='gcamp_channel',
            description='GCaMP6f channel',
-           excitation_wavelength_in_nm=488.0,
-           emission_wavelength_in_nm=520.0,
+           excitation_wavelength_in_nm=920.0,
+           emission_wavelength_in_nm=510.0,
            indicator=indicator  # Link to indicator from MicroscopyExperimentMetadata
        )
 
@@ -334,6 +334,8 @@ Basic workflow for 2D imaging:
 
 .. code-block:: python
 
+    from ndx_ophys_devices import Indicator, ViralVector, ViralVectorInjection
+
     # 1. Set up microscope model and instance
     microscope_model = MicroscopeModel(
         name='2p-model',
@@ -388,8 +390,6 @@ Basic workflow for 2D imaging:
     )
 
     # 4. Create experiment metadata with indicators and rig
-    from ndx_ophys_devices import Indicator, ViralVector, ViralVectorInjection
-
     viral_vector = ViralVector(
         name="viral_vector",
         description="AAV viral vector for optogenetic stimulation",
@@ -420,7 +420,7 @@ Basic workflow for 2D imaging:
     indicator = Indicator(
         name="indicator",
         description="Green indicator",
-        label="GCamp6f",
+        label="GCaMP6f",
         viral_vector_injection=viral_vector_injection,
     )
 
@@ -455,8 +455,8 @@ Basic workflow for 2D imaging:
     microscopy_channel = MicroscopyChannel(
         name='gcamp_channel',
         description='GCaMP6f channel',
-        excitation_wavelength_in_nm=488.0,
-        emission_wavelength_in_nm=520.0,
+        excitation_wavelength_in_nm=920.0,
+        emission_wavelength_in_nm=510.0,
         indicator=indicator  # Link to indicator from MicroscopyExperimentMetadata
     )
 
@@ -480,6 +480,8 @@ One-Photon Imaging with Plane Acquisition
 Workflow for one-photon widefield imaging:
 
 .. code-block:: python
+
+    from ndx_ophys_devices import Indicator, ViralVector, ViralVectorInjection
 
     # 1. Set up microscope model and instance
     microscope_model = MicroscopeModel(
@@ -512,8 +514,6 @@ Workflow for one-photon widefield imaging:
     )
 
     # 4. Create experiment metadata with indicators and rig
-    from ndx_ophys_devices import Indicator, ViralVector, ViralVectorInjection
-
     viral_vector = ViralVector(
         name="viral_vector",
         description="AAV viral vector for optogenetic stimulation",
@@ -544,7 +544,7 @@ Workflow for one-photon widefield imaging:
     indicator = Indicator(
         name="indicator",
         description="Green indicator",
-        label="GCamp6f",
+        label="GCaMP6f",
         viral_vector_injection=viral_vector_injection,
     )
 
@@ -604,6 +604,8 @@ Workflow for volumetric imaging with targeted scanning:
 
 .. code-block:: python
 
+    from ndx_ophys_devices import Indicator, ViralVector, ViralVectorInjection
+
     # 1. Set up microscope model and instance
     microscope_model = MicroscopeModel(
         name='volume-model',
@@ -635,8 +637,6 @@ Workflow for volumetric imaging with targeted scanning:
     )
 
     # 4. Create experiment metadata with indicators and rig
-    from ndx_ophys_devices import Indicator, ViralVector, ViralVectorInjection
-
     viral_vector = ViralVector(
         name="viral_vector",
         description="AAV viral vector for optogenetic stimulation",
@@ -667,7 +667,7 @@ Workflow for volumetric imaging with targeted scanning:
     indicator = Indicator(
         name="indicator",
         description="Green indicator",
-        label="GCamp6f",
+        label="GCaMP6f",
         viral_vector_injection=viral_vector_injection,
     )
 
@@ -944,7 +944,7 @@ Data Organization
 1. **Naming Conventions**
    - Use descriptive, consistent names
    - Include relevant metadata in descriptions
-   - Document coordinate systems and reference frames
+   - Use ``anatomical_target`` to document the brain region being imaged
 
 2. **Data Structure**
    - Group related data appropriately

@@ -872,11 +872,19 @@ Example of multi-plane imaging with an electrically tunable lens:
     response_series_list = []
     depths = [-100, -50, 0, 50, 100]  # Depths in µm
 
-    # Create illumination pattern
+    # Create illumination pattern and channel once — shared across all planes
     plane_acquisition = PlaneAcquisition(
-        name=f'plane_acquisition',
-        description=f'Plane acquisition',
-        point_spread_function_in_um="32 um ± 1.6 um"
+        name='plane_acquisition',
+        description='Plane acquisition',
+        point_spread_function_in_um="32 um ± 1.6 um",
+    )
+
+    microscopy_channel = MicroscopyChannel(
+        name='gcamp_channel',
+        description='GCaMP6f channel',
+        excitation_wavelength_in_nm=920.0,
+        emission_wavelength_in_nm=510.0,
+        indicator=indicator,
     )
 
     for depth in depths:
@@ -887,25 +895,16 @@ Example of multi-plane imaging with an electrically tunable lens:
         width = 512
         data = np.random.rand(frames, height, width)
 
-        # Create imaging space for this depth with illumination pattern
+        # Create imaging space for this depth
         plane_space = PlanarImagingSpace(
             name=f'plane_depth_{depth}',
             description=f'Imaging plane at {depth} µm depth',
             pixel_size_in_um=[1.0, 1.0],
             dimensions_in_pixels=[height, width],
             anatomical_target='Visual cortex',
-            illumination_pattern=plane_acquisition  # Include the illumination pattern
+            illumination_pattern=plane_acquisition,
         )
 
-        # Create microscopy channel for this plane
-        microscopy_channel = MicroscopyChannel(
-            name=f'gcamp_channel_{depth}',
-            description=f'GCaMP6f channel at {depth} µm depth',
-            excitation_wavelength_in_nm=920.0,
-            emission_wavelength_in_nm=510.0,
-            indicator=indicator
-        )
-        
         # Create imaging series for this plane
         plane_series = PlanarMicroscopySeries(
             name=f'imaging_depth_{depth}',
