@@ -43,7 +43,7 @@ A Neurodata Without Borders (NWB) extension for storing microscopy data and asso
 
 ## Entity Relationship Diagrams
 
-#### Device Components
+#### Experiment Metadata Components
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#ffffff', 'primaryBorderColor': '#144E73', 'lineColor': '#D96F32'}}}%%
@@ -83,197 +83,6 @@ classDiagram
         --------------------------------------
         technique : text, optional
     }
-
-    class MicroscopyRig {
-        <<NWBContainer>>
-        --------------------------------------
-        attributes
-        --------------------------------------
-        description : text
-        --------------------------------------
-        links
-        --------------------------------------
-        microscope : Microscope
-        excitation_source : ExcitationSource, optional
-        excitation_filter : OpticalFilter, optional
-        dichroic_mirror : DichroicMirror, optional
-        photodetector : Photodetector, optional
-        emission_filter : OpticalFilter, optional
-        --------------------------------------
-        groups
-        --------------------------------------
-        optical_path_scheme : Image, optional
-    }
-
-    class ExcitationSource {
-        <<Device>>
-        --------------------------------------
-        attributes
-        --------------------------------------
-        **illumination_type** : text
-        **excitation_wavelength_in_nm** : float
-        **excitation_mode** : text
-        power_in_W : float, optional
-        intensity_in_W_per_m2 : float, optional
-        exposure_time_in_s : float, optional
-    }
-
-    class PulsedExcitationSource {
-        <<ExcitationSource>>
-        --------------------------------------
-        attributes
-        --------------------------------------
-        peak_power_in_W : float, optional
-        peak_pulse_energy_in_J : float, optional
-        pulse_rate_in_Hz : float, optional
-    }
-
-    class OpticalFilter {
-        <<Device>>
-        --------------------------------------
-        attributes
-        --------------------------------------
-        **filter_type** : text
-    }
-
-    class BandOpticalFilter {
-        <<OpticalFilter>>
-        --------------------------------------
-        attributes
-        --------------------------------------
-        **center_wavelength_in_nm** : float
-        **bandwidth_in_nm** : float
-    }
-
-    class EdgeOpticalFilter {
-        <<OpticalFilter>>
-        --------------------------------------
-        attributes
-        --------------------------------------
-        **cut_wavelength_in_nm** : float
-        slope_in_percent_cut_wavelength : float, optional
-        slope_starting_transmission_in_percent : float, optional
-        slope_ending_transmission_in_percent : float, optional
-    }
-
-    class DichroicMirror {
-        <<Device>>
-        --------------------------------------
-        attributes
-        --------------------------------------
-        cut_on_wavelength_in_nm : numeric, optional
-        cut_off_wavelength_in_nm : numeric, optional
-        reflection_band_in_nm : numeric, optional
-        transmission_band_in_nm : numeric, optional
-        angle_of_incidence_in_degrees : numeric, optional
-    }
-    
-    class Photodetector {
-        <<Device>>
-        --------------------------------------
-        attributes
-        --------------------------------------
-        **detector_type** : text
-        **detected_wavelength_in_nm** : float
-        gain : float, optional
-        gain_unit : text, optional
-    }
-
-    class Indicator {
-        <<NWBContainer>>
-        --------------------------------------
-        attributes
-        --------------------------------------
-        **label** : text
-        description : text, optional
-        manufacturer : text, optional
-        injection_brain_region : text, optional
-        injection_coordinates_in_mm : float[3], optional
-    }
-
-    DeviceModel <|-- MicroscopeModel : extends
-    Device <|-- Microscope : extends
-
-    Microscope o--> MicroscopeModel : links
-    MicroscopyRig o--> Microscope : links
-    MicroscopyRig o--> ExcitationSource : links
-    MicroscopyRig o--> OpticalFilter : links
-    MicroscopyRig o--> DichroicMirror : links
-    MicroscopyRig o--> Photodetector : links
-```
-
-#### Illumination Pattern Components
-
-```mermaid
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#ffffff', 'primaryBorderColor': '#144E73', 'lineColor': '#D96F32'}}}%%
-
-classDiagram
-    direction TB
-
-    class IlluminationPattern {
-        <<NWBContainer>>
-        --------------------------------------
-        attributes
-        --------------------------------------
-        description : text, optional
-    }
-
-    class LineScan {
-        <<IlluminationPattern>>
-        --------------------------------------
-        attributes
-        --------------------------------------
-        scan_direction : text, optional
-        line_rate_in_Hz : float64, optional
-        dwell_time_in_s : float64, optional
-    }
-
-    class PlaneAcquisition {
-        <<IlluminationPattern>>
-        --------------------------------------
-        attributes
-        --------------------------------------
-        point_spread_function_in_um : text, optional
-        illumination_angle_in_degrees : float64, optional
-        plane_rate_in_Hz : float64, optional
-    }
-
-    class RandomAccessScan {
-        <<IlluminationPattern>>
-        --------------------------------------
-        attributes
-        --------------------------------------
-        max_scan_points : numeric, optional
-        dwell_time_in_s : float64, optional
-        scanning_pattern : text, optional
-    }
-
-    class ImagingSpace {
-        <<NWBContainer>>
-        --------------------------------------
-        attributes
-        --------------------------------------
-        **description** : text
-        **anatomical_target** : text
-        --------------------------------------
-        groups
-        --------------------------------------
-        **illumination_pattern** : IlluminationPattern
-    }
-
-    IlluminationPattern <|-- LineScan : extends
-    IlluminationPattern <|-- PlaneAcquisition : extends
-    IlluminationPattern <|-- RandomAccessScan : extends
-    ImagingSpace *-- IlluminationPattern : contains
-```
-
-#### Experiment Metadata Components
-
-```mermaid
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#ffffff', 'primaryBorderColor': '#144E73', 'lineColor': '#D96F32'}}}%%
-
-classDiagram
-    direction TB
 
     class MicroscopyExperimentMetadata {
         <<LabMetaData>>
@@ -347,12 +156,82 @@ classDiagram
         **viral_vector_injection** : ViralVectorInjection, optional
     }
 
+
+    DeviceModel <|-- MicroscopeModel : extends
+    Device <|-- Microscope : extends
+    Microscope o--> MicroscopeModel : links
+    MicroscopyRig o--> Microscope : links
     MicroscopyExperimentMetadata *-- MicroscopyRig : contains
     MicroscopyExperimentMetadata *-- ViralVector : contains
     MicroscopyExperimentMetadata *-- ViralVectorInjection : contains
     MicroscopyExperimentMetadata *-- Indicator : contains
     ViralVectorInjection o--> ViralVector : links
     Indicator o--> ViralVectorInjection : links
+```
+
+#### Illumination Pattern Components
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#ffffff', 'primaryBorderColor': '#144E73', 'lineColor': '#D96F32'}}}%%
+
+classDiagram
+    direction TB
+
+    class IlluminationPattern {
+        <<NWBContainer>>
+        --------------------------------------
+        attributes
+        --------------------------------------
+        description : text, optional
+    }
+
+    class LineScan {
+        <<IlluminationPattern>>
+        --------------------------------------
+        attributes
+        --------------------------------------
+        scan_direction : text, optional
+        line_rate_in_Hz : float64, optional
+        dwell_time_in_s : float64, optional
+    }
+
+    class PlaneAcquisition {
+        <<IlluminationPattern>>
+        --------------------------------------
+        attributes
+        --------------------------------------
+        point_spread_function_in_um : text, optional
+        illumination_angle_in_degrees : float64, optional
+        plane_rate_in_Hz : float64, optional
+    }
+
+    class RandomAccessScan {
+        <<IlluminationPattern>>
+        --------------------------------------
+        attributes
+        --------------------------------------
+        max_scan_points : numeric, optional
+        dwell_time_in_s : float64, optional
+        scanning_pattern : text, optional
+    }
+
+    class ImagingSpace {
+        <<NWBContainer>>
+        --------------------------------------
+        attributes
+        --------------------------------------
+        **description** : text
+        **anatomical_target** : text
+        --------------------------------------
+        groups
+        --------------------------------------
+        **illumination_pattern** : IlluminationPattern
+    }
+
+    IlluminationPattern <|-- LineScan : extends
+    IlluminationPattern <|-- PlaneAcquisition : extends
+    IlluminationPattern <|-- RandomAccessScan : extends
+    ImagingSpace *-- IlluminationPattern : contains
 ```
 
 #### Microscopy Series and Imaging Space Components
