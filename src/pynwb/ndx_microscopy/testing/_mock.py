@@ -459,7 +459,7 @@ def mock_VolumetricMicroscopySeries(
     timestamps: Optional[np.ndarray] = None,
 ) -> ndx_microscopy.VolumetricMicroscopySeries:
     series_name = name or name_generator("VolumetricMicroscopySeries")
-    series_data = data if data is not None else np.ones(shape=(5, 5, 5, 3))
+    series_data = data if data is not None else np.ones(shape=(5, 3, 5, 5))
 
     if timestamps is None:
         series_starting_time = starting_time or 0.0

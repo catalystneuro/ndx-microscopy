@@ -3,6 +3,23 @@
 *************
 Release Notes
 *************
+Version 0.4.0 (Upcoming)
+==============================
+
+Deprecations and Changes
+-------------------------
+
+* **Breaking Change**: Reordered volumetric dataset dimensions to follow the TZYX convention
+  shared with OME, ImageJ, and scikit-image
+  (see `issue #77 <https://github.com/catalystneuro/ndx-microscopy/issues/77>`_):
+
+  * ``VolumetricMicroscopySeries.data``: ``(frames, height, width, depths)`` → ``(frames, depths, height, width)``
+  * ``VolumetricMicroscopyStaticImage.data``: ``(height, width, depths)`` → ``(depths, height, width)``
+  * ``VolumetricSegmentation.volume_mask``: ``(num_roi, num_x, num_y, num_z)`` → ``(num_roi, num_z, num_y, num_x)``
+  * ``SummaryImage.data`` (3D variant): ``(height, width, depth)`` → ``(depth, height, width)``
+  * ``VolumetricSegmentation.voxel_to_volume`` / ``volume_to_voxel`` now build/parse volumes in
+    ``(depth, height, width)`` order. The ``voxel_mask`` compound dtype remains ``(x, y, z, weight)``.
+
 Version 0.3.0 (Jun 3, 2025)
 ==============================
 

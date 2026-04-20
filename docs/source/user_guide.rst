@@ -713,7 +713,7 @@ Workflow for volumetric imaging with targeted scanning:
         microscopy_rig=microscopy_rig,
         microscopy_channel=microscopy_channel,
         volumetric_imaging_space=volumetric_imaging_space,
-        data=data,                # [frames, height, width, depths]
+        data=data,                # [frames, depths, height, width]  (TZYX)
         unit='a.u.',
         rate=5.0,
         starting_time=0.0,

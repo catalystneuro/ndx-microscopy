@@ -205,13 +205,14 @@ For 3D time series data.
           Assumes the number of depth scans used to construct the volume is regular.
         datasets:
           - name: data
-            doc: Recorded imaging data, shaped by (number of frames, frame height, frame width, number of depth planes).
+            doc: Recorded imaging data, shaped by (number of frames, number of depth planes, frame height, frame width).
+              This follows the TZYX dimension convention shared with OME/ImageJ/scikit-image.
             dtype: numeric
             dims:
               - frames
+              - depths
               - height
               - width
-              - depths
             shape:
               - null
               - null
@@ -525,16 +526,17 @@ For 3D segmentation data.
             neurodata_type_inc: VectorData
             dims:
               - - num_roi
-                - num_x
-                - num_y
                 - num_z
+                - num_y
+                - num_x
             shape:
               - - null
                 - null
                 - null
                 - null
-            doc: ROI masks for each ROI. Each image mask is the size of the original volumetric
-              imaging space and members of the ROI are finite non-zero.
+            doc: ROI masks for each ROI. Each volume mask is the size of the original volumetric
+              imaging space (depth, height, width) and members of the ROI are finite non-zero.
+              This follows the TZYX dimension convention shared with OME/ImageJ/scikit-image.
             quantity: "?"
           - name: voxel_mask_index
             neurodata_type_inc: VectorIndex
@@ -589,14 +591,14 @@ Summary images related to segmentation.
         doc: Summary images that are related to the segmentation, e.g., mean, correlation, maximum projection.
         datasets:
           - name: data
-            doc: Summary image data.
+            doc: Summary image data. For 3D summary images, follows the TZYX convention (depth, height, width).
             dtype: numeric
             dims:
               - - height
                 - width
-              - - height
+              - - depth
+                - height
                 - width
-                - depth
             shape:
               - - null
                 - null

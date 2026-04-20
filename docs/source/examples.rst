@@ -536,19 +536,21 @@ Example of volumetric imaging with 3D ROI segmentation:
         scanning_pattern='spiral'
     )
 
-    # Create example volumetric data
+    # Create example volumetric data. `VolumetricMicroscopySeries.data` follows the
+    # TZYX convention shared with OME/ImageJ/scikit-image: (frames, depths, height, width).
     frames = 100
+    depths = 10
     height = 512
     width = 512
-    depths = 10
-    data = np.random.rand(frames, height, width, depths)
+    data = np.random.rand(frames, depths, height, width)
 
-    # Define volumetric imaging space with illumination pattern
+    # Define volumetric imaging space with illumination pattern. `dimensions_in_voxels`
+    # is expressed as (x, y, z), matching the voxel_mask coordinate order.
     volume_space = VolumetricImagingSpace(
         name='cortex_volume',
         description='Visual cortex volume',
         voxel_size_in_um=[1.0, 1.0, 2.0],  # Higher spacing in z
-        dimensions_in_voxels=[height, width, depths],
+        dimensions_in_voxels=[width, height, depths],
         anatomical_target='Visual cortex, layer 2/3',
         illumination_pattern=random_access_scan  # Include the illumination pattern
     )
@@ -603,9 +605,9 @@ Example of volumetric imaging with 3D ROI segmentation:
         summary_images=[mean_image, max_image]
     )
 
-    # Add 3D ROIs using image masks
-    roi_mask = np.zeros((height, width, depths), dtype=bool)
-    roi_mask[256:266, 256:266, 4:6] = True  # 10x10x2 ROI
+    # Add 3D ROIs using image masks. volume_mask follows (depth, height, width) (TZYX).
+    roi_mask = np.zeros((depths, height, width), dtype=bool)
+    roi_mask[4:6, 256:266, 256:266] = True  # 2x10x10 ROI
     segmentation.add_roi(volume_mask=roi_mask)
 
     # Add ROIs using voxel masks

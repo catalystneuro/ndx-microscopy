@@ -10,6 +10,12 @@
   - Removed `reference_frame` attribute
   - Removed `orientation` attribute
 - Updated `ndx-ophys-devices` dependency from v0.2.0 to v0.4.0
+- **Breaking Change**: Reordered volumetric dataset dimensions to follow the TZYX convention shared with OME, ImageJ, and scikit-image (see [#77](https://github.com/catalystneuro/ndx-microscopy/issues/77)):
+  - `VolumetricMicroscopySeries.data`: `(frames, height, width, depths)` → `(frames, depths, height, width)`
+  - `VolumetricMicroscopyStaticImage.data`: `(height, width, depths)` → `(depths, height, width)`
+  - `VolumetricSegmentation.volume_mask`: `(num_roi, num_x, num_y, num_z)` → `(num_roi, num_z, num_y, num_x)`
+  - `SummaryImage.data` (3D variant): `(height, width, depth)` → `(depth, height, width)`
+  - `VolumetricSegmentation.voxel_to_volume` / `volume_to_voxel` now build/parse volumes in `(depth, height, width)` order. The `voxel_mask` compound dtype remains `(x, y, z, weight)`.
 
 ## Features
 - Extended `MultiChannelMicroscopyContainer` to support nesting `MultiPlaneMicroscopyContainer` objects, enabling combined multi-plane and multi-channel acquisition workflows (e.g., a functional indicator imaged at several depths alongside anatomical markers)
