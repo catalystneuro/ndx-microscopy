@@ -26,7 +26,7 @@ A device instance for acquiring imaging data.
 
     groups:
       - neurodata_type_def: Microscope
-        neurodata_type_inc: DeviceInstance
+        neurodata_type_inc: Device
         doc: Instance of a microscope used to acquire imaging data.
         attributes:
           - name: technique
@@ -73,6 +73,15 @@ A collection of devices and metadata that make up the microscopy rig.
             target_type: OpticalFilter
             doc: Link to OpticalFilter object which contains metadata about the emission filter. It can be either a BandOpticalFilter (e.g., 'Bandpass', 'Bandstop', 'Longpass', 'Shortpass') or a EdgeOpticalFilter (Longpass or Shortpass).
             quantity: "?"
+          - name: objective_lens
+            target_type: ObjectiveLens
+            doc: Link to ObjectiveLens object which contains metadata about the objective lens used in the microscopy rig.
+            quantity: "?"
+        groups:
+          - name: optical_path_scheme
+            neurodata_type_inc: Image
+            doc: optional link to Images object that provide an annotated scheme of the microscope and / or optical path.
+            quantity: "?"
 
 For other device components (ExcitationSource, OpticalFilter, Photodetector, etc.), please refer to the `ndx-ophys-devices documentation <https://ndx-ophys-devices.readthedocs.io/>`_.
 
@@ -100,10 +109,36 @@ Represents a channel in a microscope with metadata about the indicator and wavel
           - name: emission_wavelength_in_nm
             dtype: float64
             doc: Wavelength of the emission light in nanometers.
-        groups:
-          - neurodata_type_inc: Indicator
-            doc: Indicator object which contains metadata about the indicator used in this light path.
+        links:
+          - name: indicator
+            target_type: Indicator
+            doc: Link to Indicator object which contains metadata about the indicator used in this light path.
             quantity: 1
+
+MicroscopyExperimentMetadata
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+Container for centralizing all microscopy experiment metadata.
+
+.. code-block:: yaml
+
+    groups:
+      - neurodata_type_def: MicroscopyExperimentMetadata
+        neurodata_type_inc: LabMetaData
+        doc: Metadata about the microscopy experiment.
+        name: microscopy_experiment_metadata
+        groups:
+          - neurodata_type_inc: MicroscopyRig
+            doc: Group containing of one or more MicroscopyRig objects.
+            quantity: "*"
+          - neurodata_type_inc: ViralVector
+            doc: Group containing of one or more ViralVector objects.
+            quantity: "*"
+          - neurodata_type_inc: ViralVectorInjection
+            doc: Group containing one or more ViralVectorInjection objects.
+            quantity: "*"
+          - neurodata_type_inc: Indicator
+            doc: Group containing one or more Indicator objects.
+            quantity: "*"
 
 Microscopy Series Components
 ------------------------
@@ -119,10 +154,11 @@ Base type for microscopy time series data.
         neurodata_type_inc: TimeSeries
         doc: Imaging data acquired over time from an optical channel in a microscope while a light source illuminates the
           imaging space.
+        links:
+          - name: microscopy_rig
+            doc: Link to a MicroscopyRig object containing metadata about the microscopy rig used to acquire this imaging data.
+            target_type: MicroscopyRig
         groups:
-          - neurodata_type_inc: MicroscopyRig
-            doc: MicroscopyRig object containing metadata about the microscopy rig used to acquire this imaging data.
-            quantity: 1
           - neurodata_type_inc: MicroscopyChannel
             doc: MicroscopyChannel object containing metadata about the channel used to acquire this imaging data.
             quantity: 1
@@ -169,13 +205,14 @@ For 3D time series data.
           Assumes the number of depth scans used to construct the volume is regular.
         datasets:
           - name: data
-            doc: Recorded imaging data, shaped by (number of frames, frame height, frame width, number of depth planes).
+            doc: Recorded imaging data, shaped by (number of frames, number of depth planes, frame height, frame width).
+              This follows the TZYX dimension convention shared with OME/ImageJ/scikit-image.
             dtype: numeric
             dims:
               - frames
+              - depths
               - height
               - width
-              - depths
             shape:
               - null
               - null
@@ -196,12 +233,16 @@ Container for multiple PlanarMicroscopySeries.
       - neurodata_type_def: MultiPlaneMicroscopyContainer
         neurodata_type_inc: NWBDataInterface
         default_name: MultiPlaneMicroscopyContainer
-        doc: Imaging data acquired over several depths, regularly or irregularly spaced; for instance, when using an
-          electrically tunable lens. Each depth scan is stored in a separate PlanarMicroscopySeries object.
+        doc:
+          Imaging data acquired over several depths, regularly or irregularly spaced; for instance, when using an
+          electrically tunable lens. Each depth scan is stored in a separate PlanarMicroscopySeries or PlanarMicroscopyStaticImage object.
         groups:
           - neurodata_type_inc: PlanarMicroscopySeries
             doc: PlanarMicroscopySeries object(s) containing imaging data for a single depth scan.
-            quantity: "+"
+            quantity: "*"
+          - neurodata_type_inc: PlanarMicroscopyStaticImage
+            doc: PlanarMicroscopyStaticImage object(s) containing imaging data for a single depth scan.
+            quantity: "*"
 
 MultiChannelMicroscopyContainer
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -215,11 +256,15 @@ Container for multiple PlanerMicroscopySeries or VolumetricMicroscopySeries acqu
         default_name: MultiChannelMicroscopyContainer
         doc:
           Imaging data acquired over several channels; for instance, when using multiple excitation wavelengths
-          or multiple indicators. Each channel is stored in a separate PlanarMicroscopySeries or VolumetricMicroscopySeries object.
+          or multiple indicators. Each channel is stored in a separate PlanarMicroscopySeries, VolumetricMicroscopySeries,
+          PlanarMicroscopyStaticImage or VolumetricMicroscopyStaticImage.
         groups:
           - neurodata_type_inc: MicroscopySeries
             doc: MicroscopySeries object containing imaging data for a single channel scan.
-            quantity: "+"
+            quantity: "*"
+          - neurodata_type_inc: MicroscopyStaticImage
+            doc: MicroscopyStaticImage object containing imaging data for a single channel scan.
+            quantity: "*"
 
 Illumination Pattern Components
 --------------------------
@@ -325,52 +370,22 @@ Base type for metadata about the region being imaged.
       - neurodata_type_def: ImagingSpace
         neurodata_type_inc: NWBContainer
         doc: Abstract class to contain metadata about the region of physical space that imaging data was recorded from. Extended by PlanarImagingSpace and VolumetricImagingSpace.
-        datasets:
-          - name: origin_coordinates
-            dtype: float64
-            dims:
-              - - x, y, z
-            shape:
-              - - 3
-            doc:
-              Physical location in stereotactic coordinates for the first element of the grid.
-              See reference_frame to determine what the coordinates are relative to (e.g., bregma).
-            quantity: "?"
-            attributes:
-              - name: unit
-                dtype: text
-                default_value: micrometers
-                doc: Measurement units for origin coordinates. The default value is 'micrometers'.
         attributes:
-          - name: description
-            dtype: text
-            doc: Description of the imaging space.
-          - name: location
-            dtype: text
-            doc:
-              General estimate of location in the brain being subset by this space.
-              Specify the area, layer, etc.
-              Use standard atlas names for anatomical regions when possible.
-              Specify 'whole brain' if the entire brain is strictly contained within the space.
-            required: false
-          - name: reference_frame
-            dtype: text
-            doc:
-              The reference frame for the origin coordinates. For example, 'bregma' or 'lambda' for rodent brains.
-              If the origin coordinates are relative to a specific anatomical landmark, specify that here.
-            required: false
-          - name: orientation
-            doc:
-              "A 3-letter string. One of A,P,L,R,S,I for each of x, y, and z. For example, the most common
-              orientation is 'RAS', which means x is right, y is anterior, and z is superior (a.k.a. dorsal).
-              For dorsal/ventral use 'S/I' (superior/inferior). In the AnatomicalCoordinatesTable, an orientation of
-              'RAS' corresponds to coordinates in the order of (ML (x), AP (y), DV (z))."
-            dtype: text
-            required: false
-        groups:
-          - neurodata_type_inc: IlluminationPattern
-            doc: IlluminationPattern object containing metadata about the method used to acquire this imaging data.
-            quantity: 1
+      - name: description
+        dtype: text
+        doc: Description of the imaging space.
+        required: false
+      - name: anatomical_target
+        dtype: text
+        doc:
+          Name of the targeted anatomical location being subset by this space.
+          Specify the area, layer, etc. Use standard atlas names for anatomical regions when possible.
+          Specify 'whole brain' if the entire brain is strictly contained within the space.
+        required: true
+    groups:
+      - neurodata_type_inc: IlluminationPattern
+        doc: IlluminationPattern object containing metadata about the method used to acquire this imaging data.
+        quantity: 1
 
 PlanarImagingSpace
 ^^^^^^^^^^^^^^^
@@ -440,7 +455,7 @@ Base type for segmentation data.
     groups:
       - neurodata_type_def: Segmentation
         neurodata_type_inc: DynamicTable
-        doc: Abstract class to contain the results from image segmentation of a specific imaging space.
+        doc: Abstract class to contain the spatial components resulting from image segmentation of a specific imaging space.
         attributes:
           - name: description
             dtype: text
@@ -459,7 +474,7 @@ For 2D segmentation data.
     groups:
       - neurodata_type_def: PlanarSegmentation
         neurodata_type_inc: Segmentation
-        doc: Results from image segmentation of a specific planar imaging space.
+        doc: ROI spatial components resulting from image segmentation of a specific planar imaging space.
         datasets:
           - name: image_mask
             neurodata_type_inc: VectorData
@@ -505,22 +520,23 @@ For 3D segmentation data.
     groups:
       - neurodata_type_def: VolumetricSegmentation
         neurodata_type_inc: Segmentation
-        doc: Results from image segmentation of a specific volumetric imaging space.
+        doc: ROI spatial components resulting from image segmentation of a specific volumetric imaging space.
         datasets:
           - name: volume_mask
             neurodata_type_inc: VectorData
             dims:
               - - num_roi
-                - num_x
-                - num_y
                 - num_z
+                - num_y
+                - num_x
             shape:
               - - null
                 - null
                 - null
                 - null
-            doc: ROI masks for each ROI. Each image mask is the size of the original volumetric
-              imaging space and members of the ROI are finite non-zero.
+            doc: ROI masks for each ROI. Each volume mask is the size of the original volumetric
+              imaging space (depth, height, width) and members of the ROI are finite non-zero.
+              This follows the TZYX dimension convention shared with OME/ImageJ/scikit-image.
             quantity: "?"
           - name: voxel_mask_index
             neurodata_type_inc: VectorIndex
@@ -560,7 +576,7 @@ Container for multiple segmentations.
         doc: A container of many Segmentation objects.
         groups:
           - neurodata_type_inc: Segmentation
-            doc: Results from image segmentation of a specific imaging space.
+            doc: Results from image segmentation.
             quantity: "+"
 
 SummaryImage
@@ -575,14 +591,14 @@ Summary images related to segmentation.
         doc: Summary images that are related to the segmentation, e.g., mean, correlation, maximum projection.
         datasets:
           - name: data
-            doc: Summary image data.
+            doc: Summary image data. For 3D summary images, follows the TZYX convention (depth, height, width).
             dtype: numeric
             dims:
               - - height
                 - width
-              - - height
+              - - depth
+                - height
                 - width
-                - depth
             shape:
               - - null
                 - null
@@ -603,7 +619,10 @@ For extracted ROI responses.
     groups:
       - neurodata_type_def: MicroscopyResponseSeries
         neurodata_type_inc: TimeSeries
-        doc: ROI responses extracted from optical imaging.
+        doc:       
+          ROI responses extracted from imaging data, linked in the microscopy_series field.
+          This object contains the temporal components from multiple ROIs,
+          that can result from different processing steps, e.g., raw, deconvolved, or denoised fluorescence traces.
         datasets:
           - name: data
             dtype: numeric
@@ -616,8 +635,9 @@ For extracted ROI responses.
             doc: Signals from ROIs.
           - name: rois
             neurodata_type_inc: DynamicTableRegion
-            doc: DynamicTableRegion referencing segmentation containing more information about the ROIs
-              stored in this series.
+            doc: 
+              DynamicTableRegion referencing Segmentation table containing information about the ROIs
+              spatial components.
         links:
           - name: microscopy_series
             doc: Link to a MicroscopySeries object containing the imaging data this response series is derived from.

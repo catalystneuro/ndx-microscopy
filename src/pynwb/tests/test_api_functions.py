@@ -100,11 +100,13 @@ def test_volumetric_voxel_to_volume_conversion():
 
     volume_mask = segmentation.voxel_to_volume(voxel_mask, volume_shape)
 
+    # volume_mask follows (depth, height, width): the three voxels differ only in x,
+    # so they land on the same z=0, y=0 row at x=0, 1, 2.
     expected_image_mask = np.asarray(
         [
-            [[1.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
-            [[2.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
-            [[2.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+            [[1.0, 2.0, 2.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+            [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+            [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
         ]
     )
     np.testing.assert_allclose(volume_mask, expected_image_mask)
@@ -115,11 +117,13 @@ def test_volumetric_volume_to_voxel_conversion():
     volumetric_imaging_space = mock_VolumetricImagingSpace()
     segmentation = mock_VolumetricSegmentation(volumetric_imaging_space=volumetric_imaging_space)
 
+    # volume_mask follows (depth, height, width). Non-zero voxels are at
+    # z=0, y=0, x=0/1/2 -> expected voxel_mask rows are (x, y, z, weight).
     volume_mask = np.asarray(
         [
-            [[1.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
-            [[2.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
-            [[2.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+            [[1.0, 2.0, 2.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+            [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+            [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
         ]
     )
 

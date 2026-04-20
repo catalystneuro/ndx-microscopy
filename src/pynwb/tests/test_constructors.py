@@ -13,6 +13,8 @@ from ndx_microscopy.testing import (
     mock_SegmentationContainer,
     mock_PlanarImagingSpace,
     mock_PlanarMicroscopySeries,
+    mock_PlanarMicroscopyStaticImage,
+    mock_VolumetricMicroscopyStaticImage,
     mock_MultiPlaneMicroscopyContainer,
     mock_MultiChannelMicroscopyContainer,
     mock_VolumetricImagingSpace,
@@ -26,6 +28,7 @@ from ndx_microscopy.testing import (
 )
 
 from ndx_microscopy import (
+    MicroscopyExperimentMetadata,
     Segmentation,
     PlanarSegmentation,
     VolumetricSegmentation,
@@ -49,13 +52,34 @@ def test_constructor_microscope_model():
 
 
 def test_constructor_microscopy_channel():
-    microscopy_channel = mock_MicroscopyChannel()
+    from ndx_ophys_devices.testing import mock_Indicator
+
+    microscopy_channel = mock_MicroscopyChannel(indicator=mock_Indicator(name="Indicator1"))
     assert microscopy_channel.description == "A mock instance of a MicroscopyChannel type to be used for rapid testing."
 
 
 def test_constructor_microscopy_rig():
     microscopy_rig = mock_MicroscopyRig()
     assert microscopy_rig.description == "A mock instance of a MicroscopyRig type to be used for rapid testing."
+
+
+def test_constructor_microscopy_experiment_metadata():
+    from ndx_ophys_devices.testing import mock_Indicator, mock_ViralVector, mock_ViralVectorInjection
+
+    viral_vector = mock_ViralVector(name="ViralVector1")
+    viral_vector_injection = mock_ViralVectorInjection(
+        name="ViralVectorInjection1",
+        viral_vector=viral_vector,
+    )
+    indicator = mock_Indicator(name="Indicator1", viral_vector_injection=viral_vector_injection)
+    microscopy_rig = mock_MicroscopyRig()
+
+    _ = MicroscopyExperimentMetadata(
+        viral_vectors=[viral_vector],
+        viral_vector_injections=[viral_vector_injection],
+        indicators=[indicator],
+        microscopy_rigs=[microscopy_rig],
+    )
 
 
 def test_constructor_illumination_pattern():
@@ -162,8 +186,10 @@ def test_constructor_segmentation_container():
 
 
 def test_constructor_planar_microscopy_series():
+    from ndx_ophys_devices.testing import mock_Indicator
+
+    microscopy_channel = mock_MicroscopyChannel(indicator=mock_Indicator(name="Indicator1"))
     microscopy_rig = mock_MicroscopyRig()
-    microscopy_channel = mock_MicroscopyChannel()
     planar_imaging_space = mock_PlanarImagingSpace()
 
     planar_microscopy_series = mock_PlanarMicroscopySeries(
@@ -177,10 +203,29 @@ def test_constructor_planar_microscopy_series():
     )
 
 
-def test_constructor_multi_plane_microscopy_container():
+def test_constructor_planar_microscopy_static_image():
+    from ndx_ophys_devices.testing import mock_Indicator
 
+    microscopy_channel = mock_MicroscopyChannel(indicator=mock_Indicator(name="Indicator1"))
     microscopy_rig = mock_MicroscopyRig()
-    microscopy_channel = mock_MicroscopyChannel()
+    planar_imaging_space = mock_PlanarImagingSpace()
+
+    planar_microscopy_static_image = mock_PlanarMicroscopyStaticImage(
+        microscopy_rig=microscopy_rig,
+        microscopy_channel=microscopy_channel,
+        planar_imaging_space=planar_imaging_space,
+    )
+    assert (
+        planar_microscopy_static_image.description
+        == "A mock instance of a PlanarMicroscopyStaticImage type to be used for rapid testing."
+    )
+
+
+def test_constructor_multi_plane_microscopy_container():
+    from ndx_ophys_devices.testing import mock_Indicator
+
+    microscopy_channel = mock_MicroscopyChannel(indicator=mock_Indicator(name="Indicator1"))
+    microscopy_rig = mock_MicroscopyRig()
     planar_imaging_space = mock_PlanarImagingSpace()
 
     planar_microscopy_series = mock_PlanarMicroscopySeries(
@@ -190,15 +235,36 @@ def test_constructor_multi_plane_microscopy_container():
     )
 
     multi_plane_microscopy_container = mock_MultiPlaneMicroscopyContainer(
-        planar_microscopy_series=[planar_microscopy_series]
+        name="MultiPlaneMicroscopySeriesContainer", planar_microscopy_series=[planar_microscopy_series]
     )
-    assert multi_plane_microscopy_container.name == "MultiPlaneMicroscopyContainer"
+    assert multi_plane_microscopy_container.name == "MultiPlaneMicroscopySeriesContainer"
 
 
-def test_constructor_multi_channel_microscopy_container():
+def test_constructor_multi_plane_microscopy_container_with_static_images():
+    from ndx_ophys_devices.testing import mock_Indicator
 
+    microscopy_channel = mock_MicroscopyChannel(indicator=mock_Indicator(name="Indicator1"))
     microscopy_rig = mock_MicroscopyRig()
-    microscopy_channel = mock_MicroscopyChannel()
+    planar_imaging_space = mock_PlanarImagingSpace()
+
+    planar_microscopy_static_image = mock_PlanarMicroscopyStaticImage(
+        microscopy_rig=microscopy_rig,
+        microscopy_channel=microscopy_channel,
+        planar_imaging_space=planar_imaging_space,
+    )
+
+    multi_plane_microscopy_container = mock_MultiPlaneMicroscopyContainer(
+        name="MultiPlaneMicroscopyStaticImageContainer",
+        planar_microscopy_static_images=[planar_microscopy_static_image],
+    )
+    assert multi_plane_microscopy_container.name == "MultiPlaneMicroscopyStaticImageContainer"
+
+
+def test_constructor_multi_channel_microscopy_container_with_series():
+    from ndx_ophys_devices.testing import mock_Indicator
+
+    microscopy_channel = mock_MicroscopyChannel(indicator=mock_Indicator(name="Indicator1"))
+    microscopy_rig = mock_MicroscopyRig()
     planar_imaging_space = mock_PlanarImagingSpace()
     planar_microscopy_series = mock_PlanarMicroscopySeries(
         microscopy_rig=microscopy_rig,
@@ -207,14 +273,88 @@ def test_constructor_multi_channel_microscopy_container():
     )
 
     multi_channel_microscopy_container = mock_MultiChannelMicroscopyContainer(
-        microscopy_series=[planar_microscopy_series]
+        name="MultiChannelPlanarMicroscopySeriesContainer", microscopy_series=[planar_microscopy_series]
     )
-    assert multi_channel_microscopy_container.name == "MultiChannelMicroscopyContainer"
+    assert multi_channel_microscopy_container.name == "MultiChannelPlanarMicroscopySeriesContainer"
+
+
+def test_constructor_microscopy_static_images_container():
+    from ndx_ophys_devices.testing import mock_Indicator
+
+    microscopy_channel = mock_MicroscopyChannel(indicator=mock_Indicator(name="Indicator1"))
+    microscopy_rig = mock_MicroscopyRig()
+    planar_imaging_space = mock_PlanarImagingSpace()
+    planar_microscopy_static_image = mock_PlanarMicroscopyStaticImage(
+        microscopy_rig=microscopy_rig,
+        microscopy_channel=microscopy_channel,
+        planar_imaging_space=planar_imaging_space,
+    )
+
+    multi_channel_microscopy_container = mock_MultiChannelMicroscopyContainer(
+        name="MultiChannelPlanarMicroscopyStaticImageContainer",
+        microscopy_static_images=[planar_microscopy_static_image],
+    )
+    assert multi_channel_microscopy_container.name == "MultiChannelPlanarMicroscopyStaticImageContainer"
+
+
+def test_constructor_multi_channel_microscopy_container_with_multi_plane_containers():
+    from ndx_ophys_devices.testing import mock_Indicator
+
+    microscopy_rig = mock_MicroscopyRig()
+
+    # Channel 1: functional indicator (GCaMP)
+    channel_1 = mock_MicroscopyChannel(indicator=mock_Indicator(name="Indicator_GCaMP"), name="GCaMPChannel")
+    plane_space_1 = mock_PlanarImagingSpace(name="PlanarImagingSpace_depth1")
+    plane_space_2 = mock_PlanarImagingSpace(name="PlanarImagingSpace_depth2")
+    series_1 = mock_PlanarMicroscopySeries(
+        name="GCaMP_depth1",
+        microscopy_rig=microscopy_rig,
+        microscopy_channel=channel_1,
+        planar_imaging_space=plane_space_1,
+    )
+    series_2 = mock_PlanarMicroscopySeries(
+        name="GCaMP_depth2",
+        microscopy_rig=microscopy_rig,
+        microscopy_channel=channel_1,
+        planar_imaging_space=plane_space_2,
+    )
+    multi_plane_gcamp = mock_MultiPlaneMicroscopyContainer(
+        name="GCaMP_planes",
+        planar_microscopy_series=[series_1, series_2],
+    )
+
+    # Channel 2: anatomical marker (mCherry static images)
+    channel_2 = mock_MicroscopyChannel(indicator=mock_Indicator(name="Indicator_mCherry"), name="mCherryChannel")
+    static_image_1 = mock_PlanarMicroscopyStaticImage(
+        name="mCherry_depth1",
+        microscopy_rig=microscopy_rig,
+        microscopy_channel=channel_2,
+        planar_imaging_space=plane_space_1,
+    )
+    static_image_2 = mock_PlanarMicroscopyStaticImage(
+        name="mCherry_depth2",
+        microscopy_rig=microscopy_rig,
+        microscopy_channel=channel_2,
+        planar_imaging_space=plane_space_2,
+    )
+    multi_plane_mcherry = mock_MultiPlaneMicroscopyContainer(
+        name="mCherry_planes",
+        planar_microscopy_static_images=[static_image_1, static_image_2],
+    )
+
+    multi_channel_container = mock_MultiChannelMicroscopyContainer(
+        name="MultiPlaneMultiChannelContainer",
+        multi_plane_microscopy_containers=[multi_plane_gcamp, multi_plane_mcherry],
+    )
+    assert multi_channel_container.name == "MultiPlaneMultiChannelContainer"
+    assert len(multi_channel_container.multi_plane_microscopy_containers) == 2
 
 
 def test_constructor_volumetric_microscopy_series():
+    from ndx_ophys_devices.testing import mock_Indicator
+
+    microscopy_channel = mock_MicroscopyChannel(indicator=mock_Indicator(name="Indicator1"))
     microscopy_rig = mock_MicroscopyRig()
-    microscopy_channel = mock_MicroscopyChannel()
     volumetric_imaging_space = mock_VolumetricImagingSpace()
 
     volumetric_microscopy_series = mock_VolumetricMicroscopySeries(
@@ -225,6 +365,24 @@ def test_constructor_volumetric_microscopy_series():
     assert (
         volumetric_microscopy_series.description
         == "A mock instance of a VolumetricMicroscopySeries type to be used for rapid testing."
+    )
+
+
+def test_constructor_volumetric_microscopy_static_image():
+    from ndx_ophys_devices.testing import mock_Indicator
+
+    microscopy_channel = mock_MicroscopyChannel(indicator=mock_Indicator(name="Indicator1"))
+    microscopy_rig = mock_MicroscopyRig()
+    volumetric_imaging_space = mock_VolumetricImagingSpace()
+
+    volumetric_microscopy_static_image = mock_VolumetricMicroscopyStaticImage(
+        microscopy_rig=microscopy_rig,
+        microscopy_channel=microscopy_channel,
+        volumetric_imaging_space=volumetric_imaging_space,
+    )
+    assert (
+        volumetric_microscopy_static_image.description
+        == "A mock instance of a VolumetricMicroscopyStaticImage type to be used for rapid testing."
     )
 
 
@@ -246,9 +404,10 @@ def test_constructor_microscopy_response_series():
 
 
 def test_constructor_microscopy_response_series_with_microscopy_series():
+    from ndx_ophys_devices.testing import mock_Indicator
 
+    microscopy_channel = mock_MicroscopyChannel(indicator=mock_Indicator(name="Indicator1"))
     microscopy_rig = mock_MicroscopyRig()
-    microscopy_channel = mock_MicroscopyChannel()
     number_of_rois = 10
     planar_imaging_space = mock_PlanarImagingSpace()
     microscopy_series = mock_PlanarMicroscopySeries(

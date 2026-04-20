@@ -1,3 +1,41 @@
+# v0.4.0 (Upcoming)
+
+## Deprecations and Changes
+- **Breaking Change**: `OpticalLens`changed in `ObjectiveLens`
+- **Breaking Change**: `MicroscopyChannel.indicator` changed from a nested group to a link reference
+- **Breaking Change**: `MicroscopySeries.microscopy_rig` changed from a nested group to a link reference
+- **Breaking Change**: Simplified `ImagingSpace` class by removing coordinate system metadata:
+  - Removed `origin_coordinates` dataset and its `unit` attribute
+  - Renamed `location` attribute to `anatomical_target` for clearer semantics
+  - Removed `reference_frame` attribute
+  - Removed `orientation` attribute
+- Updated `ndx-ophys-devices` dependency from v0.2.0 to v0.4.0
+- **Breaking Change**: Reordered volumetric dataset dimensions to follow the TZYX convention shared with OME, ImageJ, and scikit-image (see [#77](https://github.com/catalystneuro/ndx-microscopy/issues/77)):
+  - `VolumetricMicroscopySeries.data`: `(frames, height, width, depths)` → `(frames, depths, height, width)`
+  - `VolumetricMicroscopyStaticImage.data`: `(height, width, depths)` → `(depths, height, width)`
+  - `VolumetricSegmentation.volume_mask`: `(num_roi, num_x, num_y, num_z)` → `(num_roi, num_z, num_y, num_x)`
+  - `SummaryImage.data` (3D variant): `(height, width, depth)` → `(depth, height, width)`
+  - `VolumetricSegmentation.voxel_to_volume` / `volume_to_voxel` now build/parse volumes in `(depth, height, width)` order. The `voxel_mask` compound dtype remains `(x, y, z, weight)`.
+
+## Features
+- Extended `MultiChannelMicroscopyContainer` to support nesting `MultiPlaneMicroscopyContainer` objects, enabling combined multi-plane and multi-channel acquisition workflows (e.g., a functional indicator imaged at several depths alongside anatomical markers)
+- Added static image support for microscopy experiments:
+  - `MicroscopyStaticImage`: Base class for static images
+  - `PlanarMicroscopyStaticImage`: For 2D static images
+  - `VolumetricMicroscopyStaticImage`: For 3D static images
+- Added `MicroscopyExperimentMetadata` (extends `LabMetaData`) as a centralized container for experiment metadata, including:
+  - `MicroscopyRig` objects
+  - `ViralVector` objects (from ndx-ophys-devices)
+  - `ViralVectorInjection` objects (from ndx-ophys-devices)
+  - `Indicator` objects (from ndx-ophys-devices)
+- Added support for `ViralVector` and `ViralVectorInjection` imports from ndx-ophys-devices
+- Added optional `optical_path_scheme` field to `MicroscopyRig` (an `Image` group) for storing an annotated diagram or picture of the microscope's optical path layout
+
+## Notes
+- These changes improve metadata organization by centralizing all experiment-related objects in `MicroscopyExperimentMetadata`
+- The use of links instead of nested groups provides better data reusability and reduces duplication
+- Users should add `MicroscopyExperimentMetadata` to NWBFile using `nwbfile.add_lab_meta_data()`
+
 # v0.3.0 (Jun 3, 2025)
 ## Bug Fixes
 

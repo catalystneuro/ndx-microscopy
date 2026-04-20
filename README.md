@@ -5,6 +5,8 @@ A Neurodata Without Borders (NWB) extension for storing microscopy data and asso
 ## Features
 
 **Comprehensive Neurodata Types**
+- Experiment metadata container:
+    - `MicroscopyExperimentMetadata`
 - Microscope and optical component metadata (integration with [ndx-ophys-devices](https://github.com/catalystneuro/ndx-ophys-devices)):
     - `MicroscopeModel`
     - `Microscope`
@@ -14,6 +16,8 @@ A Neurodata Without Borders (NWB) extension for storing microscopy data and asso
     - `DichroicMirror` 
     - `Photodetector` 
     - `Indicator`
+    - `ViralVector`
+    - `ViralVectorInjection`
 - Microscopy channel configurations: 
     - `MicroscopyChannel`
 - Imaging space definitions: 
@@ -24,9 +28,11 @@ A Neurodata Without Borders (NWB) extension for storing microscopy data and asso
     - `LineScan`
     - `PlaneAcquisition`
     - `RandomAccessScan`
-- Support for 2D and 3D imaging: 
+- Support for 2D and 3D imaging:
     - `PlanarMicroscopySeries`
     - `VolumetricMicroscopySeries`
+    - `PlanarMicroscopyStaticImage`
+    - `VolumetricMicroscopyStaticImage`
     - `MultiPlaneMicroscopyContainer`
     - `MultiChannelMicroscopyContainer`
 - ROI/segmentation storage: 
@@ -35,11 +41,11 @@ A Neurodata Without Borders (NWB) extension for storing microscopy data and asso
     - `SegmentationContainer`
     - `MicroscopyResponseSeries`
     - `MicroscopyResponseSeriesContainer`
-- Abstract Neurodata types: `ImagingSpace`, `MicroscopySeries`,`Segmentation`
+- Abstract Neurodata types: `ImagingSpace`, `MicroscopySeries`, `MicroscopyStaticImage`, `Segmentation`
 
 ## Entity Relationship Diagrams
 
-#### Device Components
+#### Experiment Metadata Components
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#ffffff', 'primaryBorderColor': '#144E73', 'lineColor': '#D96F32'}}}%%
@@ -56,7 +62,7 @@ classDiagram
         model_number : text, optional
     }
     
-    class DeviceInstance{
+    class Device{
         <<Device>>
         --------------------------------------
         attributes
@@ -73,11 +79,22 @@ classDiagram
     }
 
     class Microscope {
-        <<DeviceInstance>>
+        <<Device>>
         --------------------------------------
         attributes
         --------------------------------------
         technique : text, optional
+    }
+
+    class MicroscopyExperimentMetadata {
+        <<LabMetaData>>
+        --------------------------------------
+        groups
+        --------------------------------------
+        **microscopy_rigs** : MicroscopyRig[0..*]
+        **viral_vectors** : ViralVector[0..*]
+        **viral_vector_injections** : ViralVectorInjection[0..*]
+        **indicators** : Indicator[0..*]
     }
 
     class MicroscopyRig {
@@ -95,82 +112,41 @@ classDiagram
         dichroic_mirror : DichroicMirror, optional
         photodetector : Photodetector, optional
         emission_filter : OpticalFilter, optional
+        --------------------------------------
+        groups
+        --------------------------------------
+        optical_path_scheme : Image, optional
     }
 
-    class ExcitationSource {
-        <<DeviceInstance>>
+    class ViralVector {
+        <<NWBContainer>>
         --------------------------------------
         attributes
         --------------------------------------
-        **illumination_type** : text
-        **excitation_wavelength_in_nm** : float
-        **excitation_mode** : text
-        power_in_W : float, optional
-        intensity_in_W_per_m2 : float, optional
-        exposure_time_in_s : float, optional
+        **construct_name** : text
+        titer_in_vg_per_ml : numeric, optional
+        manufacturer : text, optional
+        description : text, optional
     }
-
-    class PulsedExcitationSource {
-        <<ExcitationSource>>
+    class ViralVectorInjection {
+        <<NWBContainer>>
         --------------------------------------
         attributes
         --------------------------------------
-        peak_power_in_W : float, optional
-        peak_pulse_energy_in_J : float, optional
-        pulse_rate_in_Hz : float, optional
-    }
-
-    class OpticalFilter {
-        <<DeviceInstance>>
-        --------------------------------------
-        attributes
-        --------------------------------------
-        **filter_type** : text
-    }
-
-    class BandOpticalFilter {
-        <<OpticalFilter>>
-        --------------------------------------
-        attributes
-        --------------------------------------
-        **center_wavelength_in_nm** : float
-        **bandwidth_in_nm** : float
-    }
-
-    class EdgeOpticalFilter {
-        <<OpticalFilter>>
-        --------------------------------------
-        attributes
-        --------------------------------------
-        **cut_wavelength_in_nm** : float
-        slope_in_percent_cut_wavelength : float, optional
-        slope_starting_transmission_in_percent : float, optional
-        slope_ending_transmission_in_percent : float, optional
-    }
-
-    class DichroicMirror {
-        <<DeviceInstance>>
-        --------------------------------------
-        attributes
-        --------------------------------------
-        cut_on_wavelength_in_nm : numeric, optional
-        cut_off_wavelength_in_nm : numeric, optional
-        reflection_band_in_nm : numeric, optional
-        transmission_band_in_nm : numeric, optional
-        angle_of_incidence_in_degrees : numeric, optional
-    }
-    
-    class Photodetector {
-        <<DeviceInstance>>
-        --------------------------------------
-        attributes
-        --------------------------------------
-        **detector_type** : text
-        **detected_wavelength_in_nm** : float
-        gain : float, optional
-        gain_unit : text, optional
-    }
-
+        location : text, optional
+        hemisphere : text, optional
+        ap_in_mm : numeric, optional
+        ml_in_mm : numeric, optional
+        dv_in_mm : numeric, optional
+        pitch_in_deg : numeric, optional
+        yaw_in_deg : numeric, optional
+        roll_in_deg : numeric, optional
+        stereotactic_rotation_in_deg : numeric, optional
+        stereotactic_tilt_in_deg : numeric, optional
+        volume_in_uL : numeric, optional
+        injection_date : text, optional
+        **viral_vector** : ViralVector
+        }
     class Indicator {
         <<NWBContainer>>
         --------------------------------------
@@ -179,19 +155,20 @@ classDiagram
         **label** : text
         description : text, optional
         manufacturer : text, optional
-        injection_brain_region : text, optional
-        injection_coordinates_in_mm : float[3], optional
+        **viral_vector_injection** : ViralVectorInjection, optional
     }
 
-    DeviceModel <|-- MicroscopeModel : extends
-    DeviceInstance <|-- Microscope : extends
 
+    DeviceModel <|-- MicroscopeModel : extends
+    Device <|-- Microscope : extends
     Microscope o--> MicroscopeModel : links
     MicroscopyRig o--> Microscope : links
-    MicroscopyRig o--> ExcitationSource : links
-    MicroscopyRig o--> OpticalFilter : links
-    MicroscopyRig o--> DichroicMirror : links
-    MicroscopyRig o--> Photodetector : links
+    MicroscopyExperimentMetadata *-- MicroscopyRig : contains
+    MicroscopyExperimentMetadata *-- ViralVector : contains
+    MicroscopyExperimentMetadata *-- ViralVectorInjection : contains
+    MicroscopyExperimentMetadata *-- Indicator : contains
+    ViralVectorInjection o--> ViralVector : links
+    Indicator o--> ViralVectorInjection : links
 ```
 
 #### Illumination Pattern Components
@@ -243,17 +220,10 @@ classDiagram
     class ImagingSpace {
         <<NWBContainer>>
         --------------------------------------
-        datasets
-        --------------------------------------
-        **description** : text
-        origin_coordinates : float64[3], optional
-        unit : text = "micrometers"
-        --------------------------------------
         attributes
         --------------------------------------
-        location : text, optional
-        reference_frame : text, optional
-        orientation : text, optional
+        **description** : text
+        **anatomical_target** : text
         --------------------------------------
         groups
         --------------------------------------
@@ -284,17 +254,20 @@ classDiagram
         **excitation_wavelength_in_nm** : float
         **emission_wavelength_in_nm** : float
         --------------------------------------
-        groups
+        links
         --------------------------------------
-        indicator
+        **indicator** : Indicator
     }
 
     class MicroscopySeries {
         <<TimeSeries>>
         --------------------------------------
-        groups
+        links
         --------------------------------------
         **microscopy_rig** : MicroscopyRig
+        --------------------------------------
+        groups
+        --------------------------------------
         **microscopy_channel** : MicroscopyChannel
 
     }
@@ -316,7 +289,7 @@ classDiagram
         --------------------------------------
         datasets
         --------------------------------------
-        **data** : numeric[frames, height, width, depths]
+        **data** : numeric[frames, depths, height, width]
         --------------------------------------
         groups
         --------------------------------------
@@ -337,23 +310,18 @@ classDiagram
         --------------------------------------
         groups
         --------------------------------------
-        **microscopy_series** : MicroscopySeries[1..*]
+        microscopy_series : MicroscopySeries[0..*]
+        microscopy_static_images : MicroscopyStaticImage[0..*]
+        multi_plane_microscopy_containers : MultiPlaneMicroscopyContainer[0..*]
     }
 
     class ImagingSpace {
         <<NWBContainer>>
         --------------------------------------
-        datasets
-        --------------------------------------
-        **description** : text
-        origin_coordinates : float64[3], optional
-        unit : text = "micrometers"
-        --------------------------------------
         attributes
         --------------------------------------
-        location : text, optional
-        reference_frame : text, optional
-        orientation : text, optional
+        **description** : text
+        **anatomical_target** : text
         --------------------------------------
         groups
         --------------------------------------
@@ -366,7 +334,7 @@ classDiagram
         datasets
         --------------------------------------
         pixel_size_in_um : float64[2], optional
-        dimensions_in_pixels : float64[2], optional 
+        dimensions_in_pixels : uint32[2], optional
         --------------------------------------
         methods
         --------------------------------------
@@ -379,7 +347,7 @@ classDiagram
         datasets
         --------------------------------------
         voxel_size_in_um : float64[3], optional
-        dimensions_in_voxels : float64[3], optional 
+        dimensions_in_voxels : uint32[3], optional
         --------------------------------------
         methods
         --------------------------------------
@@ -401,6 +369,10 @@ classDiagram
         dichroic_mirror : DichroicMirror, optional
         photodetector : Photodetector, optional
         emission_filter : OpticalFilter, optional
+        --------------------------------------
+        groups
+        --------------------------------------
+        optical_path_scheme : Image, optional
     }
 
     MicroscopySeries <|-- PlanarMicroscopySeries : extends
@@ -412,9 +384,9 @@ classDiagram
     VolumetricMicroscopySeries *-- VolumetricImagingSpace : contains
     MultiPlaneMicroscopyContainer *-- PlanarMicroscopySeries : contains
     MultiChannelMicroscopyContainer *-- MicroscopySeries : contains
-    MicroscopySeries *-- MicroscopyRig : contains
-    MicroscopyChannel *-- MicroscopySeries : contains    
-    MicroscopyChannel --* Indicator : contains
+    MicroscopySeries o--> MicroscopyRig : links
+    MicroscopySeries *-- MicroscopyChannel : contains    
+    MicroscopyChannel o--> Indicator : links
 ```
 
 #### Segmentation Components
@@ -463,7 +435,7 @@ classDiagram
         --------------------------------------
         datasets
         --------------------------------------
-        volume_mask : VectorData[num_roi, num_x, num_y, num_z], optional
+        volume_mask : VectorData[num_roi, num_z, num_y, num_x], optional
         voxel_mask_index : VectorIndex, optional
         voxel_mask : VectorData, optional
         --------------------------------------
@@ -484,7 +456,7 @@ classDiagram
         --------------------------------------
         datasets
         --------------------------------------
-        **data** : numeric[height, width] or numeric[height, width, depth]
+        **data** : numeric[height, width] or numeric[depth, height, width]
         --------------------------------------
         attributes
         --------------------------------------
@@ -513,7 +485,7 @@ classDiagram
         --------------------------------------
         links
         --------------------------------------
-        microscopy_saeries : MicroscopySeries, optional
+        microscopy_series : MicroscopySeries, optional
     }
 
     class MicroscopyResponseSeriesContainer {

@@ -9,7 +9,7 @@ Prerequisites
 
 Before installing ndx-microscopy, ensure you have:
 
-- Python 3.7 or later
+- Python 3.11 or later
 - PyNWB installed
 - ndx-ophys-devices extension installed (required for optical components)
 
@@ -56,15 +56,17 @@ Imaging Spaces
 ------------
 - **PlanarImagingSpace**: For 2D imaging (single plane)
 - **VolumetricImagingSpace**: For 3D imaging (z-stacks)
-- Includes physical coordinates, grid spacing, and reference frames
+- Includes pixel/voxel size, image dimensions, and anatomical target
 - Requires an illumination pattern to specify how the space was scanned
 
 Data Series
 ----------
 - **PlanarMicroscopySeries**: 2D time series data
 - **VolumetricMicroscopySeries**: 3D time series data
-- **MultiPlaneMicroscopyContainer**: Multiple imaging planes
-- **MultiChannelMicroscopyContainer**: Multiple channel imaging data
+- **PlanarMicroscopyStaticImage**: Single 2D static image (e.g. anatomical reference)
+- **VolumetricMicroscopyStaticImage**: Single 3D static image
+- **MultiPlaneMicroscopyContainer**: Multiple imaging planes (time series or static images)
+- **MultiChannelMicroscopyContainer**: Multiple channel imaging data, optionally nesting ``MultiPlaneMicroscopyContainer``
 
 Quick Start Example
 ================
@@ -78,11 +80,13 @@ Here's a minimal example showing how to create a basic microscopy dataset:
     from pynwb import NWBFile
     from ndx_microscopy import (
         MicroscopeModel,
-        Microscope, 
+        Microscope,
         MicroscopyRig,
+        MicroscopyChannel,
+        MicroscopyExperimentMetadata,
         PlanarImagingSpace,
         PlanarMicroscopySeries,
-        LineScan
+        LineScan,
     )
     from ndx_ophys_devices import (
         ExcitationSourceModel,
@@ -93,7 +97,7 @@ Here's a minimal example showing how to create a basic microscopy dataset:
         DichroicMirror,
         PhotodetectorModel,
         Photodetector,
-        Indicator
+        Indicator,
     )
     import numpy as np
 
@@ -109,9 +113,9 @@ Here's a minimal example showing how to create a basic microscopy dataset:
         name='2p-model',
         description='Two-photon microscope model',
         model_number='2p-001',
-        manufacturer='ImagingTech'
+        manufacturer='ImagingTech',
     )
-    nwbfile.add_device(microscope_model)
+    nwbfile.add_device_model(microscope_model)
 
     # Set up microscope with technique
     microscope = Microscope(
@@ -119,7 +123,7 @@ Here's a minimal example showing how to create a basic microscopy dataset:
         description='Custom two-photon microscope',
         serial_number='2p-serial-001',
         model=microscope_model,
-        technique='mirror scanning'  # Specify the technique used
+        technique='mirror scanning',
     )
     nwbfile.add_device(microscope)
 
@@ -127,10 +131,10 @@ Here's a minimal example showing how to create a basic microscopy dataset:
     indicator = Indicator(
         name='gcamp6f',
         label='GCaMP6f',
-        description='Calcium indicator'
+        description='Calcium indicator',
     )
 
-    # Create example optical component models
+    # Create optical component models
     excitation_source_model = ExcitationSourceModel(
         name="excitation_source_model",
         manufacturer="Laser Manufacturer",
@@ -138,47 +142,47 @@ Here's a minimal example showing how to create a basic microscopy dataset:
         description="Excitation source model",
         source_type="laser",
         excitation_mode="two-photon",
-        wavelength_range_in_nm=[800.0, 1000.0]
+        wavelength_range_in_nm=[800.0, 1000.0],
     )
-    nwbfile.add_device(excitation_source_model)
-    
+    nwbfile.add_device_model(excitation_source_model)
+
     excitation_filter_model = BandOpticalFilterModel(
         name="excitation_filter_model",
         filter_type="Bandpass",
         manufacturer="Semrock",
         model_number="FF01-920/80",
         center_wavelength_in_nm=920.0,
-        bandwidth_in_nm=80.0
+        bandwidth_in_nm=80.0,
     )
-    nwbfile.add_device(excitation_filter_model)
-    
+    nwbfile.add_device_model(excitation_filter_model)
+
     dichroic_mirror_model = DichroicMirrorModel(
         name="dichroic_mirror_model",
         manufacturer="Semrock",
         model_number="FF757-Di01",
-        cut_on_wavelength_in_nm=757.0
+        cut_on_wavelength_in_nm=757.0,
     )
-    nwbfile.add_device(dichroic_mirror_model)
-    
+    nwbfile.add_device_model(dichroic_mirror_model)
+
     photodetector_model = PhotodetectorModel(
         name="photodetector_model",
         detector_type="PMT",
         manufacturer="Hamamatsu",
         model_number="R6357",
         gain=70.0,
-        gain_unit="dB"
+        gain_unit="dB",
     )
-    nwbfile.add_device(photodetector_model)
-    
+    nwbfile.add_device_model(photodetector_model)
+
     emission_filter_model = BandOpticalFilterModel(
         name="emission_filter_model",
         filter_type="Bandpass",
         manufacturer="Semrock",
         model_number="FF01-510/84",
         center_wavelength_in_nm=510.0,
-        bandwidth_in_nm=84.0
+        bandwidth_in_nm=84.0,
     )
-    nwbfile.add_device(emission_filter_model)
+    nwbfile.add_device_model(emission_filter_model)
 
     # Create optical component instances
     laser = ExcitationSource(
@@ -187,7 +191,7 @@ Here's a minimal example showing how to create a basic microscopy dataset:
         serial_number="ES-SN-123456",
         model=excitation_source_model,
         intensity_in_W_per_m2=1000.0,
-        exposure_time_in_s=0.001
+        exposure_time_in_s=0.001,
     )
     nwbfile.add_device(laser)
 
@@ -195,7 +199,7 @@ Here's a minimal example showing how to create a basic microscopy dataset:
         name='ex_filter',
         description='Excitation filter',
         serial_number="EF-SN-123456",
-        model=excitation_filter_model
+        model=excitation_filter_model,
     )
     nwbfile.add_device(ex_filter)
 
@@ -203,7 +207,7 @@ Here's a minimal example showing how to create a basic microscopy dataset:
         name='dichroic',
         description='Dichroic mirror',
         serial_number="DM-SN-123456",
-        model=dichroic_mirror_model
+        model=dichroic_mirror_model,
     )
     nwbfile.add_device(dichroic)
 
@@ -211,7 +215,7 @@ Here's a minimal example showing how to create a basic microscopy dataset:
         name='detector',
         description='PMT detector',
         serial_number="PD-SN-123456",
-        model=photodetector_model
+        model=photodetector_model,
     )
     nwbfile.add_device(detector)
 
@@ -219,7 +223,7 @@ Here's a minimal example showing how to create a basic microscopy dataset:
         name='em_filter',
         description='Emission filter',
         serial_number="EF-SN-123456",
-        model=emission_filter_model
+        model=emission_filter_model,
     )
     nwbfile.add_device(em_filter)
 
@@ -232,7 +236,23 @@ Here's a minimal example showing how to create a basic microscopy dataset:
         excitation_filter=ex_filter,
         dichroic_mirror=dichroic,
         photodetector=detector,
-        emission_filter=em_filter
+        emission_filter=em_filter,
+    )
+
+    # Store rig and indicator in the experiment metadata container
+    microscopy_experiment_metadata = MicroscopyExperimentMetadata(
+        indicators=[indicator],
+        microscopy_rigs=[microscopy_rig],
+    )
+    nwbfile.add_lab_meta_data(microscopy_experiment_metadata)
+
+    # Create microscopy channel
+    microscopy_channel = MicroscopyChannel(
+        name='gcamp_channel',
+        description='GCaMP6f channel',
+        excitation_wavelength_in_nm=920.0,
+        emission_wavelength_in_nm=510.0,
+        indicator=indicator,
     )
 
     # Define illumination pattern
@@ -241,17 +261,17 @@ Here's a minimal example showing how to create a basic microscopy dataset:
         description='Line scanning two-photon microscopy',
         scan_direction='horizontal',
         line_rate_in_Hz=1000.0,
-        dwell_time_in_s=1.0e-6
+        dwell_time_in_s=1.0e-6,
     )
 
     # Define imaging space with illumination pattern
     planar_imaging_space = PlanarImagingSpace(
-        name='cortex_plane',
-        description='Layer 2/3 of visual cortex',
+        name='PlanarImagingSpace',
+        description='Imaging plane of layer 2/3 of visual cortex',
         pixel_size_in_um=[1.0, 1.0],
         dimensions_in_pixels=[512, 512],
-        origin_coordinates=[-1.2, -0.6, -2.0],
-        illumination_pattern=line_scan  # Include the illumination pattern
+        anatomical_target='Visual cortex, layer 2/3',
+        illumination_pattern=line_scan,
     )
 
     # Create example imaging data
@@ -260,7 +280,9 @@ Here's a minimal example showing how to create a basic microscopy dataset:
     # Create imaging series
     microscopy_series = PlanarMicroscopySeries(
         name='imaging_data',
+        description='Two-photon calcium imaging',
         microscopy_rig=microscopy_rig,
+        microscopy_channel=microscopy_channel,
         planar_imaging_space=planar_imaging_space,
         data=data,
         unit='a.u.',

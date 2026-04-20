@@ -11,6 +11,7 @@ namespaces:
       - namespace: core
         neurodata_types:
           - Device
+          - DeviceModel
           - LabMetaData
           - NWBContainer
           - TimeSeries
@@ -19,15 +20,16 @@ namespaces:
           - VectorData
           - VectorIndex
           - DynamicTableRegion
+          - Image
       - namespace: ndx-ophys-devices
         neurodata_types:
-          - DeviceModel
-          - DeviceInstance
           - ExcitationSource
           - Indicator
+          - ViralVectorInjection
+          - ViralVector
           - OpticalFilter
           - Photodetector
           - DichroicMirror
-          - OpticalLens
+          - ObjectiveLens
       - source: ndx-microscopy.extensions.yaml
-    version: 0.3.0
+    version: 0.4.0

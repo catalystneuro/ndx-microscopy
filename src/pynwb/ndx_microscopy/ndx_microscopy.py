@@ -354,13 +354,14 @@ def voxel_to_volume(voxel_mask, volume_shape=None):
         The x, y, z coordinates specify the voxel position and weight specifies the value
         to fill in the output image mask.
     volume_shape : tuple, optional
-        Shape of the output image (depth, height, width). If not provided, will be determined
-        from the maximum x,y,z coordinates in voxel_mask.
+        Shape of the output image (depth, height, width), following the TZYX convention.
+        If not provided, will be determined from the maximum x,y,z coordinates in voxel_mask.
 
     Returns
     -------
     image_matrix : numpy.ndarray
-        3D array where non-zero values indicate the ROI voxels with their corresponding weights.
+        3D array with shape (depth, height, width) where non-zero values indicate the ROI
+        voxels with their corresponding weights.
 
     Raises
     ------
@@ -376,11 +377,11 @@ def voxel_to_volume(voxel_mask, volume_shape=None):
     z_coords = npmask[:, 2].astype(np.int32)
     weights = npmask[:, -1]
 
-    # Determine dimensions from max coordinates
+    # Determine dimensions from max coordinates, in (depth, height, width) order
     if volume_shape is None:
-        volume_shape = (np.max(x_coords) + 1, np.max(y_coords) + 1, np.max(z_coords) + 1)
+        volume_shape = (np.max(z_coords) + 1, np.max(y_coords) + 1, np.max(x_coords) + 1)
     image_matrix = np.zeros(volume_shape)
-    image_matrix[x_coords, y_coords, z_coords] = weights
+    image_matrix[z_coords, y_coords, x_coords] = weights
 
     return image_matrix
 
@@ -392,7 +393,8 @@ def volume_to_voxel(volume_mask):
     Parameters
     ----------
     volume_mask : numpy.ndarray
-        3D array where non-zero values indicate ROI voxels.
+        3D array with shape (depth, height, width) where non-zero values indicate ROI voxels.
+        Follows the TZYX convention.
 
     Returns
     -------
@@ -412,9 +414,9 @@ def volume_to_voxel(volume_mask):
     while not it.finished:
         weight = it[0][()]
         if weight > 0:
-            x = it.multi_index[0]
+            z = it.multi_index[0]
             y = it.multi_index[1]
-            z = it.multi_index[2]
+            x = it.multi_index[2]
             voxel_mask.append([x, y, z, weight])
         it.iternext()
     return voxel_mask
