@@ -631,4 +631,4 @@ Update the CHANGELOG.md regularly to document changes to the extension.
 
 ## License
 
-MIT License. See [LICENSE.txt](LICENSE.txt) for details.
+BSD 3-Clause License. See [LICENSE.txt](LICENSE.txt) for details.
