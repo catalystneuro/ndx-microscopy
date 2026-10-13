@@ -1,9 +1,8 @@
 """Test roundtrip (write and read back) of the Python API for the ndx-microscopy extension."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 from ndx_microscopy.testing._mock import mock_PlanarMicroscopyStaticImage, mock_VolumetricMicroscopyStaticImage
-from pytz import UTC
 import pytest
 from pynwb.testing import TestCase as pynwb_TestCase
 from pynwb.testing.mock.file import mock_NWBFile
@@ -52,7 +51,7 @@ class TestPlanarMicroscopyStaticImageSimpleRoundtrip(pynwb_TestCase):
         pynwb.testing.remove_test_file(self.nwbfile_path)
 
     def test_roundtrip(self):
-        nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=UTC))
+        nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=timezone.utc))
 
         microscope_model = mock_MicroscopeModel(name="MicroscopeModel")
         nwbfile.add_device_model(device_models=microscope_model)
@@ -140,7 +139,7 @@ class TestVolumetricMicroscopyStaticImageSimpleRoundtrip(pynwb_TestCase):
         pynwb.testing.remove_test_file(self.nwbfile_path)
 
     def test_roundtrip(self):
-        nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=UTC))
+        nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=timezone.utc))
 
         microscope_model = mock_MicroscopeModel(name="MicroscopeModel")
         nwbfile.add_device_model(device_models=microscope_model)
@@ -228,7 +227,7 @@ class TestPlanarMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
         pynwb.testing.remove_test_file(self.nwbfile_path)
 
     def test_roundtrip(self):
-        nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=UTC))
+        nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=timezone.utc))
 
         microscope_model = mock_MicroscopeModel(name="MicroscopeModel")
         nwbfile.add_device_model(device_models=microscope_model)
@@ -317,7 +316,7 @@ class TestMicroscopyRigWithUntrackedDevice(pynwb_TestCase):
     def test_roundtrip(self):
         from hdmf.build.errors import OrphanContainerBuildError
 
-        nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=UTC))
+        nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=timezone.utc))
 
         microscope_model = mock_MicroscopeModel(name="MicroscopeModel")
         nwbfile.add_device_model(device_models=microscope_model)
@@ -400,7 +399,7 @@ class TestVolumetricMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
         pynwb.testing.remove_test_file(self.nwbfile_path)
 
     def test_roundtrip(self):
-        nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=UTC))
+        nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=timezone.utc))
 
         microscope_model = mock_MicroscopeModel(name="MicroscopeModel")
         nwbfile.add_device_model(device_models=microscope_model)
@@ -490,7 +489,7 @@ class TestMultiPlaneMicroscopyContainerSimpleRoundtrip(pynwb_TestCase):
         pynwb.testing.remove_test_file(self.nwbfile_path)
 
     def test_roundtrip(self):
-        nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=UTC))
+        nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=timezone.utc))
 
         microscope_model = mock_MicroscopeModel(name="MicroscopeModel")
         nwbfile.add_device_model(device_models=microscope_model)
@@ -595,7 +594,7 @@ class TestMultiChannelMicroscopyContainerSimpleRoundtrip(pynwb_TestCase):
         pynwb.testing.remove_test_file(self.nwbfile_path)
 
     def test_roundtrip(self):
-        nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=UTC))
+        nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=timezone.utc))
 
         microscope_model = mock_MicroscopeModel(name="MicroscopeModel")
         nwbfile.add_device_model(device_models=microscope_model)
@@ -697,7 +696,7 @@ class TestMultiChannelWithMultiPlaneContainerSimpleRoundtrip(pynwb_TestCase):
         pynwb.testing.remove_test_file(self.nwbfile_path)
 
     def test_roundtrip(self):
-        nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=UTC))
+        nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=timezone.utc))
 
         microscope_model = mock_MicroscopeModel(name="MicroscopeModel")
         nwbfile.add_device_model(device_models=microscope_model)
@@ -826,7 +825,7 @@ class TestSegmentationContainerSimpleRoundtrip(pynwb_TestCase):
         pynwb.testing.remove_test_file(self.nwbfile_path)
 
     def test_roundtrip(self):
-        nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=UTC))
+        nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=timezone.utc))
 
         container = mock_SegmentationContainer(name="SegmentationContainer")
         ophys_module = nwbfile.create_processing_module(name="ophys", description="")
@@ -851,7 +850,7 @@ class TestMicroscopyResponseSeriesSimpleRoundtrip(pynwb_TestCase):
         pynwb.testing.remove_test_file(self.nwbfile_path)
 
     def test_roundtrip(self):
-        nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=UTC))
+        nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=timezone.utc))
 
         microscope_model = mock_MicroscopeModel(name="MicroscopeModel")
         nwbfile.add_device_model(device_models=microscope_model)
