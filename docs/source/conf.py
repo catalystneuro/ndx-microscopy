@@ -23,10 +23,18 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.intersphinx",
     "sphinx.ext.napoleon",
+    "myst_nb",
 ]
 
 templates_path = ["_templates"]
 exclude_patterns = []
+
+# -- Options for the example notebooks ----------------------------------------
+# The notebooks in ../../examples are copied into ./examples when the build starts and executed during the build.
+nb_execution_mode = "force"
+nb_execution_timeout = 300
+nb_execution_raise_on_error = True
+nb_output_stderr = "remove"
 
 language = "en"
 
@@ -89,9 +97,22 @@ def run_doc_autogen(_):
         generate_docs()
 
 
+def copy_example_notebooks(_):
+    # The notebooks in examples/ are the only copy of the examples; copy them into the docs source tree
+    import shutil
+    from pathlib import Path
+
+    conf_file_dir = Path(__file__).resolve().parent
+    target_dir = conf_file_dir / "examples"
+    target_dir.mkdir(exist_ok=True)
+    for notebook in (conf_file_dir.parent.parent / "examples").glob("*.ipynb"):
+        shutil.copy(notebook, target_dir / notebook.name)
+
+
 def setup(app):
     app.connect("builder-inited", register_custom_namespace)
     app.connect("builder-inited", run_doc_autogen)
+    app.connect("builder-inited", copy_example_notebooks)
     # overrides for wide tables in RTD theme
     try:
         app.add_css_file("theme_overrides.css")  # Used by newer Sphinx versions
