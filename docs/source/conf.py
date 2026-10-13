@@ -53,6 +53,7 @@ intersphinx_mapping.update(
     {
         "core": ("https://nwb-schema.readthedocs.io/en/latest/", None),
         "hdmf-common": ("https://hdmf-common-schema.readthedocs.io/en/latest/", None),
+        "ndx-ophys-devices": ("https://ndx-ophys-devices.readthedocs.io/en/latest/", None),
     }
 )
 
