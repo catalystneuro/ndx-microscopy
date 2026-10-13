@@ -5,309 +5,251 @@ Getting Started
 ***************
 
 Prerequisites
-============
+=============
 
-Before installing ndx-microscopy, ensure you have:
-
-- Python 3.11 or later
-- PyNWB installed
-- ndx-ophys-devices extension installed (required for optical components)
+- Python 3.10 or later
+- PyNWB 3.1 or later
+- ndx-ophys-devices 0.4, which provides the optical components and molecular tools
 
 Installation
-===========
-
-Python Installation
------------------
-
-The ndx-microscopy extension can be installed via pip:
+============
 
 .. code-block:: bash
 
    pip install ndx-microscopy
 
-This will automatically install all required dependencies.
+This installs PyNWB and ndx-ophys-devices as dependencies.
 
 Basic Concepts
-============
-
-The ndx-microscopy extension provides a standardized way to store and organize microscopy data in the NWB format. Here are the key components:
+==============
 
 Device Components
----------------
-- **MicroscopeModel**: Defines the model of a microscope
-- **Microscope**: The primary device instance used for imaging
-  - Includes technique specification (e.g., scan mirrors, light sheet, widefield)
-- **MicroscopyRig**: Organizes all optical components in a single container
-- Other optical components (from ndx-ophys-devices):
-    - ExcitationSource (lasers, LEDs)
-    - OpticalFilter (bandpass, edge filters)
-    - Photodetector (PMTs, cameras)
-    - DichroicMirror
-    - Indicator (fluorescent proteins, dyes)
+-----------------
+
+- ``MicroscopeModel``: the microscope model, with manufacturer and model number
+- ``Microscope``: the microscope instance, with the imaging technique (e.g., resonant scanning, light sheet)
+- ``MicroscopyRig``: links the microscope and the optical components used for an acquisition
+- Optical components from ndx-ophys-devices, each with a model and an instance type:
+
+  - ``ExcitationSource`` and ``PulsedExcitationSource`` (LEDs, lasers)
+  - ``BandOpticalFilter`` and ``EdgeOpticalFilter``
+  - ``DichroicMirror``
+  - ``Photodetector`` (PMTs, cameras)
+  - ``ObjectiveLens``
+
+- ``Indicator``, ``ViralVector`` and ``ViralVectorInjection`` from ndx-ophys-devices describe the molecular tools
+- ``MicroscopyExperimentMetadata`` holds the rigs and molecular tools in ``nwbfile.lab_meta_data``
 
 Illumination Patterns
------------------
-- **IlluminationPattern**: Base class for describing how the sample is illuminated
-- **LineScan**: For line scanning methods (common in two-photon microscopy)
-- **PlaneAcquisition**: For whole plane acquisition (common in light sheet and one-photon)
-- **RandomAccessScan**: For targeted, high-speed imaging of specific regions
+---------------------
+
+- ``IlluminationPattern``: base class for patterns not covered below
+- ``LineScan``: point-scanning systems that build each frame from scanned lines, e.g., two-photon raster scanning
+- ``PlaneAcquisition``: the whole plane is illuminated at once, e.g., light sheet or camera-based widefield imaging
+- ``RandomAccessScan``: targeted scanning of selected points, e.g., with acousto-optic deflectors
 
 Imaging Spaces
-------------
-- **PlanarImagingSpace**: For 2D imaging (single plane)
-- **VolumetricImagingSpace**: For 3D imaging (z-stacks)
-- Includes pixel/voxel size, image dimensions, and anatomical target
-- Requires an illumination pattern to specify how the space was scanned
+--------------
 
-Data Series
-----------
-- **PlanarMicroscopySeries**: 2D time series data
-- **VolumetricMicroscopySeries**: 3D time series data
-- **PlanarMicroscopyStaticImage**: Single 2D static image (e.g. anatomical reference)
-- **VolumetricMicroscopyStaticImage**: Single 3D static image
-- **MultiPlaneMicroscopyContainer**: Multiple imaging planes (time series or static images)
-- **MultiChannelMicroscopyContainer**: Multiple channel imaging data, optionally nesting ``MultiPlaneMicroscopyContainer``
+- ``PlanarImagingSpace``: a single plane
+- ``VolumetricImagingSpace``: a volume
+- Each space records the anatomical target, the pixel or voxel size and the dimensions, listed x first
+- Each space contains the illumination pattern used to acquire it
+
+Imaging Data
+------------
+
+- ``PlanarMicroscopySeries``: planar data over time, shaped (frames, height, width)
+- ``VolumetricMicroscopySeries``: volumetric data over time, shaped (frames, depths, height, width)
+- ``PlanarMicroscopyStaticImage`` and ``VolumetricMicroscopyStaticImage``: single images, e.g., an anatomical reference
+- ``MultiPlaneMicroscopyContainer``: series or static images acquired at several depths
+- ``MultiChannelMicroscopyContainer``: series, static images or multi-plane containers acquired in several channels
 
 Quick Start Example
-================
+===================
 
-Here's a minimal example showing how to create a basic microscopy dataset:
+This example writes a two-photon calcium imaging session with one imaging plane.
 
 .. code-block:: python
 
-    from datetime import datetime
+    from datetime import datetime, timezone
     from uuid import uuid4
-    from pynwb import NWBFile
+
+    import numpy as np
+    from pynwb import NWBHDF5IO, NWBFile
+
     from ndx_microscopy import (
-        MicroscopeModel,
+        LineScan,
         Microscope,
-        MicroscopyRig,
+        MicroscopeModel,
         MicroscopyChannel,
         MicroscopyExperimentMetadata,
+        MicroscopyRig,
         PlanarImagingSpace,
         PlanarMicroscopySeries,
-        LineScan,
     )
     from ndx_ophys_devices import (
-        ExcitationSourceModel,
-        ExcitationSource,
-        BandOpticalFilterModel,
         BandOpticalFilter,
-        DichroicMirrorModel,
+        BandOpticalFilterModel,
         DichroicMirror,
-        PhotodetectorModel,
-        Photodetector,
+        DichroicMirrorModel,
+        ExcitationSourceModel,
         Indicator,
+        ObjectiveLens,
+        ObjectiveLensModel,
+        Photodetector,
+        PhotodetectorModel,
+        PulsedExcitationSource,
     )
-    import numpy as np
 
-    # Create NWB file
     nwbfile = NWBFile(
-        session_description='Example microscopy session',
+        session_description="Two-photon calcium imaging in mouse V1",
         identifier=str(uuid4()),
-        session_start_time=datetime.now()
+        session_start_time=datetime(2025, 1, 15, 10, 0, tzinfo=timezone.utc),
     )
 
-    # Set up microscope model
+    # Device models describe the catalog specifications
     microscope_model = MicroscopeModel(
-        name='2p-model',
-        description='Two-photon microscope model',
-        model_number='2p-001',
-        manufacturer='ImagingTech',
+        name="microscope_model",
+        description="Two-photon microscope with resonant-galvo scanning",
+        manufacturer="Thorlabs",
+        model_number="Bergamo II",
     )
-    nwbfile.add_device_model(microscope_model)
-
-    # Set up microscope with technique
-    microscope = Microscope(
-        name='2p-scope',
-        description='Custom two-photon microscope',
-        serial_number='2p-serial-001',
-        model=microscope_model,
-        technique='mirror scanning',
-    )
-    nwbfile.add_device(microscope)
-
-    # Create indicator
-    indicator = Indicator(
-        name='gcamp6f',
-        label='GCaMP6f',
-        description='Calcium indicator',
-    )
-
-    # Create optical component models
-    excitation_source_model = ExcitationSourceModel(
-        name="excitation_source_model",
-        manufacturer="Laser Manufacturer",
-        model_number="ES-123",
-        description="Excitation source model",
+    laser_model = ExcitationSourceModel(
+        name="laser_model",
+        manufacturer="Coherent",
+        model_number="Chameleon Ultra II",
         source_type="laser",
         excitation_mode="two-photon",
-        wavelength_range_in_nm=[800.0, 1000.0],
+        wavelength_range_in_nm=[680.0, 1080.0],
     )
-    nwbfile.add_device_model(excitation_source_model)
-
-    excitation_filter_model = BandOpticalFilterModel(
-        name="excitation_filter_model",
-        filter_type="Bandpass",
-        manufacturer="Semrock",
-        model_number="FF01-920/80",
-        center_wavelength_in_nm=920.0,
-        bandwidth_in_nm=80.0,
-    )
-    nwbfile.add_device_model(excitation_filter_model)
-
     dichroic_mirror_model = DichroicMirrorModel(
         name="dichroic_mirror_model",
         manufacturer="Semrock",
         model_number="FF757-Di01",
         cut_on_wavelength_in_nm=757.0,
     )
-    nwbfile.add_device_model(dichroic_mirror_model)
-
-    photodetector_model = PhotodetectorModel(
-        name="photodetector_model",
-        detector_type="PMT",
-        manufacturer="Hamamatsu",
-        model_number="R6357",
-        gain=70.0,
-        gain_unit="dB",
-    )
-    nwbfile.add_device_model(photodetector_model)
-
     emission_filter_model = BandOpticalFilterModel(
         name="emission_filter_model",
-        filter_type="Bandpass",
         manufacturer="Semrock",
         model_number="FF01-510/84",
+        filter_type="Bandpass",
         center_wavelength_in_nm=510.0,
         bandwidth_in_nm=84.0,
     )
-    nwbfile.add_device_model(emission_filter_model)
-
-    # Create optical component instances
-    laser = ExcitationSource(
-        name='laser',
-        description='Two-photon excitation laser',
-        serial_number="ES-SN-123456",
-        model=excitation_source_model,
-        intensity_in_W_per_m2=1000.0,
-        exposure_time_in_s=0.001,
+    photodetector_model = PhotodetectorModel(
+        name="photodetector_model",
+        manufacturer="Hamamatsu",
+        model_number="H10770PA-40",
+        detector_type="PMT",
+        wavelength_range_in_nm=[300.0, 720.0],
     )
-    nwbfile.add_device(laser)
-
-    ex_filter = BandOpticalFilter(
-        name='ex_filter',
-        description='Excitation filter',
-        serial_number="EF-SN-123456",
-        model=excitation_filter_model,
+    objective_lens_model = ObjectiveLensModel(
+        name="objective_lens_model",
+        manufacturer="Nikon",
+        model_number="N16XLWD-PF",
+        numerical_aperture=0.8,
+        magnification=16.0,
     )
-    nwbfile.add_device(ex_filter)
+    for device_model in (
+        microscope_model,
+        laser_model,
+        dichroic_mirror_model,
+        emission_filter_model,
+        photodetector_model,
+        objective_lens_model,
+    ):
+        nwbfile.add_device_model(device_model)
 
-    dichroic = DichroicMirror(
-        name='dichroic',
-        description='Dichroic mirror',
-        serial_number="DM-SN-123456",
-        model=dichroic_mirror_model,
+    # Device instances describe the devices used in this session
+    microscope = Microscope(
+        name="microscope",
+        model=microscope_model,
+        serial_number="2P-001",
+        technique="resonant-galvo scanning",
     )
-    nwbfile.add_device(dichroic)
-
-    detector = Photodetector(
-        name='detector',
-        description='PMT detector',
-        serial_number="PD-SN-123456",
-        model=photodetector_model,
+    laser = PulsedExcitationSource(
+        name="laser",
+        model=laser_model,
+        power_in_W=0.05,  # average power at the sample
+        pulse_rate_in_Hz=80.0e6,
+        pulse_width_in_s=140.0e-15,
+        peak_pulse_energy_in_J=0.05 / 80.0e6,  # average power / pulse rate
     )
-    nwbfile.add_device(detector)
+    dichroic_mirror = DichroicMirror(name="dichroic_mirror", model=dichroic_mirror_model)
+    emission_filter = BandOpticalFilter(name="emission_filter", model=emission_filter_model)
+    photodetector = Photodetector(name="photodetector", model=photodetector_model)
+    objective_lens = ObjectiveLens(name="objective_lens", model=objective_lens_model)
+    for device in (microscope, laser, dichroic_mirror, emission_filter, photodetector, objective_lens):
+        nwbfile.add_device(device)
 
-    em_filter = BandOpticalFilter(
-        name='em_filter',
-        description='Emission filter',
-        serial_number="EF-SN-123456",
-        model=emission_filter_model,
-    )
-    nwbfile.add_device(em_filter)
-
-    # Create microscopy rig
     microscopy_rig = MicroscopyRig(
-        name='2p_rig',
-        description='Two-photon microscopy rig',
+        name="microscopy_rig",
+        description="Two-photon rig with a green emission path",
         microscope=microscope,
         excitation_source=laser,
-        excitation_filter=ex_filter,
-        dichroic_mirror=dichroic,
-        photodetector=detector,
-        emission_filter=em_filter,
+        dichroic_mirror=dichroic_mirror,
+        emission_filter=emission_filter,
+        photodetector=photodetector,
+        objective_lens=objective_lens,
     )
 
-    # Store rig and indicator in the experiment metadata container
-    microscopy_experiment_metadata = MicroscopyExperimentMetadata(
-        indicators=[indicator],
-        microscopy_rigs=[microscopy_rig],
-    )
-    nwbfile.add_lab_meta_data(microscopy_experiment_metadata)
+    indicator = Indicator(name="indicator", label="GCaMP6f", description="Genetically encoded calcium indicator")
 
-    # Create microscopy channel
+    nwbfile.add_lab_meta_data(
+        MicroscopyExperimentMetadata(microscopy_rigs=[microscopy_rig], indicators=[indicator])
+    )
+
     microscopy_channel = MicroscopyChannel(
-        name='gcamp_channel',
-        description='GCaMP6f channel',
+        name="green_channel",
+        description="GCaMP6f emission",
         excitation_wavelength_in_nm=920.0,
         emission_wavelength_in_nm=510.0,
         indicator=indicator,
     )
 
-    # Define illumination pattern
+    # A resonant scanner at about 8 kHz acquires 256 lines in about 1/30 s
     line_scan = LineScan(
-        name='line_scanning',
-        description='Line scanning two-photon microscopy',
-        scan_direction='horizontal',
-        line_rate_in_Hz=1000.0,
-        dwell_time_in_s=1.0e-6,
+        name="line_scan",
+        description="Unidirectional raster scan with a resonant-galvo scanner",
+        scan_direction="horizontal",
+        line_rate_in_Hz=7910.0,
+        dwell_time_in_s=0.25e-6,
     )
 
-    # Define imaging space with illumination pattern
     planar_imaging_space = PlanarImagingSpace(
-        name='PlanarImagingSpace',
-        description='Imaging plane of layer 2/3 of visual cortex',
-        pixel_size_in_um=[1.0, 1.0],
-        dimensions_in_pixels=[512, 512],
-        anatomical_target='Visual cortex, layer 2/3',
+        name="planar_imaging_space",
+        description="Field of view in layer 2/3 of V1",
+        anatomical_target="Primary visual cortex, layer 2/3",
+        pixel_size_in_um=[2.0, 2.0],  # (x, y)
+        dimensions_in_pixels=[256, 256],  # (x, y)
         illumination_pattern=line_scan,
     )
 
-    # Create example imaging data
-    data = np.random.rand(100, 512, 512)  # 100 frames, 512x512 pixels
+    # Imaging data are shaped (frames, height, width)
+    data = np.random.randint(0, 4096, size=(100, 256, 256), dtype=np.uint16)
 
-    # Create imaging series
     microscopy_series = PlanarMicroscopySeries(
-        name='imaging_data',
-        description='Two-photon calcium imaging',
+        name="microscopy_series",
+        description="Two-photon calcium imaging",
         microscopy_rig=microscopy_rig,
         microscopy_channel=microscopy_channel,
         planar_imaging_space=planar_imaging_space,
         data=data,
-        unit='a.u.',
+        unit="a.u.",
         rate=30.0,
         starting_time=0.0,
     )
     nwbfile.add_acquisition(microscopy_series)
 
-    # Save file
-    from pynwb import NWBHDF5IO
-    with NWBHDF5IO('microscopy_session.nwb', 'w') as io:
+    with NWBHDF5IO("microscopy_session.nwb", "w") as io:
         io.write(nwbfile)
 
 Next Steps
-=========
+==========
 
-After getting familiar with the basics:
-
-1. Check out the :ref:`examples` section for more detailed examples including:
-   - Volumetric imaging
-   - Multi-plane imaging
-   - ROI segmentation and response series
-
-2. Read the :ref:`user_guide` for best practices and detailed workflows
-
-3. Review the :ref:`api` documentation for complete reference
-
-4. See the :ref:`format` section to understand the underlying data organization
+1. The :ref:`examples` section shows volumetric, multi-plane and multi-channel imaging, and ROI
+   segmentation with response series.
+2. The :ref:`user_guide` covers the components in more detail.
+3. The :ref:`api` documents the Python classes.
+4. The :ref:`format` section documents the specification.
