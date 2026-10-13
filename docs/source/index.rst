@@ -1,21 +1,21 @@
 .. ndx-microscopy documentation master file
 
 ndx-microscopy: NWB Extension for Microscopy Data
-*********************************************
+*************************************************
 
 The ndx-microscopy extension provides a standardized way to store and organize microscopy data in the Neurodata Without Borders (NWB) format. This extension integrates with  `ndx-ophys-devices <https://github.com/catalystneuro/ndx-ophys-devices>`_ to provide comprehensive optical component specifications.
 
 Key Features
------------
+------------
 
-- **Device Components**: MicroscopeModel, Microscope instances, and MicroscopyRig for organizing optical components
-- **Illumination Patterns**: Support for various scanning and acquisition methods
-- **Imaging Spaces**: Support for 2D/3D imaging with precise coordinate systems
-- **Data Series**: Time series data with multi-plane and variable depth support
-- **ROI Management**: Segmentation and response data storage
+- Device components: MicroscopeModel, Microscope and MicroscopyRig, with optical components from ndx-ophys-devices
+- Illumination patterns for line scanning, plane acquisition and random access scanning
+- Planar and volumetric imaging spaces with the targeted anatomical region and pixel or voxel size
+- Planar and volumetric series and static images, with multi-plane and multi-channel containers
+- Segmentation, summary images and ROI response series
 
 Documentation
------------
+-------------
 
 .. toctree::
    :maxdepth: 2
@@ -31,10 +31,10 @@ Documentation
    credits
 
 Installation
------------
+------------
 
 Python Installation
-^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: bash
 
@@ -42,7 +42,7 @@ Python Installation
 
 
 Contributing
------------
+------------
 
 Contributions are welcome! Please see our `GitHub repository <https://github.com/catalystneuro/ndx-microscopy>`_ for:
 
@@ -52,7 +52,7 @@ Contributions are welcome! Please see our `GitHub repository <https://github.com
 - Contributing instructions
 
 Indices and Tables
----------------
+------------------
 
 * :ref:`genindex`
 * :ref:`modindex`
