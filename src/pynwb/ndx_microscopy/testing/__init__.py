@@ -1,5 +1,6 @@
 from ._mock import (
     mock_MicroscopyRig,
+    mock_full_rig,
     mock_MicroscopeModel,
     mock_Microscope,
     mock_MicroscopyChannel,
@@ -28,6 +29,7 @@ __all__ = [
     "mock_MicroscopeModel",
     "mock_MicroscopyChannel",
     "mock_MicroscopyRig",
+    "mock_full_rig",
     "mock_PlanarImagingSpace",
     "mock_VolumetricImagingSpace",
     "mock_PlanarSegmentation",

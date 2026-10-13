@@ -3,14 +3,16 @@ from typing import List, Optional, Tuple
 
 import ndx_ophys_devices
 import numpy as np
-from ndx_ophys_devices import ExcitationSource, OpticalFilter, Photodetector, DichroicMirror
+from ndx_ophys_devices import ExcitationSource, OpticalFilter, Photodetector, DichroicMirror, ObjectiveLens
 
 from ndx_ophys_devices.testing import (
     mock_ExcitationSource,
     mock_OpticalFilter,
     mock_Photodetector,
     mock_DichroicMirror,
+    mock_ObjectiveLens,
 )
+from pynwb import NWBFile
 
 from pynwb.image import Image
 from pynwb.testing.mock.utils import name_generator
@@ -80,6 +82,7 @@ def mock_MicroscopyRig(
     dichroic_mirror: DichroicMirror = None,
     photodetector: Photodetector = None,
     emission_filter: OpticalFilter = None,
+    objective_lens: ObjectiveLens = None,
     optical_path_scheme: Optional[Image] = None,
 ) -> ndx_microscopy.MicroscopyRig:
     microscopy_rig = ndx_microscopy.MicroscopyRig(
@@ -91,9 +94,27 @@ def mock_MicroscopyRig(
         dichroic_mirror=dichroic_mirror or mock_DichroicMirror(),
         photodetector=photodetector or mock_Photodetector(),
         emission_filter=emission_filter or mock_OpticalFilter(),
+        objective_lens=objective_lens or mock_ObjectiveLens(),
         optical_path_scheme=optical_path_scheme,
     )
     return microscopy_rig
+
+
+def mock_full_rig(nwbfile: NWBFile, *, name: str = "MicroscopyRig") -> ndx_microscopy.MicroscopyRig:
+    """Create a MicroscopyRig with one mock instance of every device, and add the devices and models to nwbfile."""
+    devices = dict(
+        microscope=mock_Microscope(name="Microscope"),
+        excitation_source=mock_ExcitationSource(name="ExcitationSource"),
+        excitation_filter=mock_OpticalFilter(name="ExcitationFilter"),
+        dichroic_mirror=mock_DichroicMirror(name="DichroicMirror"),
+        photodetector=mock_Photodetector(name="Photodetector"),
+        emission_filter=mock_OpticalFilter(name="EmissionFilter"),
+        objective_lens=mock_ObjectiveLens(name="ObjectiveLens"),
+    )
+    for device in devices.values():
+        nwbfile.add_device_model(device_models=device.model)
+        nwbfile.add_device(devices=device)
+    return mock_MicroscopyRig(name=name, **devices)
 
 
 def mock_IlluminationPattern(
