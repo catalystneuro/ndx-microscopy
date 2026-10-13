@@ -22,6 +22,7 @@ extensions = [
     "sphinx.ext.ifconfig",
     "sphinx.ext.autodoc",
     "sphinx.ext.intersphinx",
+    "sphinx.ext.napoleon",
 ]
 
 templates_path = ["_templates"]
@@ -108,7 +109,6 @@ add_function_parentheses = False
 
 # -- HTML sphinx options
 html_theme = "sphinx_rtd_theme"
-html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 # LaTeX Sphinx options
 latex_elements = {
