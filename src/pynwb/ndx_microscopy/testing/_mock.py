@@ -3,7 +3,14 @@ from typing import List, Optional, Tuple
 
 import ndx_ophys_devices
 import numpy as np
-from ndx_ophys_devices import ExcitationSource, OpticalFilter, Photodetector, DichroicMirror, ObjectiveLens
+from ndx_ophys_devices import (
+    ExcitationSource,
+    OpticalFilter,
+    Photodetector,
+    DichroicMirror,
+    ObjectiveLens,
+    StereotacticPosition,
+)
 
 from ndx_ophys_devices.testing import (
     mock_ExcitationSource,
@@ -195,6 +202,7 @@ def mock_PlanarImagingSpace(
     dimensions_in_pixels: Tuple[int, int] = (100, 100),
     anatomical_target: str = "The anatomical target of the mock imaging space.",
     illumination_pattern: ndx_microscopy.IlluminationPattern = None,
+    fov_center_coordinates: Optional[StereotacticPosition] = None,
 ) -> ndx_microscopy.PlanarImagingSpace:
     planar_imaging_space = ndx_microscopy.PlanarImagingSpace(
         name=name or name_generator("PlanarImagingSpace"),
@@ -203,6 +211,7 @@ def mock_PlanarImagingSpace(
         dimensions_in_pixels=dimensions_in_pixels,
         anatomical_target=anatomical_target,
         illumination_pattern=illumination_pattern or mock_IlluminationPattern(),
+        fov_center_coordinates=fov_center_coordinates,
     )
     return planar_imaging_space
 
@@ -215,6 +224,7 @@ def mock_VolumetricImagingSpace(
     dimensions_in_voxels: Tuple[int, int, int] = (100, 100, 100),
     anatomical_target: str = "The location targeted by the mock imaging space.",
     illumination_pattern: ndx_microscopy.IlluminationPattern = None,
+    fov_center_coordinates: Optional[StereotacticPosition] = None,
 ) -> ndx_microscopy.VolumetricImagingSpace:
     volumetric_imaging_space = ndx_microscopy.VolumetricImagingSpace(
         name=name or name_generator("VolumetricImagingSpace"),
@@ -223,6 +233,7 @@ def mock_VolumetricImagingSpace(
         dimensions_in_voxels=dimensions_in_voxels,
         anatomical_target=anatomical_target,
         illumination_pattern=illumination_pattern or mock_IlluminationPattern(),
+        fov_center_coordinates=fov_center_coordinates,
     )
     return volumetric_imaging_space
 

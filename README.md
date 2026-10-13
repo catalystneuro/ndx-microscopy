@@ -252,12 +252,14 @@ classDiagram
         groups
         --------------------------------------
         illumination_pattern : IlluminationPattern
+        fov_center_coordinates : StereotacticPosition, optional
     }
 
     IlluminationPattern <|-- LineScan : extends
     IlluminationPattern <|-- PlaneAcquisition : extends
     IlluminationPattern <|-- RandomAccessScan : extends
     ImagingSpace *-- IlluminationPattern : contains
+    ImagingSpace *-- StereotacticPosition : contains
 ```
 
 #### Microscopy Series, Static Image and Imaging Space Components
@@ -390,6 +392,7 @@ classDiagram
         groups
         --------------------------------------
         illumination_pattern : IlluminationPattern
+        fov_center_coordinates : StereotacticPosition, optional
     }
 
     class PlanarImagingSpace {

@@ -180,6 +180,13 @@ groups:
       - neurodata_type_inc: IlluminationPattern
         doc: IlluminationPattern object containing metadata about the method used to acquire this imaging data.
         quantity: 1
+      - name: fov_center_coordinates
+        neurodata_type_inc: StereotacticPosition
+        doc:
+          Stereotactic position of the center of the field of view (for a volumetric imaging space, the center of
+          the volume). The z coordinate gives the imaging depth, e.g., relative to the brain surface. Localization
+          of the field of view against an atlas will be handled by the ndx-anatomical-localization extension.
+        quantity: "?"
 
   - neurodata_type_def: PlanarImagingSpace
     neurodata_type_inc: ImagingSpace

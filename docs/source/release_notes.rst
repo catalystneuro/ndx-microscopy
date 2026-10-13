@@ -62,6 +62,7 @@ Features
   * ``Indicator`` objects (from ndx-ophys-devices)
 
 * Added support for ``ViralVector`` and ``ViralVectorInjection`` imports from ndx-ophys-devices
+* Added optional ``fov_center_coordinates`` (a ``StereotacticPosition`` from ndx-ophys-devices) to ``ImagingSpace`` for the stereotactic position of the center of the field of view, including the imaging depth. Atlas localization of the field of view will be handled by `ndx-anatomical-localization <https://github.com/catalystneuro/ndx-anatomical-localization>`_
 * Added optional ``optical_path_scheme`` dataset to ``MicroscopyRig`` (a contained ``Image``, e.g. ``RGBImage``) for storing an annotated diagram or picture of the microscope's optical path layout
 
 Notes

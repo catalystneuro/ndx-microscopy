@@ -13,6 +13,7 @@ from pynwb.testing import TestCase as pynwb_TestCase
 from pynwb.testing.mock.file import mock_NWBFile
 
 import pynwb
+from ndx_ophys_devices import StereotacticPosition
 from ndx_ophys_devices.testing import (
     mock_ViralVector,
     mock_ViralVectorInjection,
@@ -202,6 +203,53 @@ def test_shared_channel_and_imaging_space_roundtrip(tmp_path):
         assert read_series_2.microscopy_channel is read_series_1.microscopy_channel
         assert read_series_2.planar_imaging_space is read_series_1.planar_imaging_space
         assert read_segmentation.planar_imaging_space is read_series_1.planar_imaging_space
+
+
+@pytest.mark.parametrize(
+    "mock_imaging_space, mock_series, imaging_space_argument",
+    [
+        (mock_PlanarImagingSpace, mock_PlanarMicroscopySeries, "planar_imaging_space"),
+        (mock_VolumetricImagingSpace, mock_VolumetricMicroscopySeries, "volumetric_imaging_space"),
+    ],
+)
+def test_imaging_space_with_fov_center_coordinates_roundtrip(
+    tmp_path, mock_imaging_space, mock_series, imaging_space_argument
+):
+    nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=timezone.utc))
+    microscopy_rig, (indicator,) = add_microscopy_experiment_metadata(nwbfile)
+
+    imaging_space = mock_imaging_space(
+        name="ImagingSpace",
+        fov_center_coordinates=StereotacticPosition(
+            name="fov_center_coordinates",
+            anatomical_target="Primary visual cortex, layer 2/3",
+            origin="bregma (AP, ML); brain surface (DV)",
+            orientation="RAS",
+            x_in_mm=2.5,
+            y_in_mm=-3.8,
+            z_in_mm=-0.2,
+        ),
+    )
+    nwbfile.add_acquisition(
+        mock_series(
+            name="MicroscopySeries",
+            microscopy_rig=microscopy_rig,
+            microscopy_channel=mock_MicroscopyChannel(name="MicroscopyChannel", indicator=indicator),
+            **{imaging_space_argument: imaging_space},
+        )
+    )
+
+    nwbfile_path = tmp_path / "imaging_space_with_fov_center_coordinates.nwb"
+    with pynwb.NWBHDF5IO(path=nwbfile_path, mode="w") as io:
+        io.write(nwbfile)
+    assert pynwb.validate(path=str(nwbfile_path)) == []
+
+    with pynwb.NWBHDF5IO(path=nwbfile_path, mode="r", load_namespaces=True) as io:
+        read_imaging_space = getattr(io.read().acquisition["MicroscopySeries"], imaging_space_argument)
+        read_coordinates = read_imaging_space.fov_center_coordinates
+        assert isinstance(read_coordinates, StereotacticPosition)
+        assert read_coordinates.anatomical_target == "Primary visual cortex, layer 2/3"
+        assert (read_coordinates.x_in_mm, read_coordinates.y_in_mm, read_coordinates.z_in_mm) == (2.5, -3.8, -0.2)
 
 
 def test_imaging_space_dimensions_from_python_ints_write_without_dtype_warning(tmp_path):

@@ -342,7 +342,11 @@ Imaging Spaces
 
 ``PlanarImagingSpace`` and ``VolumetricImagingSpace`` describe the imaged region. Sizes are listed x first:
 ``pixel_size_in_um`` and ``dimensions_in_pixels`` are (x, y), while the data are (height, width).
-Use the description to record the imaging depth.
+
+The optional ``fov_center_coordinates`` is a ``StereotacticPosition`` for the center of the field of view (for
+a volume, the center of the volume); its z coordinate gives the imaging depth. Localization of the field of
+view against an atlas, such as the coordinates of each pixel, will be handled by the
+`ndx-anatomical-localization <https://github.com/catalystneuro/ndx-anatomical-localization>`_ extension.
 
 .. code-block:: python
 
@@ -353,6 +357,15 @@ Use the description to record the imaging depth.
         pixel_size_in_um=[2.0, 2.0],  # (x, y)
         dimensions_in_pixels=[256, 256],  # (x, y)
         illumination_pattern=line_scan,
+        fov_center_coordinates=StereotacticPosition(
+            name="fov_center_coordinates",
+            anatomical_target="Primary visual cortex, layer 2/3",
+            origin="bregma (AP, ML); brain surface (DV)",
+            orientation="RAS",
+            x_in_mm=-2.5,
+            y_in_mm=-3.8,
+            z_in_mm=-0.2,  # 200 um below the brain surface
+        ),
     )
 
 Planar Imaging Series

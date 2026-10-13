@@ -41,6 +41,9 @@ Imaging Spaces
 - ``PlanarImagingSpace`` and ``VolumetricImagingSpace`` record the targeted anatomical region, the pixel or
   voxel size, and the dimensions in pixels or voxels
 - Each imaging space contains the illumination pattern used to acquire it
+- The optional ``fov_center_coordinates`` stores the stereotactic position of the center of the field of view,
+  including the imaging depth; atlas localization of the field of view will be handled by the
+  `ndx-anatomical-localization <https://github.com/catalystneuro/ndx-anatomical-localization>`_ extension
 
 Imaging Data
 ^^^^^^^^^^^^
