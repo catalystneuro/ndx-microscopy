@@ -910,11 +910,10 @@ class TestMicroscopyResponseSeriesSimpleRoundtrip(pynwb_TestCase):
         ophys_module = nwbfile.create_processing_module(name="ophys", description="")
         ophys_module.add(segmentation_container)
 
-        number_of_rois = 10
         plane_segmentation_region = pynwb.ophys.DynamicTableRegion(
             name="rois",  # Name must be exactly this
             description="",
-            data=[x for x in range(number_of_rois)],
+            data=list(range(len(planar_segmentation))),
             table=planar_segmentation,
         )
         microscopy_response_series = mock_MicroscopyResponseSeries(
