@@ -35,6 +35,7 @@ Deprecations and Changes
 
 * **Breaking Change**: Renamed ``PlaneAcquisition.point_spread_function_in_um`` to ``point_spread_function``, since it is a text value such as "32 um ± 1.6 um"
 * **Breaking Change**: Changed ``RandomAccessScan.max_scan_points`` dtype from ``numeric`` to ``int32``
+* Changed the dtype of ``PlanarImagingSpace.dimensions_in_pixels`` and ``VolumetricImagingSpace.dimensions_in_voxels`` from ``uint32`` to ``int32``, so that Python integers are written without a dtype conversion warning
 * Removed the redundant ``name`` attribute from ``MicroscopyChannel`` and ``MicroscopyStaticImage``; the object name is the group name
 * Removed the custom ``SegmentationContainer.add_segmentation(imaging_space=...)``, which was never callable; use the generated ``add_segmentation(segmentations=...)``
 

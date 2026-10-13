@@ -192,7 +192,7 @@ groups:
         doc:
           The number of pixels in the x and y dimensions of the imaging space, listed as (x, y), i.e.,
           (width, height). Note that this is the reverse of the (height, width) order of the imaging data.
-        dtype: uint32
+        dtype: int32
         dims:
           - - x, y
         shape:
@@ -218,7 +218,7 @@ groups:
           The number of voxels in the x, y, and z dimensions of the imaging space, listed as (x, y, z), i.e.,
           (width, height, depth). Note that this is the reverse of the (depth, height, width) order of the
           imaging data.
-        dtype: uint32
+        dtype: int32
         dims:
           - - x, y, z
         shape:

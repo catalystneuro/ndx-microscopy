@@ -1,11 +1,13 @@
 """Test roundtrip (write and read back) of the Python API for the ndx-microscopy extension."""
 
+import warnings
 from datetime import datetime, timezone
 
 import h5py
 import numpy as np
 import pytest
 from hdmf.build.errors import OrphanContainerBuildError
+from hdmf.build.warnings import DtypeConversionWarning
 from pynwb.image import RGBImage
 from pynwb.testing import TestCase as pynwb_TestCase
 from pynwb.testing.mock.file import mock_NWBFile
@@ -200,6 +202,36 @@ def test_shared_channel_and_imaging_space_roundtrip(tmp_path):
         assert read_series_2.microscopy_channel is read_series_1.microscopy_channel
         assert read_series_2.planar_imaging_space is read_series_1.planar_imaging_space
         assert read_segmentation.planar_imaging_space is read_series_1.planar_imaging_space
+
+
+def test_imaging_space_dimensions_from_python_ints_write_without_dtype_warning(tmp_path):
+    """Dimensions are usually given as Python ints, which should not need a dtype conversion on write."""
+    nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=timezone.utc))
+    microscopy_rig, (indicator,) = add_microscopy_experiment_metadata(nwbfile)
+    microscopy_channel = mock_MicroscopyChannel(name="MicroscopyChannel", indicator=indicator)
+    nwbfile.add_acquisition(
+        mock_PlanarMicroscopySeries(
+            name="PlanarMicroscopySeries",
+            microscopy_rig=microscopy_rig,
+            microscopy_channel=microscopy_channel,
+            planar_imaging_space=mock_PlanarImagingSpace(name="PlanarImagingSpace", dimensions_in_pixels=[5, 5]),
+        )
+    )
+    nwbfile.add_acquisition(
+        mock_VolumetricMicroscopySeries(
+            name="VolumetricMicroscopySeries",
+            microscopy_rig=microscopy_rig,
+            microscopy_channel=microscopy_channel,
+            volumetric_imaging_space=mock_VolumetricImagingSpace(
+                name="VolumetricImagingSpace", dimensions_in_voxels=[5, 5, 3]
+            ),
+        )
+    )
+
+    with warnings.catch_warnings():
+        warnings.filterwarnings("error", category=DtypeConversionWarning, message=".*dimensions_in_(pixels|voxels)")
+        with pynwb.NWBHDF5IO(path=tmp_path / "imaging_space_dimensions.nwb", mode="w") as io:
+            io.write(nwbfile)
 
 
 def test_microscopy_rig_with_optical_path_scheme_roundtrip(tmp_path):
