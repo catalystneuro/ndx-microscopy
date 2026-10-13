@@ -1,7 +1,8 @@
 # v0.4.0 (Upcoming)
 
 ## Deprecations and Changes
-- **Breaking Change**: `OpticalLens`changed in `ObjectiveLens`
+- **Breaking Change**: `OpticalLens` renamed to `ObjectiveLens`
+- **Breaking Change**: `Microscope` extends the core `Device` type and `MicroscopeModel` the core `DeviceModel` type (pynwb 3.1), replacing `DeviceInstance` and `DeviceModel` from ndx-ophys-devices
 - **Breaking Change**: `MicroscopyChannel.indicator` changed from a nested group to a link reference
 - **Breaking Change**: `MicroscopySeries.microscopy_rig` changed from a nested group to a link reference
 - **Breaking Change**: Simplified `ImagingSpace` class by removing coordinate system metadata:
@@ -19,6 +20,10 @@
   - `VolumetricSegmentation.voxel_to_volume` / `volume_to_voxel` now build/parse volumes in `(depth, height, width)` order. The `voxel_mask` compound dtype remains `(x, y, z, weight)`.
   - `PlanarSegmentation.image_mask`: `(num_roi, num_x, num_y)` → `(num_roi, num_y, num_x)`
   - `PlanarSegmentation.pixel_to_image` / `image_to_pixel` now build/parse images in `(height, width)` order, so pixel `(x, y)` is stored at `image_mask[y, x]`. The `pixel_mask` compound dtype remains `(x, y, weight)`.
+- **Breaking Change**: Renamed `PlaneAcquisition.point_spread_function_in_um` to `point_spread_function`, since it is a text value such as "32 um ± 1.6 um"
+- **Breaking Change**: Changed `RandomAccessScan.max_scan_points` dtype from `numeric` to `int32`
+- Removed the redundant `name` attribute from `MicroscopyChannel` and `MicroscopyStaticImage`; the object name is the group name
+- Removed the custom `SegmentationContainer.add_segmentation(imaging_space=...)`, which was never callable; use the generated `add_segmentation(segmentations=...)`
 
 ## Features
 - Extended `MultiChannelMicroscopyContainer` to support nesting `MultiPlaneMicroscopyContainer` objects, enabling combined multi-plane and multi-channel acquisition workflows (e.g., a functional indicator imaged at several depths alongside anatomical markers)
@@ -33,9 +38,6 @@
   - `Indicator` objects (from ndx-ophys-devices)
 - Added support for `ViralVector` and `ViralVectorInjection` imports from ndx-ophys-devices
 - Added optional `optical_path_scheme` dataset to `MicroscopyRig` (a contained `Image`, e.g. `RGBImage`) for storing an annotated diagram or picture of the microscope's optical path layout
-- Renamed `PlaneAcquisition.point_spread_function_in_um` to `point_spread_function`, since it is a text value such as "32 um ± 1.6 um"
-- Changed `RandomAccessScan.max_scan_points` dtype from `numeric` to `int32`
-- Removed the redundant `name` attribute from `MicroscopyChannel` and `MicroscopyStaticImage`; the object name is the group name
 
 ## Notes
 - These changes improve metadata organization by centralizing all experiment-related objects in `MicroscopyExperimentMetadata`
