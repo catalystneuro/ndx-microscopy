@@ -1,3 +1,4 @@
+from hdmf.common import DynamicTable
 from hdmf.utils import docval, popargs
 from pynwb import get_class, register_class
 from pynwb.core import MultiContainerInterface
@@ -456,9 +457,19 @@ def create_roi_table_region(self, **kwargs):
 VolumetricSegmentation.create_roi_table_region = create_roi_table_region
 
 
-# SegmentationContainer API functions
+# Segmentation API functions
+
 ImagingSpace = get_class("ImagingSpace", extension_name)
 Segmentation = get_class("Segmentation", extension_name)
+
+# Segmentation is both a DynamicTable and a MultiContainerInterface (for its summary images). With hdmf 4.1,
+# segmentation[...] resolves to the summary image lookup, which breaks row and column access and the HTML repr.
+# Index segmentations as tables; summary images remain available through segmentation.summary_images.
+for segmentation_class in (Segmentation, PlanarSegmentation, VolumetricSegmentation):
+    segmentation_class.__getitem__ = DynamicTable.__getitem__
+
+
+# SegmentationContainer API functions
 
 
 @register_class("SegmentationContainer", extension_name)

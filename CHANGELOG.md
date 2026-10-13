@@ -25,6 +25,9 @@
 - Removed the redundant `name` attribute from `MicroscopyChannel` and `MicroscopyStaticImage`; the object name is the group name
 - Removed the custom `SegmentationContainer.add_segmentation(imaging_space=...)`, which was never callable; use the generated `add_segmentation(segmentations=...)`
 
+## Bug Fixes
+- Indexing a `PlanarSegmentation` or `VolumetricSegmentation` (e.g., `segmentation[0]`, `segmentation["image_mask"]`) returns table rows and columns with hdmf 4.1, as with later hdmf versions. It previously looked up summary images by name and failed, which also broke the HTML repr in Jupyter.
+
 ## Features
 - Extended `MultiChannelMicroscopyContainer` to support nesting `MultiPlaneMicroscopyContainer` objects, enabling combined multi-plane and multi-channel acquisition workflows (e.g., a functional indicator imaged at several depths alongside anatomical markers)
 - Added static image support for microscopy experiments:

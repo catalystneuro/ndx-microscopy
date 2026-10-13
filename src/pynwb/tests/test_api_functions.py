@@ -323,6 +323,27 @@ def test_planar_add_roi_with_both_mask_types():
     assert len(planar_seg) == 2
 
 
+@pytest.mark.parametrize("mock_function", [mock_PlanarSegmentation, mock_VolumetricSegmentation])
+def test_segmentation_indexes_rows_and_columns(mock_function):
+    """Test that indexing a segmentation returns table rows and columns, as for any DynamicTable."""
+    if mock_function is mock_PlanarSegmentation:
+        segmentation = mock_function(planar_imaging_space=mock_PlanarImagingSpace(dimensions_in_pixels=(4, 3)))
+        mask_column = "image_mask"
+    else:
+        segmentation = mock_function(
+            volumetric_imaging_space=mock_VolumetricImagingSpace(dimensions_in_voxels=(4, 3, 2))
+        )
+        mask_column = "volume_mask"
+
+    assert len(segmentation[0:2]) == 2
+    assert len(segmentation[0]) == 1
+    assert segmentation[mask_column] is segmentation.columns[0]
+    assert "<table" in segmentation._repr_html_()
+
+    # Summary images remain accessible through summary_images
+    assert segmentation.summary_images["mean"].name == "mean"
+
+
 def test_add_roi_without_masks():
     """Test error when adding ROI without any mask."""
     planar_imaging_space = mock_PlanarImagingSpace()
