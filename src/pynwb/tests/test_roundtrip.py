@@ -493,12 +493,16 @@ class TestMicroscopyResponseSeriesSimpleRoundtrip(pynwb_TestCase):
 
     def test_roundtrip(self):
         nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=timezone.utc))
-
-        microscope = mock_Microscope(name="Microscope")
-        nwbfile.add_device_model(device_models=microscope.model)
-        nwbfile.add_device(devices=microscope)
+        microscopy_rig, (indicator,) = add_microscopy_experiment_metadata(nwbfile)
 
         planar_imaging_space = mock_PlanarImagingSpace(name="PlanarImagingSpace")
+        planar_microscopy_series = mock_PlanarMicroscopySeries(
+            name="PlanarMicroscopySeries",
+            microscopy_rig=microscopy_rig,
+            microscopy_channel=mock_MicroscopyChannel(name="MicroscopyChannel", indicator=indicator),
+            planar_imaging_space=planar_imaging_space,
+        )
+        nwbfile.add_acquisition(planar_microscopy_series)
 
         planar_segmentation = mock_PlanarSegmentation(
             name="PlanarSegmentation", planar_imaging_space=planar_imaging_space
@@ -519,6 +523,7 @@ class TestMicroscopyResponseSeriesSimpleRoundtrip(pynwb_TestCase):
         microscopy_response_series = mock_MicroscopyResponseSeries(
             name="MicroscopyResponseSeries",
             rois=plane_segmentation_region,
+            microscopy_series=planar_microscopy_series,
         )
 
         microscopy_response_series_container = MicroscopyResponseSeriesContainer(
@@ -533,13 +538,32 @@ class TestMicroscopyResponseSeriesSimpleRoundtrip(pynwb_TestCase):
         with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="r", load_namespaces=True) as io:
             read_nwbfile = io.read()
 
-            self.assertContainerEqual(microscope, read_nwbfile.devices["Microscope"])
             self.assertContainerEqual(segmentation_container, read_nwbfile.processing["ophys"]["SegmentationContainer"])
 
-            self.assertContainerEqual(
-                microscopy_response_series_container,
-                read_nwbfile.processing["ophys"]["MicroscopyResponseSeriesContainer"],
+            read_container = read_nwbfile.processing["ophys"]["MicroscopyResponseSeriesContainer"]
+            self.assertContainerEqual(microscopy_response_series_container, read_container)
+            self.assertIs(
+                read_container["MicroscopyResponseSeries"].microscopy_series,
+                read_nwbfile.acquisition["PlanarMicroscopySeries"],
             )
+
+
+def test_microscopy_experiment_metadata_without_optional_children_roundtrip(tmp_path):
+    nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=timezone.utc))
+    nwbfile.add_lab_meta_data(MicroscopyExperimentMetadata())
+
+    nwbfile_path = tmp_path / "empty_microscopy_experiment_metadata.nwb"
+    with pynwb.NWBHDF5IO(path=nwbfile_path, mode="w") as io:
+        io.write(nwbfile)
+    assert pynwb.validate(path=str(nwbfile_path)) == []
+
+    with pynwb.NWBHDF5IO(path=nwbfile_path, mode="r", load_namespaces=True) as io:
+        read_metadata = io.read().lab_meta_data["microscopy_experiment_metadata"]
+        assert isinstance(read_metadata, MicroscopyExperimentMetadata)
+        assert len(read_metadata.microscopy_rigs) == 0
+        assert len(read_metadata.viral_vectors) == 0
+        assert len(read_metadata.viral_vector_injections) == 0
+        assert len(read_metadata.indicators) == 0
 
 
 if __name__ == "__main__":
