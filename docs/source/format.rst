@@ -320,7 +320,7 @@ Whole plane acquisition method for microscopy.
         neurodata_type_inc: IlluminationPattern
         doc: Whole plane acquisition, common for light sheet techniques.
         attributes:
-          - name: point_spread_function_in_um
+          - name: point_spread_function
             dtype: text
             doc: Estimated plane spatial profile or point spread function, expressed as mean [um] ± s.d [um].
             required: false

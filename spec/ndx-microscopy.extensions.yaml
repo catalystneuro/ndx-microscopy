@@ -125,7 +125,7 @@ groups:
     neurodata_type_inc: IlluminationPattern
     doc: Whole plane acquisition, common for light sheet techniques.
     attributes:
-      - name: point_spread_function_in_um
+      - name: point_spread_function
         dtype: text
         doc:
           Estimated plane spatial profile or point spread function, expressed as
@@ -145,7 +145,7 @@ groups:
     doc: Random access method for targeted, high-speed imaging of specific regions.
     attributes:
       - name: max_scan_points
-        dtype: numeric
+        dtype: int32
         doc: Maximum number of points that can be scanned in a single frame.
         required: false
       - name: dwell_time_in_s

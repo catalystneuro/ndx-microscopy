@@ -202,7 +202,7 @@ classDiagram
         --------------------------------------
         attributes
         --------------------------------------
-        point_spread_function_in_um : text, optional
+        point_spread_function : text, optional
         illumination_angle_in_degrees : float64, optional
         plane_rate_in_Hz : float64, optional
     }
@@ -212,7 +212,7 @@ classDiagram
         --------------------------------------
         attributes
         --------------------------------------
-        max_scan_points : numeric, optional
+        max_scan_points : int32, optional
         dwell_time_in_s : float64, optional
         scanning_pattern : text, optional
     }

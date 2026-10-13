@@ -256,7 +256,7 @@ Illumination patterns define how the microscope scans or illuminates the sample:
        plane_acquisition = PlaneAcquisition(
            name='plane_acquisition',
            description='Widefield fluorescence imaging',
-           point_spread_function_in_um="32 um ± 1.6 um",
+           point_spread_function="32 um ± 1.6 um",
            illumination_angle_in_degrees=45.0,  # for light sheet
            plane_rate_in_Hz=100.0               # planes per second
        )
@@ -309,7 +309,7 @@ Imaging spaces define the physical region being imaged:
        plane_acquisition = PlaneAcquisition(
            name='plane_acquisition',
            description='Light sheet imaging',
-           point_spread_function_in_um="32 um ± 1.6 um",
+           point_spread_function="32 um ± 1.6 um",
            illumination_angle_in_degrees=45.0,
            plane_rate_in_Hz=100.0
        )
@@ -560,7 +560,7 @@ Workflow for one-photon widefield imaging:
     plane_acquisition = PlaneAcquisition(
         name='plane_acquisition',
         description='Widefield fluorescence imaging',
-        point_spread_function_in_um="32 um ± 1.6 um",
+        point_spread_function="32 um ± 1.6 um",
         plane_rate_in_Hz=30.0
     )
 

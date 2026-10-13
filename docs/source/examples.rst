@@ -878,7 +878,7 @@ Example of multi-plane imaging with an electrically tunable lens:
     plane_acquisition = PlaneAcquisition(
         name='plane_acquisition',
         description='Plane acquisition',
-        point_spread_function_in_um="32 um ± 1.6 um",
+        point_spread_function="32 um ± 1.6 um",
     )
 
     microscopy_channel = MicroscopyChannel(

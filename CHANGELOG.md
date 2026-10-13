@@ -33,6 +33,8 @@
   - `Indicator` objects (from ndx-ophys-devices)
 - Added support for `ViralVector` and `ViralVectorInjection` imports from ndx-ophys-devices
 - Added optional `optical_path_scheme` dataset to `MicroscopyRig` (a contained `Image`, e.g. `RGBImage`) for storing an annotated diagram or picture of the microscope's optical path layout
+- Renamed `PlaneAcquisition.point_spread_function_in_um` to `point_spread_function`, since it is a text value such as "32 um ± 1.6 um"
+- Changed `RandomAccessScan.max_scan_points` dtype from `numeric` to `int32`
 
 ## Notes
 - These changes improve metadata organization by centralizing all experiment-related objects in `MicroscopyExperimentMetadata`
