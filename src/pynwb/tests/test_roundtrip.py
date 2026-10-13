@@ -3,7 +3,9 @@
 from datetime import datetime, timezone
 
 from ndx_microscopy.testing._mock import mock_PlanarMicroscopyStaticImage, mock_VolumetricMicroscopyStaticImage
+import numpy as np
 import pytest
+from pynwb.image import RGBImage
 from pynwb.testing import TestCase as pynwb_TestCase
 from pynwb.testing.mock.file import mock_NWBFile
 
@@ -38,7 +40,7 @@ from ndx_microscopy.testing import (
     mock_MicroscopyResponseSeries,
 )
 
-from ndx_microscopy import MicroscopyExperimentMetadata, MicroscopyResponseSeriesContainer
+from ndx_microscopy import MicroscopyExperimentMetadata, MicroscopyResponseSeriesContainer, MicroscopyRig
 
 
 class TestPlanarMicroscopyStaticImageSimpleRoundtrip(pynwb_TestCase):
@@ -302,6 +304,45 @@ class TestPlanarMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
             self.assertContainerEqual(microscope, read_nwbfile.devices["Microscope"])
 
             self.assertContainerEqual(planar_microscopy_series, read_nwbfile.acquisition["PlanarMicroscopySeries"])
+
+
+def test_microscopy_rig_with_optical_path_scheme_roundtrip(tmp_path):
+    nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=timezone.utc))
+
+    microscope = mock_Microscope(name="Microscope")
+    excitation_source = mock_ExcitationSource(name="ExcitationSource")
+    photodetector = mock_Photodetector(name="Photodetector")
+    for device in (microscope, excitation_source, photodetector):
+        nwbfile.add_device_model(device_models=device.model)
+        nwbfile.add_device(devices=device)
+
+    optical_path_scheme = RGBImage(
+        name="optical_path_scheme",
+        data=np.zeros((4, 6, 3), dtype=np.uint8),
+        description="Diagram of the optical path.",
+    )
+    microscopy_rig = MicroscopyRig(
+        name="MicroscopyRig",
+        description="A rig with an optical path scheme.",
+        microscope=microscope,
+        excitation_source=excitation_source,
+        photodetector=photodetector,
+        optical_path_scheme=optical_path_scheme,
+    )
+    nwbfile.add_lab_meta_data(MicroscopyExperimentMetadata(microscopy_rigs=[microscopy_rig]))
+
+    nwbfile_path = tmp_path / "microscopy_rig_with_optical_path_scheme.nwb"
+    with pynwb.NWBHDF5IO(path=nwbfile_path, mode="w") as io:
+        io.write(nwbfile)
+    assert pynwb.validate(path=str(nwbfile_path)) == []
+
+    with pynwb.NWBHDF5IO(path=nwbfile_path, mode="r", load_namespaces=True) as io:
+        read_nwbfile = io.read()
+        read_rig = read_nwbfile.lab_meta_data["microscopy_experiment_metadata"].microscopy_rigs["MicroscopyRig"]
+        read_scheme = read_rig.optical_path_scheme
+        assert isinstance(read_scheme, RGBImage)
+        assert read_scheme.description == "Diagram of the optical path."
+        np.testing.assert_array_equal(read_scheme.data[:], optical_path_scheme.data)
 
 
 class TestMicroscopyRigWithUntrackedDevice(pynwb_TestCase):
