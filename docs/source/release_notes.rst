@@ -65,6 +65,13 @@ Notes
 * The use of links instead of nested groups provides better data reusability and reduces duplication
 * Users should add ``MicroscopyExperimentMetadata`` to NWBFile using ``nwbfile.add_lab_meta_data()``
 
+Reading files written with earlier versions
+-------------------------------------------
+
+Files written with ndx-microscopy 0.3.x cannot be read in a Python session that has imported ndx-microscopy 0.4.0,
+because the installed namespace takes precedence over the one cached in the file.
+To read such files, open them in a session that does not import ndx-microscopy; pynwb then loads the cached namespaces.
+
 Version 0.3.0 (Jun 3, 2025)
 ==============================
 
