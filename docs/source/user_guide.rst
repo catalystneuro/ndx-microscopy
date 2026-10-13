@@ -254,7 +254,10 @@ else it is needed. PyNWB writes the object once and links to it from the other l
 Channels
 --------
 
-A ``MicroscopyChannel`` records the excitation and emission wavelengths and links the indicator.
+A ``MicroscopyChannel`` records the excitation and emission wavelengths and links the indicator. For
+label-free channels, such as second-harmonic generation, intrinsic signal, autofluorescence or reflectance
+imaging, link an ``Indicator`` whose label names the source of contrast, e.g.,
+``Indicator(name="nadh_autofluorescence", label="NAD(P)H autofluorescence")``.
 
 .. code-block:: python
 

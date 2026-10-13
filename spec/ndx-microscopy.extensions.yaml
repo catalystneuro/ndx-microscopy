@@ -71,7 +71,10 @@ groups:
     links:
       - name: indicator
         target_type: Indicator
-        doc: Link to Indicator object which contains metadata about the indicator used in this light path.
+        doc:
+          Link to Indicator object which contains metadata about the indicator used in this light path. For
+          label-free channels (e.g., second-harmonic generation, intrinsic signal, autofluorescence, reflectance),
+          link an Indicator whose label names the source of contrast, e.g., 'NAD(P)H autofluorescence'.
         quantity: 1
 
   - neurodata_type_def: MicroscopyExperimentMetadata
