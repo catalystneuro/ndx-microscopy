@@ -58,9 +58,6 @@ groups:
     neurodata_type_inc: NWBContainer
     doc: A channel in a microscope that contains metadata about the indicator, the excitation and emission wavelengths.
     attributes:
-      - name: name
-        dtype: text
-        doc: Name of the channel.
       - name: description
         dtype: text
         doc: Description of the channel.
@@ -234,9 +231,6 @@ groups:
       Abstract class to contain static imaging data acquired from an optical channel in a microscope while a light source illuminates the
       imaging space.
     attributes:
-      - name: name
-        dtype: text
-        doc: Name of the static image.
       - name: description
         dtype: text
         doc: Description of the static image.
