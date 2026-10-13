@@ -1,7 +1,10 @@
 """Test API functions for the ndx-microscopy extension."""
 
 import numpy as np
+import pynwb
 import pytest
+
+import ndx_microscopy
 
 from ndx_microscopy.testing import (
     mock_PlanarImagingSpace,
@@ -345,6 +348,13 @@ def test_segmentation_inheritance():
     # Test that each has appropriate summary images
     assert len(planar_segmentation.summary_images) == 2
     assert len(volumetric_segmentation.summary_images) == 2
+
+
+def test_all_extension_types_are_exported():
+    """Test that every neurodata type defined in the extension spec is listed in __all__."""
+    namespace_catalog = pynwb.get_type_map().namespace_catalog
+    extension_types = set(namespace_catalog.get_types("ndx-microscopy.extensions.yaml"))
+    assert extension_types <= set(ndx_microscopy.__all__)
 
 
 if __name__ == "__main__":
