@@ -9,7 +9,7 @@ groups:
     attributes:
       - name: technique
         dtype: text
-        doc: Imaging technique used by the microscope (e.g. scan mirrors, light sheet, temporal focusing, acusto-optical modulation, piezo z-scan mirrors).
+        doc: Imaging technique used by the microscope (e.g. scan mirrors, light sheet, temporal focusing, acousto-optic modulation, piezo z-scan mirrors).
         required: false
 
   - neurodata_type_def: MicroscopyRig
@@ -30,7 +30,7 @@ groups:
         quantity: "?"
       - name: excitation_filter
         target_type: OpticalFilter
-        doc: Link to OpticalFilter object which contains metadata about the excitation filter. It can be either a BandOpticalFilter (e.g., 'Bandpass', 'Bandstop', 'Longpass', 'Shortpass') or a EdgeOpticalFilter (Longpass or Shortpass).
+        doc: Link to OpticalFilter object which contains metadata about the excitation filter. It can be either a BandOpticalFilter (e.g., 'Bandpass', 'Bandstop') or an EdgeOpticalFilter (e.g., 'Longpass', 'Shortpass').
         quantity: "?"
       - name: dichroic_mirror
         target_type: DichroicMirror
@@ -42,7 +42,7 @@ groups:
         quantity: "?"
       - name: emission_filter
         target_type: OpticalFilter
-        doc: Link to OpticalFilter object which contains metadata about the emission filter. It can be either a BandOpticalFilter (e.g., 'Bandpass', 'Bandstop', 'Longpass', 'Shortpass') or a EdgeOpticalFilter (Longpass or Shortpass).
+        doc: Link to OpticalFilter object which contains metadata about the emission filter. It can be either a BandOpticalFilter (e.g., 'Bandpass', 'Bandstop') or an EdgeOpticalFilter (e.g., 'Longpass', 'Shortpass').
         quantity: "?"
       - name: objective_lens
         target_type: ObjectiveLens
@@ -80,10 +80,10 @@ groups:
     name: microscopy_experiment_metadata
     groups:
       - neurodata_type_inc: MicroscopyRig
-        doc: Group containing of one or more MicroscopyRig objects.
+        doc: Group containing one or more MicroscopyRig objects.
         quantity: "*"
       - neurodata_type_inc: ViralVector
-        doc: Group containing of one or more ViralVector objects.
+        doc: Group containing one or more ViralVector objects.
         quantity: "*"
       - neurodata_type_inc: ViralVectorInjection
         doc: Group containing one or more ViralVectorInjection objects.
@@ -94,7 +94,7 @@ groups:
 
   - neurodata_type_def: IlluminationPattern
     neurodata_type_inc: NWBContainer
-    doc: Base class for describing the illumination pattern used to acquired the image. Use this object if the illumination pattern is not one of the specific types (e.g., Line, Plane, RandomAccess).
+    doc: Base class for describing the illumination pattern used to acquire the image. Use this object if the illumination pattern is not one of the specific types (e.g., Line, Plane, RandomAccess).
     attributes:
       - name: description
         dtype: text
@@ -513,7 +513,7 @@ groups:
             doc: Weight of the voxel.
         doc:
           "Voxel masks for each ROI: a list of indices and weights for the ROI. Voxel
-          masks are concatenated and parsing of this dataset is maintained by the PlanarSegmentation"
+          masks are concatenated and parsing of this dataset is maintained by the VolumetricSegmentation"
         quantity: "?"
     groups:
       - neurodata_type_inc: VolumetricImagingSpace
