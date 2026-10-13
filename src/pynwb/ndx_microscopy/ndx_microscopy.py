@@ -476,34 +476,3 @@ class SegmentationContainer(MultiContainerInterface):
         "get": "get_segmentation",
         "create": "create_segmentation",
     }
-
-    @docval(
-        {"name": "imaging_space", "type": ImagingSpace, "doc": "the ImagingSpace this ROI applies to"},
-        {
-            "name": "description",
-            "type": str,
-            "doc": "Description of image space, depth, etc.",
-            "default": None,
-        },
-        {"name": "name", "type": str, "doc": "name of Segmentation.", "default": None},
-    )
-    def add_segmentation(self, **kwargs):
-        """Add a segmentation to this container.
-
-        Parameters
-        ----------
-        imaging_space : ImagingSpace
-            The imaging space this segmentation applies to.
-        description : str, optional
-            Description of the image space, depth, etc. If not provided,
-            uses the description from imaging_space.
-        name : str, optional
-            Name of the segmentation.
-
-        Returns
-        -------
-        Segmentation
-            The created segmentation object.
-        """
-        kwargs.setdefault("description", kwargs["imaging_space"].description)
-        return self.create_segmentation(**kwargs)
