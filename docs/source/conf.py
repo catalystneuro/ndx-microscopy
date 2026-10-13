@@ -6,12 +6,14 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
+from importlib.metadata import version as get_version
+
 project = "ndx-microscopy"
 copyright = "2024, Alessandra Trapani, Cody Baker"
 author = "Alessandra Trapani, Cody Baker"
 
-version = "0.3.0"
-release = "alpha"
+release = get_version(project)
+version = release
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
