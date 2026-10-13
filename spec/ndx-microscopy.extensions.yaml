@@ -103,7 +103,9 @@ groups:
 
   - neurodata_type_def: LineScan
     neurodata_type_inc: IlluminationPattern
-    doc: Line scanning method.
+    doc:
+      Point scanning in which each frame is built from successive scanned lines (raster scanning), e.g., with
+      galvo-galvo or resonant-galvo scanners in two-photon or confocal microscopy.
     attributes:
       - name: scan_direction
         dtype: text
@@ -120,7 +122,9 @@ groups:
 
   - neurodata_type_def: PlaneAcquisition
     neurodata_type_inc: IlluminationPattern
-    doc: Whole plane acquisition, common for light sheet techniques.
+    doc:
+      Whole plane acquisition, where the plane is illuminated and recorded at once, e.g., light sheet imaging or
+      camera-based widefield and miniscope imaging with full-field illumination.
     attributes:
       - name: point_spread_function
         dtype: text
