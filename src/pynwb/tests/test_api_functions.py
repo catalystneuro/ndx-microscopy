@@ -285,6 +285,44 @@ def test_volumetric_add_roi_with_image_mask():
     assert np.array_equal(volumetric_segmentation.volume_mask[0], volume_mask)
 
 
+def test_planar_add_roi_mixing_mask_types_raises():
+    """Test that all ROIs must use the same mask type(s), since each mask type is a table column."""
+    planar_imaging_space = mock_PlanarImagingSpace(dimensions_in_pixels=(5, 4))
+    planar_seg = PlanarSegmentation(
+        name="PlanarSegmentation", description="", planar_imaging_space=planar_imaging_space
+    )
+
+    planar_seg.add_roi(image_mask=np.ones((4, 5)))
+    with pytest.raises(ValueError, match="column 'image_mask' missing"):
+        planar_seg.add_roi(pixel_mask=[[1, 2, 1.0]])
+
+
+def test_volumetric_add_roi_mixing_mask_types_raises():
+    """Test that all ROIs must use the same mask type(s), since each mask type is a table column."""
+    volumetric_imaging_space = mock_VolumetricImagingSpace(dimensions_in_voxels=(5, 4, 3))
+    volumetric_seg = VolumetricSegmentation(
+        name="VolumetricSegmentation", description="", volumetric_imaging_space=volumetric_imaging_space
+    )
+
+    volumetric_seg.add_roi(volume_mask=np.ones((3, 4, 5)))
+    with pytest.raises(ValueError, match="column 'volume_mask' missing"):
+        volumetric_seg.add_roi(voxel_mask=[[1, 2, 0, 1.0]])
+
+
+def test_planar_add_roi_with_both_mask_types():
+    """Test that each ROI can provide both mask types."""
+    planar_imaging_space = mock_PlanarImagingSpace(dimensions_in_pixels=(5, 4))
+    planar_seg = PlanarSegmentation(
+        name="PlanarSegmentation", description="", planar_imaging_space=planar_imaging_space
+    )
+
+    for _ in range(2):
+        image_mask = PlanarSegmentation.pixel_to_image([[1, 2, 1.0]], (4, 5))
+        planar_seg.add_roi(image_mask=image_mask, pixel_mask=[[1, 2, 1.0]])
+    assert set(planar_seg.colnames) == {"image_mask", "pixel_mask"}
+    assert len(planar_seg) == 2
+
+
 def test_add_roi_without_masks():
     """Test error when adding ROI without any mask."""
     planar_imaging_space = mock_PlanarImagingSpace()
