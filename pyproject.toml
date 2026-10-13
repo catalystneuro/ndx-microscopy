@@ -11,7 +11,7 @@ authors = [
 ]
 description = "An NWB extension to demonstrate the TAB proposal for enhancements to optical physiology neurodata types."
 readme = "README.md"
-# requires-python = ">=3.8"
+requires-python = ">=3.10"
 license = {text = "BSD-3"}
 classifiers = [
     "Programming Language :: Python :: 3.11",
@@ -27,9 +27,9 @@ keywords = [
     'ndx-extension',
 ]
 dependencies = [
-    "pynwb>=2.8.0",
-    "hdmf>=3.14.1",
-    "ndx-ophys-devices<=0.5.0"
+    "pynwb>=3.1.0",
+    "hdmf>=4.1.0",
+    "ndx-ophys-devices>=0.4.0,<0.5",
 ]
 
 [project.urls]

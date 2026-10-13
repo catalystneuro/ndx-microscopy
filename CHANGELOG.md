@@ -10,6 +10,7 @@
   - Removed `reference_frame` attribute
   - Removed `orientation` attribute
 - Updated `ndx-ophys-devices` dependency from v0.2.0 to v0.4.0
+- Require Python >=3.10, pynwb >=3.1.0 and hdmf >=4.1.0
 - **Breaking Change**: Reordered volumetric dataset dimensions to follow the TZYX convention shared with OME, ImageJ, and scikit-image (see [#77](https://github.com/catalystneuro/ndx-microscopy/issues/77)):
   - `VolumetricMicroscopySeries.data`: `(frames, height, width, depths)` → `(frames, depths, height, width)`
   - `VolumetricMicroscopyStaticImage.data`: `(height, width, depths)` → `(depths, height, width)`
