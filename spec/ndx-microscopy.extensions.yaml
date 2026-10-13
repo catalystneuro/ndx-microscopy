@@ -182,7 +182,9 @@ groups:
     doc: Metadata about the 2-dimensional slice of physical space that imaging data was recorded from.
     datasets:
       - name: pixel_size_in_um
-        doc: The physical dimensions of the pixel in micrometers.
+        doc:
+          The physical dimensions of the pixel in micrometers, listed as (x, y). Note that this is the
+          reverse of the (height, width) order of the imaging data.
         dtype: float64
         dims:
           - - x, y
@@ -190,7 +192,9 @@ groups:
           - - 2
         quantity: "?"
       - name: dimensions_in_pixels
-        doc: The number of pixels in the x and y dimensions of the imaging space.
+        doc:
+          The number of pixels in the x and y dimensions of the imaging space, listed as (x, y), i.e.,
+          (width, height). Note that this is the reverse of the (height, width) order of the imaging data.
         dtype: uint32
         dims:
           - - x, y
@@ -203,7 +207,9 @@ groups:
     doc: Metadata about the 3-dimensional region of physical space that imaging data was recorded from.
     datasets:
       - name: voxel_size_in_um
-        doc: The physical dimensions of the voxel in micrometers.
+        doc:
+          The physical dimensions of the voxel in micrometers, listed as (x, y, z). Note that this is the
+          reverse of the (depth, height, width) order of the imaging data.
         dtype: float64
         dims:
           - - x, y, z
@@ -211,7 +217,10 @@ groups:
           - - 3
         quantity: "?"
       - name: dimensions_in_voxels
-        doc: The number of voxels in the x, y, and z dimensions of the imaging space.
+        doc:
+          The number of voxels in the x, y, and z dimensions of the imaging space, listed as (x, y, z), i.e.,
+          (width, height, depth). Note that this is the reverse of the (depth, height, width) order of the
+          imaging data.
         dtype: uint32
         dims:
           - - x, y, z
