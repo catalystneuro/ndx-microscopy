@@ -75,6 +75,7 @@ class TestPlanarMicroscopyStaticImageSimpleRoundtrip(pynwb_TestCase):
 
         with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="w") as io:
             io.write(nwbfile)
+        self.assertEqual(pynwb.validate(path=self.nwbfile_path), [])
 
         with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="r", load_namespaces=True) as io:
             read_nwbfile = io.read()
@@ -107,6 +108,7 @@ class TestVolumetricMicroscopyStaticImageSimpleRoundtrip(pynwb_TestCase):
 
         with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="w") as io:
             io.write(nwbfile)
+        self.assertEqual(pynwb.validate(path=self.nwbfile_path), [])
 
         with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="r", load_namespaces=True) as io:
             read_nwbfile = io.read()
@@ -139,6 +141,7 @@ class TestPlanarMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
 
         with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="w") as io:
             io.write(nwbfile)
+        self.assertEqual(pynwb.validate(path=self.nwbfile_path), [])
 
         with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="r", load_namespaces=True) as io:
             read_nwbfile = io.read()
@@ -221,6 +224,7 @@ class TestVolumetricMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
 
         with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="w") as io:
             io.write(nwbfile)
+        self.assertEqual(pynwb.validate(path=self.nwbfile_path), [])
 
         with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="r", load_namespaces=True) as io:
             read_nwbfile = io.read()
@@ -268,6 +272,7 @@ class TestMultiPlaneMicroscopyContainerSimpleRoundtrip(pynwb_TestCase):
 
         with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="w") as io:
             io.write(nwbfile)
+        self.assertEqual(pynwb.validate(path=self.nwbfile_path), [])
 
         with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="r", load_namespaces=True) as io:
             read_nwbfile = io.read()
@@ -317,6 +322,7 @@ class TestMultiChannelMicroscopyContainerSimpleRoundtrip(pynwb_TestCase):
 
         with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="w") as io:
             io.write(nwbfile)
+        self.assertEqual(pynwb.validate(path=self.nwbfile_path), [])
 
         with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="r", load_namespaces=True) as io:
             read_nwbfile = io.read()
@@ -390,6 +396,7 @@ class TestMultiChannelWithMultiPlaneContainerSimpleRoundtrip(pynwb_TestCase):
 
         with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="w") as io:
             io.write(nwbfile)
+        self.assertEqual(pynwb.validate(path=self.nwbfile_path), [])
 
         with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="r", load_namespaces=True) as io:
             read_nwbfile = io.read()
@@ -417,6 +424,7 @@ class TestSegmentationContainerSimpleRoundtrip(pynwb_TestCase):
 
         with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="w") as io:
             io.write(nwbfile)
+        self.assertEqual(pynwb.validate(path=self.nwbfile_path), [])
 
         with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="r", load_namespaces=True) as io:
             read_nwbfile = io.read()
@@ -470,6 +478,7 @@ class TestMicroscopyResponseSeriesSimpleRoundtrip(pynwb_TestCase):
 
         with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="w") as io:
             io.write(nwbfile)
+        self.assertEqual(pynwb.validate(path=self.nwbfile_path), [])
 
         with pynwb.NWBHDF5IO(path=self.nwbfile_path, mode="r", load_namespaces=True) as io:
             read_nwbfile = io.read()
