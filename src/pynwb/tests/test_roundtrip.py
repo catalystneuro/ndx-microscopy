@@ -2,6 +2,7 @@
 
 from datetime import datetime, timezone
 
+import h5py
 import numpy as np
 import pytest
 from hdmf.build.errors import OrphanContainerBuildError
@@ -150,6 +151,55 @@ class TestPlanarMicroscopySeriesSimpleRoundtrip(pynwb_TestCase):
             self.assertContainerEqual(microscopy_rig.objective_lens, read_nwbfile.devices["ObjectiveLens"])
 
             self.assertContainerEqual(planar_microscopy_series, read_nwbfile.acquisition["PlanarMicroscopySeries"])
+
+
+def test_shared_channel_and_imaging_space_roundtrip(tmp_path):
+    """A channel or imaging space passed to several objects is stored once; the other uses are soft links."""
+    nwbfile = mock_NWBFile(session_start_time=datetime(2000, 1, 1, tzinfo=timezone.utc))
+    microscopy_rig, (indicator,) = add_microscopy_experiment_metadata(nwbfile)
+
+    microscopy_channel = mock_MicroscopyChannel(name="MicroscopyChannel", indicator=indicator)
+    planar_imaging_space = mock_PlanarImagingSpace(name="PlanarImagingSpace")
+    for series_name in ("PlanarMicroscopySeries_1", "PlanarMicroscopySeries_2"):
+        nwbfile.add_acquisition(
+            mock_PlanarMicroscopySeries(
+                name=series_name,
+                microscopy_rig=microscopy_rig,
+                microscopy_channel=microscopy_channel,
+                planar_imaging_space=planar_imaging_space,
+            )
+        )
+    planar_segmentation = mock_PlanarSegmentation(name="PlanarSegmentation", planar_imaging_space=planar_imaging_space)
+    ophys_module = nwbfile.create_processing_module(name="ophys", description="")
+    ophys_module.add(mock_SegmentationContainer(name="SegmentationContainer", segmentations=[planar_segmentation]))
+
+    nwbfile_path = tmp_path / "shared_channel_and_imaging_space.nwb"
+    with pynwb.NWBHDF5IO(path=nwbfile_path, mode="w") as io:
+        io.write(nwbfile)
+    assert pynwb.validate(path=str(nwbfile_path)) == []
+
+    channel_paths = [
+        f"acquisition/{name}/MicroscopyChannel" for name in ("PlanarMicroscopySeries_1", "PlanarMicroscopySeries_2")
+    ]
+    space_paths = [
+        "acquisition/PlanarMicroscopySeries_1/PlanarImagingSpace",
+        "acquisition/PlanarMicroscopySeries_2/PlanarImagingSpace",
+        "processing/ophys/SegmentationContainer/PlanarSegmentation/PlanarImagingSpace",
+    ]
+    with h5py.File(nwbfile_path, "r") as file:
+        channel_links = [type(file.get(path, getlink=True)) for path in channel_paths]
+        space_links = [type(file.get(path, getlink=True)) for path in space_paths]
+    assert sorted(link.__name__ for link in channel_links) == ["HardLink", "SoftLink"]
+    assert sorted(link.__name__ for link in space_links) == ["HardLink", "SoftLink", "SoftLink"]
+
+    with pynwb.NWBHDF5IO(path=nwbfile_path, mode="r", load_namespaces=True) as io:
+        read_nwbfile = io.read()
+        read_series_1 = read_nwbfile.acquisition["PlanarMicroscopySeries_1"]
+        read_series_2 = read_nwbfile.acquisition["PlanarMicroscopySeries_2"]
+        read_segmentation = read_nwbfile.processing["ophys"]["SegmentationContainer"]["PlanarSegmentation"]
+        assert read_series_2.microscopy_channel is read_series_1.microscopy_channel
+        assert read_series_2.planar_imaging_space is read_series_1.planar_imaging_space
+        assert read_segmentation.planar_imaging_space is read_series_1.planar_imaging_space
 
 
 def test_microscopy_rig_with_optical_path_scheme_roundtrip(tmp_path):
