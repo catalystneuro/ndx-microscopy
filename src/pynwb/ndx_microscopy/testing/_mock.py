@@ -170,7 +170,7 @@ def mock_PlanarImagingSpace(
     *,
     name: Optional[str] = None,
     description: str = "A mock instance of a PlanarImagingSpace type to be used for rapid testing.",
-    pixel_size_in_um: Tuple[float, float] = (20, 20),
+    pixel_size_in_um: Tuple[float, float] = (20.0, 20.0),
     dimensions_in_pixels: Tuple[int, int] = (100, 100),
     anatomical_target: str = "The anatomical target of the mock imaging space.",
     illumination_pattern: ndx_microscopy.IlluminationPattern = None,
@@ -190,8 +190,8 @@ def mock_VolumetricImagingSpace(
     *,
     name: Optional[str] = None,
     description: str = "A mock instance of a VolumetricImagingSpace type to be used for rapid testing.",
-    voxel_size_in_um: Tuple[float, float, float] = (20, 20, 50),
-    dimensions_in_voxels: Tuple[int, int] = (100, 100, 100),
+    voxel_size_in_um: Tuple[float, float, float] = (20.0, 20.0, 50.0),
+    dimensions_in_voxels: Tuple[int, int, int] = (100, 100, 100),
     anatomical_target: str = "The location targeted by the mock imaging space.",
     illumination_pattern: ndx_microscopy.IlluminationPattern = None,
 ) -> ndx_microscopy.VolumetricImagingSpace:
@@ -245,11 +245,17 @@ def mock_PlanarSegmentation(
     name: Optional[str] = None,
     description: str = "A mock instance of a PlanarSegmentation type to be used for rapid testing.",
     number_of_rois: int = 5,
-    image_shape: Tuple[int, int] = (10, 10),
+    image_shape: Optional[Tuple[int, int]] = None,
     summary_images: Optional[List[ndx_microscopy.SummaryImage]] = None,
 ) -> ndx_microscopy.PlanarSegmentation:
-    """2D segmentation with image_mask/pixel_mask."""
+    """2D segmentation with image_mask/pixel_mask.
+
+    By default, the masks have the (height, width) of the imaging space.
+    """
     name = name or name_generator("PlanarSegmentation")
+    if image_shape is None:
+        x, y = planar_imaging_space.dimensions_in_pixels
+        image_shape = (y, x)
 
     # Create default summary images if none provided
     if summary_images is None:
@@ -281,11 +287,17 @@ def mock_VolumetricSegmentation(
     name: Optional[str] = None,
     description: str = "A mock instance of a VolumetricSegmentation type to be used for rapid testing.",
     number_of_rois: int = 5,
-    volume_shape: Tuple[int, int, int] = (10, 10, 10),
+    volume_shape: Optional[Tuple[int, int, int]] = None,
     summary_images: Optional[List[ndx_microscopy.SummaryImage]] = None,
 ) -> ndx_microscopy.VolumetricSegmentation:
-    """3D segmentation with image_mask/voxel_mask."""
+    """3D segmentation with volume_mask/voxel_mask.
+
+    By default, the masks have the (depth, height, width) of the imaging space.
+    """
     name = name or name_generator("VolumetricSegmentation")
+    if volume_shape is None:
+        x, y, z = volumetric_imaging_space.dimensions_in_voxels
+        volume_shape = (z, y, x)
 
     # Create default summary images if none provided
     if summary_images is None:
@@ -531,7 +543,7 @@ def mock_MicroscopyResponseSeries(
     starting_time: Optional[float] = None,
     rate: Optional[float] = None,
     timestamps: Optional[np.ndarray] = None,
-    microscopy_series: Optional[ndx_microscopy.MicroscopyResponseSeries] = None,
+    microscopy_series: Optional[ndx_microscopy.MicroscopySeries] = None,
 ) -> ndx_microscopy.MicroscopyResponseSeries:
     series_name = name or name_generator("MicroscopyResponseSeries")
 
