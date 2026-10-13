@@ -76,7 +76,21 @@ def test_planar_pixel_to_image_conversion():
     pixel_mask = [[0, 0, 1.0], [1, 0, 2.0], [2, 0, 2.0]]
     image_shape = (3, 3)
     image_mask = segmentation.pixel_to_image(pixel_mask, image_shape)
-    np.testing.assert_allclose(image_mask, np.asarray([[1.0, 0.0, 0.0], [2.0, 0.0, 0.0], [2.0, 0.0, 0.0]]))
+
+    # image_mask follows (height, width): the three pixels differ only in x,
+    # so they land on the same y=0 row at x=0, 1, 2.
+    np.testing.assert_allclose(image_mask, np.asarray([[1.0, 2.0, 2.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]))
+
+
+def test_planar_pixel_to_image_uses_height_width_order():
+    """Test that pixel (x, y) lands at image_mask[y, x] in a non-square image."""
+    image_mask = PlanarSegmentation.pixel_to_image([[3, 1, 1.0]], (4, 5))
+    assert image_mask.shape == (4, 5)
+    assert image_mask[1, 3] == 1.0
+    assert image_mask.sum() == 1.0
+
+    # Without image_shape, the shape is (max_y + 1, max_x + 1)
+    assert PlanarSegmentation.pixel_to_image([[3, 1, 1.0]]).shape == (2, 4)
 
 
 def test_planar_image_to_pixel_conversion():
@@ -84,10 +98,19 @@ def test_planar_image_to_pixel_conversion():
     planar_imaging_space = mock_PlanarImagingSpace()
     segmentation = mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space)
 
-    image_mask = np.asarray([[1.0, 0.0, 0.0], [2.0, 0.0, 0.0], [2.0, 0.0, 0.0]])
+    # image_mask follows (height, width). Non-zero pixels are at
+    # y=0, x=0/1/2 -> expected pixel_mask rows are (x, y, weight).
+    image_mask = np.asarray([[1.0, 2.0, 2.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]])
 
     pixel_mask = segmentation.image_to_pixel(image_mask)
     np.testing.assert_allclose(pixel_mask, np.asarray([[0, 0, 1.0], [1, 0, 2.0], [2, 0, 2.0]]))
+
+
+def test_planar_image_to_pixel_uses_height_width_order():
+    """Test that image_mask[y, x] becomes pixel (x, y) in a non-square image."""
+    image_mask = np.zeros((4, 5))
+    image_mask[1, 3] = 1.0
+    assert PlanarSegmentation.image_to_pixel(image_mask) == [[3, 1, 1.0]]
 
 
 def test_volumetric_voxel_to_volume_conversion():

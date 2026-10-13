@@ -38,7 +38,7 @@ def get_FOV_size(self, **kwargs):
     Returns
     -------
     tuple
-        The size of the FOV in micrometers as (height, width).
+        The size of the FOV in micrometers, in the same (x, y) order as dimensions_in_pixels.
     """
     dimensions_in_pixels, pixel_size_in_um = popargs("dimensions_in_pixels", "pixel_size_in_um", kwargs)
     # Use instance attributes if parameters not provided
@@ -96,7 +96,7 @@ def get_FOV_size(self, **kwargs):
     Returns
     -------
     tuple
-        The size of the FOV in micrometers as (depth, height, width).
+        The size of the FOV in micrometers, in the same (x, y, z) order as dimensions_in_voxels.
     """
     dimensions_in_voxels, voxel_size_in_um = popargs("dimensions_in_voxels", "voxel_size_in_um", kwargs)
     # Use instance attributes if parameters not provided
@@ -193,7 +193,8 @@ def pixel_to_image(pixel_mask, image_shape=None):
     Returns
     -------
     image_matrix : numpy.ndarray
-        2D array where non-zero values indicate the ROI pixels with their corresponding weights.
+        2D array with shape (height, width) where non-zero values indicate the ROI pixels
+        with their corresponding weights. Pixel (x, y) is stored at image_matrix[y, x].
 
     Raises
     ------
@@ -208,11 +209,11 @@ def pixel_to_image(pixel_mask, image_shape=None):
     y_coords = npmask[:, 1].astype(np.int32)
     weights = npmask[:, -1]
 
-    # Determine dimensions from max coordinates
+    # Determine dimensions from max coordinates, in (height, width) order
     if image_shape is None:
-        image_shape = (np.max(x_coords) + 1, np.max(y_coords) + 1)
+        image_shape = (np.max(y_coords) + 1, np.max(x_coords) + 1)
     image_matrix = np.zeros(image_shape)
-    image_matrix[x_coords, y_coords] = weights
+    image_matrix[y_coords, x_coords] = weights
 
     return image_matrix
 
@@ -224,7 +225,7 @@ def image_to_pixel(image_mask):
     Parameters
     ----------
     image_mask : numpy.ndarray
-        2D array where non-zero values indicate ROI pixels.
+        2D array with shape (height, width) where non-zero values indicate ROI pixels.
 
     Returns
     -------
@@ -244,8 +245,8 @@ def image_to_pixel(image_mask):
     while not it.finished:
         weight = it[0][()]
         if weight > 0:
-            x = it.multi_index[0]
-            y = it.multi_index[1]
+            y = it.multi_index[0]
+            x = it.multi_index[1]
             pixel_mask.append([x, y, weight])
         it.iternext()
     return pixel_mask

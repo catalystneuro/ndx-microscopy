@@ -434,15 +434,15 @@ groups:
         neurodata_type_inc: VectorData
         dims:
           - - num_roi
-            - num_x
             - num_y
+            - num_x
         shape:
           - - null
             - null
             - null
         doc:
           ROI masks for each ROI. Each image mask is the size of the original planar
-          imaging space and members of the ROI are finite non-zero.
+          imaging space (height, width) and members of the ROI are finite non-zero.
         quantity: "?"
       - name: pixel_mask_index
         neurodata_type_inc: VectorIndex
