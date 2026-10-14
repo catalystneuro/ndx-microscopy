@@ -5,18 +5,24 @@ A Neurodata Without Borders (NWB) extension for storing microscopy data and asso
 ## Features
 
 **Comprehensive Neurodata Types**
+- Experiment metadata container:
+    - `MicroscopyExperimentMetadata`
 - Microscope and optical component metadata (integration with [ndx-ophys-devices](https://github.com/catalystneuro/ndx-ophys-devices)):
     - `MicroscopeModel`
     - `Microscope`
     - `MicroscopyRig`
     - `ExcitationSource` / `PulsedExcitationSource`
-    - `BandOpticalFilter` / `EdgeOpticalFilter` / 
-    - `DichroicMirror` 
-    - `Photodetector` 
+    - `BandOpticalFilter` / `EdgeOpticalFilter`
+    - `DichroicMirror`
+    - `Photodetector`
+    - `ObjectiveLens`
     - `Indicator`
-- Microscopy channel configurations: 
+    - `ViralVector`
+    - `ViralVectorInjection`
+    - `StereotacticPosition`
+- Microscopy channel configurations:
     - `MicroscopyChannel`
-- Imaging space definitions: 
+- Imaging space definitions:
     - `PlanarImagingSpace`
     - `VolumetricImagingSpace`
 - Illumination pattern classes:
@@ -24,29 +30,35 @@ A Neurodata Without Borders (NWB) extension for storing microscopy data and asso
     - `LineScan`
     - `PlaneAcquisition`
     - `RandomAccessScan`
-- Support for 2D and 3D imaging: 
+- Support for 2D and 3D imaging:
     - `PlanarMicroscopySeries`
     - `VolumetricMicroscopySeries`
+    - `PlanarMicroscopyStaticImage`
+    - `VolumetricMicroscopyStaticImage`
     - `MultiPlaneMicroscopyContainer`
     - `MultiChannelMicroscopyContainer`
-- ROI/segmentation storage: 
+- ROI/segmentation storage:
     - `PlanarSegmentation`
     - `VolumetricSegmentation`
     - `SegmentationContainer`
+    - `SummaryImage`
     - `MicroscopyResponseSeries`
     - `MicroscopyResponseSeriesContainer`
-- Abstract Neurodata types: `ImagingSpace`, `MicroscopySeries`,`Segmentation`
+- Abstract Neurodata types: `ImagingSpace`, `MicroscopySeries`, `MicroscopyStaticImage`, `Segmentation`
 
 ## Entity Relationship Diagrams
 
-#### Device Components
+In the diagrams, fields are required unless marked optional. Imaging data and masks are listed in
+(time, [depth], height, width) order; pixel and voxel sizes and dimensions are listed x first.
+
+#### Experiment Metadata Components
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#ffffff', 'primaryBorderColor': '#144E73', 'lineColor': '#D96F32'}}}%%
 
 classDiagram
     direction TB
-    
+
     class DeviceModel{
         <<Device>>
         --------------------------------------
@@ -55,8 +67,8 @@ classDiagram
         manufacturer : text
         model_number : text, optional
     }
-    
-    class DeviceInstance{
+
+    class Device{
         <<Device>>
         --------------------------------------
         attributes
@@ -73,11 +85,22 @@ classDiagram
     }
 
     class Microscope {
-        <<DeviceInstance>>
+        <<Device>>
         --------------------------------------
         attributes
         --------------------------------------
         technique : text, optional
+    }
+
+    class MicroscopyExperimentMetadata {
+        <<LabMetaData>>
+        --------------------------------------
+        groups
+        --------------------------------------
+        microscopy_rigs : MicroscopyRig[0..*]
+        viral_vectors : ViralVector[0..*]
+        viral_vector_injections : ViralVectorInjection[0..*]
+        indicators : Indicator[0..*]
     }
 
     class MicroscopyRig {
@@ -95,103 +118,81 @@ classDiagram
         dichroic_mirror : DichroicMirror, optional
         photodetector : Photodetector, optional
         emission_filter : OpticalFilter, optional
+        objective_lens : ObjectiveLens, optional
+        --------------------------------------
+        datasets
+        --------------------------------------
+        optical_path_scheme : Image, optional
     }
 
-    class ExcitationSource {
-        <<DeviceInstance>>
+    class ViralVector {
+        <<NWBContainer>>
         --------------------------------------
         attributes
         --------------------------------------
-        **illumination_type** : text
-        **excitation_wavelength_in_nm** : float
-        **excitation_mode** : text
-        power_in_W : float, optional
-        intensity_in_W_per_m2 : float, optional
-        exposure_time_in_s : float, optional
+        construct_name : text
+        titer_in_vg_per_ml : numeric
+        manufacturer : text
+        description : text, optional
     }
-
-    class PulsedExcitationSource {
-        <<ExcitationSource>>
+    class ViralVectorInjection {
+        <<NWBContainer>>
         --------------------------------------
         attributes
         --------------------------------------
-        peak_power_in_W : float, optional
-        peak_pulse_energy_in_J : float, optional
-        pulse_rate_in_Hz : float, optional
+        description : text, optional
+        volume_in_uL : numeric
+        injection_date : text, optional
+        --------------------------------------
+        groups
+        --------------------------------------
+        viral_injection_coordinates : StereotacticPosition, optional
+        --------------------------------------
+        links
+        --------------------------------------
+        viral_vector : ViralVector
     }
-
-    class OpticalFilter {
-        <<DeviceInstance>>
+    class StereotacticPosition {
+        <<NWBContainer>>
         --------------------------------------
         attributes
         --------------------------------------
-        **filter_type** : text
+        anatomical_target : text
+        origin : text
+        orientation : text
+        x_in_mm : numeric
+        y_in_mm : numeric
+        z_in_mm : numeric
+        pitch_in_deg : numeric, optional
+        yaw_in_deg : numeric, optional
+        roll_in_deg : numeric, optional
     }
-
-    class BandOpticalFilter {
-        <<OpticalFilter>>
-        --------------------------------------
-        attributes
-        --------------------------------------
-        **center_wavelength_in_nm** : float
-        **bandwidth_in_nm** : float
-    }
-
-    class EdgeOpticalFilter {
-        <<OpticalFilter>>
-        --------------------------------------
-        attributes
-        --------------------------------------
-        **cut_wavelength_in_nm** : float
-        slope_in_percent_cut_wavelength : float, optional
-        slope_starting_transmission_in_percent : float, optional
-        slope_ending_transmission_in_percent : float, optional
-    }
-
-    class DichroicMirror {
-        <<DeviceInstance>>
-        --------------------------------------
-        attributes
-        --------------------------------------
-        cut_on_wavelength_in_nm : numeric, optional
-        cut_off_wavelength_in_nm : numeric, optional
-        reflection_band_in_nm : numeric, optional
-        transmission_band_in_nm : numeric, optional
-        angle_of_incidence_in_degrees : numeric, optional
-    }
-    
-    class Photodetector {
-        <<DeviceInstance>>
-        --------------------------------------
-        attributes
-        --------------------------------------
-        **detector_type** : text
-        **detected_wavelength_in_nm** : float
-        gain : float, optional
-        gain_unit : text, optional
-    }
-
     class Indicator {
         <<NWBContainer>>
         --------------------------------------
         attributes
         --------------------------------------
-        **label** : text
+        label : text
         description : text, optional
         manufacturer : text, optional
-        injection_brain_region : text, optional
-        injection_coordinates_in_mm : float[3], optional
+        --------------------------------------
+        links
+        --------------------------------------
+        viral_vector_injection : ViralVectorInjection, optional
     }
 
-    DeviceModel <|-- MicroscopeModel : extends
-    DeviceInstance <|-- Microscope : extends
 
+    DeviceModel <|-- MicroscopeModel : extends
+    Device <|-- Microscope : extends
     Microscope o--> MicroscopeModel : links
     MicroscopyRig o--> Microscope : links
-    MicroscopyRig o--> ExcitationSource : links
-    MicroscopyRig o--> OpticalFilter : links
-    MicroscopyRig o--> DichroicMirror : links
-    MicroscopyRig o--> Photodetector : links
+    MicroscopyExperimentMetadata *-- MicroscopyRig : contains
+    MicroscopyExperimentMetadata *-- ViralVector : contains
+    MicroscopyExperimentMetadata *-- ViralVectorInjection : contains
+    MicroscopyExperimentMetadata *-- Indicator : contains
+    ViralVectorInjection o--> ViralVector : links
+    ViralVectorInjection *-- StereotacticPosition : contains
+    Indicator o--> ViralVectorInjection : links
 ```
 
 #### Illumination Pattern Components
@@ -225,7 +226,7 @@ classDiagram
         --------------------------------------
         attributes
         --------------------------------------
-        point_spread_function_in_um : text, optional
+        point_spread_function : text, optional
         illumination_angle_in_degrees : float64, optional
         plane_rate_in_Hz : float64, optional
     }
@@ -235,7 +236,7 @@ classDiagram
         --------------------------------------
         attributes
         --------------------------------------
-        max_scan_points : numeric, optional
+        max_scan_points : int32, optional
         dwell_time_in_s : float64, optional
         scanning_pattern : text, optional
     }
@@ -243,30 +244,25 @@ classDiagram
     class ImagingSpace {
         <<NWBContainer>>
         --------------------------------------
-        datasets
-        --------------------------------------
-        **description** : text
-        origin_coordinates : float64[3], optional
-        unit : text = "micrometers"
-        --------------------------------------
         attributes
         --------------------------------------
-        location : text, optional
-        reference_frame : text, optional
-        orientation : text, optional
+        description : text, optional
+        anatomical_target : text
         --------------------------------------
         groups
         --------------------------------------
-        **illumination_pattern** : IlluminationPattern
+        illumination_pattern : IlluminationPattern
+        fov_center_coordinates : StereotacticPosition, optional
     }
 
     IlluminationPattern <|-- LineScan : extends
     IlluminationPattern <|-- PlaneAcquisition : extends
     IlluminationPattern <|-- RandomAccessScan : extends
     ImagingSpace *-- IlluminationPattern : contains
+    ImagingSpace *-- StereotacticPosition : contains
 ```
 
-#### Microscopy Series and Imaging Space Components
+#### Microscopy Series, Static Image and Imaging Space Components
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#ffffff', 'primaryBorderColor': '#144E73', 'lineColor': '#D96F32'}}}%%
@@ -279,23 +275,25 @@ classDiagram
         --------------------------------------
         attributes
         --------------------------------------
-        **name** : text
         description : text, optional
-        **excitation_wavelength_in_nm** : float
-        **emission_wavelength_in_nm** : float
+        excitation_wavelength_in_nm : float
+        emission_wavelength_in_nm : float
         --------------------------------------
-        groups
+        links
         --------------------------------------
-        indicator
+        indicator : Indicator
     }
 
     class MicroscopySeries {
         <<TimeSeries>>
         --------------------------------------
+        links
+        --------------------------------------
+        microscopy_rig : MicroscopyRig
+        --------------------------------------
         groups
         --------------------------------------
-        **microscopy_rig** : MicroscopyRig
-        **microscopy_channel** : MicroscopyChannel
+        microscopy_channel : MicroscopyChannel
 
     }
 
@@ -304,11 +302,11 @@ classDiagram
         --------------------------------------
         datasets
         --------------------------------------
-        **data** : numeric[frames, height, width]
+        data : numeric[frames, height, width]
         --------------------------------------
         groups
         --------------------------------------
-        **imaging_space** : PlanarImagingSpace
+        planar_imaging_space : PlanarImagingSpace
     }
 
     class VolumetricMicroscopySeries {
@@ -316,11 +314,51 @@ classDiagram
         --------------------------------------
         datasets
         --------------------------------------
-        **data** : numeric[frames, height, width, depths]
+        data : numeric[frames, depths, height, width]
         --------------------------------------
         groups
         --------------------------------------
-        **imaging_space** : VolumetricImagingSpace
+        volumetric_imaging_space : VolumetricImagingSpace
+    }
+
+    class MicroscopyStaticImage {
+        <<NWBDataInterface>>
+        --------------------------------------
+        attributes
+        --------------------------------------
+        description : text
+        --------------------------------------
+        links
+        --------------------------------------
+        microscopy_rig : MicroscopyRig
+        --------------------------------------
+        groups
+        --------------------------------------
+        microscopy_channel : MicroscopyChannel
+    }
+
+    class PlanarMicroscopyStaticImage {
+        <<MicroscopyStaticImage>>
+        --------------------------------------
+        datasets
+        --------------------------------------
+        data : numeric[height, width]
+        --------------------------------------
+        groups
+        --------------------------------------
+        planar_imaging_space : PlanarImagingSpace
+    }
+
+    class VolumetricMicroscopyStaticImage {
+        <<MicroscopyStaticImage>>
+        --------------------------------------
+        datasets
+        --------------------------------------
+        data : numeric[depths, height, width]
+        --------------------------------------
+        groups
+        --------------------------------------
+        volumetric_imaging_space : VolumetricImagingSpace
     }
 
     class MultiPlaneMicroscopyContainer {
@@ -328,36 +366,33 @@ classDiagram
         --------------------------------------
         groups
         --------------------------------------
-        **planar_microscopy_series** : PlanarMicroscopySeries[1..*]
+        planar_microscopy_series : PlanarMicroscopySeries[0..*]
+        planar_microscopy_static_images : PlanarMicroscopyStaticImage[0..*]
     }
 
-    
+
     class MultiChannelMicroscopyContainer {
         <<NWBDataInterface>>
         --------------------------------------
         groups
         --------------------------------------
-        **microscopy_series** : MicroscopySeries[1..*]
+        microscopy_series : MicroscopySeries[0..*]
+        microscopy_static_images : MicroscopyStaticImage[0..*]
+        multi_plane_microscopy_containers : MultiPlaneMicroscopyContainer[0..*]
     }
 
     class ImagingSpace {
         <<NWBContainer>>
         --------------------------------------
-        datasets
-        --------------------------------------
-        **description** : text
-        origin_coordinates : float64[3], optional
-        unit : text = "micrometers"
-        --------------------------------------
         attributes
         --------------------------------------
-        location : text, optional
-        reference_frame : text, optional
-        orientation : text, optional
+        description : text, optional
+        anatomical_target : text
         --------------------------------------
         groups
         --------------------------------------
-        **illumination_pattern** : IlluminationPattern
+        illumination_pattern : IlluminationPattern
+        fov_center_coordinates : StereotacticPosition, optional
     }
 
     class PlanarImagingSpace {
@@ -365,8 +400,8 @@ classDiagram
         --------------------------------------
         datasets
         --------------------------------------
-        pixel_size_in_um : float64[2], optional
-        dimensions_in_pixels : float64[2], optional 
+        pixel_size_in_um : float64[x, y], optional
+        dimensions_in_pixels : int32[x, y], optional
         --------------------------------------
         methods
         --------------------------------------
@@ -378,8 +413,8 @@ classDiagram
         --------------------------------------
         datasets
         --------------------------------------
-        voxel_size_in_um : float64[3], optional
-        dimensions_in_voxels : float64[3], optional 
+        voxel_size_in_um : float64[x, y, z], optional
+        dimensions_in_voxels : int32[x, y, z], optional
         --------------------------------------
         methods
         --------------------------------------
@@ -401,20 +436,34 @@ classDiagram
         dichroic_mirror : DichroicMirror, optional
         photodetector : Photodetector, optional
         emission_filter : OpticalFilter, optional
+        objective_lens : ObjectiveLens, optional
+        --------------------------------------
+        datasets
+        --------------------------------------
+        optical_path_scheme : Image, optional
     }
 
     MicroscopySeries <|-- PlanarMicroscopySeries : extends
     MicroscopySeries <|-- VolumetricMicroscopySeries : extends
     ImagingSpace <|-- PlanarImagingSpace : extends
     ImagingSpace <|-- VolumetricImagingSpace : extends
-    
+
     PlanarMicroscopySeries *-- PlanarImagingSpace : contains
     VolumetricMicroscopySeries *-- VolumetricImagingSpace : contains
+    MicroscopyStaticImage <|-- PlanarMicroscopyStaticImage : extends
+    MicroscopyStaticImage <|-- VolumetricMicroscopyStaticImage : extends
+    PlanarMicroscopyStaticImage *-- PlanarImagingSpace : contains
+    VolumetricMicroscopyStaticImage *-- VolumetricImagingSpace : contains
     MultiPlaneMicroscopyContainer *-- PlanarMicroscopySeries : contains
+    MultiPlaneMicroscopyContainer *-- PlanarMicroscopyStaticImage : contains
     MultiChannelMicroscopyContainer *-- MicroscopySeries : contains
-    MicroscopySeries *-- MicroscopyRig : contains
-    MicroscopyChannel *-- MicroscopySeries : contains    
-    MicroscopyChannel --* Indicator : contains
+    MultiChannelMicroscopyContainer *-- MicroscopyStaticImage : contains
+    MultiChannelMicroscopyContainer *-- MultiPlaneMicroscopyContainer : contains
+    MicroscopySeries o--> MicroscopyRig : links
+    MicroscopySeries *-- MicroscopyChannel : contains
+    MicroscopyStaticImage o--> MicroscopyRig : links
+    MicroscopyStaticImage *-- MicroscopyChannel : contains
+    MicroscopyChannel o--> Indicator : links
 ```
 
 #### Segmentation Components
@@ -430,7 +479,7 @@ classDiagram
         --------------------------------------
         attributes
         --------------------------------------
-        **description** : text
+        description : text
         --------------------------------------
         groups
         --------------------------------------
@@ -442,13 +491,13 @@ classDiagram
         --------------------------------------
         datasets
         --------------------------------------
-        image_mask : VectorData[num_roi, num_x, num_y], optional
+        image_mask : VectorData[num_roi, num_y, num_x], optional
         pixel_mask_index : VectorIndex, optional
         pixel_mask : VectorData, optional
         --------------------------------------
         groups
         --------------------------------------
-        **imaging_space** : PlanarImagingSpace
+        planar_imaging_space : PlanarImagingSpace
         --------------------------------------
         methods
         --------------------------------------
@@ -463,13 +512,13 @@ classDiagram
         --------------------------------------
         datasets
         --------------------------------------
-        volume_mask : VectorData[num_roi, num_x, num_y, num_z], optional
+        volume_mask : VectorData[num_roi, num_z, num_y, num_x], optional
         voxel_mask_index : VectorIndex, optional
         voxel_mask : VectorData, optional
         --------------------------------------
         groups
         --------------------------------------
-        **imaging_space** : VolumetricImagingSpace
+        volumetric_imaging_space : VolumetricImagingSpace
         --------------------------------------
         methods
         --------------------------------------
@@ -484,11 +533,11 @@ classDiagram
         --------------------------------------
         datasets
         --------------------------------------
-        **data** : numeric[height, width] or numeric[height, width, depth]
+        data : numeric[height, width] or numeric[depth, height, width]
         --------------------------------------
         attributes
         --------------------------------------
-        **description** : text
+        description : text
     }
 
     class SegmentationContainer {
@@ -496,7 +545,7 @@ classDiagram
         --------------------------------------
         groups
         --------------------------------------
-        **segmentations** : Segmentation[1..*]
+        segmentations : Segmentation[1..*]
         --------------------------------------
         methods
         --------------------------------------
@@ -508,12 +557,12 @@ classDiagram
         --------------------------------------
         datasets
         --------------------------------------
-        **data** : numeric[number_of_frames, number_of_rois]
-        **rois** : DynamicTableRegion
+        data : numeric[number_of_frames, number_of_rois]
+        rois : DynamicTableRegion
         --------------------------------------
         links
         --------------------------------------
-        microscopy_saeries : MicroscopySeries, optional
+        microscopy_series : MicroscopySeries, optional
     }
 
     class MicroscopyResponseSeriesContainer {
@@ -521,7 +570,7 @@ classDiagram
         --------------------------------------
         groups
         --------------------------------------
-        **microscopy_response_series** : MicroscopyResponseSeries[1..*]
+        microscopy_response_series : MicroscopyResponseSeries[1..*]
     }
 
     Segmentation <|-- PlanarSegmentation : extends
@@ -575,7 +624,7 @@ Push your feature branch to origin (i.e. GitHub)
 $ git push origin <new_branch>
 ```
 
-Once you have tested and finalized your changes, create a pull request (PR) targeting dev as the base branch:
+Once you have tested and finalized your changes, create a pull request (PR) targeting main as the base branch:
 Ensure the PR description clearly describes the problem and solution.
 Include the relevant issue number if applicable. TIP: Writing e.g. "fix #613" will automatically close issue #613 when this PR is merged.
 Before submitting, please ensure that the code follows the standard coding style of the respective repository.
@@ -585,4 +634,4 @@ Update the CHANGELOG.md regularly to document changes to the extension.
 
 ## License
 
-MIT License. See [LICENSE.txt](LICENSE.txt) for details.
+BSD 3-Clause License. See [LICENSE.txt](LICENSE.txt) for details.

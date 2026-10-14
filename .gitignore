@@ -3,6 +3,7 @@
 
 # generated docs
 docs/source/_format_auto_docs
+docs/source/examples
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

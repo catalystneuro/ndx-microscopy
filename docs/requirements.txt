@@ -1,3 +1,6 @@
 sphinx>=5.0.0
 sphinx_rtd_theme>=1.0.0
 hdmf-docutils>=0.4.1
+myst-nb>=1.0.0
+ipykernel
+matplotlib

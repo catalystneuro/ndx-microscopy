@@ -6,12 +6,14 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
+from importlib.metadata import version as get_version
+
 project = "ndx-microscopy"
 copyright = "2024, Alessandra Trapani, Cody Baker"
 author = "Alessandra Trapani, Cody Baker"
 
-version = "0.3.0"
-release = "alpha"
+release = get_version(project)
+version = release
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -20,10 +22,19 @@ extensions = [
     "sphinx.ext.ifconfig",
     "sphinx.ext.autodoc",
     "sphinx.ext.intersphinx",
+    "sphinx.ext.napoleon",
+    "myst_nb",
 ]
 
 templates_path = ["_templates"]
 exclude_patterns = []
+
+# -- Options for the example notebooks ----------------------------------------
+# The notebooks in ../../examples are copied into ./examples when the build starts and executed during the build.
+nb_execution_mode = "force"
+nb_execution_timeout = 300
+nb_execution_raise_on_error = True
+nb_output_stderr = "remove"
 
 language = "en"
 
@@ -53,6 +64,7 @@ intersphinx_mapping.update(
     {
         "core": ("https://nwb-schema.readthedocs.io/en/latest/", None),
         "hdmf-common": ("https://hdmf-common-schema.readthedocs.io/en/latest/", None),
+        "ndx-ophys-devices": ("https://ndx-ophys-devices.readthedocs.io/en/latest/", None),
     }
 )
 
@@ -85,9 +97,22 @@ def run_doc_autogen(_):
         generate_docs()
 
 
+def copy_example_notebooks(_):
+    # The notebooks in examples/ are the only copy of the examples; copy them into the docs source tree
+    import shutil
+    from pathlib import Path
+
+    conf_file_dir = Path(__file__).resolve().parent
+    target_dir = conf_file_dir / "examples"
+    target_dir.mkdir(exist_ok=True)
+    for notebook in (conf_file_dir.parent.parent / "examples").glob("*.ipynb"):
+        shutil.copy(notebook, target_dir / notebook.name)
+
+
 def setup(app):
     app.connect("builder-inited", register_custom_namespace)
     app.connect("builder-inited", run_doc_autogen)
+    app.connect("builder-inited", copy_example_notebooks)
     # overrides for wide tables in RTD theme
     try:
         app.add_css_file("theme_overrides.css")  # Used by newer Sphinx versions
@@ -105,7 +130,6 @@ add_function_parentheses = False
 
 # -- HTML sphinx options
 html_theme = "sphinx_rtd_theme"
-html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 # LaTeX Sphinx options
 latex_elements = {

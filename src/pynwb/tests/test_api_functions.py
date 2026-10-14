@@ -1,7 +1,10 @@
 """Test API functions for the ndx-microscopy extension."""
 
 import numpy as np
+import pynwb
 import pytest
+
+import ndx_microscopy
 
 from ndx_microscopy.testing import (
     mock_PlanarImagingSpace,
@@ -76,7 +79,21 @@ def test_planar_pixel_to_image_conversion():
     pixel_mask = [[0, 0, 1.0], [1, 0, 2.0], [2, 0, 2.0]]
     image_shape = (3, 3)
     image_mask = segmentation.pixel_to_image(pixel_mask, image_shape)
-    np.testing.assert_allclose(image_mask, np.asarray([[1.0, 0.0, 0.0], [2.0, 0.0, 0.0], [2.0, 0.0, 0.0]]))
+
+    # image_mask follows (height, width): the three pixels differ only in x,
+    # so they land on the same y=0 row at x=0, 1, 2.
+    np.testing.assert_allclose(image_mask, np.asarray([[1.0, 2.0, 2.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]))
+
+
+def test_planar_pixel_to_image_uses_height_width_order():
+    """Test that pixel (x, y) lands at image_mask[y, x] in a non-square image."""
+    image_mask = PlanarSegmentation.pixel_to_image([[3, 1, 1.0]], (4, 5))
+    assert image_mask.shape == (4, 5)
+    assert image_mask[1, 3] == 1.0
+    assert image_mask.sum() == 1.0
+
+    # Without image_shape, the shape is (max_y + 1, max_x + 1)
+    assert PlanarSegmentation.pixel_to_image([[3, 1, 1.0]]).shape == (2, 4)
 
 
 def test_planar_image_to_pixel_conversion():
@@ -84,10 +101,19 @@ def test_planar_image_to_pixel_conversion():
     planar_imaging_space = mock_PlanarImagingSpace()
     segmentation = mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space)
 
-    image_mask = np.asarray([[1.0, 0.0, 0.0], [2.0, 0.0, 0.0], [2.0, 0.0, 0.0]])
+    # image_mask follows (height, width). Non-zero pixels are at
+    # y=0, x=0/1/2 -> expected pixel_mask rows are (x, y, weight).
+    image_mask = np.asarray([[1.0, 2.0, 2.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]])
 
     pixel_mask = segmentation.image_to_pixel(image_mask)
     np.testing.assert_allclose(pixel_mask, np.asarray([[0, 0, 1.0], [1, 0, 2.0], [2, 0, 2.0]]))
+
+
+def test_planar_image_to_pixel_uses_height_width_order():
+    """Test that image_mask[y, x] becomes pixel (x, y) in a non-square image."""
+    image_mask = np.zeros((4, 5))
+    image_mask[1, 3] = 1.0
+    assert PlanarSegmentation.image_to_pixel(image_mask) == [[3, 1, 1.0]]
 
 
 def test_volumetric_voxel_to_volume_conversion():
@@ -100,11 +126,13 @@ def test_volumetric_voxel_to_volume_conversion():
 
     volume_mask = segmentation.voxel_to_volume(voxel_mask, volume_shape)
 
+    # volume_mask follows (depth, height, width): the three voxels differ only in x,
+    # so they land on the same z=0, y=0 row at x=0, 1, 2.
     expected_image_mask = np.asarray(
         [
-            [[1.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
-            [[2.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
-            [[2.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+            [[1.0, 2.0, 2.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+            [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+            [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
         ]
     )
     np.testing.assert_allclose(volume_mask, expected_image_mask)
@@ -115,11 +143,13 @@ def test_volumetric_volume_to_voxel_conversion():
     volumetric_imaging_space = mock_VolumetricImagingSpace()
     segmentation = mock_VolumetricSegmentation(volumetric_imaging_space=volumetric_imaging_space)
 
+    # volume_mask follows (depth, height, width). Non-zero voxels are at
+    # z=0, y=0, x=0/1/2 -> expected voxel_mask rows are (x, y, z, weight).
     volume_mask = np.asarray(
         [
-            [[1.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
-            [[2.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
-            [[2.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+            [[1.0, 2.0, 2.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+            [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+            [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
         ]
     )
 
@@ -255,6 +285,65 @@ def test_volumetric_add_roi_with_image_mask():
     assert np.array_equal(volumetric_segmentation.volume_mask[0], volume_mask)
 
 
+def test_planar_add_roi_mixing_mask_types_raises():
+    """Test that all ROIs must use the same mask type(s), since each mask type is a table column."""
+    planar_imaging_space = mock_PlanarImagingSpace(dimensions_in_pixels=(5, 4))
+    planar_seg = PlanarSegmentation(
+        name="PlanarSegmentation", description="", planar_imaging_space=planar_imaging_space
+    )
+
+    planar_seg.add_roi(image_mask=np.ones((4, 5)))
+    with pytest.raises(ValueError, match="column 'image_mask' missing"):
+        planar_seg.add_roi(pixel_mask=[[1, 2, 1.0]])
+
+
+def test_volumetric_add_roi_mixing_mask_types_raises():
+    """Test that all ROIs must use the same mask type(s), since each mask type is a table column."""
+    volumetric_imaging_space = mock_VolumetricImagingSpace(dimensions_in_voxels=(5, 4, 3))
+    volumetric_seg = VolumetricSegmentation(
+        name="VolumetricSegmentation", description="", volumetric_imaging_space=volumetric_imaging_space
+    )
+
+    volumetric_seg.add_roi(volume_mask=np.ones((3, 4, 5)))
+    with pytest.raises(ValueError, match="column 'volume_mask' missing"):
+        volumetric_seg.add_roi(voxel_mask=[[1, 2, 0, 1.0]])
+
+
+def test_planar_add_roi_with_both_mask_types():
+    """Test that each ROI can provide both mask types."""
+    planar_imaging_space = mock_PlanarImagingSpace(dimensions_in_pixels=(5, 4))
+    planar_seg = PlanarSegmentation(
+        name="PlanarSegmentation", description="", planar_imaging_space=planar_imaging_space
+    )
+
+    for _ in range(2):
+        image_mask = PlanarSegmentation.pixel_to_image([[1, 2, 1.0]], (4, 5))
+        planar_seg.add_roi(image_mask=image_mask, pixel_mask=[[1, 2, 1.0]])
+    assert set(planar_seg.colnames) == {"image_mask", "pixel_mask"}
+    assert len(planar_seg) == 2
+
+
+@pytest.mark.parametrize("mock_function", [mock_PlanarSegmentation, mock_VolumetricSegmentation])
+def test_segmentation_indexes_rows_and_columns(mock_function):
+    """Test that indexing a segmentation returns table rows and columns, as for any DynamicTable."""
+    if mock_function is mock_PlanarSegmentation:
+        segmentation = mock_function(planar_imaging_space=mock_PlanarImagingSpace(dimensions_in_pixels=(4, 3)))
+        mask_column = "image_mask"
+    else:
+        segmentation = mock_function(
+            volumetric_imaging_space=mock_VolumetricImagingSpace(dimensions_in_voxels=(4, 3, 2))
+        )
+        mask_column = "volume_mask"
+
+    assert len(segmentation[0:2]) == 2
+    assert len(segmentation[0]) == 1
+    assert segmentation[mask_column] is segmentation.columns[0]
+    assert "<table" in segmentation._repr_html_()
+
+    # Summary images remain accessible through summary_images
+    assert segmentation.summary_images["mean"].name == "mean"
+
+
 def test_add_roi_without_masks():
     """Test error when adding ROI without any mask."""
     planar_imaging_space = mock_PlanarImagingSpace()
@@ -318,6 +407,13 @@ def test_segmentation_inheritance():
     # Test that each has appropriate summary images
     assert len(planar_segmentation.summary_images) == 2
     assert len(volumetric_segmentation.summary_images) == 2
+
+
+def test_all_extension_types_are_exported():
+    """Test that every neurodata type defined in the extension spec is listed in __all__."""
+    namespace_catalog = pynwb.get_type_map().namespace_catalog
+    extension_types = set(namespace_catalog.get_types("ndx-microscopy.extensions.yaml"))
+    assert extension_types <= set(ndx_microscopy.__all__)
 
 
 if __name__ == "__main__":

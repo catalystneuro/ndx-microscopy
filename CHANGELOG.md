@@ -1,3 +1,60 @@
+# v0.4.0 (October 14, 2026)
+
+## Deprecations and Changes
+- **Breaking Change**: `OpticalLens` renamed to `ObjectiveLens`
+- **Breaking Change**: `Microscope` extends the core `Device` type and `MicroscopeModel` the core `DeviceModel` type (pynwb 3.1), replacing `DeviceInstance` and `DeviceModel` from ndx-ophys-devices
+- **Breaking Change**: `MicroscopyChannel.indicator` changed from a nested group to a link reference
+- **Breaking Change**: `MicroscopySeries.microscopy_rig` changed from a nested group to a link reference
+- **Breaking Change**: Simplified `ImagingSpace` class by removing coordinate system metadata:
+  - Removed `origin_coordinates` dataset and its `unit` attribute
+  - Renamed `location` attribute to `anatomical_target` for clearer semantics
+  - Removed `reference_frame` attribute
+  - Removed `orientation` attribute
+- Updated `ndx-ophys-devices` dependency from v0.2.0 to v0.4.0
+- Require Python >=3.10, pynwb >=3.1.0 and hdmf >=4.1.0
+- **Breaking Change**: Reordered volumetric and planar dataset dimensions to follow the TZYX convention shared with OME, ImageJ, and scikit-image (see [#77](https://github.com/catalystneuro/ndx-microscopy/issues/77)):
+  - `VolumetricMicroscopySeries.data`: `(frames, height, width, depths)` → `(frames, depths, height, width)`
+  - `VolumetricMicroscopyStaticImage.data`: `(height, width, depths)` → `(depths, height, width)`
+  - `VolumetricSegmentation.volume_mask`: `(num_roi, num_x, num_y, num_z)` → `(num_roi, num_z, num_y, num_x)`
+  - `SummaryImage.data` (3D variant): `(height, width, depth)` → `(depth, height, width)`
+  - `VolumetricSegmentation.voxel_to_volume` / `volume_to_voxel` now build/parse volumes in `(depth, height, width)` order. The `voxel_mask` compound dtype remains `(x, y, z, weight)`.
+  - `PlanarSegmentation.image_mask`: `(num_roi, num_x, num_y)` → `(num_roi, num_y, num_x)`
+  - `PlanarSegmentation.pixel_to_image` / `image_to_pixel` now build/parse images in `(height, width)` order, so pixel `(x, y)` is stored at `image_mask[y, x]`. The `pixel_mask` compound dtype remains `(x, y, weight)`.
+- **Breaking Change**: Renamed `PlaneAcquisition.point_spread_function_in_um` to `point_spread_function`, since it is a text value such as "32 um ± 1.6 um"
+- **Breaking Change**: Changed `RandomAccessScan.max_scan_points` dtype from `numeric` to `int32`
+- Changed the dtype of `PlanarImagingSpace.dimensions_in_pixels` and `VolumetricImagingSpace.dimensions_in_voxels` from `uint32` to `int32`, so that Python integers are written without a dtype conversion warning
+- Removed the redundant `name` attribute from `MicroscopyChannel` and `MicroscopyStaticImage`; the object name is the group name
+- Removed the custom `SegmentationContainer.add_segmentation(imaging_space=...)`, which was never callable; use the generated `add_segmentation(segmentations=...)`
+
+## Bug Fixes
+- Indexing a `PlanarSegmentation` or `VolumetricSegmentation` (e.g., `segmentation[0]`, `segmentation["image_mask"]`) returns table rows and columns with hdmf 4.1, as with later hdmf versions. It previously looked up summary images by name and failed, which also broke the HTML repr in Jupyter.
+
+## Features
+- Added an `auto-publish.yml` GitHub Action that publishes to PyPI when a GitHub Release with a `v` tag is published
+- Extended `MultiChannelMicroscopyContainer` to support nesting `MultiPlaneMicroscopyContainer` objects, enabling combined multi-plane and multi-channel acquisition workflows (e.g., a functional indicator imaged at several depths alongside anatomical markers)
+- Added static image support for microscopy experiments:
+  - `MicroscopyStaticImage`: Base class for static images
+  - `PlanarMicroscopyStaticImage`: For 2D static images
+  - `VolumetricMicroscopyStaticImage`: For 3D static images
+- Added `MicroscopyExperimentMetadata` (extends `LabMetaData`) as a centralized container for experiment metadata, including:
+  - `MicroscopyRig` objects
+  - `ViralVector` objects (from ndx-ophys-devices)
+  - `ViralVectorInjection` objects (from ndx-ophys-devices)
+  - `Indicator` objects (from ndx-ophys-devices)
+- Added support for `ViralVector` and `ViralVectorInjection` imports from ndx-ophys-devices
+- Added optional `fov_center_coordinates` (a `StereotacticPosition` from ndx-ophys-devices) to `ImagingSpace` for the stereotactic position of the center of the field of view, including the imaging depth. Atlas localization of the field of view will be handled by [ndx-anatomical-localization](https://github.com/catalystneuro/ndx-anatomical-localization)
+- Added optional `optical_path_scheme` dataset to `MicroscopyRig` (a contained `Image`, e.g. `RGBImage`) for storing an annotated diagram or picture of the microscope's optical path layout
+
+## Notes
+- These changes improve metadata organization by centralizing all experiment-related objects in `MicroscopyExperimentMetadata`
+- The use of links instead of nested groups provides better data reusability and reduces duplication
+- Users should add `MicroscopyExperimentMetadata` to NWBFile using `nwbfile.add_lab_meta_data()`
+
+## Reading files written with earlier versions
+Files written with ndx-microscopy 0.3.x cannot be read in a Python session that has imported ndx-microscopy 0.4.0,
+because the installed namespace takes precedence over the one cached in the file.
+To read such files, open them in a session that does not import ndx-microscopy; pynwb then loads the cached namespaces.
+
 # v0.3.0 (Jun 3, 2025)
 ## Bug Fixes
 
