@@ -4,8 +4,8 @@
 Release Notes
 *************
 
-Version 0.4.0 (Upcoming)
-========================
+Version 0.4.0 (October 14, 2026)
+================================
 
 Deprecations and Changes
 ------------------------
@@ -47,6 +47,7 @@ Bug Fixes
 Features
 --------
 
+* Added an ``auto-publish.yml`` GitHub Action that publishes to PyPI when a GitHub Release with a ``v`` tag is published
 * Extended ``MultiChannelMicroscopyContainer`` to support nesting ``MultiPlaneMicroscopyContainer`` objects, enabling combined multi-plane and multi-channel acquisition workflows (e.g., a functional indicator imaged at several depths alongside anatomical markers)
 * Added static image support for microscopy experiments:
 
