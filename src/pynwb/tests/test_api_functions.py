@@ -26,8 +26,8 @@ def test_planar_get_fov_size_with_parameters():
     planar_imaging_space = mock_PlanarImagingSpace()
 
     # Test with explicit parameters
-    dimensions = (100, 200)  # x, y in pixels
-    pixel_size = (0.5, 0.5)  # x, y in micrometers
+    dimensions = (100, 200)  # (rows, columns) in pixels
+    pixel_size = (0.5, 0.5)  # (rows, columns) in micrometers
 
     fov_size = planar_imaging_space.get_FOV_size(dimensions_in_pixels=dimensions, pixel_size_in_um=pixel_size)
 
@@ -50,8 +50,8 @@ def test_volumetric_get_fov_size_with_parameters():
     volumetric_imaging_space = mock_VolumetricImagingSpace()
 
     # Test with explicit parameters
-    dimensions = (50, 100, 200)  # x, y, z in voxels
-    voxel_size = (0.5, 0.5, 1.0)  # x, y, z in micrometers
+    dimensions = (50, 100, 200)  # (depths, rows, columns) in voxels
+    voxel_size = (0.5, 0.5, 1.0)  # (depths, rows, columns) in micrometers
 
     fov_size = volumetric_imaging_space.get_FOV_size(dimensions_in_voxels=dimensions, voxel_size_in_um=voxel_size)
 
@@ -287,7 +287,7 @@ def test_volumetric_add_roi_with_image_mask():
 
 def test_planar_add_roi_mixing_mask_types_raises():
     """Test that all ROIs must use the same mask type(s), since each mask type is a table column."""
-    planar_imaging_space = mock_PlanarImagingSpace(dimensions_in_pixels=(5, 4))
+    planar_imaging_space = mock_PlanarImagingSpace(dimensions_in_pixels=(4, 5))
     planar_seg = PlanarSegmentation(
         name="PlanarSegmentation", description="", planar_imaging_space=planar_imaging_space
     )
@@ -299,7 +299,7 @@ def test_planar_add_roi_mixing_mask_types_raises():
 
 def test_volumetric_add_roi_mixing_mask_types_raises():
     """Test that all ROIs must use the same mask type(s), since each mask type is a table column."""
-    volumetric_imaging_space = mock_VolumetricImagingSpace(dimensions_in_voxels=(5, 4, 3))
+    volumetric_imaging_space = mock_VolumetricImagingSpace(dimensions_in_voxels=(3, 4, 5))
     volumetric_seg = VolumetricSegmentation(
         name="VolumetricSegmentation", description="", volumetric_imaging_space=volumetric_imaging_space
     )
@@ -311,7 +311,7 @@ def test_volumetric_add_roi_mixing_mask_types_raises():
 
 def test_planar_add_roi_with_both_mask_types():
     """Test that each ROI can provide both mask types."""
-    planar_imaging_space = mock_PlanarImagingSpace(dimensions_in_pixels=(5, 4))
+    planar_imaging_space = mock_PlanarImagingSpace(dimensions_in_pixels=(4, 5))
     planar_seg = PlanarSegmentation(
         name="PlanarSegmentation", description="", planar_imaging_space=planar_imaging_space
     )
@@ -327,11 +327,11 @@ def test_planar_add_roi_with_both_mask_types():
 def test_segmentation_indexes_rows_and_columns(mock_function):
     """Test that indexing a segmentation returns table rows and columns, as for any DynamicTable."""
     if mock_function is mock_PlanarSegmentation:
-        segmentation = mock_function(planar_imaging_space=mock_PlanarImagingSpace(dimensions_in_pixels=(4, 3)))
+        segmentation = mock_function(planar_imaging_space=mock_PlanarImagingSpace(dimensions_in_pixels=(3, 4)))
         mask_column = "image_mask"
     else:
         segmentation = mock_function(
-            volumetric_imaging_space=mock_VolumetricImagingSpace(dimensions_in_voxels=(4, 3, 2))
+            volumetric_imaging_space=mock_VolumetricImagingSpace(dimensions_in_voxels=(2, 3, 4))
         )
         mask_column = "volume_mask"
 

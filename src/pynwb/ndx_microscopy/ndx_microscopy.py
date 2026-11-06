@@ -39,7 +39,7 @@ def get_FOV_size(self, **kwargs):
     Returns
     -------
     tuple
-        The size of the FOV in micrometers, in the same (x, y) order as dimensions_in_pixels.
+        The size of the FOV in micrometers, in the same (rows, columns) order as dimensions_in_pixels.
     """
     dimensions_in_pixels, pixel_size_in_um = popargs("dimensions_in_pixels", "pixel_size_in_um", kwargs)
     # Use instance attributes if parameters not provided
@@ -97,7 +97,7 @@ def get_FOV_size(self, **kwargs):
     Returns
     -------
     tuple
-        The size of the FOV in micrometers, in the same (x, y, z) order as dimensions_in_voxels.
+        The size of the FOV in micrometers, in the same (depths, rows, columns) order as dimensions_in_voxels.
     """
     dimensions_in_voxels, voxel_size_in_um = popargs("dimensions_in_voxels", "voxel_size_in_um", kwargs)
     # Use instance attributes if parameters not provided
