@@ -1,3 +1,11 @@
+# Upcoming
+
+## Deprecations and Changes
+- **Breaking Change**: Renamed and reordered the fields of the sparse masks to follow the depth, then rows, then columns order of the dense masks and the imaging data:
+  - `PlanarSegmentation.pixel_mask`: `(x, y, weight)` → `(row, column, weight)`
+  - `VolumetricSegmentation.voxel_mask`: `(x, y, z, weight)` → `(depth, row, column, weight)`
+  - `PlanarSegmentation.pixel_to_image` / `image_to_pixel` and `VolumetricSegmentation.voxel_to_volume` / `volume_to_voxel` read and write the new order.
+
 # v0.4.0 (October 14, 2026)
 
 ## Deprecations and Changes
