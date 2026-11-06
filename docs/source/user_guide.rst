@@ -517,8 +517,9 @@ ROI Segmentation
 ----------------
 
 ROIs can be stored as image masks, shaped (height, width) like the data, or as pixel masks, lists of
-(x, y, weight). Each mask type is a column of the table, so every ROI in a segmentation must provide the
-same mask types. ``PlanarSegmentation.pixel_to_image`` and ``image_to_pixel`` convert between the two.
+(row, column, weight) in the same order. Each mask type is a column of the table, so every ROI in a segmentation
+must provide the same mask types. ``PlanarSegmentation.pixel_to_image`` and ``image_to_pixel`` convert
+between the two.
 
 .. code-block:: python
 
@@ -537,7 +538,7 @@ same mask types. ``PlanarSegmentation.pixel_to_image`` and ``image_to_pixel`` co
         image_mask[y - 4 : y + 4, x - 4 : x + 4] = 1.0
         planar_segmentation.add_roi(image_mask=image_mask)
 
-    # The equivalent pixel mask of the first ROI, as (x, y, weight) rows
+    # The equivalent pixel mask of the first ROI, as (row, column, weight) entries
     first_roi_pixels = PlanarSegmentation.image_to_pixel(planar_segmentation.image_mask[0])
 
     ophys_module = nwbfile.create_processing_module(name="ophys", description="Processed imaging data")

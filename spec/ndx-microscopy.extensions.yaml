@@ -468,18 +468,19 @@ groups:
       - name: pixel_mask
         neurodata_type_inc: VectorData
         dtype:
-          - name: x
+          - name: row
             dtype: uint32
-            doc: Pixel x-coordinate.
-          - name: y
+            doc: Row of the pixel, its index along the height axis of image_mask.
+          - name: column
             dtype: uint32
-            doc: Pixel y-coordinate.
+            doc: Column of the pixel, its index along the width axis of image_mask.
           - name: weight
             dtype: float32
             doc: Weight of the pixel.
         doc:
-          "Pixel masks for each ROI: a list of indices and weights for the ROI. Pixel
-          masks are concatenated and parsing of this dataset is maintained by the PlanarSegmentation"
+          "Pixel masks for each ROI: a list of indices and weights for the ROI. The indices are listed
+          (row, column), in the (height, width) order of image_mask. Pixel masks are concatenated and parsing
+          of this dataset is maintained by the PlanarSegmentation"
         quantity: "?"
     groups:
       - neurodata_type_inc: PlanarImagingSpace
@@ -513,21 +514,22 @@ groups:
       - name: voxel_mask
         neurodata_type_inc: VectorData
         dtype:
-          - name: x
+          - name: depth
             dtype: uint32
-            doc: Voxel x-coordinate.
-          - name: y
+            doc: Depth plane of the voxel, its index along the depth axis of volume_mask.
+          - name: row
             dtype: uint32
-            doc: Voxel y-coordinate.
-          - name: z
+            doc: Row of the voxel, its index along the height axis of volume_mask.
+          - name: column
             dtype: uint32
-            doc: Voxel z-coordinate.
+            doc: Column of the voxel, its index along the width axis of volume_mask.
           - name: weight
             dtype: float32
             doc: Weight of the voxel.
         doc:
-          "Voxel masks for each ROI: a list of indices and weights for the ROI. Voxel
-          masks are concatenated and parsing of this dataset is maintained by the VolumetricSegmentation"
+          "Voxel masks for each ROI: a list of indices and weights for the ROI. The indices are listed
+          (depth, row, column), in the (depth, height, width) order of volume_mask. Voxel masks are concatenated
+          and parsing of this dataset is maintained by the VolumetricSegmentation"
         quantity: "?"
     groups:
       - neurodata_type_inc: VolumetricImagingSpace

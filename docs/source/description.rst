@@ -66,7 +66,7 @@ Dimension Order
 ---------------
 
 Imaging data and masks are stored in (time, [depth], height, width) order, the TZYX convention used by OME,
-ImageJ and scikit-image. Sizes and coordinates are listed x first.
+ImageJ and scikit-image. Pixel and voxel mask coordinates follow the same order. Sizes are listed x first.
 
 .. list-table::
    :header-rows: 1
@@ -90,9 +90,9 @@ ImageJ and scikit-image. Sizes and coordinates are listed x first.
    * - ``MicroscopyResponseSeries.data``
      - (frames, ROIs)
    * - ``PlanarSegmentation.pixel_mask`` rows
-     - (x, y, weight)
+     - (row, column, weight)
    * - ``VolumetricSegmentation.voxel_mask`` rows
-     - (x, y, z, weight)
+     - (depth, row, column, weight)
    * - ``PlanarImagingSpace.pixel_size_in_um`` and ``dimensions_in_pixels``
      - (x, y)
    * - ``VolumetricImagingSpace.voxel_size_in_um`` and ``dimensions_in_voxels``

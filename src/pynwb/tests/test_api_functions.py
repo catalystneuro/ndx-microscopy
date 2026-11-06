@@ -76,24 +76,24 @@ def test_planar_pixel_to_image_conversion():
     planar_imaging_space = mock_PlanarImagingSpace()
     segmentation = mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space)
 
-    pixel_mask = [[0, 0, 1.0], [1, 0, 2.0], [2, 0, 2.0]]
+    pixel_mask = [[0, 0, 1.0], [0, 1, 2.0], [0, 2, 2.0]]
     image_shape = (3, 3)
     image_mask = segmentation.pixel_to_image(pixel_mask, image_shape)
 
-    # image_mask follows (height, width): the three pixels differ only in x,
-    # so they land on the same y=0 row at x=0, 1, 2.
+    # pixel_mask entries are (row, column, weight) and image_mask follows (height, width): the three
+    # pixels differ only in column, so they land on row 0 at columns 0, 1, 2.
     np.testing.assert_allclose(image_mask, np.asarray([[1.0, 2.0, 2.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]))
 
 
 def test_planar_pixel_to_image_uses_height_width_order():
-    """Test that pixel (x, y) lands at image_mask[y, x] in a non-square image."""
-    image_mask = PlanarSegmentation.pixel_to_image([[3, 1, 1.0]], (4, 5))
+    """Test that pixel (row, column) lands at image_mask[row, column] in a non-square image."""
+    image_mask = PlanarSegmentation.pixel_to_image([[1, 3, 1.0]], (4, 5))
     assert image_mask.shape == (4, 5)
     assert image_mask[1, 3] == 1.0
     assert image_mask.sum() == 1.0
 
-    # Without image_shape, the shape is (max_y + 1, max_x + 1)
-    assert PlanarSegmentation.pixel_to_image([[3, 1, 1.0]]).shape == (2, 4)
+    # Without image_shape, the shape is (max_row + 1, max_column + 1)
+    assert PlanarSegmentation.pixel_to_image([[1, 3, 1.0]]).shape == (2, 4)
 
 
 def test_planar_image_to_pixel_conversion():
@@ -102,18 +102,18 @@ def test_planar_image_to_pixel_conversion():
     segmentation = mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space)
 
     # image_mask follows (height, width). Non-zero pixels are at
-    # y=0, x=0/1/2 -> expected pixel_mask rows are (x, y, weight).
+    # row 0, columns 0/1/2 -> expected pixel_mask entries are (row, column, weight).
     image_mask = np.asarray([[1.0, 2.0, 2.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]])
 
     pixel_mask = segmentation.image_to_pixel(image_mask)
-    np.testing.assert_allclose(pixel_mask, np.asarray([[0, 0, 1.0], [1, 0, 2.0], [2, 0, 2.0]]))
+    np.testing.assert_allclose(pixel_mask, np.asarray([[0, 0, 1.0], [0, 1, 2.0], [0, 2, 2.0]]))
 
 
 def test_planar_image_to_pixel_uses_height_width_order():
-    """Test that image_mask[y, x] becomes pixel (x, y) in a non-square image."""
+    """Test that image_mask[row, column] becomes pixel (row, column) in a non-square image."""
     image_mask = np.zeros((4, 5))
     image_mask[1, 3] = 1.0
-    assert PlanarSegmentation.image_to_pixel(image_mask) == [[3, 1, 1.0]]
+    assert PlanarSegmentation.image_to_pixel(image_mask) == [[1, 3, 1.0]]
 
 
 def test_volumetric_voxel_to_volume_conversion():
@@ -121,13 +121,13 @@ def test_volumetric_voxel_to_volume_conversion():
     volumetric_imaging_space = mock_VolumetricImagingSpace()
     segmentation = mock_VolumetricSegmentation(volumetric_imaging_space=volumetric_imaging_space)
 
-    voxel_mask = [[0, 0, 0, 1.0], [1, 0, 0, 2.0], [2, 0, 0, 2.0]]
+    voxel_mask = [[0, 0, 0, 1.0], [0, 0, 1, 2.0], [0, 0, 2, 2.0]]
     volume_shape = (3, 3, 3)
 
     volume_mask = segmentation.voxel_to_volume(voxel_mask, volume_shape)
 
-    # volume_mask follows (depth, height, width): the three voxels differ only in x,
-    # so they land on the same z=0, y=0 row at x=0, 1, 2.
+    # voxel_mask entries are (depth, row, column, weight) and volume_mask follows (depth, height, width):
+    # the three voxels differ only in column, so they land on depth 0, row 0 at columns 0, 1, 2.
     expected_image_mask = np.asarray(
         [
             [[1.0, 2.0, 2.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
@@ -144,7 +144,7 @@ def test_volumetric_volume_to_voxel_conversion():
     segmentation = mock_VolumetricSegmentation(volumetric_imaging_space=volumetric_imaging_space)
 
     # volume_mask follows (depth, height, width). Non-zero voxels are at
-    # z=0, y=0, x=0/1/2 -> expected voxel_mask rows are (x, y, z, weight).
+    # depth 0, row 0, columns 0/1/2 -> expected voxel_mask entries are (depth, row, column, weight).
     volume_mask = np.asarray(
         [
             [[1.0, 2.0, 2.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
@@ -155,7 +155,7 @@ def test_volumetric_volume_to_voxel_conversion():
 
     voxel_mask = segmentation.volume_to_voxel(volume_mask)
 
-    expected_voxel_mask = [[0, 0, 0, 1.0], [1, 0, 0, 2.0], [2, 0, 0, 2.0]]
+    expected_voxel_mask = [[0, 0, 0, 1.0], [0, 0, 1, 2.0], [0, 0, 2, 2.0]]
     np.testing.assert_allclose(voxel_mask, expected_voxel_mask)
 
 
@@ -165,7 +165,9 @@ def test_pixel_to_image_value_error():
     segmentation_2d = mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space)
 
     invalid_pixel_mask = np.array([[0, 0]])  # Missing weight column
-    with pytest.raises(ValueError, match="pixel_mask must have shape \\(N, 3\\) where each row is \\(x, y, weight\\)"):
+    with pytest.raises(
+        ValueError, match="pixel_mask must have shape \\(N, 3\\) where each entry is \\(row, column, weight\\)"
+    ):
         segmentation_2d.pixel_to_image(invalid_pixel_mask)
 
 
@@ -176,7 +178,7 @@ def test_voxel_to_volume_value_error():
 
     invalid_voxel_mask = np.array([[0, 0, 0]])  # Missing weight column
     with pytest.raises(
-        ValueError, match="voxel_mask must have shape \\(N, 4\\) where each row is \\(x, y, z, weight\\)"
+        ValueError, match="voxel_mask must have shape \\(N, 4\\) where each entry is \\(depth, row, column, weight\\)"
     ):
         segmentation_3d.voxel_to_volume(invalid_voxel_mask)
 
