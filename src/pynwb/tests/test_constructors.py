@@ -143,7 +143,7 @@ def test_constructor_segmentation():
 
 
 def test_constructor_planar_segmentation():
-    planar_imaging_space = mock_PlanarImagingSpace(dimensions_in_pixels=(20, 10))
+    planar_imaging_space = mock_PlanarImagingSpace(dimensions_in_pixels=(10, 20))
     segmentation = mock_PlanarSegmentation(planar_imaging_space=planar_imaging_space)
     assert len(segmentation.id) == 5  # Default number_of_rois
     assert segmentation.image_mask[0].shape == (10, 20)  # (height, width)
@@ -153,7 +153,7 @@ def test_constructor_planar_segmentation():
 
 
 def test_constructor_volumetric_segmentation():
-    volumetric_imaging_space = mock_VolumetricImagingSpace(dimensions_in_voxels=(20, 10, 5))
+    volumetric_imaging_space = mock_VolumetricImagingSpace(dimensions_in_voxels=(5, 10, 20))
     segmentation = mock_VolumetricSegmentation(volumetric_imaging_space=volumetric_imaging_space)
     assert len(segmentation.id) == 5  # Default number_of_rois
     assert segmentation.volume_mask[0].shape == (5, 10, 20)  # (depth, height, width)

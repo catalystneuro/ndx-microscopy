@@ -400,8 +400,8 @@ classDiagram
         --------------------------------------
         datasets
         --------------------------------------
-        pixel_size_in_um : float64[x, y], optional
-        dimensions_in_pixels : int32[x, y], optional
+        pixel_size_in_um : float64[rows, columns], optional
+        dimensions_in_pixels : int32[rows, columns], optional
         --------------------------------------
         methods
         --------------------------------------
@@ -413,8 +413,8 @@ classDiagram
         --------------------------------------
         datasets
         --------------------------------------
-        voxel_size_in_um : float64[x, y, z], optional
-        dimensions_in_voxels : int32[x, y, z], optional
+        voxel_size_in_um : float64[depths, rows, columns], optional
+        dimensions_in_voxels : int32[depths, rows, columns], optional
         --------------------------------------
         methods
         --------------------------------------
