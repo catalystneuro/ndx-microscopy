@@ -451,8 +451,8 @@ groups:
         neurodata_type_inc: VectorData
         dims:
           - - num_roi
-            - num_y
-            - num_x
+            - height
+            - width
         shape:
           - - null
             - null
@@ -494,9 +494,9 @@ groups:
         neurodata_type_inc: VectorData
         dims:
           - - num_roi
-            - num_z
-            - num_y
-            - num_x
+            - depth
+            - height
+            - width
         shape:
           - - null
             - null
