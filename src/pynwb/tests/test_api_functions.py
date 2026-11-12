@@ -159,6 +159,24 @@ def test_volumetric_volume_to_voxel_conversion():
     np.testing.assert_allclose(voxel_mask, expected_voxel_mask)
 
 
+def test_volumetric_voxel_to_volume_uses_depth_height_width_order():
+    """Test that voxel (depth, row, column) lands at volume_mask[depth, row, column] in a non-cubic volume."""
+    volume_mask = VolumetricSegmentation.voxel_to_volume([[1, 2, 3, 1.0]], (2, 3, 4))
+    assert volume_mask.shape == (2, 3, 4)
+    assert volume_mask[1, 2, 3] == 1.0
+    assert volume_mask.sum() == 1.0
+
+    # Without volume_shape, the shape is (max_depth + 1, max_row + 1, max_column + 1)
+    assert VolumetricSegmentation.voxel_to_volume([[1, 2, 3, 1.0]]).shape == (2, 3, 4)
+
+
+def test_volumetric_volume_to_voxel_uses_depth_height_width_order():
+    """Test that volume_mask[depth, row, column] becomes voxel (depth, row, column) in a non-cubic volume."""
+    volume_mask = np.zeros((2, 3, 4))
+    volume_mask[1, 2, 3] = 1.0
+    assert VolumetricSegmentation.volume_to_voxel(volume_mask) == [[1, 2, 3, 1.0]]
+
+
 def test_pixel_to_image_value_error():
     """Test ValueError for pixel_to_image with invalid pixel mask shape."""
     planar_imaging_space = mock_PlanarImagingSpace()
