@@ -27,7 +27,7 @@ def test_planar_get_fov_size_with_parameters():
 
     # Test with explicit parameters
     dimensions = (100, 200)  # (rows, columns) in pixels
-    pixel_size = (0.5, 0.5)  # (rows, columns) in micrometers
+    pixel_size = (0.5, 0.5)  # (height, width) in micrometers
 
     fov_size = planar_imaging_space.get_FOV_size(dimensions_in_pixels=dimensions, pixel_size_in_um=pixel_size)
 
@@ -51,7 +51,7 @@ def test_volumetric_get_fov_size_with_parameters():
 
     # Test with explicit parameters
     dimensions = (50, 100, 200)  # (depths, rows, columns) in voxels
-    voxel_size = (0.5, 0.5, 1.0)  # (depths, rows, columns) in micrometers
+    voxel_size = (0.5, 0.5, 1.0)  # (depth, height, width) in micrometers
 
     fov_size = volumetric_imaging_space.get_FOV_size(dimensions_in_voxels=dimensions, voxel_size_in_um=voxel_size)
 

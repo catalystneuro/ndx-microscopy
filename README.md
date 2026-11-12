@@ -48,8 +48,8 @@ A Neurodata Without Borders (NWB) extension for storing microscopy data and asso
 
 ## Entity Relationship Diagrams
 
-In the diagrams, fields are required unless marked optional. Imaging data and masks are listed in
-(time, [depth], height, width) order; pixel and voxel sizes and dimensions are listed x first.
+In the diagrams, fields are required unless marked optional. Imaging data, masks and imaging space sizes are
+listed in (time, [depth], height, width) order.
 
 #### Experiment Metadata Components
 
@@ -400,7 +400,7 @@ classDiagram
         --------------------------------------
         datasets
         --------------------------------------
-        pixel_size_in_um : float64[rows, columns], optional
+        pixel_size_in_um : float64[height, width], optional
         dimensions_in_pixels : int32[rows, columns], optional
         --------------------------------------
         methods
@@ -413,7 +413,7 @@ classDiagram
         --------------------------------------
         datasets
         --------------------------------------
-        voxel_size_in_um : float64[depths, rows, columns], optional
+        voxel_size_in_um : float64[depth, height, width], optional
         dimensions_in_voxels : int32[depths, rows, columns], optional
         --------------------------------------
         methods

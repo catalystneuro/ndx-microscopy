@@ -93,9 +93,13 @@ ImageJ and scikit-image. Imaging space sizes follow the same order. Mask coordin
      - (x, y, weight)
    * - ``VolumetricSegmentation.voxel_mask`` rows
      - (x, y, z, weight)
-   * - ``PlanarImagingSpace.pixel_size_in_um`` and ``dimensions_in_pixels``
+   * - ``PlanarImagingSpace.pixel_size_in_um``
+     - (height, width)
+   * - ``PlanarImagingSpace.dimensions_in_pixels``
      - (rows, columns)
-   * - ``VolumetricImagingSpace.voxel_size_in_um`` and ``dimensions_in_voxels``
+   * - ``VolumetricImagingSpace.voxel_size_in_um``
+     - (depth, height, width)
+   * - ``VolumetricImagingSpace.dimensions_in_voxels``
      - (depths, rows, columns)
 
 Data Structure

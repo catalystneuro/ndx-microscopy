@@ -341,8 +341,8 @@ Imaging Spaces
 --------------
 
 ``PlanarImagingSpace`` and ``VolumetricImagingSpace`` describe the imaged region. Sizes are listed in the
-order of the data: ``pixel_size_in_um`` and ``dimensions_in_pixels`` are (rows, columns), like the (height, width)
-of the data.
+order of the data: ``pixel_size_in_um`` is the (height, width) of a pixel and ``dimensions_in_pixels`` is the
+number of (rows, columns).
 
 The optional ``fov_center_coordinates`` is a ``StereotacticPosition`` for the center of the field of view (for
 a volume, the center of the volume); its z coordinate gives the imaging depth. Localization of the field of
@@ -355,7 +355,7 @@ view against an atlas, such as the coordinates of each pixel, will be handled by
         name="planar_imaging_space",
         description="Field of view 200 um below the pia",
         anatomical_target="Primary visual cortex, layer 2/3",
-        pixel_size_in_um=[2.0, 2.0],  # (rows, columns)
+        pixel_size_in_um=[2.0, 2.0],  # (height, width)
         dimensions_in_pixels=[256, 256],  # (rows, columns)
         illumination_pattern=line_scan,
         fov_center_coordinates=StereotacticPosition(
@@ -414,8 +414,8 @@ to them. Here a second recording of the same field of view reuses both.
 Volumetric Imaging
 ------------------
 
-Volumetric data are shaped (frames, depths, height, width), the TZYX convention. ``voxel_size_in_um`` and
-``dimensions_in_voxels`` are (depths, rows, columns) in the same order.
+Volumetric data are shaped (frames, depths, height, width), the TZYX convention. ``voxel_size_in_um`` is the
+(depth, height, width) of a voxel and ``dimensions_in_voxels`` is the number of (depths, rows, columns).
 
 .. code-block:: python
 
@@ -423,7 +423,7 @@ Volumetric data are shaped (frames, depths, height, width), the TZYX convention.
         name="volumetric_imaging_space",
         description="Volume from 100 to 300 um below the pia, 10 planes set with a piezo objective scanner",
         anatomical_target="Primary visual cortex, layers 2/3 and 4",
-        voxel_size_in_um=[20.0, 2.0, 2.0],  # (depths, rows, columns)
+        voxel_size_in_um=[20.0, 2.0, 2.0],  # (depth, height, width)
         dimensions_in_voxels=[10, 256, 256],  # (depths, rows, columns)
         illumination_pattern=line_scan,
     )
@@ -695,7 +695,7 @@ imaging uses ``PlaneAcquisition``.
         name="planar_imaging_space",
         description="Field of view below the GRIN lens, frames binned 2x2 to 304 x 304 pixels",
         anatomical_target="CA1, stratum pyramidale",
-        pixel_size_in_um=[3.3, 3.3],  # (rows, columns), after binning
+        pixel_size_in_um=[3.3, 3.3],  # (height, width), after binning
         dimensions_in_pixels=[304, 304],  # (rows, columns)
         illumination_pattern=camera_acquisition,
     )

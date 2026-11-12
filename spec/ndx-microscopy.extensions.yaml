@@ -194,11 +194,11 @@ groups:
     datasets:
       - name: pixel_size_in_um
         doc:
-          The physical dimensions of the pixel in micrometers, listed as (rows, columns), in the
-          (height, width) order of the imaging data.
+          The physical dimensions of the pixel in micrometers, listed as (height, width), in the
+          order of the imaging data.
         dtype: float64
         dims:
-          - - rows, columns
+          - - height, width
         shape:
           - - 2
         quantity: "?"
@@ -219,11 +219,11 @@ groups:
     datasets:
       - name: voxel_size_in_um
         doc:
-          The physical dimensions of the voxel in micrometers, listed as (depths, rows, columns), in the
-          (depth, height, width) order of the imaging data.
+          The physical dimensions of the voxel in micrometers, listed as (depth, height, width), in the
+          order of the imaging data.
         dtype: float64
         dims:
-          - - depths, rows, columns
+          - - depth, height, width
         shape:
           - - 3
         quantity: "?"
