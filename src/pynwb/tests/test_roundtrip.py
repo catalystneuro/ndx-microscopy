@@ -271,7 +271,7 @@ def test_imaging_space_dimensions_from_python_ints_write_without_dtype_warning(t
             microscopy_rig=microscopy_rig,
             microscopy_channel=microscopy_channel,
             volumetric_imaging_space=mock_VolumetricImagingSpace(
-                name="VolumetricImagingSpace", dimensions_in_voxels=[5, 5, 3]
+                name="VolumetricImagingSpace", dimensions_in_voxels=[3, 5, 5]
             ),
         )
     )

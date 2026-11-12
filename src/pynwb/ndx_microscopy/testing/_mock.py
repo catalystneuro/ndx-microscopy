@@ -286,8 +286,7 @@ def mock_PlanarSegmentation(
     """
     name = name or name_generator("PlanarSegmentation")
     if image_shape is None:
-        x, y = planar_imaging_space.dimensions_in_pixels
-        image_shape = (y, x)
+        image_shape = tuple(planar_imaging_space.dimensions_in_pixels)
 
     # Create default summary images if none provided
     if summary_images is None:
@@ -328,8 +327,7 @@ def mock_VolumetricSegmentation(
     """
     name = name or name_generator("VolumetricSegmentation")
     if volume_shape is None:
-        x, y, z = volumetric_imaging_space.dimensions_in_voxels
-        volume_shape = (z, y, x)
+        volume_shape = tuple(volumetric_imaging_space.dimensions_in_voxels)
 
     # Create default summary images if none provided
     if summary_images is None:

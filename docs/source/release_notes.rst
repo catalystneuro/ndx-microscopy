@@ -4,6 +4,20 @@
 Release Notes
 *************
 
+Upcoming
+========
+
+Deprecations and Changes
+------------------------
+
+* **Breaking Change**: Listed the imaging space sizes in the depth, then rows, then columns order of the imaging data:
+
+  * ``PlanarImagingSpace.pixel_size_in_um``: ``(width, height)`` → ``(height, width)``
+  * ``PlanarImagingSpace.dimensions_in_pixels``: ``(columns, rows)`` → ``(rows, columns)``
+  * ``VolumetricImagingSpace.voxel_size_in_um``: ``(width, height, depth)`` → ``(depth, height, width)``
+  * ``VolumetricImagingSpace.dimensions_in_voxels``: ``(columns, rows, depths)`` → ``(depths, rows, columns)``
+  * ``PlanarImagingSpace.get_FOV_size`` and ``VolumetricImagingSpace.get_FOV_size`` return the field of view in ``(height, width)`` and ``(depth, height, width)`` order.
+
 Version 0.4.0 (October 14, 2026)
 ================================
 

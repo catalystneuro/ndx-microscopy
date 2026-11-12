@@ -53,7 +53,7 @@ Imaging Spaces
 
 - ``PlanarImagingSpace``: a single plane
 - ``VolumetricImagingSpace``: a volume
-- Each space records the anatomical target, the pixel or voxel size and the dimensions, listed x first
+- Each space records the anatomical target, the pixel or voxel size and the dimensions, in the (depth, height, width) order of the data
 - Each space contains the illumination pattern used to acquire it
 
 Imaging Data
@@ -221,8 +221,8 @@ This example writes a two-photon calcium imaging session with one imaging plane.
         name="planar_imaging_space",
         description="Field of view in layer 2/3 of V1",
         anatomical_target="Primary visual cortex, layer 2/3",
-        pixel_size_in_um=[2.0, 2.0],  # (x, y)
-        dimensions_in_pixels=[256, 256],  # (x, y)
+        pixel_size_in_um=[2.0, 2.0],  # (height, width)
+        dimensions_in_pixels=[256, 256],  # (rows, columns)
         illumination_pattern=line_scan,
     )
 
