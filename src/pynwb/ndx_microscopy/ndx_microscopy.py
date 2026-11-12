@@ -132,7 +132,7 @@ PlanarSegmentation = get_class("PlanarSegmentation", extension_name)
         "name": "pixel_mask",
         "type": "array_data",
         "default": None,
-        "doc": "pixel mask for 2D ROIs: [(x1, y1, weight1), (x2, y2, weight2), ...]",
+        "doc": "pixel mask for 2D ROIs: [(row1, column1, weight1), (row2, column2, weight2), ...]",
         "shape": (None, 3),
     },
     {
@@ -151,8 +151,8 @@ def add_roi(self, **kwargs):
     Parameters
     ----------
     pixel_mask : array_data, optional
-        Pixel mask for 2D ROIs in format [(x1, y1, weight1), (x2, y2, weight2), ...].
-        Each row contains x,y coordinates and weight value for a pixel.
+        Pixel mask for 2D ROIs in format [(row1, column1, weight1), (row2, column2, weight2), ...].
+        Each entry contains the row and column of a pixel and its weight.
     image_mask : array_data, optional
         2D image where positive values mark this ROI.
     id : int, optional
@@ -184,18 +184,18 @@ def pixel_to_image(pixel_mask, image_shape=None):
     Parameters
     ----------
     pixel_mask : array-like
-        Array of shape (N, 3) where each row contains (x, y, weight) coordinates.
-        The x, y coordinates specify the pixel position and weight specifies the value
+        Array of shape (N, 3) where each entry is (row, column, weight).
+        The row and column specify the pixel position and weight specifies the value
         to fill in the output image mask.
     image_shape : tuple, optional
         Shape of the output image (height, width). If not provided, will be determined
-        from the maximum x,y coordinates in pixel_mask.
+        from the maximum row and column in pixel_mask.
 
     Returns
     -------
     image_matrix : numpy.ndarray
         2D array with shape (height, width) where non-zero values indicate the ROI pixels
-        with their corresponding weights. Pixel (x, y) is stored at image_matrix[y, x].
+        with their corresponding weights. Pixel (row, column) is stored at image_matrix[row, column].
 
     Raises
     ------
@@ -204,17 +204,17 @@ def pixel_to_image(pixel_mask, image_shape=None):
     """
     npmask = np.asarray(pixel_mask)
     if npmask.shape[1] != 3:
-        raise ValueError("pixel_mask must have shape (N, 3) where each row is (x, y, weight)")
+        raise ValueError("pixel_mask must have shape (N, 3) where each entry is (row, column, weight)")
 
-    x_coords = npmask[:, 0].astype(np.int32)
-    y_coords = npmask[:, 1].astype(np.int32)
+    rows = npmask[:, 0].astype(np.int32)
+    columns = npmask[:, 1].astype(np.int32)
     weights = npmask[:, -1]
 
     # Determine dimensions from max coordinates, in (height, width) order
     if image_shape is None:
-        image_shape = (np.max(y_coords) + 1, np.max(x_coords) + 1)
+        image_shape = (np.max(rows) + 1, np.max(columns) + 1)
     image_matrix = np.zeros(image_shape)
-    image_matrix[y_coords, x_coords] = weights
+    image_matrix[rows, columns] = weights
 
     return image_matrix
 
@@ -231,7 +231,7 @@ def image_to_pixel(image_mask):
     Returns
     -------
     list
-        List of [x, y, weight] coordinates for each non-zero pixel in the image_mask.
+        List of [row, column, weight] for each non-zero pixel in the image_mask.
         The weight is the value at that pixel location in the image_mask.
 
     Raises
@@ -246,9 +246,9 @@ def image_to_pixel(image_mask):
     while not it.finished:
         weight = it[0][()]
         if weight > 0:
-            y = it.multi_index[0]
-            x = it.multi_index[1]
-            pixel_mask.append([x, y, weight])
+            row = it.multi_index[0]
+            column = it.multi_index[1]
+            pixel_mask.append([row, column, weight])
         it.iternext()
     return pixel_mask
 
@@ -296,7 +296,7 @@ VolumetricSegmentation = get_class("VolumetricSegmentation", extension_name)
         "name": "voxel_mask",
         "type": "array_data",
         "default": None,
-        "doc": "voxel mask for 3D ROIs: [(x1, y1, z1, weight1), (x2, y2, z2, weight2), ...]",
+        "doc": "voxel mask for 3D ROIs: [(depth1, row1, column1, weight1), (depth2, row2, column2, weight2), ...]",
         "shape": (None, 4),
     },
     {
@@ -315,8 +315,8 @@ def add_roi(self, **kwargs):
     Parameters
     ----------
     voxel_mask : array_data, optional
-        Voxel mask for 3D ROIs in format [(x1, y1, z1, weight1), (x2, y2, z2, weight2), ...].
-        Each row contains x,y,z coordinates and weight value for a voxel.
+        Voxel mask for 3D ROIs in format [(depth1, row1, column1, weight1), (depth2, row2, column2, weight2), ...].
+        Each entry contains the depth, row and column of a voxel and its weight.
     volume_mask : array_data, optional
         3D image where positive values mark this ROI.
     id : int, optional
@@ -352,12 +352,12 @@ def voxel_to_volume(voxel_mask, volume_shape=None):
     Parameters
     ----------
     voxel_mask : array-like
-        Array of shape (N, 4) where each row contains (x, y, z, weight) coordinates.
-        The x, y, z coordinates specify the voxel position and weight specifies the value
+        Array of shape (N, 4) where each entry is (depth, row, column, weight).
+        The depth, row and column specify the voxel position and weight specifies the value
         to fill in the output image mask.
     volume_shape : tuple, optional
         Shape of the output image (depth, height, width), following the TZYX convention.
-        If not provided, will be determined from the maximum x,y,z coordinates in voxel_mask.
+        If not provided, will be determined from the maximum depth, row and column in voxel_mask.
 
     Returns
     -------
@@ -372,18 +372,18 @@ def voxel_to_volume(voxel_mask, volume_shape=None):
     """
     npmask = np.asarray(voxel_mask)
     if npmask.shape[1] != 4:
-        raise ValueError("voxel_mask must have shape (N, 4) where each row is (x, y, z, weight)")
+        raise ValueError("voxel_mask must have shape (N, 4) where each entry is (depth, row, column, weight)")
 
-    x_coords = npmask[:, 0].astype(np.int32)
-    y_coords = npmask[:, 1].astype(np.int32)
-    z_coords = npmask[:, 2].astype(np.int32)
+    depths = npmask[:, 0].astype(np.int32)
+    rows = npmask[:, 1].astype(np.int32)
+    columns = npmask[:, 2].astype(np.int32)
     weights = npmask[:, -1]
 
     # Determine dimensions from max coordinates, in (depth, height, width) order
     if volume_shape is None:
-        volume_shape = (np.max(z_coords) + 1, np.max(y_coords) + 1, np.max(x_coords) + 1)
+        volume_shape = (np.max(depths) + 1, np.max(rows) + 1, np.max(columns) + 1)
     image_matrix = np.zeros(volume_shape)
-    image_matrix[z_coords, y_coords, x_coords] = weights
+    image_matrix[depths, rows, columns] = weights
 
     return image_matrix
 
@@ -401,7 +401,7 @@ def volume_to_voxel(volume_mask):
     Returns
     -------
     list
-        List of [x, y, z, weight] coordinates for each non-zero voxel in the volume_mask.
+        List of [depth, row, column, weight] for each non-zero voxel in the volume_mask.
         The weight is the value at that voxel location in the volume_mask.
 
     Raises
@@ -416,10 +416,10 @@ def volume_to_voxel(volume_mask):
     while not it.finished:
         weight = it[0][()]
         if weight > 0:
-            z = it.multi_index[0]
-            y = it.multi_index[1]
-            x = it.multi_index[2]
-            voxel_mask.append([x, y, z, weight])
+            depth = it.multi_index[0]
+            row = it.multi_index[1]
+            column = it.multi_index[2]
+            voxel_mask.append([depth, row, column, weight])
         it.iternext()
     return voxel_mask
 

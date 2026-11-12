@@ -314,7 +314,7 @@ classDiagram
         --------------------------------------
         datasets
         --------------------------------------
-        data : numeric[frames, depths, height, width]
+        data : numeric[frames, depth, height, width]
         --------------------------------------
         groups
         --------------------------------------
@@ -354,7 +354,7 @@ classDiagram
         --------------------------------------
         datasets
         --------------------------------------
-        data : numeric[depths, height, width]
+        data : numeric[depth, height, width]
         --------------------------------------
         groups
         --------------------------------------
@@ -491,7 +491,7 @@ classDiagram
         --------------------------------------
         datasets
         --------------------------------------
-        image_mask : VectorData[num_roi, num_y, num_x], optional
+        image_mask : VectorData[num_roi, height, width], optional
         pixel_mask_index : VectorIndex, optional
         pixel_mask : VectorData, optional
         --------------------------------------
@@ -512,7 +512,7 @@ classDiagram
         --------------------------------------
         datasets
         --------------------------------------
-        volume_mask : VectorData[num_roi, num_z, num_y, num_x], optional
+        volume_mask : VectorData[num_roi, depth, height, width], optional
         voxel_mask_index : VectorIndex, optional
         voxel_mask : VectorData, optional
         --------------------------------------

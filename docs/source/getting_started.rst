@@ -60,7 +60,7 @@ Imaging Data
 ------------
 
 - ``PlanarMicroscopySeries``: planar data over time, shaped (frames, height, width)
-- ``VolumetricMicroscopySeries``: volumetric data over time, shaped (frames, depths, height, width)
+- ``VolumetricMicroscopySeries``: volumetric data over time, shaped (frames, depth, height, width)
 - ``PlanarMicroscopyStaticImage`` and ``VolumetricMicroscopyStaticImage``: single images, e.g., an anatomical reference
 - ``MultiPlaneMicroscopyContainer``: series or static images acquired at several depths
 - ``MultiChannelMicroscopyContainer``: series, static images or multi-plane containers acquired in several channels
