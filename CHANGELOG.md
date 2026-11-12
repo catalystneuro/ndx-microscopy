@@ -6,6 +6,7 @@
   - `VolumetricSegmentation.voxel_mask`: `(x, y, z, weight)` → `(depth, row, column, weight)`
   - `PlanarSegmentation.pixel_to_image` / `image_to_pixel` and `VolumetricSegmentation.voxel_to_volume` / `volume_to_voxel` read and write the new order.
 - Renamed the dimensions of `PlanarSegmentation.image_mask` from `(num_roi, num_y, num_x)` to `(num_roi, height, width)` and of `VolumetricSegmentation.volume_mask` from `(num_roi, num_z, num_y, num_x)` to `(num_roi, depth, height, width)`, matching the dimension names of the imaging data. The order and the stored data are unchanged.
+- Renamed the depth axis of `VolumetricMicroscopySeries.data` and `VolumetricMicroscopyStaticImage.data` from `depths` to `depth`, matching `SummaryImage.data` and `VolumetricSegmentation.volume_mask`. The order and the stored data are unchanged.
 
 # v0.4.0 (October 14, 2026)
 

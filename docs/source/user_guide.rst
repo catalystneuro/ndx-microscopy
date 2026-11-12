@@ -413,7 +413,7 @@ to them. Here a second recording of the same field of view reuses both.
 Volumetric Imaging
 ------------------
 
-Volumetric data are shaped (frames, depths, height, width), the TZYX convention. ``voxel_size_in_um`` and
+Volumetric data are shaped (frames, depth, height, width), the TZYX convention. ``voxel_size_in_um`` and
 ``dimensions_in_voxels`` are (x, y, z).
 
 .. code-block:: python
@@ -432,7 +432,7 @@ Volumetric data are shaped (frames, depths, height, width), the TZYX convention.
         microscopy_rig=green_rig,
         microscopy_channel=green_channel,
         volumetric_imaging_space=volumetric_imaging_space,
-        data=np.random.randint(0, 4096, size=(20, 10, 256, 256), dtype=np.uint16),  # (frames, depths, height, width)
+        data=np.random.randint(0, 4096, size=(20, 10, 256, 256), dtype=np.uint16),  # (frames, depth, height, width)
         unit="a.u.",
         rate=3.0,  # volumes per second
         starting_time=1200.0,

@@ -314,7 +314,7 @@ classDiagram
         --------------------------------------
         datasets
         --------------------------------------
-        data : numeric[frames, depths, height, width]
+        data : numeric[frames, depth, height, width]
         --------------------------------------
         groups
         --------------------------------------
@@ -354,7 +354,7 @@ classDiagram
         --------------------------------------
         datasets
         --------------------------------------
-        data : numeric[depths, height, width]
+        data : numeric[depth, height, width]
         --------------------------------------
         groups
         --------------------------------------

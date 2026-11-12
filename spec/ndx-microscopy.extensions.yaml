@@ -290,7 +290,7 @@ groups:
           TZYX dimension convention shared with OME/ImageJ/scikit-image.
         dtype: numeric
         dims:
-          - depths
+          - depth
           - height
           - width
         shape:
@@ -353,7 +353,7 @@ groups:
         dtype: numeric
         dims:
           - frames
-          - depths
+          - depth
           - height
           - width
         shape:

@@ -76,11 +76,11 @@ ImageJ and scikit-image. Pixel and voxel mask coordinates follow the same order.
    * - ``PlanarMicroscopySeries.data``
      - (frames, height, width)
    * - ``VolumetricMicroscopySeries.data``
-     - (frames, depths, height, width)
+     - (frames, depth, height, width)
    * - ``PlanarMicroscopyStaticImage.data``
      - (height, width)
    * - ``VolumetricMicroscopyStaticImage.data``
-     - (depths, height, width)
+     - (depth, height, width)
    * - ``PlanarSegmentation.image_mask``
      - (ROIs, height, width)
    * - ``VolumetricSegmentation.volume_mask``
